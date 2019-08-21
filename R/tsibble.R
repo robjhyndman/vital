@@ -4,10 +4,6 @@
 #' @param validate `TRUE` suggests to verify that each key or each combination
 #' of key variables leads to unique time indices (i.e. a valid tsibble). If you
 #' are sure that it's a valid input, specify `FALSE` to skip the checks.
-#' @param key Ignored
-#' @param index Ignored
-#' @param regular Ignored
-#' @param .drop Ignored
 #' @param ... Other arguments passed on to individual methods.
 #'
 #' @return A tsibble object.
@@ -20,7 +16,7 @@
 
 #' @rdname as-tsibble
 #' @export
-as_tsibble.demogdata <- function(x, key=NULL, index=NULL, regular=NULL, validate = TRUE, .drop=NULL, ...) {
+as_tsibble.demogdata <- function(x, ..., validate = TRUE) {
   rates_included <- ("rate" %in% names(x))
   pop_included <- ("pop" %in% names(x))
   # Avoid CRAN error check by declaring variables
@@ -48,7 +44,7 @@ as_tsibble.demogdata <- function(x, key=NULL, index=NULL, regular=NULL, validate
     } else if (x$type == "migration") {
       rates <- dplyr::rename(rates, NetMigration = Rates)
     } else {
-      stop("Not yet implemented")
+      stop("Unknown type")
     }
   }
   if (pop_included) {

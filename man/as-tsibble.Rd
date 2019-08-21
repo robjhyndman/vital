@@ -4,25 +4,16 @@
 \alias{as_tsibble.demogdata}
 \title{Coerce to a tsibble object}
 \usage{
-\method{as_tsibble}{demogdata}(x, key = NULL, index = NULL,
-  regular = NULL, validate = TRUE, .drop = NULL, ...)
+\method{as_tsibble}{demogdata}(x, ..., validate = TRUE)
 }
 \arguments{
 \item{x}{Objects to be coerced to a tsibble (`tbl_ts`).}
 
-\item{key}{Ignored}
-
-\item{index}{Ignored}
-
-\item{regular}{Ignored}
+\item{...}{Other arguments passed on to individual methods.}
 
 \item{validate}{`TRUE` suggests to verify that each key or each combination
 of key variables leads to unique time indices (i.e. a valid tsibble). If you
 are sure that it's a valid input, specify `FALSE` to skip the checks.}
-
-\item{.drop}{Ignored}
-
-\item{...}{Other arguments passed on to individual methods.}
 }
 \value{
 A tsibble object.
