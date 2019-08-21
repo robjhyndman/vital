@@ -13,22 +13,17 @@
 #' @examples
 #' # coerce demogdata object to tsibble ----
 #' as_tsibble(demography::fr.mort)
-#' @export
-as_tsibble <- function(x, ...) {
-  UseMethod("as_tsibble")
-}
 
 #' @rdname as-tsibble
 #' @export
-as_tsibble.demogdata <- function(
-                                 x, validate = TRUE, ...) {
+as_tsibble.demogdata <- function(x, validate = TRUE, ...) {
   rates_included <- ("rate" %in% names(x))
   pop_included <- ("pop" %in% names(x))
   if (rates_included) {
     rates <- NULL
     for (i in seq_along(x$rate)) {
       tmp <- x$rate[[i]] %>%
-        as_tibble() %>%
+        tibble::as_tibble() %>%
         dplyr::mutate(
           AgeGroup = rownames(x$rate[[i]]),
           Age = x$age
