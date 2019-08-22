@@ -3,6 +3,7 @@
 S3method(as_tsibble,demogdata)
 export("%>%")
 export(as_tsibble)
+export(life_table)
 importFrom(dplyr,arrange)
 importFrom(dplyr,mutate)
 importFrom(dplyr,rename)

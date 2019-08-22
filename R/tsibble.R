@@ -13,8 +13,6 @@
 #' @examples
 #' # coerce demogdata object to tsibble ----
 #' as_tsibble(demography::fr.mort)
-
-#' @rdname as-tsibble
 #' @export
 as_tsibble.demogdata <- function(x, ..., validate = TRUE) {
   rates_included <- ("rate" %in% names(x))
