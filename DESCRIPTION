@@ -8,6 +8,7 @@ Description: Functions for analysing demographic data based on tools
     modelling; functional data modelling and stochastic population
     forecasting.
 Authors@R: person("Rob", "Hyndman", email="Rob.Hyndman@monash.edu", role=c("aut", "cre", "cph"), comment = c(ORCID = "0000-0002-2140-5352"))
+Depends: R (>= 3.6.0)
 Imports:
   dplyr,
   magrittr,
