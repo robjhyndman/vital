@@ -4,14 +4,16 @@
 \alias{life_table}
 \title{Compute period lifetables from mortality rates}
 \usage{
-life_table(.data, age, mortality, group)
+life_table(.data, age, sex, mortality)
 }
 \arguments{
-\item{data.}{A tsibble containing mortality rates, or deaths and exposures. It must contain an age variable and a variable containing mortality rates.}
+\item{.data}{A tsibble containing mortality rates, or deaths and exposures. It must contain an age variable and a variable containing mortality rates.}
 
-\item{age.}{Variable in `data` containing start year of age intervals.}
+\item{age}{Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` will be used (not case sensitive).}
 
-\item{mortality.}{Variable in `data` containing Mortality rates (mx).}
+\item{sex}{Variable in `.data` containing sex information. If omitted, the variable with name `Sex` or `Group` will be used (not case sensitive).}
+
+\item{mortality}{Variable in `.data` containing Mortality rates (mx). If omitted, the variable with name  `Mortality` or `Rate` will be used (not case sensitive).}
 }
 \value{
 A tsibble object.
@@ -22,10 +24,10 @@ qx = mx/(1 + ((1-ax) * mx)) as per Chiang (1984).
 Warning: the code has only been tested for data based on single-year age groups.
 }
 \examples{
-# Compute French life tables
-demography::fr.mort \%>\%
-  as_tsibble() \%>\%
-  life_table(age=Age, mortality=Mortality, group=Group)
+# Compute Australia life table for females in 2003
+aus_mortality \%>\%
+  filter(Code=="AUS", Sex=="female", Year==2003) \%>\%
+  life_table()
 }
 \references{
 Chiang CL. (1984) \emph{The life table and its applications}. Robert E Krieger Publishing Company: Malabar.
