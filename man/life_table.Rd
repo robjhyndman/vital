@@ -7,11 +7,11 @@
 life_table(.data, age, sex, mortality)
 }
 \arguments{
-\item{.data}{A tsibble containing mortality rates, or deaths and exposures. It must contain an age variable and a variable containing mortality rates.}
+\item{.data}{A tsibble including an age variable and a variable containing mortality rates.}
 
 \item{age}{Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` will be used (not case sensitive).}
 
-\item{sex}{Variable in `.data` containing sex information. If omitted, the variable with name `Sex` or `Group` will be used (not case sensitive).}
+\item{sex}{Optional variable in `.data` containing sex information. If omitted, the variable with name `Sex` or `Group` will be used (not case sensitive).}
 
 \item{mortality}{Variable in `.data` containing Mortality rates (mx). If omitted, the variable with name  `Mortality` or `Rate` will be used (not case sensitive).}
 }

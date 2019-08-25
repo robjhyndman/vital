@@ -4,9 +4,9 @@
 #' qx = mx/(1 + ((1-ax) * mx)) as per Chiang (1984).
 #' Warning: the code has only been tested for data based on single-year age groups.
 #'
-#' @param .data A tsibble containing mortality rates, or deaths and exposures. It must contain an age variable and a variable containing mortality rates.
+#' @param .data A tsibble including an age variable and a variable containing mortality rates.
 #' @param age Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` will be used (not case sensitive).
-#' @param sex Variable in `.data` containing sex information. If omitted, the variable with name `Sex` or `Group` will be used (not case sensitive).
+#' @param sex Optional variable in `.data` containing sex information. If omitted, the variable with name `Sex` or `Group` will be used (not case sensitive).
 #' @param mortality Variable in `.data` containing Mortality rates (mx). If omitted, the variable with name  `Mortality` or `Rate` will be used (not case sensitive).
 #'
 #' @return A tsibble object.
