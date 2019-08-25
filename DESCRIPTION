@@ -14,7 +14,8 @@ Imports:
   magrittr,
   tibble,
   tidyr,
-  tsibble
+  tsibble,
+  HMDHFDplus
 Suggests:
   demography
 License: GPL-3
