@@ -58,7 +58,7 @@ life_table <- function(.data, age, sex, mortality) {
 
   # Drop Age as a key and nest results
   keys_noage <- keys[keys != age]
-  .data <- nest(.data, -index, -!!keys_noage, .key="lst_data")
+  .data <- tidyr::nest(.data, -index, -!!keys_noage, .key="lst_data")
 
   # Create life table for each sub-tibble and row-bind them.
   if(sex=="None")
@@ -67,10 +67,10 @@ life_table <- function(.data, age, sex, mortality) {
     out <- purrr::map2(.data[['lst_data']], .data[[sex]], lt, age=age, mortality=mortality)
   .data$lt <- out
   .data$lst_data <- NULL
-  out <- as_tibble(.data) %>% unnest() %>% tsibble::as_tsibble(index=index, key=keys)
+  out <- tibble::as_tibble(.data) %>% tidyr::unnest() %>% tsibble::as_tsibble(index=index, key=keys)
   # Sort and rearrange results
-  arrange(out, !!!syms(c(keys_noage, index, age))) %>%
-    select(!!index, !!age, !!keys_noage, everything())
+  arrange(out, !!!rlang::syms(c(keys_noage, index, age))) %>%
+    select(!!index, !!age, !!keys_noage, tidyselect::everything())
 }
 
 # This is a revised version of the demography::lt function.
@@ -99,7 +99,7 @@ lt <- function(dt, sex, age, mortality) {
 
   # Set a0
   if (startage == 0L) {
-    a0 <- case_when(
+    a0 <- dplyr::case_when(
       sex == "female" ~ 0.35 + (mx[1] < 0.107) * (-0.297 + 2.8 * mx[1]),
       sex == "male" ~ 0.33 + (mx[1] < 0.107) * (-0.285 + 2.684 * mx[1]),
       TRUE ~ 0.34 + (mx[1] < 0.107) * (-0.291 + 2.742 * mx[1])
@@ -124,7 +124,7 @@ lt <- function(dt, sex, age, mortality) {
     }
   }
   else if (agegroup == 5L & startage == 0) {
-    a1 <- case_when(
+    a1 <- dplyr::case_when(
       sex == "female" ~ 1.361 + (mx[1] < 0.107) * (0.161 - 1.518 * mx[1]),
       sex == "male" ~ 1.352 + (mx[1] < 0.107) * (0.299 - 2.816 * mx[1]),
       TRUE ~ 1.3565 + (mx[1] < 0.107) * (0.230 - 2.167 * mx[1])
@@ -151,19 +151,19 @@ lt <- function(dt, sex, age, mortality) {
   Tx <- rev(cumsum(rev(Lx)))
   ex <- Tx / lx
   # Finally compute rx
-  if (nn > 2) {
-    rx <- c(Lx[1] / lx[1], Lx[2:(nn - 1)] / Lx[1:(nn - 2)], Tx[nn] / Tx[nn - 1])
-  } else if (nn == 2) {
-    rx <- c(Lx[1] / lx[1], Tx[nn] / Tx[nn - 1])
-  } else {
-    rx <- c(Lx[1] / lx[1])
-  }
-  if (agegroup == 5L) {
-    rx <- c(
-      0, (Lx[1] + Lx[2]) / 5 * lx[1], Lx[3] / (Lx[1] + Lx[2]),
-      Lx[4:(nn - 1)] / Lx[3:(nn - 2)], Tx[nn] / Tx[nn - 1]
-    )
-  }
+  # if (nn > 2) {
+  #   rx <- c(Lx[1] / lx[1], Lx[2:(nn - 1)] / Lx[1:(nn - 2)], Tx[nn] / Tx[nn - 1])
+  # } else if (nn == 2) {
+  #   rx <- c(Lx[1] / lx[1], Tx[nn] / Tx[nn - 1])
+  # } else {
+  #   rx <- c(Lx[1] / lx[1])
+  # }
+  # if (agegroup == 5L) {
+  #   rx <- c(
+  #     0, (Lx[1] + Lx[2]) / 5 * lx[1], Lx[3] / (Lx[1] + Lx[2]),
+  #     Lx[4:(nn - 1)] / Lx[3:(nn - 2)], Tx[nn] / Tx[nn - 1]
+  #   )
+  # }
   # Return the results in a tibble
   result <- tibble::tibble(mx = mx, qx = qx, lx = lx, dx = dx, Lx = Lx, Tx = Tx, ex = ex) %>%
     # Omitting  rx = rx, nx = nx, ax = ax, Do we need them?
