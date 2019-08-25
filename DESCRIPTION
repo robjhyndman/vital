@@ -11,13 +11,17 @@ Authors@R: person("Rob", "Hyndman", email="Rob.Hyndman@monash.edu", role=c("aut"
 Depends: R (>= 3.6.0)
 Imports:
   dplyr,
+  HMDHFDplus,
   magrittr,
+  purrr,
+  rlang,
   tibble,
   tidyr,
-  tsibble,
-  HMDHFDplus
+  tidyselect,
+  tsibble
 Suggests:
-  demography
+    demography,
+    testthat (>= 2.1.0)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
