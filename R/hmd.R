@@ -1,6 +1,21 @@
-# Read file from hmd
-# Handles Births, deaths, population, exposure, death rates, life tables and life expectancy
-# Does not handle lexis triangles or cohort data
+#' Read text file from HMD
+#'
+#' Read text files from the Human Mortality Database (\url{http://mortality.org}).
+#' It currently handles births, deaths, population, exposure, death rates,
+#' life tables and life expectancy files.
+#' It will not work with cohort data or lexis triangles.
+#'
+#' @param file A path to a file, or a connection.
+#'
+#' @return A tsibble with an annual index and (possibly) Age and Sex keys.
+#'
+#' @seealso \code{\link[HMDHFDplus]{readHMD}}.
+#'
+#' @examples
+#' \dontrun{
+#' aus <- read_hmd("AUS_Mx_1x1.txt")
+#' }
+#' @export
 
 read_hmd <- function(file) {
   # Type of data from first line of file
@@ -22,6 +37,9 @@ read_hmd <- function(file) {
   else
     stop("Unknown file type")
 
+  # Avoid CRAN check errors
+  Male <- Female <- Total <- Sex <- Year <- NULL
+
   # Read data
   df <- HMDHFDplus::readHMD(file)
 
@@ -36,24 +54,13 @@ read_hmd <- function(file) {
     df <- gather(df, Male, Female, Total, key=Sex, value={{type}})
 
   # Turn it into a tsibble
-  key_var <- na.omit(colnames(df)[match(c("Age","Sex"), colnames(df))])
+  key_var <- stats::na.omit(colnames(df)[match(c("Age","Sex"), colnames(df))])
   df <- as_tsibble(df, index=Year, key=!!key_var)
 
   # Reorder columns
-  vars <- na.omit(colnames(df)[match(c("Year", "Age", "OpenInterval", "Sex"), colnames(df))])
-  df <- select(df, !!vars, everything())
+  vars <- stats::na.omit(colnames(df)[match(c("Year", "Age", "OpenInterval", "Sex"), colnames(df))])
+  df <- select(df, !!vars, tidyselect::everything())
 
   return(df)
 }
-
-read_hmd("~/Downloads/Aus_Deaths_5x10.txt")
-read_hmd("~/Downloads/Aus_Mx_1x1.txt")
-read_hmd("~/Downloads/bltper_1x1.txt")
-read_hmd("~/Downloads/Deaths_5x10.txt")
-read_hmd("~/Downloads/E0per.txt")
-read_hmd("~/Downloads/Exposures_1x10.txt")
-read_hmd("~/Downloads/Population.txt")
-
-
-
 
