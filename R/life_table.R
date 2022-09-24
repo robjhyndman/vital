@@ -39,7 +39,7 @@ life_table <- function(.data, age, sex, mortality) {
   if (!missing(sex)) {
     sex <- {{ sex }}
   } else {
-    sex <- find_key(.data, c("sex", "group"), return_error=FALSE)
+    sex <- find_key(.data, c("sex", "group"), return_error = FALSE)
   }
   if (!missing(mortality)) {
     mortality <- {{ mortality }}

@@ -26,7 +26,9 @@
 life_expectancy <- function(.data, from_age = 0, age, sex, mortality) {
   life_table(.data = .data, age = age, sex = sex, mortality = mortality) |>
     # Keep only relevant ages
-    filter(Age %in% from_age) |>
+    dplyr::filter(Age %in% from_age) |>
     # Keep only ex column plus index and keys
     dplyr::select(-mx, -qx, -lx, -dx, -Lx, -Tx)
 }
+
+utils::globalVariables(c("mx", "qx", "lx", "dx", "Lx", "Tx", "Age"))

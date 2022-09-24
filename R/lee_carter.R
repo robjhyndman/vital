@@ -52,6 +52,11 @@ lee_carter <- function(.data, age, sex, rates, pop,
   } else {
     age <- find_key(.data, c("age", "age_group"))
   }
+  if (!missing(sex)) {
+    sex <- {{ sex }}
+  } else {
+    sex <- find_key(.data, c("sex", "group"), return_error = FALSE)
+  }
   if (!missing(rates)) {
     rates <- {{ rates }}
   } else {
@@ -67,7 +72,13 @@ lee_carter <- function(.data, age, sex, rates, pop,
   keys_noage <- keys[keys != age]
   .data <- tidyr::nest(.data, lst_data = c(-!!keys_noage))
 
-  out <- purrr::map(.data[["lst_data"]], lca,
+  if (sex %in% colnames(.data)) {
+    sex_col <- .data[[sex]]
+  } else {
+    sex_col <- sex
+  }
+
+  out <- purrr::map2(.data[["lst_data"]], sex_col, lca,
     age = age, rates = rates,
     pop = pop, adjust = adjust, scale = scale
   )
@@ -77,7 +88,7 @@ lee_carter <- function(.data, age, sex, rates, pop,
 
 # Based on demography::lca()
 
-lca <- function(data, age, rates, pop,
+lca <- function(data, sex, age, rates, pop,
                 adjust = c("dt", "dxt", "e0", "none"), scale = FALSE) {
   adjust <- match.arg(adjust)
 
@@ -150,9 +161,9 @@ lca <- function(data, age, rates, pop,
       logdeathsadj[, i] <- z[, i] + bx * ktadj[i]
     }
   } else if (adjust == "e0") {
-    e0 <- apply(mx, 1, get.e0, agegroup = agegroup, sex = series, startage = startage)
-    FUN2 <- function(p, e0i, ax, bx, agegroup, series, startage) {
-      e0i - estimate.e0(p, ax, bx, agegroup, series, startage)
+    e0 <- apply(mx, 1, get.e0, agegroup = agegroup, sex = sex, startage = startage)
+    FUN2 <- function(p, e0i, ax, bx, agegroup, sex, startage) {
+      e0i - estimate.e0(p, ax, bx, agegroup, sex, startage)
     }
     for (i in seq(m)) {
       if (i == 1) {
@@ -160,7 +171,7 @@ lca <- function(data, age, rates, pop,
       } else {
         guess <- mean(c(ktadj[i - 1], kt[i]))
       }
-      ktadj[i] <- findroot(FUN2, guess = guess, margin = 3 * ktse[i], e0i = e0[i], ax = ax, bx = bx, agegroup = agegroup, series = series, startage = startage)
+      ktadj[i] <- findroot(FUN2, guess = guess, margin = 3 * ktse[i], e0i = e0[i], ax = ax, bx = bx, agegroup = agegroup, sex = sex, startage = startage)
     }
   } else if (adjust == "none") {
     ktadj <- kt
@@ -180,7 +191,7 @@ lca <- function(data, age, rates, pop,
   }
 
   # Compute deviances
-  logfit <- fitmx(kt,ax,bx,transform=TRUE)
+  logfit <- fitmx(kt, ax, bx, transform = TRUE)
   deathsadjfit <- exp(logfit) * pop
   drift <- mean(diff(kt))
   ktlinfit <- mean(kt) + drift * (1:m - (m + 1) / 2)
@@ -193,7 +204,7 @@ lca <- function(data, age, rates, pop,
   names(mdev) <- c("Mean deviance base", "Mean deviance total")
 
   # First object contains ages
-  output1 <- tibble(
+  output1 <- tibble::tibble(
     age = ages,
     ax = ax,
     bx = bx
@@ -201,7 +212,7 @@ lca <- function(data, age, rates, pop,
   colnames(output1)[1] <- age
 
   # Second object contains years
-  output2 <- tibble(
+  output2 <- tibble::tibble(
     year = year,
     kt = kt
   )
@@ -215,13 +226,25 @@ lca <- function(data, age, rates, pop,
   )
 }
 
-estimate.e0 <- function(kt, ax, bx, agegroup, series, startage = 0) {
+estimate.e0 <- function(kt, ax, bx, agegroup, sex, startage = 0) {
   if (length(kt) > 1) {
     stop("Length of kt greater than 1")
   }
   mx <- c(fitmx(kt, ax, bx))
-  return(get.e0(mx, agegroup, series, startage = startage))
+  return(get.e0(mx, agegroup, sex, startage = startage))
 }
+
+# Compute expected age from single year mortality rates
+# x contains vector of mortality rates
+# agegroup is vector of ages
+# sex is a string
+get.e0 <- function(x, agegroup, sex, startage = 0) {
+  lt(
+    tibble::tibble(age = agegroup, sex = sex, mx = x),
+    "sex", "age", "mx"
+  )$ex[1]
+}
+
 
 fitmx <- function(kt, ax, bx, transform = FALSE) {
   # Derives mortality rates from kt mortality index,
@@ -240,41 +263,41 @@ findroot <- function(FUN, guess, margin, try = 1, ...) {
   for (i in 1:5)
   {
     rooti <- try(stats::uniroot(FUN, interval = guess + i * margin / 3 * c(-1, 1), ...), silent = TRUE)
-    if (class(rooti) != "try-error") {
+    if (!("try-error" %in% class(rooti))) {
       return(rooti$root)
     }
   }
   # No luck. Try really big intervals
   rooti <- try(stats::uniroot(FUN, interval = guess + 10 * margin * c(-1, 1), ...), silent = TRUE)
-  if (class(rooti) != "try-error") {
+  if (!("try-error" %in% class(rooti))) {
     return(rooti$root)
   }
 
   # Still no luck. Try guessing root using quadratic approximation
   if (try < 3) {
     root <- try(quadroot(FUN, guess, 10 * margin, ...), silent = TRUE)
-    if (class(root) != "try-error") {
+    if (!("try-error" %in% class(root))) {
       return(findroot(FUN, root, margin, try + 1, ...))
     }
     root <- try(quadroot(FUN, guess, 20 * margin, ...), silent = TRUE)
-    if (class(root) != "try-error") {
+    if (!("try-error" %in% class(root))) {
       return(findroot(FUN, root, margin, try + 1, ...))
     }
   }
 
   # Finally try optimization
   root <- try(newroot(FUN, guess, ...), silent = TRUE)
-  if (class(root) != "try-error") {
+  if (!("try-error" %in% class(root))) {
     return(root)
   } else {
     root <- try(newroot(FUN, guess - margin, ...), silent = TRUE)
   }
-  if (class(root) != "try-error") {
+  if (!("try-error" %in% class(root))) {
     return(root)
   } else {
     root <- try(newroot(FUN, guess + margin, ...), silent = TRUE)
   }
-  if (class(root) != "try-error") {
+  if (!("try-error" %in% class(root))) {
     return(root)
   } else {
     stop("Unable to find root")
