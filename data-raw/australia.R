@@ -1,7 +1,9 @@
 library(tidyverse)
 library(tidylife)
 aus_fertility <- as_tsibble(addb::aus.fertility) %>%
-  select(-AgeGroup, -Group)
+  as_tibble() |>
+  select(-AgeGroup, -Group) |>
+  as_tsibble(index=Year, key=Age)
 usethis::use_data(aus_fertility, overwrite=TRUE)
 
 aus_mortality <- bind_rows(
@@ -17,7 +19,7 @@ aus_mortality <- bind_rows(
 ) %>%
   select(-AgeGroup) %>%
   as_tsibble(index=Year, key=c(Age, Group, State, Code)) %>%
-  select(Year, Age, Group, Code, State, everything()) %>%
+  select(Year, Age, Group, State, Code, everything()) %>%
   arrange(State, Group, Year, Age) %>%
   rename(Sex = Group)
 usethis::use_data(aus_mortality, overwrite=TRUE)

@@ -3,7 +3,9 @@
 \name{aus_mortality}
 \alias{aus_mortality}
 \title{Australian mortality data}
-\format{Time series of class `tsibble`}
+\format{
+Time series of class `tsibble`
+}
 \source{
 Australian Human Mortality Database
 }
@@ -16,12 +18,14 @@ Australian Human Mortality Database
 }
 }
 \details{
-The data is disaggregated using three keys:
+The data is disaggregated using four keys:
 \tabular{ll}{
     Age:   \tab Age at death\cr
     Sex:   \tab male or female \cr
     State: \tab State of Australia\cr
+    Code: \tab Short code for state\cr
 }
+The age group 100 also includes people who died aged older than 100.
 }
 \examples{
 
