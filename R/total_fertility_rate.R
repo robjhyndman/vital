@@ -26,28 +26,12 @@ total_fertility_rate <- function(.data, age, fertility) {
   if (!missing(age)) {
     age <- {{ age }}
   } else {
-    age <- keys[tolower(keys) == "age"]
-    if (length(age) == 0L) {
-      age <- keys[tolower(keys) == "age_group"]
-    }
-    if (length(age) == 0L) {
-      stop("No age variable found")
-    }
+    age <- find_key(.data, c("age", "age_group"))
   }
   if (!missing(fertility)) {
     fertility <- {{ fertility }}
   } else {
-    measures <- tsibble::measured_vars(.data)
-    fertility <- measures[startsWith(tolower(measures), "fx")][1]
-    if (is.na(fertility)) {
-      fertility <- measures[startsWith(tolower(measures), "fertility")][1]
-    }
-    if (is.na(fertility)) {
-      fertility <- measures[startsWith(tolower(measures), "rate")][1]
-    }
-    if (is.na(fertility)) {
-      stop("fertility rates column not found")
-    }
+    fertility <- find_measure(.data, c("fx", "fertility", "rate"))
   }
 
   # Drop Age as a key and nest results
@@ -57,7 +41,7 @@ total_fertility_rate <- function(.data, age, fertility) {
   # Compute tfr for each sub-tibble
   .data$tfr <- purrr::map_dbl(.data[["lst_data"]], tfr, fertility = fertility)
   .data$lst_data <- NULL
-  # Sort and rearrange results
+
   return(.data)
 }
 

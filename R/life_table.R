@@ -34,39 +34,17 @@ life_table <- function(.data, age, sex, mortality) {
   if (!missing(age)) {
     age <- {{ age }}
   } else {
-    age <- keys[tolower(keys) == "age"]
-    if (length(age) == 0L) {
-      age <- keys[tolower(keys) == "age_group"]
-    }
-    if (length(age) == 0L) {
-      stop("No age variable found")
-    }
+    age <- find_key(.data, c("age", "age_group"))
   }
   if (!missing(sex)) {
     sex <- {{ sex }}
   } else {
-    sex <- keys[tolower(keys) == "sex"]
-    if (length(sex) == 0L) {
-      sex <- keys[tolower(keys) == "group"]
-    }
-    if (length(sex) == 0L) {
-      sex <- "None"
-    }
+    sex <- find_key(.data, c("sex", "group"), return_error=FALSE)
   }
   if (!missing(mortality)) {
     mortality <- {{ mortality }}
   } else {
-    measures <- tsibble::measured_vars(.data)
-    mortality <- measures[startsWith(tolower(measures), "mx")][1]
-    if (is.na(mortality)) {
-      mortality <- measures[startsWith(tolower(measures), "mortality")][1]
-    }
-    if (is.na(mortality)) {
-      mortality <- measures[startsWith(tolower(measures), "rate")][1]
-    }
-    if (is.na(mortality)) {
-      stop("Mortality rates column not found")
-    }
+    mortality <- find_measure(.data, c("mx", "mortality", "rate"))
   }
 
   # Drop Age as a key and nest results
@@ -81,12 +59,9 @@ life_table <- function(.data, age, sex, mortality) {
   }
   .data$lt <- out
   .data$lst_data <- NULL
-  out <- tibble::as_tibble(.data) |>
+  tibble::as_tibble(.data) |>
     tidyr::unnest(cols = lt) |>
     tsibble::as_tsibble(index = index, key = keys)
-  # Sort and rearrange results
-  arrange(out, !!!rlang::syms(c(keys_noage, index, age))) |>
-    select(!!index, !!age, !!keys_noage, tidyselect::everything())
 }
 
 # This is a revised version of the demography::lt function.
