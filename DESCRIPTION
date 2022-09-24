@@ -10,6 +10,7 @@ Description: Functions for analysing demographic data based on tools
 Authors@R: person("Rob", "Hyndman", email="Rob.Hyndman@monash.edu", role=c("aut", "cre", "cph"), comment = c(ORCID = "0000-0002-2140-5352"))
 Depends: R (>= 3.6.0)
 Imports:
+  curl,
   dplyr,
   HMDHFDplus,
   magrittr,
@@ -25,4 +26,4 @@ Suggests:
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.2.1

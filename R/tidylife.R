@@ -1,3 +1,4 @@
+#' @keywords internal
 #' @importFrom dplyr mutate rename select arrange
 #' @importFrom magrittr %>%
 #' @importFrom purrr map2
@@ -7,8 +8,10 @@
 #' @importFrom tidyr gather spread
 #' @importFrom tidyselect everything
 #' @importFrom tsibble as_tsibble
-#'
-NULL
+#' @importFrom curl new_handle handle_setopt
+"_PACKAGE"
+
+.hmd <- new.env(parent = emptyenv())
 
 #' @export
 magrittr::`%>%`
