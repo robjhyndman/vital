@@ -1,7 +1,6 @@
 #' @keywords internal
 #' @importFrom dplyr mutate rename select arrange
-#' @importFrom magrittr %>%
-#' @importFrom purrr map2
+#' @importFrom purrr map2 map_dfr
 #' @importFrom rlang syms
 #' @importFrom stats na.omit
 #' @importFrom tibble as_tibble
@@ -13,7 +12,5 @@
 
 .hmd <- new.env(parent = emptyenv())
 
-#' @export
-magrittr::`%>%`
 #' @export
 tsibble::as_tsibble

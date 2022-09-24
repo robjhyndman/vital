@@ -22,13 +22,13 @@ as_tsibble.demogdata <- function(x, ..., validate = TRUE) {
   if (rates_included) {
     rates <- NULL
     for (i in seq_along(x$rate)) {
-      tmp <- x$rate[[i]] %>%
-        tibble::as_tibble() %>%
+      tmp <- x$rate[[i]] |>
+        tibble::as_tibble() |>
         dplyr::mutate(
           AgeGroup = rownames(x$rate[[i]]),
           Age = x$age
-        ) %>%
-        tidyr::gather(key = "Year", value = "Rates", -AgeGroup, -Age) %>%
+        ) |>
+        tidyr::gather(key = "Year", value = "Rates", -AgeGroup, -Age) |>
         dplyr::mutate(
           Year = as.numeric(Year),
           Group = names(x$rate)[i]
@@ -48,13 +48,13 @@ as_tsibble.demogdata <- function(x, ..., validate = TRUE) {
   if (pop_included) {
     pop <- NULL
     for (i in seq_along(x$pop)) {
-      tmp <- x$pop[[i]] %>%
-        as_tibble() %>%
+      tmp <- x$pop[[i]] |>
+        as_tibble() |>
         dplyr::mutate(
           AgeGroup = rownames(x$pop[[i]]),
           Age = x$age
-        ) %>%
-        tidyr::gather(key = "Year", value = "Exposure", -AgeGroup, -Age) %>%
+        ) |>
+        tidyr::gather(key = "Year", value = "Exposure", -AgeGroup, -Age) |>
         dplyr::mutate(
           Year = as.numeric(Year),
           Group = names(x$pop)[i]
@@ -65,18 +65,18 @@ as_tsibble.demogdata <- function(x, ..., validate = TRUE) {
   if (rates_included & pop_included) {
     output <- dplyr::full_join(rates, pop, by = c("Group", "Year", "AgeGroup", "Age"))
     if ("Mortality" %in% colnames(output) & "Exposure" %in% colnames(output)) {
-      output <- output %>% dplyr::mutate(Deaths = Exposure * Mortality)
+      output <- output |> dplyr::mutate(Deaths = Exposure * Mortality)
     } else if ("Fertility" %in% colnames(output) & "Exposure" %in% colnames(output)) {
-      output <- output %>% dplyr::mutate(Births = Exposure * Fertility / 1000)
+      output <- output |> dplyr::mutate(Births = Exposure * Fertility / 1000)
     }
   }
-  output <- output %>%
-    dplyr::select(Year, AgeGroup, Age, Group, dplyr::everything()) %>%
+  output <- output |>
+    dplyr::select(Year, AgeGroup, Age, Group, dplyr::everything()) |>
     dplyr::mutate(
       Age = as.integer(Age),
       Year = as.integer(Year)
-    ) %>%
-    tsibble::as_tsibble(index = Year, key = c(AgeGroup, Age, Group), validate = validate) %>%
+    ) |>
+    tsibble::as_tsibble(index = Year, key = c(AgeGroup, Age, Group), validate = validate) |>
     dplyr::arrange(Group, Year, Age)
     return(output)
 }

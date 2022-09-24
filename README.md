@@ -29,7 +29,7 @@ library(tidylife)
 ```
 
 ``` r
-demography::fr.mort %>% as_tsibble()
+demography::fr.mort |> as_tsibble()
 #> # A tsibble: 63,603 x 7 [1Y]
 #> # Key:       AgeGroup, Age, Group [333]
 #>     Year AgeGroup   Age Group  Mortality Exposure Deaths

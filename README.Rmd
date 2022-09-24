@@ -37,6 +37,5 @@ library(tidylife)
 ```
 
 ```{r fr.mort, message=FALSE}
-demography::fr.mort %>% as_tsibble()
+demography::fr.mort |> as_tsibble()
 ```
-
