@@ -9,14 +9,14 @@ life_table(.data, age, sex, mortality)
 \arguments{
 \item{.data}{A tsibble including an age variable and a variable containing mortality rates.}
 
-\item{age}{Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` will be used (not case sensitive).}
+\item{age}{Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` or `Age_group` will be used (not case sensitive).}
 
 \item{sex}{Optional variable in `.data` containing sex information. If omitted, the variable with name `Sex` or `Group` will be used (not case sensitive).}
 
-\item{mortality}{Variable in `.data` containing Mortality rates (mx). If omitted, the variable with name  `Mortality` or `Rate` will be used (not case sensitive).}
+\item{mortality}{Variable in `.data` containing Mortality rates (mx). If omitted, the variable with name  `mx`, `Mortality` or `Rate` will be used (not case sensitive).}
 }
 \value{
-A tsibble object.
+A tsibble object containing the index, keys, and the new life table variables `mx`, `qx`, `lx`, `dx`, `Lx`, `Tx` and `ex`.
 }
 \description{
 All available years and ages are included in the tables.
@@ -26,8 +26,8 @@ Warning: the code has only been tested for data based on single-year age groups.
 \examples{
 # Compute Australia life table for females in 2003
 library(dplyr)
-aus_mortality \%>\%
-  filter(Code=="AUS", Sex=="female", Year==2003) \%>\%
+aus_mortality |>
+  filter(Code == "AUS", Sex == "female", Year == 2003) |>
   life_table()
 }
 \references{

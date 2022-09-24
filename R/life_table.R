@@ -5,11 +5,11 @@
 #' Warning: the code has only been tested for data based on single-year age groups.
 #'
 #' @param .data A tsibble including an age variable and a variable containing mortality rates.
-#' @param age Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` will be used (not case sensitive).
+#' @param age Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` or `Age_group` will be used (not case sensitive).
 #' @param sex Optional variable in `.data` containing sex information. If omitted, the variable with name `Sex` or `Group` will be used (not case sensitive).
-#' @param mortality Variable in `.data` containing Mortality rates (mx). If omitted, the variable with name  `Mortality` or `Rate` will be used (not case sensitive).
+#' @param mortality Variable in `.data` containing Mortality rates (mx). If omitted, the variable with name  `mx`, `Mortality` or `Rate` will be used (not case sensitive).
 #'
-#' @return A tsibble object.
+#' @return A tsibble object containing the index, keys, and the new life table variables `mx`, `qx`, `lx`, `dx`, `Lx`, `Tx` and `ex`.
 #' @rdname life_table
 #'
 #' @references Chiang CL. (1984) \emph{The life table and its applications}. Robert E Krieger Publishing Company: Malabar.
@@ -19,8 +19,8 @@
 #' @examples
 #' # Compute Australia life table for females in 2003
 #' library(dplyr)
-#' aus_mortality %>%
-#'   filter(Code=="AUS", Sex=="female", Year==2003) %>%
+#' aus_mortality |>
+#'   filter(Code == "AUS", Sex == "female", Year == 2003) |>
 #'   life_table()
 #' @export
 
@@ -31,46 +31,61 @@ life_table <- function(.data, age, sex, mortality) {
   keys <- tsibble::key_vars(.data)
 
   # Find age and mortality columns
-  if(!missing(age))
-    age <- {{age}}
-  else
+  if (!missing(age)) {
+    age <- {{ age }}
+  } else {
     age <- keys[tolower(keys) == "age"]
-  if(!missing(sex))
-    sex <- {{sex}}
-  else {
-    sex <- keys[tolower(keys) == "sex"]
-    if(length(sex)==0L) {
-      sex <- keys[tolower(keys) == "group"]
-      if(length(sex)==0L)
-      sex = "None"
+    if (length(age) == 0L) {
+      age <- keys[tolower(keys) == "age_group"]
+    }
+    if (length(age) == 0L) {
+      stop("No age variable found")
     }
   }
-  if(!missing(mortality))
-    mortality <- {{mortality}}
-  else {
+  if (!missing(sex)) {
+    sex <- {{ sex }}
+  } else {
+    sex <- keys[tolower(keys) == "sex"]
+    if (length(sex) == 0L) {
+      sex <- keys[tolower(keys) == "group"]
+    }
+    if (length(sex) == 0L) {
+      sex <- "None"
+    }
+  }
+  if (!missing(mortality)) {
+    mortality <- {{ mortality }}
+  } else {
     measures <- tsibble::measured_vars(.data)
-    mortality <- measures[startsWith(tolower(measures),"mortality")][1]
-    if(length(mortality)==0L) {
-      mortality <- measures[startsWith(tolower(measures),"rate")][1]
-      if(length(mortality)==0L)
-        stop("Mortality rates column not found")
+    mortality <- measures[startsWith(tolower(measures), "mx")][1]
+    if (is.na(mortality)) {
+      mortality <- measures[startsWith(tolower(measures), "mortality")][1]
+    }
+    if (is.na(mortality)) {
+      mortality <- measures[startsWith(tolower(measures), "rate")][1]
+    }
+    if (is.na(mortality)) {
+      stop("Mortality rates column not found")
     }
   }
 
   # Drop Age as a key and nest results
   keys_noage <- keys[keys != age]
-  .data <- tidyr::nest(.data, -index, -!!keys_noage, .key="lst_data")
+  .data <- tidyr::nest(.data, lst_data = c(-index, -!!keys_noage))
 
   # Create life table for each sub-tibble and row-bind them.
-  if(sex=="None")
-    out <- purrr::map2(.data[['lst_data']], "None", lt, age=age, mortality=mortality)
-  else
-    out <- purrr::map2(.data[['lst_data']], .data[[sex]], lt, age=age, mortality=mortality)
+  if (sex == "None") {
+    out <- purrr::map2(.data[["lst_data"]], "None", lt, age = age, mortality = mortality)
+  } else {
+    out <- purrr::map2(.data[["lst_data"]], .data[[sex]], lt, age = age, mortality = mortality)
+  }
   .data$lt <- out
   .data$lst_data <- NULL
-  out <- tibble::as_tibble(.data) %>% tidyr::unnest() %>% tsibble::as_tsibble(index=index, key=keys)
+  out <- tibble::as_tibble(.data) |>
+    tidyr::unnest(cols = lt) |>
+    tsibble::as_tsibble(index = index, key = keys)
   # Sort and rearrange results
-  arrange(out, !!!rlang::syms(c(keys_noage, index, age))) %>%
+  arrange(out, !!!rlang::syms(c(keys_noage, index, age))) |>
     select(!!index, !!age, !!keys_noage, tidyselect::everything())
 }
 
@@ -78,15 +93,14 @@ life_table <- function(.data, age, sex, mortality) {
 
 lt <- function(dt, sex, age, mortality) {
   # Order by age
-  dt <- dt[order(dt[[age]]),]
+  dt <- dt[order(dt[[age]]), ]
 
   # Grab information from tibble
   mx <- dt[[mortality]]
   sex <- sex[1]
-  ifelse(sex=="None", "total", tolower(dt[[sex]][1]))
   ages <- sort(round(unique(dt[[age]])))
   startage <- ages[1]
-  agegroup <- ages[2]-ages[1]
+  agegroup <- ages[2] - ages[1]
 
   # Check we can proceed
   if (agegroup == 5L & startage > 0L & startage < 5L) {
@@ -123,8 +137,7 @@ lt <- function(dt, sex, age, mortality) {
     } else {
       ax <- Inf
     }
-  }
-  else if (agegroup == 5L & startage == 0) {
+  } else if (agegroup == 5L & startage == 0) {
     a1 <- dplyr::case_when(
       sex == "female" ~ 1.361 + (mx[1] < 0.107) * (0.161 - 1.518 * mx[1]),
       sex == "male" ~ 1.352 + (mx[1] < 0.107) * (0.299 - 2.816 * mx[1]),
@@ -142,8 +155,7 @@ lt <- function(dt, sex, age, mortality) {
   if (nn > 1) {
     lx <- c(1, cumprod(1 - qx[1:(nn - 1)]))
     dx <- -diff(c(lx, 0))
-  }
-  else {
+  } else {
     lx <- dx <- 1
   }
   # Now Lx, Tx and ex
@@ -166,7 +178,7 @@ lt <- function(dt, sex, age, mortality) {
   #   )
   # }
   # Return the results in a tibble
-  result <- tibble::tibble(mx = mx, qx = qx, lx = lx, dx = dx, Lx = Lx, Tx = Tx, ex = ex) %>%
+  result <- tibble::tibble(mx = mx, qx = qx, lx = lx, dx = dx, Lx = Lx, Tx = Tx, ex = ex) |>
     # Omitting  rx = rx, nx = nx, ax = ax, Do we need them?
     mutate(Age = dt[[age]])
 
