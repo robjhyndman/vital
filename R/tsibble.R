@@ -78,5 +78,5 @@ as_tsibble.demogdata <- function(x, ..., validate = TRUE) {
     ) |>
     tsibble::as_tsibble(index = Year, key = c(AgeGroup, Age, Group), validate = validate) |>
     dplyr::arrange(Group, Year, Age)
-    return(output)
+  return(output)
 }

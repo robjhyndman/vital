@@ -28,26 +28,30 @@
 #' @export
 
 read_hmd <- function(country) {
-
-  stats=c("birth","death","exposure_to_risk",
-          "population","death_rate")
+  stats <- c(
+    "birth", "death", "exposure_to_risk",
+    "population", "death_rate"
+  )
 
   # Read data
-  df <- hmd_data(country = country,
-                 stats=c("birth","death","exposure_to_risk",
-                         "population","death_rate"),
-                 sex_format = "long"
+  df <- hmd_data(
+    country = country,
+    stats = c(
+      "birth", "death", "exposure_to_risk",
+      "population", "death_rate"
+    ),
+    sex_format = "long"
   )
 
   # If population data, drop duplicates
-#  if(type=="Population") {
-#    df <- df[,!grepl("2", colnames(df))]
-#    colnames(df) <- gsub("[[:digit:]]+", "", colnames(df))
-#  }
+  #  if(type=="Population") {
+  #    df <- df[,!grepl("2", colnames(df))]
+  #    colnames(df) <- gsub("[[:digit:]]+", "", colnames(df))
+  #  }
 
   # Turn it into a tsibble
-  key_var <- stats::na.omit(colnames(df)[match(c("Age","Sex"), colnames(df))])
-  df <- as_tsibble(df, index=Year, key=!!key_var)
+  key_var <- stats::na.omit(colnames(df)[match(c("Age", "Sex"), colnames(df))])
+  df <- as_tsibble(df, index = Year, key = !!key_var)
 
   # Reorder columns
   vars <- stats::na.omit(colnames(df)[match(c("Year", "Age", "OpenInterval", "Sex"), colnames(df))])
@@ -55,4 +59,3 @@ read_hmd <- function(country) {
 
   return(df)
 }
-

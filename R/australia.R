@@ -23,9 +23,10 @@
 #' library(ggplot2)
 #' aus_fertility
 #' aus_fertility |>
-#'   ggplot(aes(x=Age, y=Fertility, color = Year, group=Year)) +
+#'   ggplot(aes(x = Age, y = Fertility, color = Year, group = Year)) +
 #'   geom_line() +
-#'   xlab("Age") + ylab("Fertility rate") +
+#'   xlab("Age") +
+#'   ylab("Fertility rate") +
 #'   scale_color_gradientn(colours = rainbow(10))
 #'
 NULL

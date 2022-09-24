@@ -20,14 +20,14 @@
 #' # Compute Australia life expectancy for females over time
 #' library(dplyr)
 #' aus_mortality |>
-#'   filter(Code=="AUS", Sex=="female") |>
+#'   filter(Code == "AUS", Sex == "female") |>
 #'   life_expectancy()
 #' @export
 
-life_expectancy <- function(.data, from_age=0, age, sex, mortality) {
-  life_table(.data=.data, age=age, sex=sex, mortality = mortality) |>
+life_expectancy <- function(.data, from_age = 0, age, sex, mortality) {
+  life_table(.data = .data, age = age, sex = sex, mortality = mortality) |>
     # Keep only relevant ages
     filter(Age %in% from_age) |>
     # Keep only ex column plus index and keys
-    dplyr::select(-mx,-qx,-lx,-dx,-Lx,-Tx)
+    dplyr::select(-mx, -qx, -lx, -dx, -Lx, -Tx)
 }
