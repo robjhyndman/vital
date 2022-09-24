@@ -1,57 +1,49 @@
-#' Read text file from HMD
+#' Read data from the Human Mortality Database
 #'
-#' Read text files from the Human Mortality Database (\url{http://mortality.org}).
-#' It currently handles births, deaths, population, exposure, death rates,
-#' life tables and life expectancy files.
-#' It will not work with cohort data or lexis triangles.
+#' Download and merge data from the Human Mortality Database (\url{http://mortality.org}).
+#' It returns births, deaths, population, exposure, and death rates for single
+#' years of age (i.e., the 1x1 files). For other types of data extraction,
+#' use the `HMDHFDplus` package.
 #'
-#' @param file A path to a file, or a connection.
+#' @details Before running this function,
+#' you need to register at the "former" HMD website (https://former.mortality.org),
+#' and use \code{\link{hmd_session}()} to register your username and password.
+#' Usernames and passwords for the new HMD site (https://mortality.org) will not
+#' work. This is a temporary patch until an API is released for the new site.
 #'
-#' @return A tsibble with an annual index and (possibly) Age and Sex keys.
+#' @param country Character string containing the country code. It may be
+#' a named or unnamed character vector. If the vector is named, the name is used
+#' as the label.
+#'
+#' @author Emi Tanaka and Rob Hyndman
+#'
+#' @return A tsibble with an annual index, and Age, Sex and Country keys.
 #'
 #' @seealso \code{\link[HMDHFDplus]{readHMD}}.
 #'
 #' @examples
 #' \dontrun{
-#' aus <- read_hmd("AUS_Mx_1x1.txt")
+#' aus <- read_hmd("AUS")
 #' }
 #' @export
 
-read_hmd <- function(file) {
-  # Type of data from first line of file
-  firstline <- scan(file, nlines=1, what="character", sep=",", strip.white=TRUE)
-  if(any(grepl("Births",firstline)))
-    type <- "Births"
-  else if(any(grepl("Deaths",firstline)))
-    type <- "Deaths"
-  else if(any(grepl("Population",firstline)))
-    type <- "Population"
-  else if(any(grepl("Exposure",firstline)))
-    type <- "Exposure"
-  else if(any(grepl("Death rates",firstline)))
-    type <- "Mortality"
-  else if(any(grepl("Life tables",firstline)))
-    type <- "Life_tables"
-  else if(any(grepl("Life expectancy",firstline)))
-    type <- "Life_expectancy"
-  else
-    stop("Unknown file type")
+read_hmd <- function(country) {
 
-  # Avoid CRAN check errors
-  Male <- Female <- Total <- Sex <- Year <- NULL
+  stats=c("birth","death","exposure_to_risk",
+          "population","death_rate")
 
   # Read data
-  df <- HMDHFDplus::readHMD(file)
+  df <- hmd_data(country = country,
+                 stats=c("birth","death","exposure_to_risk",
+                         "population","death_rate"),
+                 sex_format = "long"
+  )
 
   # If population data, drop duplicates
-  if(type=="Population") {
-    df <- df[,!grepl("2", colnames(df))]
-    colnames(df) <- gsub("[[:digit:]]+", "", colnames(df))
-  }
-
-  # pivot long if contains sexes
-  if("Female" %in% colnames(df))
-    df <- gather(df, Male, Female, Total, key=Sex, value={{type}})
+#  if(type=="Population") {
+#    df <- df[,!grepl("2", colnames(df))]
+#    colnames(df) <- gsub("[[:digit:]]+", "", colnames(df))
+#  }
 
   # Turn it into a tsibble
   key_var <- stats::na.omit(colnames(df)[match(c("Age","Sex"), colnames(df))])

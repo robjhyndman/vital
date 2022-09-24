@@ -2,27 +2,39 @@
 % Please edit documentation in R/hmd.R
 \name{read_hmd}
 \alias{read_hmd}
-\title{Read text file from HMD}
+\title{Read data from the Human Mortality Database}
 \usage{
-read_hmd(file)
+read_hmd(country)
 }
 \arguments{
-\item{file}{A path to a file, or a connection.}
+\item{country}{Character string containing the country code. It may be
+a named or unnamed character vector. If the vector is named, the name is used
+as the label.}
 }
 \value{
-A tsibble with an annual index and (possibly) Age and Sex keys.
+A tsibble with an annual index, and Age, Sex and Country keys.
 }
 \description{
-Read text files from the Human Mortality Database (\url{http://mortality.org}).
-It currently handles births, deaths, population, exposure, death rates,
-life tables and life expectancy files.
-It will not work with cohort data or lexis triangles.
+Download and merge data from the Human Mortality Database (\url{http://mortality.org}).
+It returns births, deaths, population, exposure, and death rates for single
+years of age (i.e., the 1x1 files). For other types of data extraction,
+use the `HMDHFDplus` package.
+}
+\details{
+Before running this function,
+you need to register at the "former" HMD website (https://former.mortality.org),
+and use \code{\link{hmd_session}()} to register your username and password.
+Usernames and passwords for the new HMD site (https://mortality.org) will not
+work. This is a temporary patch until an API is released for the new site.
 }
 \examples{
 \dontrun{
-aus <- read_hmd("AUS_Mx_1x1.txt")
+aus <- read_hmd("AUS")
 }
 }
 \seealso{
 \code{\link[HMDHFDplus]{readHMD}}.
+}
+\author{
+Emi Tanaka and Rob Hyndman
 }
