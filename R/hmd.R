@@ -39,8 +39,7 @@ read_hmd <- function(country) {
     stats = c(
       "birth", "death", "exposure_to_risk",
       "population", "death_rate"
-    ),
-    sex_format = "long"
+    )
   )
 
   # If population data, drop duplicates
@@ -54,8 +53,13 @@ read_hmd <- function(country) {
   df <- as_tsibble(df, index = Year, key = !!key_var)
 
   # Reorder columns
-  vars <- stats::na.omit(colnames(df)[match(c("Year", "Age", "OpenInterval", "Sex"), colnames(df))])
+  vars <- stats::na.omit(colnames(df)[match(
+    c("Year", "Age", "OpenInterval", "Sex"),
+    colnames(df)
+  )])
   df <- select(df, !!vars, tidyselect::everything())
 
   return(df)
 }
+
+utils::globalVariables("Year")
