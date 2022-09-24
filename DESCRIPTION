@@ -19,7 +19,8 @@ Imports:
   tibble,
   tidyr,
   tidyselect,
-  tsibble
+  tsibble,
+  vctrs
 Suggests:
     demography,
     testthat (>= 2.1.0)
