@@ -12,8 +12,6 @@ Depends: R (>= 3.6.0)
 Imports:
   curl,
   dplyr,
-  HMDHFDplus,
-  magrittr,
   purrr,
   rlang,
   tibble,
@@ -23,6 +21,7 @@ Imports:
   vctrs
 Suggests:
     demography,
+    ggplot2,
     testthat (>= 2.1.0)
 License: GPL-3
 Encoding: UTF-8

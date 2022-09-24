@@ -33,9 +33,8 @@
 #' @keywords models
 #' @examples
 #' # Compute Australia life table for females in 2003
-#' library(dplyr)
 #' aus_mortality |>
-#'   filter(Code == "AUS", Sex == "female") |>
+#'   dplyr::filter(Code == "AUS", Sex == "female") |>
 #'   lee_carter()
 #' @export
 

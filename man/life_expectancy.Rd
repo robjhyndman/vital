@@ -25,9 +25,8 @@ Returns remaining life expectancy at a given age (0 by default).
 }
 \examples{
 # Compute Australia life expectancy for females over time
-library(dplyr)
 aus_mortality |>
-  filter(Code == "AUS", Sex == "female") |>
+  dplyr::filter(Code == "AUS", Sex == "female") |>
   life_expectancy()
 }
 \references{
