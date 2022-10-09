@@ -11,7 +11,6 @@
 #'
 #' @examples
 #' # Compute Australian total fertility rates over time
-#' library(dplyr)
 #' aus_fertility |>
 #'   total_fertility_rate()
 #' @export

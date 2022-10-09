@@ -22,7 +22,6 @@ given the fertility rate at each age of a woman's life.
 }
 \examples{
 # Compute Australian total fertility rates over time
-library(dplyr)
 aus_fertility |>
   total_fertility_rate()
 }
