@@ -7,6 +7,7 @@
 #' @importFrom tidyselect everything
 #' @importFrom tsibble as_tsibble
 #' @importFrom curl new_handle handle_setopt
+#' @importFrom grDevices rainbow
 #' @import rlang vctrs
 "_PACKAGE"
 

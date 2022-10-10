@@ -34,7 +34,7 @@ rainbow_plot <- function(.data, .vars = NULL, age) {
   } else if (purrr::possibly(purrr::compose(rlang::is_quosures, rlang::eval_tidy), FALSE)(.vars)) {
     .vars <- rlang::eval_tidy(.vars)
     .data <- tidyr::gather(dplyr::mutate(.data, !!!.vars), ".response",
-                     "value", !!!map(.vars, quo_name), factor_key = TRUE)
+                     "value", !!!purrr::map(.vars, quo_name), factor_key = TRUE)
     y <- sym("value")
   }
   else {
@@ -49,7 +49,7 @@ rainbow_plot <- function(.data, .vars = NULL, age) {
   if (!missing(age)) {
     age <- {{ age }}
   } else {
-    age <- tidylife:::find_key(.data, c("age", "age_group"))
+    age <- find_key(.data, c("age", "age_group"))
   }
   # Drop Age as a key and nest results
   kv <- kv[kv != age]
@@ -57,12 +57,12 @@ rainbow_plot <- function(.data, .vars = NULL, age) {
 
   aes_spec <- list(x = sym(age), y = y, color = sym(index), group = sym(index))
   p <- .data |>
-    ggplot(rlang::eval_tidy(expr(aes(!!!aes_spec)))) +
-    geom_line() +
-    xlab(age) +
-    scale_color_gradientn(colours = rainbow(10))
+    ggplot2::ggplot(rlang::eval_tidy(expr(ggplot2::aes(!!!aes_spec)))) +
+    ggplot2::geom_line() +
+    ggplot2::xlab(age) +
+    ggplot2::scale_color_gradientn(colours = rainbow(10))
   if (nk > 1) {
-    p <- p + facet_wrap(kv, scales = "free_y")
+    p <- p + ggplot2::facet_wrap(kv, scales = "free_y")
   }
   return(p)
 }
