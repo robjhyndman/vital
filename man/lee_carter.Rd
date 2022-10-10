@@ -38,7 +38,7 @@ Defaults are \dQuote{dxt} for \code{bms()} and \dQuote{dt} for
 \item{scale}{If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.}
 }
 \value{
-A tsibble object containing the index, keys, and ??
+A list containing various model objects.
 }
 \description{
 Lee-Carter model of mortality or fertility rates. \code{lee_carter} produces a
@@ -46,15 +46,14 @@ standard Lee-Carter model by default, although many other options are
 available.
 }
 \examples{
-# Compute Australia life table for females in 2003
-aus_mortality |>
+# Compute Lee-Carter model for Australian females
+aus_lca <- aus_mortality |>
   dplyr::filter(Code == "AUS", Sex == "female") |>
   lee_carter()
+aus_lca
+autoplot(aus_lca, "Lee Carter components for Australian females")
 }
 \references{
-Booth, H., Maindonald, J., and Smith, L. (2002) Applying Lee-Carter
-under conditions of variable mortality decline. \emph{Population Studies}, \bold{56}, 325-336.
-
 Lee, R.D., and Carter, L.R. (1992) Modeling and forecasting US mortality. \emph{Journal of
   the American Statistical Association}, \bold{87}, 659-671.
 }

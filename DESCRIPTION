@@ -13,6 +13,8 @@ Imports:
   curl,
   dplyr,
   purrr,
+  ggplot2,
+  patchwork,
   rlang,
   tibble,
   tidyr,
@@ -21,7 +23,6 @@ Imports:
   vctrs
 Suggests:
     demography,
-    ggplot2,
     testthat (>= 2.1.0)
 License: GPL-3
 Encoding: UTF-8

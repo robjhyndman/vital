@@ -20,22 +20,21 @@
 #'   \code{lca()}.
 #' @param scale If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.
 #'
-#' @return A tsibble object containing the index, keys, and ??
+#' @return A list containing various model objects.
 #'
-#' @references Booth, H., Maindonald, J., and Smith, L. (2002) Applying Lee-Carter
-#' under conditions of variable mortality decline. \emph{Population Studies}, \bold{56}, 325-336.
-#'
-#' Lee, R.D., and Carter, L.R. (1992) Modeling and forecasting US mortality. \emph{Journal of
+#' @references Lee, R.D., and Carter, L.R. (1992) Modeling and forecasting US mortality. \emph{Journal of
 #'   the American Statistical Association}, \bold{87}, 659-671.
 #'
 #' @author Rob J Hyndman.
 #'
 #' @keywords models
 #' @examples
-#' # Compute Australia life table for females in 2003
-#' aus_mortality |>
+#' # Compute Lee-Carter model for Australian females
+#' aus_lca <- aus_mortality |>
 #'   dplyr::filter(Code == "AUS", Sex == "female") |>
 #'   lee_carter()
+#' aus_lca
+#' autoplot(aus_lca, "Lee Carter components for Australian females")
 #' @export
 
 lee_carter <- function(.data, age, sex, rates, pop,
@@ -98,7 +97,9 @@ lee_carter <- function(.data, age, sex, rates, pop,
         select(-varprop, -adjust, -by_x) |>
         tidyr::unnest(by_t) |>
         as_tsibble(index=index, key = keys_noage),
-      call = match.call()
+      call = match.call(),
+      agevar = age,
+      timevar = as.character(index)
   ), class = "lca_model"))
 }
 
@@ -387,8 +388,29 @@ print.lca_model <- function(x, ... ) {
     cat("\n")
   }
 
+#' Plot of Lee-Carter model components
+#'
+#' Plot of ax, bx and kt from a Lee-Carter model.
+#'
+#' @param object output from \code{\link{lee_carter}}.
+#' @param ... Other arguments are passed to \code{\link[patchwork]{plot_annotation}}
 #' @export
 autoplot.lca_model <- function(object, ...) {
-  p1 <- feasts::autoplot(object$time, kt)
+  p1 <- object$time |>
+    ggplot(aes(x=object$time[[object$timevar]], y=kt)) +
+    geom_line() +
+    xlab(object$timevar)
+  p2 <- object$age |>
+    ggplot(aes(x=object$age[[object$agevar]], y=ax)) +
+    geom_line() +
+    xlab(object$agevar)
+  p3 <- object$age |>
+    ggplot(aes(x=object$age[[object$agevar]], y=bx)) +
+    geom_line() +
+    xlab(object$agevar)
 
+  patchwork::wrap_plots(p2, p3, patchwork::plot_spacer(), p1, ncol=2, nrow=2) +
+    patchwork::plot_annotation(...)
 }
+
+utils::globalVariables(c("kt","ax","bx","varprop","lst_data","by_x","by_t"))
