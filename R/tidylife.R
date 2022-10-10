@@ -1,5 +1,6 @@
 #' @keywords internal
 #' @importFrom dplyr mutate rename select arrange
+#' @importFrom ggplot2 ggplot aes geom_line
 #' @importFrom purrr map2 map_dfr
 #' @importFrom stats na.omit
 #' @importFrom tibble as_tibble

@@ -82,8 +82,24 @@ lee_carter <- function(.data, age, sex, rates, pop,
     age = age, rates = rates,
     pop = pop, adjust = adjust, scale = scale
   )
-  out$call <- match.call()
-  return(structure(out, class = "lca_model"))
+  final <- dplyr::select(.data, -lst_data)
+  final$by_x <- lapply(out, function(x){x$by_x})
+  final$by_t <- lapply(out, function(x){x$by_t})
+  final$varprop <- unlist(lapply(out, function(x){x$varprop}))
+  final$adjust <- unlist(lapply(out, function(x){x$adjust}))
+  # Split return object into three pieces
+  return(structure(list(
+      fit = final |>
+        select(-by_x, -by_t),
+      age = final |>
+        select(-varprop, -adjust, -by_t) |>
+        tidyr::unnest(by_x),
+      time = final |>
+        select(-varprop, -adjust, -by_x) |>
+        tidyr::unnest(by_t) |>
+        as_tsibble(index=index, key = keys_noage),
+      call = match.call()
+  ), class = "lca_model"))
 }
 
 # Based on demography::lca()
@@ -351,4 +367,28 @@ fill.zero <- function(x, method = "constant") {
   tt <- tt[!zeros]
   x <- stats::approx(tt, xx, 1:length(x), method = method, f = 0.5, rule = 2)
   return(x$y)
+}
+
+#' @export
+print.lca_model <- function(x, ... ) {
+    cat("Lee-Carter model\n")
+    #call <- deparse(x$call)
+    # Remove new lines
+    #call <- paste0(call, collapse="")
+    # Remove multiple spaces
+    #call <- gsub("\\s\\s+", " ", call)
+    #cat(paste("\nCall:", call, "\n"))
+    cat("\nFit:\n")
+    print(x$fit)
+    cat("\nAge components:\n")
+    print(x$age, n=5)
+    cat("\nTime components:\n")
+    print(x$time, n=5)
+    cat("\n")
+  }
+
+#' @export
+autoplot.lca_model <- function(object, ...) {
+  p1 <- feasts::autoplot(object$time, kt)
+
 }
