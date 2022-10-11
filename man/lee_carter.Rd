@@ -33,7 +33,7 @@ will search for a variable with one of the following names:
 Possibilities are \dQuote{dxt} (BMS method), \dQuote{dt} (Lee-Carter
 method), \dQuote{e0} (method based on life expectancy) and \dQuote{none}.
 Defaults are \dQuote{dxt} for \code{bms()} and \dQuote{dt} for
-\code{lca()}.}
+\code{lca()}. The Lee & Miller (2001) variant is obtained with `adjust = "e0"`.}
 
 \item{scale}{If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.}
 }
@@ -48,14 +48,17 @@ available.
 \examples{
 # Compute Lee-Carter model for Australian females
 aus_lca <- aus_mortality |>
-  dplyr::filter(Code == "AUS", Sex == "female") |>
+  dplyr::filter(Code == "AUS") |>
   lee_carter()
 aus_lca
 autoplot(aus_lca, "Lee Carter components for Australian females")
 }
 \references{
-Lee, R.D., and Carter, L.R. (1992) Modeling and forecasting US mortality. \emph{Journal of
-  the American Statistical Association}, \bold{87}, 659-671.
+Lee, R D, and Carter, L R(1992) Modeling and forecasting US mortality.
+\emph{Journal of the American Statistical Association}, \bold{87}, 659-671.
+
+Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
+  method for forecasting mortality. \emph{Demography}, \bold{38}(4), 537–549.
 }
 \author{
 Rob J Hyndman.

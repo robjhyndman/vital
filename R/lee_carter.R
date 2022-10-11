@@ -17,13 +17,15 @@
 #'   Possibilities are \dQuote{dxt} (BMS method), \dQuote{dt} (Lee-Carter
 #'   method), \dQuote{e0} (method based on life expectancy) and \dQuote{none}.
 #'   Defaults are \dQuote{dxt} for \code{bms()} and \dQuote{dt} for
-#'   \code{lca()}.
+#'   \code{lca()}. The Lee & Miller (2001) variant is obtained with `adjust = "e0"`.
 #' @param scale If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.
 #'
 #' @return A list containing various model objects.
 #'
-#' @references Lee, R.D., and Carter, L.R. (1992) Modeling and forecasting US mortality. \emph{Journal of
-#'   the American Statistical Association}, \bold{87}, 659-671.
+#' @references Lee, R D, and Carter, L R(1992) Modeling and forecasting US mortality.
+#' \emph{Journal of the American Statistical Association}, \bold{87}, 659-671.
+#' @references Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
+#'   method for forecasting mortality. \emph{Demography}, \bold{38}(4), 537–549.
 #'
 #' @author Rob J Hyndman.
 #'
@@ -31,7 +33,7 @@
 #' @examples
 #' # Compute Lee-Carter model for Australian females
 #' aus_lca <- aus_mortality |>
-#'   dplyr::filter(Code == "AUS", Sex == "female") |>
+#'   dplyr::filter(Code == "AUS") |>
 #'   lee_carter()
 #' aus_lca
 #' autoplot(aus_lca, "Lee Carter components for Australian females")
@@ -88,18 +90,18 @@ lee_carter <- function(.data, age, sex, rates, pop,
   final$adjust <- unlist(lapply(out, function(x){x$adjust}))
   # Split return object into three pieces
   return(structure(list(
-      fit = final |>
-        select(-by_x, -by_t),
-      age = final |>
-        select(-varprop, -adjust, -by_t) |>
-        tidyr::unnest(by_x),
-      time = final |>
-        select(-varprop, -adjust, -by_x) |>
-        tidyr::unnest(by_t) |>
-        as_tsibble(index=index, key = keys_noage),
-      call = match.call(),
-      agevar = age,
-      timevar = as.character(index)
+    fit = final |>
+      select(-by_x, -by_t),
+    age = final |>
+      select(-varprop, -adjust, -by_t) |>
+      tidyr::unnest(by_x),
+    time = final |>
+      select(-varprop, -adjust, -by_x) |>
+      tidyr::unnest(by_t) |>
+      as_tsibble(index = index, key = keys_noage),
+    call = match.call(),
+    agevar = age,
+    timevar = as.character(index)
   ), class = "lca_model"))
 }
 
@@ -371,22 +373,22 @@ fill.zero <- function(x, method = "constant") {
 }
 
 #' @export
-print.lca_model <- function(x, ... ) {
-    cat("Lee-Carter model\n")
-    #call <- deparse(x$call)
-    # Remove new lines
-    #call <- paste0(call, collapse="")
-    # Remove multiple spaces
-    #call <- gsub("\\s\\s+", " ", call)
-    #cat(paste("\nCall:", call, "\n"))
-    cat("\nFit:\n")
-    print(x$fit)
-    cat("\nAge components:\n")
-    print(x$age, n=5)
-    cat("\nTime components:\n")
-    print(x$time, n=5)
-    cat("\n")
-  }
+print.lca_model <- function(x, ...) {
+  cat("Lee-Carter model\n")
+  # call <- deparse(x$call)
+  # Remove new lines
+  # call <- paste0(call, collapse="")
+  # Remove multiple spaces
+  # call <- gsub("\\s\\s+", " ", call)
+  # cat(paste("\nCall:", call, "\n"))
+  cat("\nFit:\n")
+  print(x$fit)
+  cat("\nAge components:\n")
+  print(x$age, n = 5)
+  cat("\nTime components:\n")
+  print(x$time, n = 5)
+  cat("\n")
+}
 
 #' Plot of Lee-Carter model components
 #'
@@ -399,24 +401,26 @@ print.lca_model <- function(x, ... ) {
 autoplot.lca_model <- function(object, ...) {
   grid::grid.newpage()
   grid::pushViewport(grid::viewport(layout = grid::grid.layout(2, 2)))
-  p1 <- object$time |>
-    ggplot(aes(x=object$time[[object$timevar]], y=kt)) +
-    geom_line() +
-    xlab(object$timevar)
-  p2 <- object$age |>
-    ggplot(aes(x=object$age[[object$agevar]], y=ax)) +
-    geom_line() +
-    xlab(object$agevar)
-  p3 <- object$age |>
-    ggplot(aes(x=object$age[[object$agevar]], y=bx)) +
-    geom_line() +
-    xlab(object$agevar)
+  keys <- tsibble::key_vars(object$time)
+  p1 <- age_plot(object$age, ax, keys)
+  p2 <- age_plot(object$age, bx, keys)
+  p3 <- fabletools::autoplot(object$time, kt) +
+    ggplot2::xlab(tsibble::index_var(object$time))
 
-  structure(list(p2,p3,p1), class = c("life_components","gg"))
+  structure(list(p1, p2, p3), class = c("life_components", "gg"))
+}
+
+# Plot a variable against age by key
+age_plot <- function(object, .var, keys) {
+  # Convert age to time and use fabletools::autoplot.tbl_ts
+  names <- colnames(object)[!(colnames(object) %in% c(keys, deparse(substitute(.var))))]
+  age <- names[grep("age", names, ignore.case=TRUE)]
+  object_ts <- tsibble::as_tsibble(object, index=age, key = keys[keys != age])
+  fabletools::autoplot(object_ts, {{ .var }}) + ggplot2::xlab(age)
 }
 
 #' @export
-`+.life_components` <- function(e1, e2){
+`+.life_components` <- function(e1, e2) {
   e1[[1]] <- e1[[1]] + e2
   e1
 }
@@ -424,12 +428,15 @@ autoplot.lca_model <- function(object, ...) {
 #' @export
 print.life_components <- function(x, ...) {
   x <- lapply(x, ggplot2::ggplotGrob)
-  gt <- gtable::gtable(name = "life_components",
-                       heights = grid::unit(rep(1, 2), "null"),
-                       widths = grid::unit(rep(1, 2), "null"))
+  gt <- gtable::gtable(
+    name = "life_components",
+    heights = grid::unit(rep(1, 2), "null"),
+    widths = grid::unit(rep(1, 2), "null")
+  )
   gt <- gtable::gtable_add_grob(gt, x,
-      t = c(1, 1, 2), b = c(1, 1, 2), l = c(1, 2, 2), r = c(1, 2, 2),
-      z = seq_along(x), clip = "off")
+    t = c(1, 1, 2), b = c(1, 1, 2), l = c(1, 2, 2), r = c(1, 2, 2),
+    z = seq_along(x), clip = "off"
+  )
   grid.draw(gt)
 }
 
@@ -441,4 +448,4 @@ grid.draw.life_components <- function(x, recording = TRUE) {
   print(x)
 }
 
-utils::globalVariables(c("kt","ax","bx","varprop","lst_data","by_x","by_t"))
+utils::globalVariables(c("kt", "ax", "bx", "varprop", "lst_data", "by_x", "by_t"))
