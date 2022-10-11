@@ -393,9 +393,12 @@ print.lca_model <- function(x, ... ) {
 #' Plot of ax, bx and kt from a Lee-Carter model.
 #'
 #' @param object output from \code{\link{lee_carter}}.
-#' @param ... Other arguments are passed to \code{\link[patchwork]{plot_annotation}}
+#' @param ... Other arguments not used.
+#' @return A list of ggplot objects.
 #' @export
 autoplot.lca_model <- function(object, ...) {
+  grid::grid.newpage()
+  grid::pushViewport(grid::viewport(layout = grid::grid.layout(2, 2)))
   p1 <- object$time |>
     ggplot(aes(x=object$time[[object$timevar]], y=kt)) +
     geom_line() +
@@ -409,8 +412,33 @@ autoplot.lca_model <- function(object, ...) {
     geom_line() +
     xlab(object$agevar)
 
-  patchwork::wrap_plots(p2, p3, patchwork::plot_spacer(), p1, ncol=2, nrow=2) +
-    patchwork::plot_annotation(...)
+  structure(list(p2,p3,p1), class = c("life_components","gg"))
+}
+
+#' @export
+`+.life_components` <- function(e1, e2){
+  e1[[1]] <- e1[[1]] + e2
+  e1
+}
+
+#' @export
+print.life_components <- function(x, ...) {
+  x <- lapply(x, ggplot2::ggplotGrob)
+  gt <- gtable::gtable(name = "life_components",
+                       heights = grid::unit(rep(1, 2), "null"),
+                       widths = grid::unit(rep(1, 2), "null"))
+  gt <- gtable::gtable_add_grob(gt, x,
+      t = c(1, 1, 2), b = c(1, 1, 2), l = c(1, 2, 2), r = c(1, 2, 2),
+      z = seq_along(x), clip = "off")
+  grid.draw(gt)
+}
+
+
+#' @importFrom grid grid.draw
+#' @method grid.draw life_components
+#' @export
+grid.draw.life_components <- function(x, recording = TRUE) {
+  print(x)
 }
 
 utils::globalVariables(c("kt","ax","bx","varprop","lst_data","by_x","by_t"))

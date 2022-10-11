@@ -9,7 +9,10 @@
 \arguments{
 \item{object}{output from \code{\link{lee_carter}}.}
 
-\item{...}{Other arguments are passed to \code{\link[patchwork]{plot_annotation}}}
+\item{...}{Other arguments not used.}
+}
+\value{
+A list of ggplot objects.
 }
 \description{
 Plot of ax, bx and kt from a Lee-Carter model.

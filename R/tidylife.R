@@ -9,7 +9,6 @@
 #' @importFrom tsibble as_tsibble
 #' @importFrom curl new_handle handle_setopt
 #' @importFrom grDevices rainbow
-#' @importFrom patchwork plot_spacer plot_annotation wrap_plots
 #' @import rlang vctrs
 "_PACKAGE"
 
