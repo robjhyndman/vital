@@ -28,8 +28,12 @@ The data is disaggregated using four keys:
 The age group 100 also includes people who died aged older than 100.
 }
 \examples{
-
+library(ggplot2)
 aus_mortality
+aus_mortality |>
+  dplyr::filter(State=="Victoria", Sex != "total") |>
+  rainbow_plot(Exposure/1000) +
+  ylab("Population at 30 June (thousands)")
 
 }
 \keyword{datasets}

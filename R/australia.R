@@ -23,11 +23,8 @@
 #' library(ggplot2)
 #' aus_fertility
 #' aus_fertility |>
-#'   ggplot(aes(x = Age, y = Fertility, color = Year, group = Year)) +
-#'   geom_line() +
-#'   xlab("Age") +
-#'   ylab("Fertility rate") +
-#'   scale_color_gradientn(colours = rainbow(10))
+#'   rainbow_plot(Fertility) +
+#'   ylab("Fertility rate")
 #'
 NULL
 
@@ -56,7 +53,11 @@ NULL
 #' @format Time series of class `tsibble`
 #' @keywords datasets
 #' @examples
-#'
+#' library(ggplot2)
 #' aus_mortality
+#' aus_mortality |>
+#'   dplyr::filter(State=="Victoria", Sex != "total") |>
+#'   rainbow_plot(Exposure/1000) +
+#'   ylab("Population at 30 June (thousands)")
 #'
 NULL

@@ -62,7 +62,7 @@ rainbow_plot <- function(.data, .vars = NULL, age) {
     ggplot2::xlab(age) +
     ggplot2::scale_color_gradientn(colours = rainbow(10))
   if (nk > 1) {
-    p <- p + ggplot2::facet_wrap(kv, scales = "free_y")
+    p <- p + ggplot2::facet_wrap(kv)
   }
   return(p)
 }
