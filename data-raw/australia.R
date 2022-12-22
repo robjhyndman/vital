@@ -1,5 +1,6 @@
 library(tidyverse)
 library(tidylife)
+
 aus_fertility <- as_tsibble(addb::aus.fertility) |>
   as_tibble() |>
   select(-AgeGroup, -Group) |>

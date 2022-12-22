@@ -35,6 +35,9 @@ as_tsibble.demogdata <- function(x, ..., validate = TRUE) {
         )
       rates <- rbind(rates, tmp)
     }
+    # Assume Inf rates are due to 0/0
+    rates <- rates |>
+      mutate(Rates = if_else(Rates==Inf, NA_real_, Rates))
     if (x$type == "mortality") {
       rates <- dplyr::rename(rates, Mortality = Rates)
     } else if (x$type == "fertility") {
@@ -65,9 +68,17 @@ as_tsibble.demogdata <- function(x, ..., validate = TRUE) {
   if (rates_included & pop_included) {
     output <- dplyr::full_join(rates, pop, by = c("Group", "Year", "AgeGroup", "Age"))
     if ("Mortality" %in% colnames(output) & "Exposure" %in% colnames(output)) {
-      output <- output |> dplyr::mutate(Deaths = Exposure * Mortality)
+      output <- output |>
+        dplyr::mutate(
+          Deaths = if_else(is.na(Mortality), 0, Exposure * Mortality),
+          Mortality = if_else(is.na(Mortality) & Exposure > 0 & Deaths == 0, 0, Mortality)
+        )
     } else if ("Fertility" %in% colnames(output) & "Exposure" %in% colnames(output)) {
-      output <- output |> dplyr::mutate(Births = Exposure * Fertility / 1000)
+      output <- output |>
+        dplyr::mutate(
+          Births = if_else(is.na(Fertility), 0, Exposure * Fertility / 1000),
+          Fertility = if_else(is.na(Fertility) & Exposure > 0 & Births == 0, 0, Fertility)
+        )
     }
   }
   output <- output |>
