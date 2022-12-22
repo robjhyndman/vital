@@ -18,9 +18,8 @@
 #'
 #' @examples
 #' # Compute Australia life table for females in 2003
-#' library(dplyr)
 #' aus_mortality |>
-#'   filter(Code == "AUS", Sex == "female", Year == 2003) |>
+#'   dplyr::filter(Code == "AUS", Sex == "female", Year == 2003) |>
 #'   life_table()
 #' @export
 
