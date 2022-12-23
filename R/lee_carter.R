@@ -2,7 +2,7 @@
 #'
 #' Lee-Carter model of mortality or fertility rates. \code{lee_carter} produces a
 #' standard Lee-Carter model by default, although many other options are
-#' available.
+#' available. Missing rates are set to the geometric mean rate for the relevant age.
 #'
 #' @param .data A tsibble including an age variable and a variable containing mortality or fertility rates.
 #' @param age Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` or `Age_group` will be used (not case sensitive).
@@ -42,6 +42,8 @@
 lee_carter <- function(.data, age, sex, rates, pop,
                        adjust = c("dt", "dxt", "e0", "none"),
                        scale = FALSE) {
+  adjust <- match.arg(adjust)
+
   # Index variable
   index <- tsibble::index_var(.data)
   # Keys including age
@@ -130,13 +132,19 @@ lca <- function(data, sex, age, rates, pop,
 
   pop <- t(pop)
   deaths <- pop * mx
+  deaths[is.na(deaths)] <- 0
 
   # Do SVD
   ax <- apply(logrates, 2, mean, na.rm = TRUE) # ax is mean of logrates by column
-  if (sum(ax < -1e9) > 0) {
-    stop(sprintf("Some %s rates are zero.\n Try reducing the maximum age or setting interpolate=TRUE.", data$type))
+  if (any(ax < -1e9) | any(is.na(ax))) {
+    # Estimate troublesome values with interpolation
+    ax[ax < -1e9] <- NA
+    ax <- stats::approx(seq_along(ax), ax, xout=seq_along(ax))$y
   }
   clogrates <- sweep(logrates, 2, ax) # central log rates (with ax subtracted) (dimensions m*n)
+  # Set missing central rates to 0 (effectively setting mx to ax)
+  clogrates[is.na(clogrates)] <- 0
+  # Take SVD
   svd.mx <- svd(clogrates)
 
   # Extract first principal component
@@ -145,7 +153,7 @@ lca <- function(data, sex, age, rates, pop,
   kt <- svd.mx$d[1] * svd.mx$u[, 1] * sumv
 
   # Adjust kt
-  ktadj <- rep(0, m)
+  ktadj <- kt
   logdeathsadj <- matrix(NA, n, m)
   z <- log(t(pop)) + ax
 
@@ -171,31 +179,33 @@ lca <- function(data, sex, age, rates, pop,
       Dt - sum(exp(p * bx + ax) * popi)
     }
     for (i in seq(m)) {
-      if (i == 1) {
-        guess <- kt[1]
-      } else {
-        guess <- mean(c(ktadj[i - 1], kt[i]))
+      sum_deaths <- sum(as.numeric(deaths[i, ]))
+      if(sum_deaths > 0) {
+        if (i == 1) {
+          guess <- kt[1]
+        } else {
+          guess <- mean(c(ktadj[i - 1], kt[i]))
+        }
+        ktadj[i] <- findroot(FUN, guess = guess, margin = 10 * ktse[i], ax = ax, bx = bx, popi = pop[i, ], Dt = sum_deaths)
       }
-      ktadj[i] <- findroot(FUN, guess = guess, margin = 3 * ktse[i], ax = ax, bx = bx, popi = pop[i, ], Dt = sum(as.numeric(deaths[i, ])))
       logdeathsadj[, i] <- z[, i] + bx * ktadj[i]
     }
   } else if (adjust == "e0") {
-    e0 <- apply(mx, 1, get.e0, agegroup = agegroup, sex = sex, startage = startage)
-    FUN2 <- function(p, e0i, ax, bx, agegroup, sex, startage) {
-      e0i - estimate.e0(p, ax, bx, agegroup, sex, startage)
+    e0 <- apply(mx, 1, get.e0, agegroup = ages, sex = sex, startage = startage)
+    FUN2 <- function(p, e0i, ax, bx, ages, sex, startage) {
+      e0i - estimate.e0(p, ax, bx, ages, sex, startage)
     }
     for (i in seq(m)) {
-      if (i == 1) {
-        guess <- kt[1]
-      } else {
-        guess <- mean(c(ktadj[i - 1], kt[i]))
+      if(!is.na(e0[i])) {
+        if (i == 1) {
+          guess <- kt[1]
+        } else {
+          guess <- mean(c(ktadj[i - 1], kt[i]))
+        }
+        ktadj[i] <- findroot(FUN2, guess = guess, margin = 10 * ktse[i], e0i = e0[i],
+          ax = ax, bx = bx, ages = ages, sex = sex, startage = startage)
       }
-      ktadj[i] <- findroot(FUN2, guess = guess, margin = 3 * ktse[i], e0i = e0[i], ax = ax, bx = bx, agegroup = agegroup, sex = sex, startage = startage)
     }
-  } else if (adjust == "none") {
-    ktadj <- kt
-  } else {
-    stop("Unknown adjustment method")
   }
 
   kt <- ktadj

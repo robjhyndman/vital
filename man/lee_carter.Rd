@@ -43,7 +43,7 @@ A list containing various model objects.
 \description{
 Lee-Carter model of mortality or fertility rates. \code{lee_carter} produces a
 standard Lee-Carter model by default, although many other options are
-available.
+available. Missing rates are set to the geometric mean rate for the relevant age.
 }
 \examples{
 # Compute Lee-Carter model for Australian females
