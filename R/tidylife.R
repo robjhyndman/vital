@@ -1,5 +1,5 @@
 #' @keywords internal
-#' @importFrom dplyr mutate rename select arrange
+#' @importFrom dplyr mutate rename select arrange if_else full_join
 #' @importFrom ggplot2 ggplot aes geom_line autoplot xlab
 #' @importFrom purrr map2 map_dfr
 #' @importFrom stats na.omit ts

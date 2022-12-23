@@ -24,12 +24,12 @@ as_tsibble.demogdata <- function(x, ..., validate = TRUE) {
     for (i in seq_along(x$rate)) {
       tmp <- x$rate[[i]] |>
         tibble::as_tibble() |>
-        dplyr::mutate(
+        mutate(
           AgeGroup = rownames(x$rate[[i]]),
           Age = x$age
         ) |>
         tidyr::gather(key = "Year", value = "Rates", -AgeGroup, -Age) |>
-        dplyr::mutate(
+        mutate(
           Year = as.numeric(Year),
           Group = names(x$rate)[i]
         )
@@ -39,11 +39,11 @@ as_tsibble.demogdata <- function(x, ..., validate = TRUE) {
     rates <- rates |>
       mutate(Rates = if_else(Rates==Inf, NA_real_, Rates))
     if (x$type == "mortality") {
-      rates <- dplyr::rename(rates, Mortality = Rates)
+      rates <- rename(rates, Mortality = Rates)
     } else if (x$type == "fertility") {
-      rates <- dplyr::rename(rates, Fertility = Rates)
+      rates <- rename(rates, Fertility = Rates)
     } else if (x$type == "migration") {
-      rates <- dplyr::rename(rates, NetMigration = Rates)
+      rates <- rename(rates, NetMigration = Rates)
     } else {
       stop("Unknown type")
     }
@@ -53,12 +53,12 @@ as_tsibble.demogdata <- function(x, ..., validate = TRUE) {
     for (i in seq_along(x$pop)) {
       tmp <- x$pop[[i]] |>
         as_tibble() |>
-        dplyr::mutate(
+        mutate(
           AgeGroup = rownames(x$pop[[i]]),
           Age = x$age
         ) |>
-        tidyr::gather(key = "Year", value = "Exposure", -AgeGroup, -Age) |>
-        dplyr::mutate(
+        gather(key = "Year", value = "Exposure", -AgeGroup, -Age) |>
+        mutate(
           Year = as.numeric(Year),
           Group = names(x$pop)[i]
         )
@@ -69,25 +69,27 @@ as_tsibble.demogdata <- function(x, ..., validate = TRUE) {
     output <- dplyr::full_join(rates, pop, by = c("Group", "Year", "AgeGroup", "Age"))
     if ("Mortality" %in% colnames(output) & "Exposure" %in% colnames(output)) {
       output <- output |>
-        dplyr::mutate(
+        mutate(
           Deaths = if_else(is.na(Mortality), 0, Exposure * Mortality),
           Mortality = if_else(is.na(Mortality) & Exposure > 0 & Deaths == 0, 0, Mortality)
         )
     } else if ("Fertility" %in% colnames(output) & "Exposure" %in% colnames(output)) {
       output <- output |>
-        dplyr::mutate(
+        mutate(
           Births = if_else(is.na(Fertility), 0, Exposure * Fertility / 1000),
           Fertility = if_else(is.na(Fertility) & Exposure > 0 & Births == 0, 0, Fertility)
         )
     }
   }
   output <- output |>
-    dplyr::select(Year, AgeGroup, Age, Group, dplyr::everything()) |>
-    dplyr::mutate(
+    select(Year, AgeGroup, Age, Group, dplyr::everything()) |>
+    mutate(
       Age = as.integer(Age),
       Year = as.integer(Year)
     ) |>
-    tsibble::as_tsibble(index = Year, key = c(AgeGroup, Age, Group), validate = validate) |>
-    dplyr::arrange(Group, Year, Age)
+    as_tsibble(index = Year, key = c(AgeGroup, Age, Group), validate = validate) |>
+    arrange(Group, Year, Age)
   return(output)
 }
+
+utils::globalVariables(c("Deaths","Births"))
