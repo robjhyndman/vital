@@ -27,10 +27,10 @@
 #'
 #' @author Rob J Hyndman
 #' @examples
-#' france.lca <- lee_carter(aus_mortality, adjust="e0")
-#' france.fcast <- forecast(france.lca, 50)
-#' plot(france.fcast)
-#' plot(france.fcast,'c')
+#' aus_lca <- lee_carter(aus_mortality, adjust="e0")
+#' aus.fcast <- forecast(aus_lca, 50)
+#' plot(aus.fcast)
+#' plot(aus.fcast.fcast,'c')
 #' @keywords models
 ##' @export
 forecast.lca_model <- function(object, h=50, se=c("innovdrift","innovonly"),

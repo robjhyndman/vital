@@ -5,6 +5,7 @@
 \alias{reexports}
 \alias{as_tsibble}
 \alias{autoplot}
+\alias{forecast}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -12,6 +13,8 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
+  \item{generics}{\code{\link[generics]{forecast}}}
+
   \item{ggplot2}{\code{\link[ggplot2]{autoplot}}}
 
   \item{tsibble}{\code{\link[tsibble:as-tsibble]{as_tsibble}}}

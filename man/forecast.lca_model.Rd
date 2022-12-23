@@ -4,7 +4,7 @@
 \alias{forecast.lca_model}
 \title{Forecasts using Lee-Carter method.}
 \usage{
-forecast.lca_model(
+\method{forecast}{lca_model}(
   object,
   h = 50,
   se = c("innovdrift", "innovonly"),
@@ -45,10 +45,10 @@ The forecast coefficients are then multiplied by bx to obtain a forecast
 demographic rate curve.
 }
 \examples{
-france.lca <- lee_carter(aus_mortality, adjust="e0")
-france.fcast <- forecast(france.lca, 50)
-plot(france.fcast)
-plot(france.fcast,'c')
+aus_lca <- lee_carter(aus_mortality, adjust="e0")
+aus.fcast <- forecast(aus_lca, 50)
+plot(aus.fcast)
+plot(aus.fcast.fcast,'c')
 }
 \author{
 Rob J Hyndman

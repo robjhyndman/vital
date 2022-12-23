@@ -17,3 +17,6 @@ tsibble::as_tsibble
 
 #' @export
 ggplot2::autoplot
+
+#' @export
+generics::forecast
