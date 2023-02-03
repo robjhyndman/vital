@@ -8,16 +8,22 @@ Description: Functions for analysing demographic data based on tools
     modelling; functional data modelling and stochastic population
     forecasting.
 Authors@R: person("Rob", "Hyndman", email="Rob.Hyndman@monash.edu", role=c("aut", "cre", "cph"), comment = c(ORCID = "0000-0002-2140-5352"))
-Depends: R (>= 3.6.0)
+Depends:
+  R (>= 3.6.0)
 Imports:
+  cli,
+  crayon,
   dplyr,
-  fabletools,
-  generics,
+  fable,
+  fabletools (>= 0.3.2.9000),
+  generics (>= 0.1.2),
   grid,
   ggplot2,
   gtable,
+  magrittr,
   purrr,
   rlang,
+  rstudioapi,
   tibble,
   tidyr,
   tidyselect,
@@ -26,7 +32,7 @@ Imports:
 Suggests:
   demography,
   mortality,
-  testthat (>= 2.1.0)
+  testthat (>= 3.0.0)
 Remotes:
   emitanaka/mortality
 License: GPL-3

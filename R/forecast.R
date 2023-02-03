@@ -27,86 +27,47 @@
 #'
 #' @author Rob J Hyndman
 #' @examples
-#' aus_lca <- lee_carter(aus_mortality, adjust="e0")
-#' aus.fcast <- forecast(aus_lca, 50)
-#' plot(aus.fcast)
-#' plot(aus.fcast.fcast,'c')
+#' library(dplyr)
+#' ausf_lca <- aus_mortality |>
+#'   filter(Sex == "female", State == "Australia") |>
+#'   lee_carter()
+#' ausf_fcast <- forecast(ausf_lca, 50)
+#' ausf_fcast |> filter(Age == 60) |> autoplot(aus_mortality)
 #' @keywords models
-##' @export
-forecast.lca_model <- function(object, h=50, se=c("innovdrift","innovonly"),
-                               jumpchoice=c("fit","actual"), level=80, ...) {
-  se <- match.arg(se)
-  jumpchoice <- match.arg(jumpchoice)
+#' @export
+forecast.lca_model <- function(object,
+      h = 50, se = c("innovdrift", "innovonly"),
+      jumpchoice = c("fit", "actual"), level = 80, ...) {
 
-  # Section 1 Read in data from object
-  jumpyear <- max(object$year)
-  nyears <- length(object$year)
-  nages <- length(object$age)
+  # Forecast all kt series using random walks with drift terms
+  fc <- object$time |>
+    fabletools::model(rw=fable::RW(kt ~ drift())) |>
+    forecast(h = h)
 
-  # Find jumprates
-  if(jumpchoice=="actual")
-    jumprates <- object[[4]][,nyears]
-  else if(jumpchoice=="fit")
-    jumprates <- exp(object$ax + object$bx*object$kt[nyears])
-  else
-    stop(paste("Unknown jump choice:",jumpchoice))
-  object$kt <- object$kt - object$kt[nyears]
-
-  # Time series estimation of kt as Random walk with drift
-  fit <- forecast::rwf(object$kt, drift=TRUE)
-  kt.drift <- fit$model$par$drift
-  sec <- fit$model$par$drift.se
-  see <- sqrt(fit$model$sigma2)
-
-  # Project kt
-  x <- 1:h
-  zval <- stats::qnorm(0.5 + 0.005*level)
-  kt.forecast <- object$kt[nyears] + (x * kt.drift)
-
-  # Calculate standard errors of forecast kt
-  if (se=="innovdrift")
-    kt.stderr <- sqrt(x*(see^2) + (x*sec)^2)
-  else if(se=="innovonly")
-    kt.stderr <- sqrt(x*(see^2))
-  kt.lo.forecast <- kt.forecast - (zval*kt.stderr)
-  kt.hi.forecast <- kt.forecast + (zval*kt.stderr)
-  kt.f <- data.frame(kt.forecast,kt.lo.forecast,kt.hi.forecast)
-  names(kt.f) <- c("kt forecast","kt lower","kt upper")
-  deltat <- object$year[2] - object$year[1]
-  kt.f <- ts(kt.f,start=object$year[nyears]+deltat,deltat=deltat)
-
-  # Calculate expected life and mx forecasts
-  e0.forecast <- rep(0,h)
-  mx.forecast <- matrix(0,nrow=nages,ncol=h)
-  colnames(mx.forecast) <- seq(h)
-  rownames(mx.forecast) <- object$age
-  mx.lo.forecast <- mx.hi.forecast <- mx.forecast
-  logjumprates <- log(jumprates)
-  series <- names(object)[4]
-  agegroup <- object$age[4]-object$age[3]
-  for (cnt in 1:h)
-  {
-    mx.forecast[,cnt] <- fitmx(kt.f[cnt,1], logjumprates, object$bx)
-    mx.lo.forecast[,cnt] <- fitmx(kt.f[cnt,2], logjumprates, object$bx)
-    mx.hi.forecast[,cnt] <- fitmx(kt.f[cnt,3], logjumprates, object$bx)
-    e0.forecast[cnt] <- get.e0(mx.forecast[,cnt],agegroup,series,startage=min(object$age))
-  }
-  kt.f <- data.frame(kt.forecast,kt.lo.forecast,kt.hi.forecast)
-  names(kt.f) <- c("kt forecast","kt lower","kt upper")
-  kt.f <- ts(kt.f,start=object$year[nyears]+deltat,deltat=deltat)
-
-  output = list(label=object$label,age=object$age,year=object$year[nyears] + x*deltat,
-                rate=list(forecast=mx.forecast,lower=mx.lo.forecast,upper=mx.hi.forecast),
-                fitted=object$fitted,
-                e0=ts(e0.forecast,start=object$year[nyears]+deltat,deltat=deltat),
-                kt.f=structure(list(mean=kt.f[,1],lower=kt.f[,2],upper=kt.f[,3],level=level,x=object$kt,
-                                    method="Random walk with drift"),class="forecast"),
-                type = object$type,lambda=0)
-  names(output$rate)[1] = names(object)[4]
-  output$model <- object
-  output$model$jumpchoice <- jumpchoice
-  output$model$jumprates <- jumprates
-  output$call <- match.call()
-  output$name <- names(object)[4]
-  return(structure(output,class=c("fmforecast","demogdata")))
+  # Create forecasts of mortality series
+  keys <- tsibble::key_vars(object$time)
+  df <- tidyr::nest(object$age, agedf = -!!keys)
+  time_df <- tidyr::nest(fc, timedf = -!!keys)
+  df <- df |> dplyr::left_join(time_df, by=keys)
+  mx.forecast <- purrr::map2(df[["agedf"]], df[["timedf"]],
+              function(x,y,agevar) {
+                h <- NROW(y)
+                nages <- NROW(x)
+                idx <- tsibble::index_var(y)
+                out <- tidyr::expand_grid(Year = y[[idx]], Age = x[[agevar]]) |>
+                  dplyr::left_join(x, by="Age") |>
+                  dplyr::left_join(y, by="Year") |>
+                  dplyr::mutate(Mortality = exp(ax + bx * kt))
+              },
+    agevar = object$agevar
+  )
+  # Package results as a fable object
+  df |>
+    dplyr::select(-agedf, -timedf) |>
+    dplyr::mutate(mx = mx.forecast) |>
+    tidyr::unnest(mx) |>
+    dplyr::select(-ax, -bx, -kt, -.mean) |>
+    fabletools::as_fable(index = Year, key = c("Age", keys, ".model"), dist=Mortality, response="Mortality")
 }
+
+globalVariables(c("agedf","timedf",".mean","Year","Mortality"))

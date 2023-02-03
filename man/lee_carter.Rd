@@ -11,6 +11,7 @@ lee_carter(
   rates,
   pop,
   adjust = c("dt", "dxt", "e0", "none"),
+  jumpoff = c("actual", "fit"),
   scale = FALSE
 )
 }
@@ -30,10 +31,14 @@ will search for a variable with one of the following names:
 `pop`, `population`, `ex`, `exposure`.}
 
 \item{adjust}{method to use for adjustment of coefficients \eqn{k_t kt}.
-Possibilities are \dQuote{dxt} (BMS method), \dQuote{dt} (Lee-Carter
-method), \dQuote{e0} (method based on life expectancy) and \dQuote{none}.
-Defaults are \dQuote{dxt} for \code{bms()} and \dQuote{dt} for
-\code{lca()}. The Lee & Miller (2001) variant is obtained with `adjust = "e0"`.}
+Possibilities are
+\dQuote{dt} (Lee-Carter method, the default),
+\dQuote{dxt} (BMS method),
+\dQuote{e0} (Lee-Miller method based on life expectancy) and
+\dQuote{none}.}
+
+\item{jumpoff}{method to use to control "jump-off" error. The original Lee-Carter
+method used 'fit', but Lee and Miller (2001) and most other authors prefer 'actual' (the default).}
 
 \item{scale}{If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.}
 }
@@ -46,19 +51,23 @@ standard Lee-Carter model by default, although many other options are
 available. Missing rates are set to the geometric mean rate for the relevant age.
 }
 \examples{
-# Compute Lee-Carter model for Australian females
+# Compute Lee-Carter model for Australian females, males and total
 aus_lca <- aus_mortality |>
   dplyr::filter(Code == "AUS") |>
   lee_carter()
 aus_lca
-autoplot(aus_lca, "Lee Carter components for Australian females")
+autoplot(aus_lca, "Lee Carter components for Australia")
 }
 \references{
-Lee, R D, and Carter, L R(1992) Modeling and forecasting US mortality.
+Lee, R D, and Carter, L R (1992) Modeling and forecasting US mortality.
 \emph{Journal of the American Statistical Association}, \bold{87}, 659-671.
 
 Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
   method for forecasting mortality. \emph{Demography}, \bold{38}(4), 537–549.
+
+Basellini, U, Camarda, C G, and Booth, H (2022) Thirty years on:
+A review of the Lee-Carter method for forecasting mortality.
+\emph{International Journal of Forecasting}, to appear.
 }
 \author{
 Rob J Hyndman.

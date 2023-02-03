@@ -14,35 +14,43 @@
 #' will search for a variable with one of the following names:
 #' `pop`, `population`, `ex`, `exposure`.
 #' @param adjust method to use for adjustment of coefficients \eqn{k_t kt}.
-#'   Possibilities are \dQuote{dxt} (BMS method), \dQuote{dt} (Lee-Carter
-#'   method), \dQuote{e0} (method based on life expectancy) and \dQuote{none}.
-#'   Defaults are \dQuote{dxt} for \code{bms()} and \dQuote{dt} for
-#'   \code{lca()}. The Lee & Miller (2001) variant is obtained with `adjust = "e0"`.
+#'   Possibilities are
+#'   \dQuote{dt} (Lee-Carter method, the default),
+#'   \dQuote{dxt} (BMS method),
+#'   \dQuote{e0} (Lee-Miller method based on life expectancy) and
+#'   \dQuote{none}.
+#' @param jumpoff method to use to control "jump-off" error. The original Lee-Carter
+#'   method used 'fit', but Lee and Miller (2001) and most other authors prefer 'actual' (the default).
 #' @param scale If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.
 #'
 #' @return A list containing various model objects.
 #'
-#' @references Lee, R D, and Carter, L R(1992) Modeling and forecasting US mortality.
+#' @references Lee, R D, and Carter, L R (1992) Modeling and forecasting US mortality.
 #' \emph{Journal of the American Statistical Association}, \bold{87}, 659-671.
 #' @references Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
 #'   method for forecasting mortality. \emph{Demography}, \bold{38}(4), 537–549.
+#' @references Basellini, U, Camarda, C G, and Booth, H (2022) Thirty years on:
+#' A review of the Lee-Carter method for forecasting mortality.
+#' \emph{International Journal of Forecasting}, to appear.
 #'
 #' @author Rob J Hyndman.
 #'
 #' @keywords models
 #' @examples
-#' # Compute Lee-Carter model for Australian females
+#' # Compute Lee-Carter model for Australian females, males and total
 #' aus_lca <- aus_mortality |>
 #'   dplyr::filter(Code == "AUS") |>
 #'   lee_carter()
 #' aus_lca
-#' autoplot(aus_lca, "Lee Carter components for Australian females")
+#' autoplot(aus_lca, "Lee Carter components for Australia")
 #' @export
 
 lee_carter <- function(.data, age, sex, rates, pop,
                        adjust = c("dt", "dxt", "e0", "none"),
+                       jumpoff = c("actual", "fit"),
                        scale = FALSE) {
   adjust <- match.arg(adjust)
+  jumpoff <- match.arg(jumpoff)
 
   # Index variable
   index <- tsibble::index_var(.data)
@@ -90,8 +98,9 @@ lee_carter <- function(.data, age, sex, rates, pop,
   final$by_t <- lapply(out, function(x){x$by_t})
   final$varprop <- unlist(lapply(out, function(x){x$varprop}))
   final$adjust <- unlist(lapply(out, function(x){x$adjust}))
+
   # Split return object into three pieces
-  return(structure(list(
+  final <- list(
     fit = final |>
       select(-by_x, -by_t),
     age = final |>
@@ -104,7 +113,23 @@ lee_carter <- function(.data, age, sex, rates, pop,
     call = match.call(),
     agevar = age,
     timevar = as.character(index)
-  ), class = "lca_model"))
+  )
+
+  # Find jumprates
+  #if (jumpoff == "actual") {
+  #  # Set jump-off rates to last observed values
+  #  jumprates <- object[[4]][, nyears]
+  #} else if (jumpoff == "fit") {
+  #  jumprates <- exp(object$ax + object$bx * object$kt[nyears])
+  #} else {
+  #  stop(paste("Unknown jump choice:", jumpoff))
+  #}
+  # Set last kt to 0
+  #object$kt <- object$kt - object$kt[nyears]
+
+
+  # Split return object into three pieces
+  return(structure(final, class = "lca_model"))
 }
 
 # Based on demography::lca()
@@ -393,11 +418,11 @@ print.lca_model <- function(x, ...) {
   # cat(paste("\nCall:", call, "\n"))
   cat("\nFit:\n")
   print(x$fit)
-  cat("\nAge components:\n")
-  print(x$age, n = 5)
-  cat("\nTime components:\n")
-  print(x$time, n = 5)
-  cat("\n")
+  #cat("\nAge components:\n")
+  #print(x$age, n = 5)
+  #cat("\nTime components:\n")
+  #print(x$time, n = 5)
+  #cat("\n")
 }
 
 #' Plot of Lee-Carter model components

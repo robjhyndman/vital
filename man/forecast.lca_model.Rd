@@ -45,10 +45,12 @@ The forecast coefficients are then multiplied by bx to obtain a forecast
 demographic rate curve.
 }
 \examples{
-aus_lca <- lee_carter(aus_mortality, adjust="e0")
-aus.fcast <- forecast(aus_lca, 50)
-plot(aus.fcast)
-plot(aus.fcast.fcast,'c')
+library(dplyr)
+ausf_lca <- aus_mortality |>
+  filter(Sex == "female", State == "Australia") |>
+  lee_carter()
+ausf_fcast <- forecast(ausf_lca, 50)
+ausf_fcast |> filter(Age == 60) |> autoplot(aus_mortality)
 }
 \author{
 Rob J Hyndman
