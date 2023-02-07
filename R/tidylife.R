@@ -9,7 +9,8 @@
 #' @importFrom tsibble as_tsibble
 #' @importFrom grDevices rainbow
 #' @importFrom generics forecast
-#' @import rlang vctrs
+#' @importFrom crayon bold red green blue col_align col_nchar make_style style
+#' @importFrom rlang quo_is_null is_empty inform as_quosures empty_env is_quosures eval_tidy
 "_PACKAGE"
 
 #' @export

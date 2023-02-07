@@ -1,5 +1,5 @@
 #' @importFrom cli rule symbol
-#' @import crayon
+#' @importFrom crayon chr
 
 # Based on attach.R from the tidyverse package
 

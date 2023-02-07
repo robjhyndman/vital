@@ -27,8 +27,7 @@ Imports:
   tibble,
   tidyr,
   tidyselect,
-  tsibble,
-  vctrs
+  tsibble
 Suggests:
   demography,
   mortality,
