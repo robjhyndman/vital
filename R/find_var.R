@@ -24,5 +24,5 @@ find_measure <- function(.data, names) {
       return(col[1])
     }
   }
-  stop(paste("No variable found with name in:", names))
+  stop(paste("No variable found with name in: ", paste(names, collapse=" ")))
 }
