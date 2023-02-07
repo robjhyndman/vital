@@ -104,6 +104,9 @@ lt <- function(dt, sex, age, mortality) {
     nx[2] <- 4L
   }
 
+  # Set NA values to 0.5
+  mx[is.na(mx)] <- 0.5
+
   # Set remaining ax values
   if (agegroup == 1L) {
     if (nn > 1) {
