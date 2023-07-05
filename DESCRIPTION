@@ -31,10 +31,7 @@ Imports:
   tsibble
 Suggests:
   demography,
-  mortality,
   testthat (>= 3.0.0)
-Remotes:
-  emitanaka/mortality
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
