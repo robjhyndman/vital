@@ -1,4 +1,4 @@
-#' Read data from HMD and construct a tsibble object for use in other functions
+#' Read data directly from HMD and construct a tsibble object for use in other functions
 #'
 #' \code{read_hmd} reads 1x1 data from the Human Mortality Database (HMD
 #' \url{https://www.mortality.org}) and constructs a tsibble object suitable
@@ -26,11 +26,8 @@
 #' @author Rob J Hyndman
 #' @examples
 #' \dontrun{
-#' norway <- read_hmd("NOR", username, password)
-#' norway
+#' norway <- read_hmd("NOR", "Nora.Nilsen@mymail.com", "FF!5xeEFa6")
 #' }
-#' @keywords manip
-#' @name read_hmd
 #' @export
 
 read_hmd <- function(country, username, password,
@@ -54,6 +51,7 @@ read_hmd <- function(country, username, password,
     }
   }
 
+  # Combine data into a single tsibble
   purrr::reduce(data, dplyr::left_join, by = c("Year", "Age", "Sex", "OpenInterval")) |>
     tsibble::as_tsibble(index = Year, key = c(Age, Sex)) |>
     dplyr::arrange(Sex, Year, Age) |>

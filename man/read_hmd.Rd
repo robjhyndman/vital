@@ -2,7 +2,7 @@
 % Please edit documentation in R/hmd.R
 \name{read_hmd}
 \alias{read_hmd}
-\title{Read data from HMD and construct a tsibble object for use in other functions}
+\title{Read data directly from HMD and construct a tsibble object for use in other functions}
 \usage{
 read_hmd(
   country,
@@ -43,11 +43,9 @@ HMD website (\url{https://www.mortality.org}), and obtain a valid username and p
 }
 \examples{
 \dontrun{
-norway <- read_hmd("NOR", username, password)
-norway
+norway <- read_hmd("NOR", "Nora.Nilsen@mymail.com", "FF!5xeEFa6")
 }
 }
 \author{
 Rob J Hyndman
 }
-\keyword{manip}
