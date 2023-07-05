@@ -20,6 +20,7 @@ Imports:
   grid,
   ggplot2,
   gtable,
+  HMDHFDplus,
   magrittr,
   purrr,
   rlang,
