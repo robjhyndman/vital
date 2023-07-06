@@ -11,7 +11,6 @@ lee_carter(
   rates,
   pop,
   adjust = c("dt", "dxt", "e0", "none"),
-  jumpoff = c("actual", "fit"),
   scale = FALSE
 )
 }
@@ -37,9 +36,6 @@ Possibilities are
 \dQuote{e0} (Lee-Miller method based on life expectancy) and
 \dQuote{none}.}
 
-\item{jumpoff}{method to use to control "jump-off" error. The original Lee-Carter
-method used 'fit', but Lee and Miller (2001) and most other authors prefer 'actual' (the default).}
-
 \item{scale}{If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.}
 }
 \value{
@@ -57,16 +53,20 @@ aus_lca <- aus_mortality |>
   lee_carter()
 aus_lca
 autoplot(aus_lca, "Lee Carter components for Australia")
+autoplot(aus_lca$time, kt)
 }
 \references{
+Basellini, U, Camarda, C G, and Booth, H (2022) Thirty years on:
+A review of the Lee-Carter method for forecasting mortality.
+
+Booth, H., Maindonald, J., and Smith, L. (2002) Applying Lee-Carter
+under conditions of variable mortality decline. \emph{Population Studies}, \bold{56}, 325-336.
+
 Lee, R D, and Carter, L R (1992) Modeling and forecasting US mortality.
 \emph{Journal of the American Statistical Association}, \bold{87}, 659-671.
 
 Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
   method for forecasting mortality. \emph{Demography}, \bold{38}(4), 537–549.
-
-Basellini, U, Camarda, C G, and Booth, H (2022) Thirty years on:
-A review of the Lee-Carter method for forecasting mortality.
 \emph{International Journal of Forecasting}, to appear.
 }
 \author{

@@ -19,18 +19,18 @@
 #'   \dQuote{dxt} (BMS method),
 #'   \dQuote{e0} (Lee-Miller method based on life expectancy) and
 #'   \dQuote{none}.
-#' @param jumpoff method to use to control "jump-off" error. The original Lee-Carter
-#'   method used 'fit', but Lee and Miller (2001) and most other authors prefer 'actual' (the default).
 #' @param scale If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.
 #'
 #' @return A list containing various model objects.
 #'
+#' @references Basellini, U, Camarda, C G, and Booth, H (2022) Thirty years on:
+#' A review of the Lee-Carter method for forecasting mortality.
+#' @references Booth, H., Maindonald, J., and Smith, L. (2002) Applying Lee-Carter
+#' under conditions of variable mortality decline. \emph{Population Studies}, \bold{56}, 325-336.
 #' @references Lee, R D, and Carter, L R (1992) Modeling and forecasting US mortality.
 #' \emph{Journal of the American Statistical Association}, \bold{87}, 659-671.
 #' @references Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
 #'   method for forecasting mortality. \emph{Demography}, \bold{38}(4), 537–549.
-#' @references Basellini, U, Camarda, C G, and Booth, H (2022) Thirty years on:
-#' A review of the Lee-Carter method for forecasting mortality.
 #' \emph{International Journal of Forecasting}, to appear.
 #'
 #' @author Rob J Hyndman.
@@ -43,14 +43,13 @@
 #'   lee_carter()
 #' aus_lca
 #' autoplot(aus_lca, "Lee Carter components for Australia")
+#' autoplot(aus_lca$time, kt)
 #' @export
 
 lee_carter <- function(.data, age, sex, rates, pop,
                        adjust = c("dt", "dxt", "e0", "none"),
-                       jumpoff = c("actual", "fit"),
                        scale = FALSE) {
   adjust <- match.arg(adjust)
-  jumpoff <- match.arg(jumpoff)
 
   # Index variable
   index <- tsibble::index_var(.data)
@@ -114,19 +113,6 @@ lee_carter <- function(.data, age, sex, rates, pop,
     agevar = age,
     timevar = as.character(index)
   )
-
-  # Find jumprates
-  #if (jumpoff == "actual") {
-  #  # Set jump-off rates to last observed values
-  #  jumprates <- object[[4]][, nyears]
-  #} else if (jumpoff == "fit") {
-  #  jumprates <- exp(object$ax + object$bx * object$kt[nyears])
-  #} else {
-  #  stop(paste("Unknown jump choice:", jumpoff))
-  #}
-  # Set last kt to 0
-  #object$kt <- object$kt - object$kt[nyears]
-
 
   # Split return object into three pieces
   return(structure(final, class = "lca_model"))

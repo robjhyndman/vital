@@ -18,9 +18,13 @@
 
 \item{h}{Number of years ahead to forecast.}
 
-\item{se}{Method used for computation of standard error. Possibilities: \dQuote{innovdrift} (innovations and drift) and \dQuote{innovonly} (innovations only).}
+\item{se}{Method used for computation of standard error.
+Possibilities: \dQuote{innovdrift} (innovations and drift) and \dQuote{innovonly} (innovations only).}
 
-\item{jumpchoice}{Method used for computation of jumpchoice. Possibilities: \dQuote{actual} (use actual rates from final year) and \dQuote{fit} (use fitted rates).}
+\item{jumpchoice}{Method used for computation of jumpchoice.
+Possibilities: \dQuote{actual} (use actual rates from final year) and \dQuote{fit} (use fitted rates).
+The original Lee-Carter method used 'fit' (the default), but Lee and Miller (2001)
+and most other authors prefer 'actual' (the default).}
 
 \item{level}{Confidence level for prediction intervals.}
 
@@ -46,11 +50,24 @@ demographic rate curve.
 }
 \examples{
 library(dplyr)
+library(ggplot2)
 ausf_lca <- aus_mortality |>
   filter(Sex == "female", State == "Australia") |>
   lee_carter()
 ausf_fcast <- forecast(ausf_lca, 50)
-ausf_fcast |> filter(Age == 60) |> autoplot(aus_mortality)
+ausf_fcast |>
+  filter(Age == 60) |>
+  autoplot(aus_mortality)
+rainbow_plot(ausf_fcast, .mean) +
+  scale_y_log10()
+
+}
+\references{
+Lee, R D, and Carter, L R (1992) Modeling and forecasting US mortality.
+\emph{Journal of the American Statistical Association}, \bold{87}, 659-671.
+
+Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
+  method for forecasting mortality. \emph{Demography}, \bold{38}(4), 537–549.
 }
 \author{
 Rob J Hyndman
