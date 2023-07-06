@@ -7,7 +7,7 @@
 rainbow_plot(.data, .vars = NULL, age)
 }
 \arguments{
-\item{.data}{A tsibble including an age variable and the variable you wish to plot.}
+\item{.data}{A tsibble or fable object including an age variable and the variable you wish to plot.}
 
 \item{.vars}{A bare expression containing the name of the variable you wish to plot.}
 

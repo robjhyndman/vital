@@ -3,7 +3,7 @@
 #' Produce rainbow plot (coloured by time index) of demographic variable against
 #' against age.
 #'
-#' @param .data A tsibble including an age variable and the variable you wish to plot.
+#' @param .data A tsibble or fable object including an age variable and the variable you wish to plot.
 #' @param .vars A bare expression containing the name of the variable you wish to plot.
 #' @param age Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` or `Age_group` will be used (not case sensitive).
 #'
@@ -57,6 +57,7 @@ rainbow_plot <- function(.data, .vars = NULL, age) {
 
   aes_spec <- list(x = rlang::sym(age), y = y, color = rlang::sym(index), group = rlang::sym(index))
   p <- .data |>
+    as_tsibble() |>
     ggplot2::ggplot(rlang::eval_tidy(rlang::expr(ggplot2::aes(!!!aes_spec)))) +
     ggplot2::geom_line() +
     ggplot2::xlab(age) +
