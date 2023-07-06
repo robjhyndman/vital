@@ -37,5 +37,5 @@ Keyfitz, N, and Caswell, H. (2005) \emph{Applied mathematical demography}, Sprin
 Preston, S.H., Heuveline, P., and Guillot, M. (2001) \emph{Demography: measuring and modeling population processes}. Blackwell
 }
 \seealso{
-life_table
+\code{\link{life_table}()}
 }

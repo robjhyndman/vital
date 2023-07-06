@@ -10,7 +10,7 @@
 #'
 #' @return A tsibble object with life expectancy in column `ex`.
 #' @rdname life_expectancy
-#' @seealso life_table
+#' @seealso \code{\link{life_table}()}
 #'
 #' @references Chiang CL. (1984) \emph{The life table and its applications}. Robert E Krieger Publishing Company: Malabar.
 #' @references Keyfitz, N, and Caswell, H. (2005) \emph{Applied mathematical demography}, Springer-Verlag: New York.

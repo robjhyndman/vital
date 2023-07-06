@@ -26,5 +26,5 @@ Coerce to a tsibble object
 as_tsibble(demography::fr.mort)
 }
 \seealso{
-[tsibble]
+\code{\link[tsibble]{tsibble}()}
 }

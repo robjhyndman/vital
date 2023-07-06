@@ -8,7 +8,7 @@
 #'
 #' @return A tsibble object.
 #' @rdname as-tsibble
-#' @seealso [tsibble]
+#' @seealso \code{\link[tsibble]{tsibble}()}
 #'
 #' @examples
 #' # coerce demogdata object to tsibble ----
