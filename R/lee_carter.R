@@ -32,7 +32,7 @@
 #' @references Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
 #'   method for forecasting mortality. \emph{Demography}, \bold{38}(4), 537–549.
 #' \emph{International Journal of Forecasting}, to appear.
-#'
+#' @seealso \code{\link{forecast.lca_model}()}
 #' @author Rob J Hyndman.
 #'
 #' @keywords models

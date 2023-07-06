@@ -34,6 +34,7 @@
 #' @references Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
 #'   method for forecasting mortality. \emph{Demography}, \bold{38}(4), 537–549.
 #'
+#' @seealso \code{\link{lee_carter}()}
 #' @author Rob J Hyndman
 #' @examples
 #' library(dplyr)
