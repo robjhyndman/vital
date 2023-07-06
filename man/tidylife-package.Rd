@@ -8,6 +8,14 @@
 \description{
 Functions for analysing demographic data based on tools consistent with the tidyverse. Tools are provided for data visualization, lifetable calculations, computing net migration numbers, Lee-Carter modelling; functional data modelling and stochastic population forecasting.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://pkg.robjhyndman.com/tidylife}
+  \item \url{http://github.com/robjhyndman/tidylife}
+}
+
+}
 \author{
 \strong{Maintainer}: Rob Hyndman \email{Rob.Hyndman@monash.edu} (\href{https://orcid.org/0000-0002-2140-5352}{ORCID}) [copyright holder]
 
