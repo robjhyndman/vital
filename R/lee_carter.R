@@ -61,7 +61,7 @@ lee_carter <- function(.data, age, sex, rates, pop,
   if (!missing(age)) {
     age <- {{ age }}
   } else {
-    age <- find_key(.data, c("age", "age_group"))
+    age <- find_key(.data, c("age", "age_group", "agegroup"))
   }
   if (!missing(sex)) {
     sex <- {{ sex }}
@@ -80,7 +80,7 @@ lee_carter <- function(.data, age, sex, rates, pop,
   }
 
   # Drop Age as a key and nest results
-  keys_noage <- keys[keys != age]
+  keys_noage <- keys[!(keys %in% c(age, "Age", "AgeGroup"))]
   .data <- tidyr::nest(.data, lst_data = c(-!!keys_noage))
 
   if (sex %in% colnames(.data)) {

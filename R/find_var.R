@@ -17,12 +17,14 @@ find_key <- function(.data, names, return_error = TRUE) {
 }
 
 find_measure <- function(.data, names) {
+  find_measures(.data, names)[1]
+}
+
+find_measures <- function(.data, names) {
   measures <- tsibble::measured_vars(.data)
+  col <- NULL
   for (i in seq_along(names)) {
-    col <- measures[tolower(measures) == names[i]]
-    if (length(col) > 0) {
-      return(col[1])
-    }
+    col <- c(col, measures[tolower(measures) == names[i]])
   }
-  stop(paste("No variable found with name in: ", paste(names, collapse=" ")))
+  return(col)
 }
