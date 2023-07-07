@@ -19,10 +19,13 @@
     <loc>https://pkg.robjhyndman.com/tidylife/reference/aus_mortality.html</loc>
   </url>
   <url>
-    <loc>https://pkg.robjhyndman.com/tidylife/reference/autoplot.lca_model.html</loc>
+    <loc>https://pkg.robjhyndman.com/tidylife/reference/autoplot.fpc_model.html</loc>
   </url>
   <url>
-    <loc>https://pkg.robjhyndman.com/tidylife/reference/forecast.lca_model.html</loc>
+    <loc>https://pkg.robjhyndman.com/tidylife/reference/forecast.lc_model.html</loc>
+  </url>
+  <url>
+    <loc>https://pkg.robjhyndman.com/tidylife/reference/fpc_model.html</loc>
   </url>
   <url>
     <loc>https://pkg.robjhyndman.com/tidylife/reference/index.html</loc>
