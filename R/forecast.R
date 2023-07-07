@@ -1,5 +1,3 @@
-# Function performs predictions of k and life expectancy based on leecarter results (in lcaout)
-
 #' Forecasts using Lee-Carter method.
 #'
 #' The kt coefficients are forecast using a random walk with drift.
@@ -39,10 +37,10 @@
 #' @examples
 #' library(dplyr)
 #' library(ggplot2)
-#' ausf_lca <- aus_mortality |>
+#' ausf_lc <- aus_mortality |>
 #'   filter(Sex == "female", State == "Australia") |>
 #'   lee_carter()
-#' ausf_fcast <- forecast(ausf_lca, 50)
+#' ausf_fcast <- forecast(ausf_lc, 50)
 #' ausf_fcast |>
 #'   filter(Age == 60) |>
 #'   autoplot(aus_mortality)
@@ -51,7 +49,7 @@
 #'
 #' @keywords models
 #' @export
-forecast.lca_model <- function(object, h = 50,
+forecast.lc_model <- function(object, h = 50,
     se = c("innovdrift", "innovonly"), jumpchoice = c("fit", "actual"),
     level = 80, ...) {
   # Forecast all kt series using random walks with drift terms

@@ -21,7 +21,7 @@
 #'   \dQuote{none}.
 #' @param scale If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.
 #'
-#' @return A list containing various model objects.
+#' @return A list of class \code{lc_model} containing various model objects.
 #'
 #' @references Basellini, U, Camarda, C G, and Booth, H (2022) Thirty years on:
 #' A review of the Lee-Carter method for forecasting mortality.
@@ -32,18 +32,18 @@
 #' @references Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
 #'   method for forecasting mortality. \emph{Demography}, \bold{38}(4), 537–549.
 #' \emph{International Journal of Forecasting}, to appear.
-#' @seealso \code{\link{forecast.lca_model}()}
+#' @seealso \code{\link{forecast.lc_model}()}
 #' @author Rob J Hyndman.
 #'
 #' @keywords models
 #' @examples
 #' # Compute Lee-Carter model for Australian females, males and total
-#' aus_lca <- aus_mortality |>
+#' aus_lc <- aus_mortality |>
 #'   dplyr::filter(Code == "AUS") |>
 #'   lee_carter()
-#' aus_lca
-#' autoplot(aus_lca, "Lee Carter components for Australia")
-#' autoplot(aus_lca$time, kt)
+#' aus_lc
+#' autoplot(aus_lc, "Lee Carter components for Australia")
+#' autoplot(aus_lc$time, kt)
 #' @export
 
 lee_carter <- function(.data, age, sex, rates, pop,
@@ -115,7 +115,7 @@ lee_carter <- function(.data, age, sex, rates, pop,
   )
 
   # Split return object into three pieces
-  return(structure(final, class = "lca_model"))
+  return(structure(final, class = c("lc_model", "fpc_model")))
 }
 
 # Based on demography::lca()
@@ -382,91 +382,5 @@ newroot <- function(FUN, guess, ...) {
   return(junk$estimate)
 }
 
-
-# Replace zeros with interpolated values
-fill.zero <- function(x, method = "constant") {
-  tt <- 1:length(x)
-  zeros <- abs(x) < 1e-9
-  xx <- x[!zeros]
-  tt <- tt[!zeros]
-  x <- stats::approx(tt, xx, 1:length(x), method = method, f = 0.5, rule = 2)
-  return(x$y)
-}
-
-#' @export
-print.lca_model <- function(x, ...) {
-  cat("Lee-Carter model\n")
-  # call <- deparse(x$call)
-  # Remove new lines
-  # call <- paste0(call, collapse="")
-  # Remove multiple spaces
-  # call <- gsub("\\s\\s+", " ", call)
-  # cat(paste("\nCall:", call, "\n"))
-  cat("\nFit:\n")
-  print(x$fit)
-  #cat("\nAge components:\n")
-  #print(x$age, n = 5)
-  #cat("\nTime components:\n")
-  #print(x$time, n = 5)
-  #cat("\n")
-}
-
-#' Plot of Lee-Carter model components
-#'
-#' Plot of ax, bx and kt from a Lee-Carter model.
-#'
-#' @param object output from \code{\link{lee_carter}}.
-#' @param ... Other arguments not used.
-#' @return A list of ggplot objects.
-#' @export
-autoplot.lca_model <- function(object, ...) {
-  grid::grid.newpage()
-  grid::pushViewport(grid::viewport(layout = grid::grid.layout(2, 2)))
-  keys <- tsibble::key_vars(object$time)
-  p1 <- age_plot(object$age, ax, keys)
-  p2 <- age_plot(object$age, bx, keys)
-  p3 <- fabletools::autoplot(object$time, kt) +
-    ggplot2::xlab(tsibble::index_var(object$time))
-
-  structure(list(p1, p2, p3), class = c("life_components", "gg"))
-}
-
-# Plot a variable against age by key
-age_plot <- function(object, .var, keys) {
-  # Convert age to time and use fabletools::autoplot.tbl_ts
-  names <- colnames(object)[!(colnames(object) %in% c(keys, deparse(substitute(.var))))]
-  age <- names[grep("age", names, ignore.case=TRUE)]
-  object_ts <- tsibble::as_tsibble(object, index=age, key = keys[keys != age])
-  fabletools::autoplot(object_ts, {{ .var }}) + ggplot2::xlab(age)
-}
-
-#' @export
-`+.life_components` <- function(e1, e2) {
-  e1[[1]] <- e1[[1]] + e2
-  e1
-}
-
-#' @export
-print.life_components <- function(x, ...) {
-  x <- lapply(x, ggplot2::ggplotGrob)
-  gt <- gtable::gtable(
-    name = "life_components",
-    heights = grid::unit(rep(1, 2), "null"),
-    widths = grid::unit(rep(1, 2), "null")
-  )
-  gt <- gtable::gtable_add_grob(gt, x,
-    t = c(1, 1, 2), b = c(1, 1, 2), l = c(1, 2, 2), r = c(1, 2, 2),
-    z = seq_along(x), clip = "off"
-  )
-  grid.draw(gt)
-}
-
-
-#' @importFrom grid grid.draw
-#' @method grid.draw life_components
-#' @export
-grid.draw.life_components <- function(x, recording = TRUE) {
-  print(x)
-}
 
 utils::globalVariables(c("kt", "ax", "bx", "varprop", "lst_data", "by_x", "by_t"))

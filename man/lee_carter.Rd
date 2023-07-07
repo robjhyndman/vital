@@ -39,7 +39,7 @@ Possibilities are
 \item{scale}{If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.}
 }
 \value{
-A list containing various model objects.
+A list of class \code{lc_model} containing various model objects.
 }
 \description{
 Lee-Carter model of mortality or fertility rates. \code{lee_carter} produces a
@@ -48,12 +48,12 @@ available. Missing rates are set to the geometric mean rate for the relevant age
 }
 \examples{
 # Compute Lee-Carter model for Australian females, males and total
-aus_lca <- aus_mortality |>
+aus_lc <- aus_mortality |>
   dplyr::filter(Code == "AUS") |>
   lee_carter()
-aus_lca
-autoplot(aus_lca, "Lee Carter components for Australia")
-autoplot(aus_lca$time, kt)
+aus_lc
+autoplot(aus_lc, "Lee Carter components for Australia")
+autoplot(aus_lc$time, kt)
 }
 \references{
 Basellini, U, Camarda, C G, and Booth, H (2022) Thirty years on:
@@ -70,7 +70,7 @@ Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
 \emph{International Journal of Forecasting}, to appear.
 }
 \seealso{
-\code{\link{forecast.lca_model}()}
+\code{\link{forecast.lc_model}()}
 }
 \author{
 Rob J Hyndman.
