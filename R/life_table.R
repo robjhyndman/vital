@@ -48,7 +48,7 @@ life_table <- function(.data, age, sex, mortality) {
 
   # Drop Age as a key and nest results
   keys_noage <- keys[keys != age]
-  .data <- tidyr::nest(.data, .by = all_of(c(index, keys_noage)))
+  .data <- tidyr::nest(.data, .by = tidyselect::all_of(c(index, keys_noage)))
 
   # Create life table for each sub-tibble and row-bind them.
   if (sex == "None") {
@@ -60,7 +60,7 @@ life_table <- function(.data, age, sex, mortality) {
   .data$data <- NULL
   tibble::as_tibble(.data) |>
     tidyr::unnest(cols = lt) |>
-    tsibble::as_tsibble(index = index, key = all_of(keys))
+    tsibble::as_tsibble(index = index, key = tidyselect::all_of(keys))
 }
 
 # This is a revised version of the demography::lt function.

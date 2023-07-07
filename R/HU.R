@@ -140,14 +140,14 @@ fdm <- function(data, order = 6, lambda = NULL) {
   fits <- as.data.frame(y.pca$basis %*% t(y.pca$coeff))
   colnames(fits) <- year
   fits <- fits |>
-    mutate(Age = ages) |>
+    dplyr::mutate(Age = ages) |>
     tidyr::pivot_longer(-Age, names_to = "Year", values_to = ".fitted") |>
-    mutate(Year = as.integer(Year))
+    dplyr::mutate(Year = as.integer(Year))
 
   # Add fitted values and residuals to original data
   output <- data |>
-    left_join(fits, by = c("Year", "Age")) |>
-    mutate(
+    dplyr::left_join(fits, by = c("Year", "Age")) |>
+    dplyr::mutate(
       .fitted = exp(.fitted),
       .residual = Mortality - .fitted
     )
@@ -179,7 +179,7 @@ fdpca <- function(X, order = 2, ngrid = 500) {
   yy <- matrix(NA, nrow = ngrid, ncol = n)
   for (i in seq(n)) {
     miss <- is.na(y[, i])
-    yy[, i] <- spline(x[!miss], y[!miss, i], n = ngrid)$y
+    yy[, i] <- stats::spline(x[!miss], y[!miss, i], n = ngrid)$y
   }
   xx <- seq(min(x), max(x), l = ngrid)
   # Compute smooth means
@@ -187,10 +187,10 @@ fdpca <- function(X, order = 2, ngrid = 500) {
   # Centre data
   yy <- sweep(yy, 1, ax)
   # Standard error in mean estimate
-  axse <- approx(xx, sqrt(apply(yy, 1, var) / n), xout = x)$y
+  axse <- stats::approx(xx, sqrt(apply(yy, 1, stats::var) / n), xout = x)$y
   # Set up coeff and basis for order 0
   coeff <- matrix(1, nrow=n, ncol=1)
-  basis <- matrix(approx(xx, ax, xout = x)$y, ncol=1)
+  basis <- matrix(stats::approx(xx, ax, xout = x)$y, ncol=1)
   colnames(coeff)[1] <- colnames(basis)[1] <- "mean"
   if (order == 0) {
     return(list(
@@ -209,9 +209,9 @@ fdpca <- function(X, order = 2, ngrid = 500) {
   Phinormngrid <- matrix(NA, ngrid, order)
   delta <- xx[2] - xx[1]
   for (i in seq(order)) {
-    Phinorm[, i] <- approx(xx, Phi[, i], xout = x)$y / delta /
-      (sqrt(sum((approx(xx, Phi[, i], xout = x)$y / delta)^2)))
-    Phinormngrid[, i] <- approx(x, Phinorm[, i], xout = xx)$y
+    Phinorm[, i] <- stats::approx(xx, Phi[, i], xout = x)$y / delta /
+      (sqrt(sum((stats::approx(xx, Phi[, i], xout = x)$y / delta)^2)))
+    Phinormngrid[, i] <- stats::approx(x, Phinorm[, i], xout = xx)$y
   }
   # Extract coeff and basis matrices
   B <- t(yy) %*% Phinormngrid
@@ -242,9 +242,6 @@ fdpca <- function(X, order = 2, ngrid = 500) {
 
 
 BoxCox <- function(x, lambda) {
-  if (lambda == "auto") {
-    lambda <- BoxCox.lambda(x, lower = -0.9)
-  }
   if (lambda < 0) {
     x[x < 0] <- NA
   }
@@ -373,3 +370,5 @@ age_plot <- function(object, .var, keys) {
   object_ts <- tsibble::as_tsibble(object, index=age, key = keys[keys != age])
   fabletools::autoplot(object_ts, {{ .var }}) + ggplot2::xlab(age)
 }
+
+globalVariables(c(".fitted"))

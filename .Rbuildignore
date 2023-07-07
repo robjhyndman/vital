@@ -3,3 +3,5 @@
 ^README\.Rmd$
 ^data-raw$
 ^\.github$
+^docs$
+_pkgdown.yml

@@ -42,7 +42,8 @@
 #'   dplyr::filter(Code == "AUS") |>
 #'   lee_carter()
 #' aus_lc
-#' autoplot(aus_lc, "Lee Carter components for Australia")
+#' autoplot(aus_lc) +
+#'   patchwork::plot_annotation("Lee Carter components for Australia")
 #' autoplot(aus_lc$time, kt)
 #' @export
 
