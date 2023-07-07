@@ -26,11 +26,12 @@
 #' @keywords models
 #' @examples
 #' # Compute Hyndman-Ullah model for Australian females, males and total
-#' # aus_hu <- aus_mortality |>
-#' #   dplyr::filter(Code == "AUS") |>
-#' #   hyndman_ullah()
-#' # aus_hu
-#' # autoplot(aus_hu, "Hyndman-Ullah components for Australia")
+#' aus_hu <- aus_mortality |>
+#'   dplyr::filter(Code == "AUS") |>
+#'   fpc_model()
+#' aus_hu
+#' autoplot(aus_hu) +
+#'   patchwork::plot_annotation("Hyndman-Ullah components for Australia")
 #' @export
 
 fpc_model <- function(.data, age, sex, rates, pop, order = 6) {
