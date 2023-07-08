@@ -4,13 +4,13 @@
 \alias{aus_mortality}
 \title{Australian mortality data}
 \format{
-Time series of class `tsibble`
+Time series of class `life_tsibble`
 }
 \source{
 Australian Human Mortality Database
 }
 \description{
-\code{aus_mortality} is an annual `tsibble` with three values:
+\code{aus_mortality} is an annual `life_tsibble` with three values:
 \tabular{ll}{
     Mortality: \tab Mortality rate \cr
     Exposure:  \tab Population at 30 June each year\cr

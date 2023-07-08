@@ -1,20 +1,26 @@
-#' Coerce to a tsibble object
+#' Coerce to a life_tsibble object
 #'
-#' @param x Objects to be coerced to a tsibble (`tbl_ts`).
+#' @param x Objects to be coerced to a life_tsibble (`life_tbl_ts`).
+#' @param sex_groups Logical variable indicating of the groups denote sexes
 #' @param validate `TRUE` suggests to verify that each key or each combination
 #' of key variables leads to unique time indices (i.e. a valid tsibble). If you
 #' are sure that it's a valid input, specify `FALSE` to skip the checks.
 #' @param ... Other arguments passed on to individual methods.
 #'
-#' @return A tsibble object.
-#' @rdname as-tsibble
+#' @return A life_tsibble object.
+#' @rdname as_life_tsibble
 #' @seealso \code{\link[tsibble]{tsibble}()}
 #'
 #' @examples
-#' # coerce demogdata object to tsibble ----
-#' as_tsibble(demography::fr.mort)
+#' # coerce demogdata object to life_tsibble
+#' as_life_tsibble(demography::fr.mort)
 #' @export
-as_tsibble.demogdata <- function(x, ..., validate = TRUE) {
+as_life_tsibble <- function(x, ...) {
+  UseMethod("as_life_tsibble")
+}
+
+#' @export
+as_life_tsibble.demogdata <- function(x, sex_groups = TRUE, ..., validate = TRUE) {
   rates_included <- ("rate" %in% names(x))
   pop_included <- ("pop" %in% names(x))
   # Avoid CRAN error check by declaring variables
@@ -89,7 +95,54 @@ as_tsibble.demogdata <- function(x, ..., validate = TRUE) {
     ) |>
     as_tsibble(index = Year, key = c(AgeGroup, Age, Group), validate = validate) |>
     arrange(Group, Year, Age)
+  attr(output, "agevar") <- "Age"
+  if(sex_groups) {
+    output <- output  |>
+      rename(Sex = Group)
+    attr(output, "sexvar") <- "Sex"
+  }
+  if("Deaths" %in% colnames(output)) {
+    attr(output, "deathsvar") <- "Deaths"
+  }
+  if("Births" %in% colnames(output)) {
+    attr(output, "birthsvar") <- "Births"
+  }
+  if("Exposure" %in% colnames(output)) {
+    attr(output, "populationvar") <- "Exposure"
+  } else if("Population" %in% colnames(output)) {
+    attr(output, "populationvar") <- "Population"
+  }
+  # Add additional class
+  class(output) <- c("life_tbl_ts", class(output))
   return(output)
+}
+
+#' @param age Character string specifying name of age variable (required)
+#' @param sex Character string specifying name of sex variable (optional)
+#' @param deaths Character string specifying name of deaths variable (optional)
+#' @param births Character string specifying name of births variable (optional)
+#' @param population Character string specifying name of population variable (optional)
+#' @rdname as_life_tsibble
+#' @export
+as_life_tsibble.tbl_ts <- function(x,
+  age, sex = NULL, deaths = NULL, births = NULL, population = NULL) {
+  # Add attributes to x to identify the various variables
+  attr(x, "agevar") <- age
+  if(!is.null(sex)) {
+    attr(x, "sexvar") <- sex
+  }
+  if(!is.null(deaths)) {
+    attr(x, "deathsvar") <- deaths
+  }
+  if(!is.null(births)) {
+    attr(x, "birthsvar") <- births
+  }
+  if(!is.null(population)) {
+    attr(x, "populationvar") <- population
+  }
+  # Add additional class
+  class(x) <- c("life_tbl_ts", class(x))
+  return(x)
 }
 
 utils::globalVariables(c("Deaths","Births"))
