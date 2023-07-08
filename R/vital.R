@@ -150,6 +150,8 @@ as_vital.tbl_ts <- function(x,
 
 utils::globalVariables(c("Deaths","Births"))
 
+# Functions need for printing vital objects
+
 #' @importFrom tibble tbl_sum
 #' @export
 tbl_sum.vital <- function(x) {
