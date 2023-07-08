@@ -23,7 +23,7 @@ same_library <- function(pkg) {
   )
 }
 
-tidylife_attach <- function() {
+vital_attach <- function() {
   to_load <- core_unloaded()
   if (length(to_load) == 0) {
     return(invisible())
@@ -32,7 +32,7 @@ tidylife_attach <- function() {
   msg(
     cli::rule(
       left = crayon::bold("Attaching packages"),
-      right = paste0("tidylife ", package_version("tidylife"))
+      right = paste0("vital ", package_version("vital"))
     ),
     startup = TRUE
   )

@@ -14,9 +14,6 @@
 "_PACKAGE"
 
 #' @export
-tsibble::as_tsibble
-
-#' @export
 ggplot2::autoplot
 
 #' @export

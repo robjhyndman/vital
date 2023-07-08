@@ -7,11 +7,11 @@
   }
 
   crayon::num_colors(TRUE)
-  tidylife_attach()
+  vital_attach()
 
   if (!"package:conflicted" %in% search()) {
-    x <- tidylife_conflicts()
-    msg(tidylife_conflict_message(x), startup = TRUE)
+    x <- vital_conflicts()
+    msg(vital_conflict_message(x), startup = TRUE)
   }
 }
 

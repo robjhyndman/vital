@@ -1,26 +1,29 @@
-#' Coerce to a life_tsibble object
+#' Coerce to a vital object
 #'
-#' @param x Objects to be coerced to a life_tsibble (`life_tbl_ts`).
+#' A vital object is a type of tsibble that contains vital statistics such as births, deaths, and population counts, and mortality and fertility rates. It is a tsibble with a special class attribute that allows for special methods to be used.
+#'
+#' @param x Objects to be coerced to a vital format.
+#' @param ... Other arguments passed on to individual methods.
+#'
+#' @return A vital object.
+#' @rdname as_vital
+#' @seealso \code{\link[tsibble]{tsibble}()}
+#'
+#' @examples
+#' # coerce demogdata object to vital
+#' as_vital(demography::fr.mort)
+#' @export
+as_vital <- function(x, ...) {
+  UseMethod("as_vital")
+}
+
 #' @param sex_groups Logical variable indicating of the groups denote sexes
 #' @param validate `TRUE` suggests to verify that each key or each combination
 #' of key variables leads to unique time indices (i.e. a valid tsibble). If you
 #' are sure that it's a valid input, specify `FALSE` to skip the checks.
-#' @param ... Other arguments passed on to individual methods.
-#'
-#' @return A life_tsibble object.
-#' @rdname as_life_tsibble
-#' @seealso \code{\link[tsibble]{tsibble}()}
-#'
-#' @examples
-#' # coerce demogdata object to life_tsibble
-#' as_life_tsibble(demography::fr.mort)
+#' @rdname as_vital
 #' @export
-as_life_tsibble <- function(x, ...) {
-  UseMethod("as_life_tsibble")
-}
-
-#' @export
-as_life_tsibble.demogdata <- function(x, sex_groups = TRUE, ..., validate = TRUE) {
+as_vital.demogdata <- function(x, sex_groups = TRUE, ..., validate = TRUE) {
   rates_included <- ("rate" %in% names(x))
   pop_included <- ("pop" %in% names(x))
   # Avoid CRAN error check by declaring variables
@@ -113,7 +116,7 @@ as_life_tsibble.demogdata <- function(x, sex_groups = TRUE, ..., validate = TRUE
     attr(output, "populationvar") <- "Population"
   }
   # Add additional class
-  class(output) <- c("life_tbl_ts", class(output))
+  class(output) <- c("vital", class(output))
   return(output)
 }
 
@@ -122,10 +125,10 @@ as_life_tsibble.demogdata <- function(x, sex_groups = TRUE, ..., validate = TRUE
 #' @param deaths Character string specifying name of deaths variable (optional)
 #' @param births Character string specifying name of births variable (optional)
 #' @param population Character string specifying name of population variable (optional)
-#' @rdname as_life_tsibble
+#' @rdname as_vital
 #' @export
-as_life_tsibble.tbl_ts <- function(x,
-  age, sex = NULL, deaths = NULL, births = NULL, population = NULL) {
+as_vital.tbl_ts <- function(x,
+  age, sex = NULL, deaths = NULL, births = NULL, population = NULL, ...) {
   # Add attributes to x to identify the various variables
   attr(x, "agevar") <- age
   if(!is.null(sex)) {
@@ -141,8 +144,39 @@ as_life_tsibble.tbl_ts <- function(x,
     attr(x, "populationvar") <- population
   }
   # Add additional class
-  class(x) <- c("life_tbl_ts", class(x))
+  class(x) <- c("vital", class(x))
   return(x)
 }
 
 utils::globalVariables(c("Deaths","Births"))
+
+#' @importFrom tibble tbl_sum
+#' @export
+tbl_sum.vital <- function(x) {
+  fnt_int <- format(tsibble::interval(x))
+  dim_x <- dim(x)
+  format_dim <- purrr::map_chr(dim_x, big_mark)
+  dim_x <- paste(format_dim, collapse = " x ")
+  first <- c(`A vital` = paste(dim_x, brackets(fnt_int)))
+  if (is_empty(tsibble::key(x))) {
+    first
+  }
+  else {
+    n_keys <- big_mark(tsibble::n_keys(x))
+    key_sum <- c(Key = paste(paste(tsibble::key_vars(x), collapse=", "), brackets(n_keys)))
+    c(first, key_sum)
+  }
+}
+
+big_mark <- function (x, ...) {
+  mark <- if (identical(getOption("OutDec"), ","))
+    "."
+  else ","
+  ret <- formatC(x, big.mark = mark, format = "d", ...)
+  ret[is.na(x)] <- "??"
+  ret
+}
+
+brackets <- function (x) {
+  paste0("[", x, "]")
+}

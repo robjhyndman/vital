@@ -1,8 +1,8 @@
 # Based on conflicts.R from the tidyverse package
 
-#' Conflicts between tidylife packages and other packages
+#' Conflicts between vital packages and other packages
 #'
-#' This function lists all the conflicts between packages in the tidylife collection
+#' This function lists all the conflicts between packages in the vital collection
 #' and other packages that you have loaded.
 #'
 #' Some conflicts are deliberately ignored: \code{intersect}, \code{union},
@@ -11,34 +11,34 @@
 #' These functions make the base equivalents generic, so shouldn't negatively affect any
 #' existing code.
 #'
-#' @return A list object of class \code{tidylife_conflicts}.
+#' @return A list object of class \code{vital_conflicts}.
 #' @export
 #' @examples
-#' tidylife_conflicts()
-tidylife_conflicts <- function() {
+#' vital_conflicts()
+vital_conflicts <- function() {
   envs <- grep("^package:", search(), value = TRUE)
   envs <- purrr::set_names(envs)
   objs <- invert(lapply(envs, ls_env))
 
   conflicts <- purrr::keep(objs, ~ length(.x) > 1)
 
-  tidy_names <- paste0("package:", tidylife_packages())
+  tidy_names <- paste0("package:", vital_packages())
   conflicts <- purrr::keep(conflicts, ~ any(.x %in% tidy_names))
 
   conflict_funs <- purrr::imap(conflicts, confirm_conflict)
   conflict_funs <- purrr::compact(conflict_funs)
 
-  structure(conflict_funs, class = "tidylife_conflicts")
+  structure(conflict_funs, class = "vital_conflicts")
 }
 
-tidylife_conflict_message <- function(x) {
+vital_conflict_message <- function(x) {
   if (length(x) == 0) {
     return("")
   }
 
   header <- cli::rule(
     left = crayon::bold("Conflicts"),
-    right = "tidylife_conflicts"
+    right = "vital_conflicts"
   )
 
   pkgs <- x %>% purrr::map(~ gsub("^package:", "", .))
@@ -60,8 +60,8 @@ tidylife_conflict_message <- function(x) {
 }
 
 #' @export
-print.tidylife_conflicts <- function(x, ..., startup = FALSE) {
-  cli::cat_line(tidylife_conflict_message(x))
+print.vital_conflicts <- function(x, ..., startup = FALSE) {
+  cli::cat_line(vital_conflict_message(x))
 }
 
 #' @importFrom magrittr %>%

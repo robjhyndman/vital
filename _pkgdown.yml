@@ -1,4 +1,4 @@
-url: https://pkg.robjhyndman.com/tidylife/
+url: https://pkg.robjhyndman.com/vital/
 template:
   bootstrap: 5
   bootswatch: flatly
@@ -10,4 +10,3 @@ template:
 authors:
   Rob Hyndman:
     href: http://robjhyndman.com
-

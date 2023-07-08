@@ -1,8 +1,8 @@
-Package: tidylife
+Package: vital
 Version: 0.1.0
 Type: Package
 Title: Tidy Analysis Tools for Mortality, Fertility, Migration and Population Data
-Description: Functions for analysing demographic data based on tools
+Description: Functions for analysing vital statistics based on tools
     consistent with the tidyverse. Tools are provided for data visualization,
     lifetable calculations, computing net migration numbers, Lee-Carter
     modelling; functional data modelling and stochastic population
@@ -32,7 +32,7 @@ Suggests:
   demography,
   testthat (>= 3.0.0)
 License: GPL-3
-URL: https://pkg.robjhyndman.com/tidylife, http://github.com/robjhyndman/tidylife
+URL: https://pkg.robjhyndman.com/vital, http://github.com/robjhyndman/vital
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3

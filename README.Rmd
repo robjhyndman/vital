@@ -13,30 +13,29 @@ knitr::opts_chunk$set(
 )
 ```
 
-# tidylife
+# vital
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/robjhyndman/tidylife/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/robjhyndman/tidylife/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/robjhyndman/vital/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/robjhyndman/vital/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The goal of tidylife is to allow analysis of demographic data using tidy tools.
+The goal of vital is to allow analysis of demographic data using tidy tools.
 
 ## Installation
 
-You can install the development version of tidylife from [GitHub](https://github.com/) with:
+You can install the development version of vital from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("robjhyndman/tidylife")
+devtools::install_github("robjhyndman/vital")
 ```
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
-library(tidylife)
+library(vital)
 ```
 
 ```{r fr.mort, message=FALSE}
-demography::fr.mort |> as_tsibble()
+demography::fr.mort |> as_vital()
 ```

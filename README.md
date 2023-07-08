@@ -1,35 +1,33 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# tidylife
+# vital
 
 <!-- badges: start -->
 
 <!-- badges: end -->
 
-The goal of tidylife is to allow analysis of demographic data using tidy
+The goal of vital is to allow analysis of demographic data using tidy
 tools.
 
 ## Installation
 
-You can install the development version of tidylife from
+You can install the development version of vital from
 [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("robjhyndman/tidylife")
+devtools::install_github("robjhyndman/vital")
 ```
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
-
 ``` r
-library(tidylife)
+library(vital)
 ```
 
 ``` r
-demography::fr.mort |> as_tsibble()
+demography::fr.mort |> as_vital()
 #> # A tsibble: 63,603 x 7 [1Y]
 #> # Key:       AgeGroup, Age, Group [333]
 #>     Year AgeGroup   Age Group  Mortality Exposure Deaths
