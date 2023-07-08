@@ -2,8 +2,8 @@ pandoc: 2.19.2
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles: {}
-last_built: 2023-07-07T07:29Z
+last_built: 2023-07-08T04:54Z
 urls:
-  reference: https://pkg.robjhyndman.com/tidylife/reference
-  article: https://pkg.robjhyndman.com/tidylife/articles
+  reference: https://pkg.robjhyndman.com/vital/reference
+  article: https://pkg.robjhyndman.com/vital/articles
 
