@@ -14,19 +14,24 @@
 #' @export
 
 collapse_ages <- function(.data, max_age = 100) {
-
+  if(!inherits(.data, "vital")) {
+    stop(".data needs to be a vital object")
+  }
+  colnames <- colnames(.data)
+  attr_data <- attributes(.data)
   # Index variable
   index <- tsibble::index_var(.data)
   # Keys including age
   keys <- tsibble::key_vars(.data)
-  age <- find_key(.data, c("age", "age_group"))
-  keys_noage <- keys[!(keys %in% c(age, "Age", "AgeGroup"))]
+  age <- attr_data$agevar
+  keys_noage <- keys[!(keys %in% c(age, "Age", "AgeGroup", "Age_Group"))]
 
   # Identify other columns
+  pop <- attr_data$populationvar
+  deaths <- attr_data$deathsvar
+  births <- attr_data$birthsvar
+  sex <- attr_data$sexvar
   rates <- find_measures(.data, c("mx", "mortality", "fx", "fertility", "rate"))
-  pop <- find_measures(.data, c("pop", "population", "ex", "exposure"))
-  deaths <- find_measures(.data, c("deaths"))
-  births <- find_measures(.data, c("births"))
 
   # Collapse data by summing above max_age
   ages <- sort(unique(.data[[age]]))
@@ -43,31 +48,21 @@ collapse_ages <- function(.data, max_age = 100) {
       if(length(deaths) == 0L | length(pop) == 0L) {
         warning(paste(i, "not recomputed"))
       } else {
-        collapsed[[i]] <- collapsed[[deaths[1]]] / collapsed[[pop[1]]]
-        if(length(deaths) > 1) {
-          warning(paste("More than one Deaths column identified. First one used in computing",i))
-        }
-        if(length(pop) > 1) {
-          warning(paste("More than one Population column identified. First one used in computing",i))
-        }
+        collapsed[[i]] <- collapsed[[deaths]] / collapsed[[pop]]
       }
     } else if(tolower(i) %in% c("fx", "fertility")) {
       if(length(births) == 0L | length(pop) == 0L) {
         warning(paste(i, "not recomputed"))
       } else {
-        collapsed[[i]] <- collapsed[[births[1]]] / collapsed[[pop[1]]]
-        if(length(deaths) > 1) {
-          warning(paste("More than one Births column identified. First one used in computing",i))
-        }
-        if(length(deaths) > 1) {
-          warning(paste("More than one Population column identified. First one used in computing",i))
-        }
+        collapsed[[i]] <- collapsed[[births]] / collapsed[[pop]]
       }
     }
   }
 
   # Return result
-  return(collapsed)
+  return(as_vital(collapsed, age = age, sex = sex,
+    deaths = deaths, births = births, population = pop)[,colnames]
+  )
 }
 
 collapse_age_vector <- function(x, ages, max_age) {
