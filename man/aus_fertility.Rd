@@ -4,13 +4,13 @@
 \alias{aus_fertility}
 \title{Australian fertility data}
 \format{
-Time series of class `life_tsibble`
+Time series of class `vital`
 }
 \source{
 Australian Human Mortality Database
 }
 \description{
-\code{aus_fertility} is an annual `life_tsibble` covering the years 1921-2002 with three values:
+\code{aus_fertility} is an annual `vital` object covering the years 1921-2002 with three values:
 \tabular{ll}{
     Fertility: \tab Fertility rate per 1000 women \cr
     Exposure:  \tab Population of women at 30 June each year\cr

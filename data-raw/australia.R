@@ -4,6 +4,7 @@ library(vital)
 aus_fertility <- as_vital(addb::aus.fertility) |>
   as_tibble() |>
   select(-AgeGroup, -Sex) |>
+  mutate(Fertility = Fertility / 1000) |>
   as_tsibble(index = Year, key = Age) |>
   as_vital(births = "Births", age = "Age", population = "Exposure")
 usethis::use_data(aus_fertility, overwrite = TRUE)

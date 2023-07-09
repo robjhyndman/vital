@@ -1,8 +1,8 @@
 #' Australian fertility data
 #'
-#' \code{aus_fertility} is an annual `life_tsibble` covering the years 1921-2002 with three values:
+#' \code{aus_fertility} is an annual `vital` object covering the years 1921-2002 with three values:
 #' \tabular{ll}{
-#'     Fertility: \tab Fertility rate per 1000 women \cr
+#'     Fertility: \tab Fertility rate per woman \cr
 #'     Exposure:  \tab Population of women at 30 June each year\cr
 #'     Births:    \tab Number of births \cr
 #' }
@@ -17,7 +17,7 @@
 #' Australian Human Mortality Database
 #'
 #' @name aus_fertility
-#' @format Time series of class `life_tsibble`
+#' @format Time series of class `vital`
 #' @keywords datasets
 #' @examples
 #' library(ggplot2)
@@ -30,7 +30,7 @@ NULL
 
 #' Australian mortality data
 #'
-#' \code{aus_mortality} is an annual `life_tsibble` with three values:
+#' \code{aus_mortality} is an annual `vital` with three values:
 #' \tabular{ll}{
 #'     Mortality: \tab Mortality rate \cr
 #'     Exposure:  \tab Population at 30 June each year\cr
@@ -50,7 +50,7 @@ NULL
 #' Australian Human Mortality Database
 #'
 #' @name aus_mortality
-#' @format Time series of class `life_tsibble`
+#' @format Time series of class `vital`
 #' @keywords datasets
 #' @examples
 #' library(ggplot2)
