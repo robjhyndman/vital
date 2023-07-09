@@ -54,21 +54,13 @@ Warning: the code has only been tested for data based on single-year age groups.
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">life_table</span><span class="op">(</span><span class="va">.data</span>, <span class="va">age</span>, <span class="va">sex</span>, <span class="va">mortality</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">life_table</span><span class="op">(</span><span class="va">.data</span>, <span class="va">mortality</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>.data</dt>
-<dd><p>A tsibble including an age variable and a variable containing mortality rates.</p></dd>
-
-
-<dt>age</dt>
-<dd><p>Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` or `Age_group` will be used (not case sensitive).</p></dd>
-
-
-<dt>sex</dt>
-<dd><p>Optional variable in `.data` containing sex information. If omitted, the variable with name `Sex` or `Group` will be used (not case sensitive).</p></dd>
+<dd><p>A <code>vital</code> including an age variable and a variable containing mortality rates.</p></dd>
 
 
 <dt>mortality</dt>
@@ -79,7 +71,7 @@ Warning: the code has only been tested for data based on single-year age groups.
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A tsibble object containing the index, keys, and the new life table variables `mx`, `qx`, `lx`, `dx`, `Lx`, `Tx` and `ex`.</p>
+<p>A vital object containing the index, keys, and the new life table variables `mx`, `qx`, `lx`, `dx`, `Lx`, `Tx` and `ex`.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -94,8 +86,8 @@ Warning: the code has only been tested for data based on single-year age groups.
 <span class="r-in"><span><span class="va">aus_mortality</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Code</span> <span class="op">==</span> <span class="st">"AUS"</span>, <span class="va">Sex</span> <span class="op">==</span> <span class="st">"female"</span>, <span class="va">Year</span> <span class="op">==</span> <span class="fl">2003</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">life_table</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tsibble: 101 x 12 [?]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Key:       Age, Sex, State, Code [101]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A vital: 101 x 12 [?]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Key:     Age, Sex, State, Code [101]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Year Sex   State Code       mx      qx    lx      dx    Lx    Tx    ex   Age</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">2</span>003 fema… Aust… AUS   4.33<span style="color: #949494;">e</span><span style="color: #BB0000;">-3</span> 4.32<span style="color: #949494;">e</span><span style="color: #BB0000;">-3</span> 1     4.32<span style="color: #949494;">e</span><span style="color: #BB0000;">-3</span> 0.996  83.2  83.2     0</span>

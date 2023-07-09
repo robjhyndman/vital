@@ -48,25 +48,17 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">life_expectancy</span><span class="op">(</span><span class="va">.data</span>, from_age <span class="op">=</span> <span class="fl">0</span>, <span class="va">age</span>, <span class="va">sex</span>, <span class="va">mortality</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">life_expectancy</span><span class="op">(</span><span class="va">.data</span>, from_age <span class="op">=</span> <span class="fl">0</span>, <span class="va">mortality</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>.data</dt>
-<dd><p>A tsibble including an age variable and a variable containing mortality rates.</p></dd>
+<dd><p>A vital object including an age variable and a variable containing mortality rates.</p></dd>
 
 
 <dt>from_age</dt>
 <dd><p>Age at which life expectancy to be calculated. Either a scalar or a vector of ages.</p></dd>
-
-
-<dt>age</dt>
-<dd><p>Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` or `Age_group` will be used (not case sensitive).</p></dd>
-
-
-<dt>sex</dt>
-<dd><p>Optional variable in `.data` containing sex information. If omitted, the variable with name `Sex` or `Group` will be used (not case sensitive).</p></dd>
 
 
 <dt>mortality</dt>
@@ -77,7 +69,7 @@
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A tsibble object with life expectancy in column `ex`.</p>
+<p>A <code>vital</code> object with life expectancy in column `ex`.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -96,8 +88,8 @@
 <span class="r-in"><span><span class="va">aus_mortality</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Code</span> <span class="op">==</span> <span class="st">"AUS"</span>, <span class="va">Sex</span> <span class="op">==</span> <span class="st">"female"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">life_expectancy</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tsibble: 103 x 6 [1Y]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Key:       Age, Sex, State, Code [1]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A vital: 103 x 6 [1Y]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Key:     Age, Sex, State, Code [1]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Year Sex    State     Code     ex   Age</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">1</span>901 female Australia AUS    56.3     0</span>

@@ -54,33 +54,19 @@ Missing rates are set to the geometric mean rate for the relevant age.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fpc_model</span><span class="op">(</span><span class="va">.data</span>, <span class="va">age</span>, <span class="va">sex</span>, <span class="va">rates</span>, <span class="va">pop</span>, order <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fpc_model</span><span class="op">(</span><span class="va">.data</span>, <span class="va">rates</span>, order <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>.data</dt>
-<dd><p>A tsibble including an age variable and a variable containing mortality or fertility rates.</p></dd>
-
-
-<dt>age</dt>
-<dd><p>Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` or `Age_group` will be used (not case sensitive).</p></dd>
-
-
-<dt>sex</dt>
-<dd><p>Optional variable in `.data` containing sex information. If omitted, the variable with name `Sex` or `Group` will be used (not case sensitive).</p></dd>
+<dd><p>A vital object including an age variable and a variable containing mortality or fertility rates.</p></dd>
 
 
 <dt>rates</dt>
 <dd><p>Variable in `.data` containing mortality or fertility rates.
 If omitted, it will search for a variable with one of the following names:
 `mx`, `mortality`, `fx`, `fertility` or `rate` (not case sensitive).</p></dd>
-
-
-<dt>pop</dt>
-<dd><p>Variable in `.data` containing population numbers. If omitted, it
-will search for a variable with one of the following names:
-`pop`, `population`, `ex`, `exposure`.</p></dd>
 
 
 <dt>order</dt>

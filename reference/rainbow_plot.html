@@ -57,7 +57,7 @@ against age.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>.data</dt>
-<dd><p>A tsibble or fable object including an age variable and the variable you wish to plot.</p></dd>
+<dd><p>A vital, tsibble or fable object including an age variable and the variable you wish to plot.</p></dd>
 
 
 <dt>.vars</dt>
@@ -65,7 +65,9 @@ against age.</p>
 
 
 <dt>age</dt>
-<dd><p>Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` or `Age_group` will be used (not case sensitive).</p></dd>
+<dd><p>Variable in `.data` containing start year of age intervals.
+If omitted, and `.data` is not a vital object, the variable with name `Age` or `Age_group`
+will be used (not case sensitive).</p></dd>
 
 </dl></div>
     <div class="section level2">
