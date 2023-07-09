@@ -165,8 +165,31 @@ tbl_sum.vital <- function(x) {
   }
   else {
     n_keys <- big_mark(tsibble::n_keys(x))
-    key_sum <- c(Key = paste(paste(tsibble::key_vars(x), collapse=", "), brackets(n_keys)))
+    key_sum <- c(Key = paste(comma(tsibble::key_vars(x)), brackets(n_keys)))
     c(first, key_sum)
+  }
+}
+
+
+#' @export
+tbl_sum.grouped_vital <- function(x) {
+  n_grps <- big_mark(length(group_rows(x)))
+  if (n_grps == 0) {
+    n_grps <- "?"
+  }
+  grps <- group_vars(x)
+  idx2 <- quo_name(index2(x))
+  grp_var <- setdiff(grps, idx2)
+  idx_suffix <- paste("@", idx2)
+  res_grps <- NextMethod()
+  res <- res_grps[head(names(res_grps), -1L)] # rm "Groups"
+  n_grps <- brackets(n_grps)
+  if (is_empty(grp_var)) {
+    c(res, "Groups" = paste(idx_suffix, n_grps))
+  } else if (rlang::has_length(grps, length(grp_var))) {
+    c(res, "Groups" = paste(comma(grp_var), n_grps))
+  } else {
+    c(res, "Groups" = paste(comma(grp_var), idx_suffix, n_grps))
   }
 }
 
@@ -181,4 +204,8 @@ big_mark <- function (x, ...) {
 
 brackets <- function (x) {
   paste0("[", x, "]")
+}
+
+comma <- function (...)  {
+  paste(..., collapse = ", ")
 }
