@@ -66,7 +66,7 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ..., validate = TRUE) {
           AgeGroup = rownames(x$pop[[i]]),
           Age = x$age
         ) |>
-        gather(key = "Year", value = "Exposure", -AgeGroup, -Age) |>
+        tidyr::gather(key = "Year", value = "Exposure", -AgeGroup, -Age) |>
         mutate(
           Year = as.numeric(Year),
           Group = names(x$pop)[i]
