@@ -44,7 +44,7 @@
 #' ausf_fcast |>
 #'   filter(Age == 60) |>
 #'   autoplot(aus_mortality)
-#' rainbow_plot(ausf_fcast, .mean) +
+#' rainbow_plot(ausf_fcast, .vars = .mean) +
 #'   scale_y_log10()
 #'
 #' @keywords models

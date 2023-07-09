@@ -4,30 +4,14 @@
 \alias{lee_carter}
 \title{Model mortality or fertility data using Lee-Carter approach}
 \usage{
-lee_carter(
-  .data,
-  age,
-  sex,
-  rates,
-  pop,
-  adjust = c("dt", "dxt", "e0", "none"),
-  scale = FALSE
-)
+lee_carter(.data, rates, adjust = c("dt", "dxt", "e0", "none"), scale = FALSE)
 }
 \arguments{
-\item{.data}{A tsibble including an age variable and a variable containing mortality or fertility rates.}
-
-\item{age}{Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` or `Age_group` will be used (not case sensitive).}
-
-\item{sex}{Optional variable in `.data` containing sex information. If omitted, the variable with name `Sex` or `Group` will be used (not case sensitive).}
+\item{.data}{A vital object including an age variable and a variable containing mortality or fertility rates.}
 
 \item{rates}{Variable in `.data` containing mortality or fertility rates.
 If omitted, it will search for a variable with one of the following names:
 `mx`, `mortality`, `fx`, `fertility` or `rate` (not case sensitive).}
-
-\item{pop}{Variable in `.data` containing population numbers. If omitted, it
-will search for a variable with one of the following names:
-`pop`, `population`, `ex`, `exposure`.}
 
 \item{adjust}{method to use for adjustment of coefficients \eqn{k_t kt}.
 Possibilities are

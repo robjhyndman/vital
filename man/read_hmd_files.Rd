@@ -2,7 +2,7 @@
 % Please edit documentation in R/hmd.R
 \name{read_hmd_files}
 \alias{read_hmd_files}
-\title{Read data from files downloaded from HMD and construct a tsibble object for use in other functions}
+\title{Read data from files downloaded from HMD and construct a \code{vital} object for use in other functions}
 \usage{
 read_hmd_files(Deaths = NULL, Exposures = NULL, Population = NULL, Mx = NULL)
 }
@@ -16,7 +16,7 @@ read_hmd_files(Deaths = NULL, Exposures = NULL, Population = NULL, Mx = NULL)
 \item{Mx}{File containing mortality data}
 }
 \value{
-\code{read_hmd_files} returns a \code{tsibble} object with the following variables:
+\code{read_hmd_files} returns a \code{vital} object with the following variables:
 \item{Year}{Numerical vector containing year of observation}
 \item{Age}{Numerical vector containing age group}
 \item{OpenInterval}{Logical vector indicating if the age interval is open}
@@ -28,7 +28,7 @@ read_hmd_files(Deaths = NULL, Exposures = NULL, Population = NULL, Mx = NULL)
 }
 \description{
 \code{read_hmd_files} reads 1x1 data from files downloaded from the Human Mortality
-Database (HMD \url{https://www.mortality.org}) and constructs a tsibble object suitable
+Database (HMD \url{https://www.mortality.org}) and constructs a \code{vital} object suitable
 for use in other functions. This function uses \code{\link[HMDHFDplus]{readHMD}}
 to parse the files. At least one file is required. If any file is missing, the corresponding
 variable will be missing from the output.

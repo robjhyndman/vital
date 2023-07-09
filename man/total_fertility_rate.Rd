@@ -4,17 +4,15 @@
 \alias{total_fertility_rate}
 \title{Compute total fertility rate from age-specific fertility rates}
 \usage{
-total_fertility_rate(.data, age, fertility)
+total_fertility_rate(.data, fertility)
 }
 \arguments{
-\item{.data}{A tsibble including an age variable and a variable containing fertility rates.}
-
-\item{age}{Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` or `Age_group` will be used (not case sensitive).}
+\item{.data}{A vital object including an age variable and a variable containing fertility rates.}
 
 \item{fertility}{Variable in `.data` containing fertility rates. If omitted, the variable with name  `fx`, `Fertility` or `Rate` will be used (not case sensitive).}
 }
 \value{
-A tsibble object with total fertility in column `tfr`.
+A vital object with total fertility in column `tfr`.
 }
 \description{
 Total fertility rate is the expected number of babies per woman in a life-time

@@ -1,6 +1,8 @@
 #' Coerce to a vital object
 #'
-#' A vital object is a type of tsibble that contains vital statistics such as births, deaths, and population counts, and mortality and fertility rates. It is a tsibble with a special class attribute that allows for special methods to be used.
+#' A vital object is a type of tsibble that contains vital statistics such as births, deaths, and population counts, and mortality and fertility rates.
+#' It is a tsibble with a special class that allows for special methods to be used.
+#' The object has an attribute that stores variables names needed for some functions, including age, sex, births, deaths and population.
 #'
 #' @param x Objects to be coerced to a vital format.
 #' @param ... Other arguments passed on to individual methods.
@@ -120,17 +122,19 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ..., validate = TRUE) {
   return(output)
 }
 
-#' @param age Character string specifying name of age variable (required)
-#' @param sex Character string specifying name of sex variable (optional)
-#' @param deaths Character string specifying name of deaths variable (optional)
-#' @param births Character string specifying name of births variable (optional)
-#' @param population Character string specifying name of population variable (optional)
+#' @param age Character string specifying name of age variable
+#' @param sex Character string specifying name of sex variable
+#' @param deaths Character string specifying name of deaths variable
+#' @param births Character string specifying name of births variable
+#' @param population Character string specifying name of population variable
 #' @rdname as_vital
 #' @export
 as_vital.tbl_ts <- function(x,
-  age, sex = NULL, deaths = NULL, births = NULL, population = NULL, ...) {
+  age = NULL, sex = NULL, deaths = NULL, births = NULL, population = NULL, ...) {
   # Add attributes to x to identify the various variables
-  attr(x, "agevar") <- age
+  if(!is.null(age)) {
+    attr(x, "agevar") <- age
+  }
   if(!is.null(sex)) {
     attr(x, "sexvar") <- sex
   }
@@ -173,16 +177,16 @@ tbl_sum.vital <- function(x) {
 
 #' @export
 tbl_sum.grouped_vital <- function(x) {
-  n_grps <- big_mark(length(group_rows(x)))
+  n_grps <- big_mark(length(dplyr::group_rows(x)))
   if (n_grps == 0) {
     n_grps <- "?"
   }
-  grps <- group_vars(x)
-  idx2 <- quo_name(index2(x))
+  grps <- dplyr::group_vars(x)
+  idx2 <- rlang::quo_name(tsibble::index2(x))
   grp_var <- setdiff(grps, idx2)
   idx_suffix <- paste("@", idx2)
   res_grps <- NextMethod()
-  res <- res_grps[head(names(res_grps), -1L)] # rm "Groups"
+  res <- res_grps[utils::head(names(res_grps), -1L)] # rm "Groups"
   n_grps <- brackets(n_grps)
   if (is_empty(grp_var)) {
     c(res, "Groups" = paste(idx_suffix, n_grps))

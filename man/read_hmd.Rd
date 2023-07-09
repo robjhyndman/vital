@@ -2,7 +2,7 @@
 % Please edit documentation in R/hmd.R
 \name{read_hmd}
 \alias{read_hmd}
-\title{Read data directly from HMD and construct a tsibble object for use in other functions}
+\title{Read data directly from HMD and construct a \code{vital} object for use in other functions}
 \usage{
 read_hmd(
   country,
@@ -21,7 +21,7 @@ read_hmd(
 \item{variables}{List of variables to download from the HMD.}
 }
 \value{
-\code{read_hmd} returns a \code{tsibble} object with the following variables:
+\code{read_hmd} returns a \code{vital} object with the following variables:
 \item{Year}{Numerical vector containing year of observation}
 \item{Age}{Numerical vector containing age group}
 \item{OpenInterval}{Logical vector indicating if the age interval is open}
@@ -33,7 +33,7 @@ read_hmd(
 }
 \description{
 \code{read_hmd} reads 1x1 data from the Human Mortality Database (HMD
-\url{https://www.mortality.org}) and constructs a tsibble object suitable
+\url{https://www.mortality.org}) and constructs a \code{vital} object suitable
 for use in other functions. This function uses \code{\link[HMDHFDplus]{readHMDweb}}
 to download the required data.
 }

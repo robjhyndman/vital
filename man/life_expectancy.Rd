@@ -4,21 +4,17 @@
 \alias{life_expectancy}
 \title{Compute life expectancy from mortality rates}
 \usage{
-life_expectancy(.data, from_age = 0, age, sex, mortality)
+life_expectancy(.data, from_age = 0, mortality)
 }
 \arguments{
-\item{.data}{A tsibble including an age variable and a variable containing mortality rates.}
+\item{.data}{A vital object including an age variable and a variable containing mortality rates.}
 
 \item{from_age}{Age at which life expectancy to be calculated. Either a scalar or a vector of ages.}
-
-\item{age}{Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` or `Age_group` will be used (not case sensitive).}
-
-\item{sex}{Optional variable in `.data` containing sex information. If omitted, the variable with name `Sex` or `Group` will be used (not case sensitive).}
 
 \item{mortality}{Variable in `.data` containing Mortality rates (mx). If omitted, the variable with name  `mx`, `Mortality` or `Rate` will be used (not case sensitive).}
 }
 \value{
-A tsibble object with life expectancy in column `ex`.
+A \code{vital} object with life expectancy in column `ex`.
 }
 \description{
 Returns remaining life expectancy at a given age (0 by default).

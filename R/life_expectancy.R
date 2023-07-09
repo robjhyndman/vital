@@ -2,13 +2,11 @@
 #'
 #' Returns remaining life expectancy at a given age (0 by default).
 #'
-#' @param .data A tsibble including an age variable and a variable containing mortality rates.
+#' @param .data A vital object including an age variable and a variable containing mortality rates.
 #' @param from_age Age at which life expectancy to be calculated. Either a scalar or a vector of ages.
-#' @param age Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` or `Age_group` will be used (not case sensitive).
-#' @param sex Optional variable in `.data` containing sex information. If omitted, the variable with name `Sex` or `Group` will be used (not case sensitive).
 #' @param mortality Variable in `.data` containing Mortality rates (mx). If omitted, the variable with name  `mx`, `Mortality` or `Rate` will be used (not case sensitive).
 #'
-#' @return A tsibble object with life expectancy in column `ex`.
+#' @return A \code{vital} object with life expectancy in column `ex`.
 #' @rdname life_expectancy
 #' @seealso \code{\link{life_table}()}
 #'
@@ -23,8 +21,8 @@
 #'   life_expectancy()
 #' @export
 
-life_expectancy <- function(.data, from_age = 0, age, sex, mortality) {
-  life_table(.data = .data, age = age, sex = sex, mortality = mortality) |>
+life_expectancy <- function(.data, from_age = 0, mortality) {
+  life_table(.data = .data, mortality = mortality) |>
     # Keep only relevant ages
     dplyr::filter(Age %in% from_age) |>
     # Keep only ex column plus index and keys

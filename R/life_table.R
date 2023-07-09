@@ -4,12 +4,10 @@
 #' qx = mx/(1 + ((1-ax) * mx)) as per Chiang (1984).
 #' Warning: the code has only been tested for data based on single-year age groups.
 #'
-#' @param .data A tsibble including an age variable and a variable containing mortality rates.
-#' @param age Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` or `Age_group` will be used (not case sensitive).
-#' @param sex Optional variable in `.data` containing sex information. If omitted, the variable with name `Sex` or `Group` will be used (not case sensitive).
+#' @param .data A \code{vital} including an age variable and a variable containing mortality rates.
 #' @param mortality Variable in `.data` containing Mortality rates (mx). If omitted, the variable with name  `mx`, `Mortality` or `Rate` will be used (not case sensitive).
 #'
-#' @return A tsibble object containing the index, keys, and the new life table variables `mx`, `qx`, `lx`, `dx`, `Lx`, `Tx` and `ex`.
+#' @return A vital object containing the index, keys, and the new life table variables `mx`, `qx`, `lx`, `dx`, `Lx`, `Tx` and `ex`.
 #' @rdname life_table
 #'
 #' @references Chiang CL. (1984) \emph{The life table and its applications}. Robert E Krieger Publishing Company: Malabar.
@@ -23,22 +21,19 @@
 #'   life_table()
 #' @export
 
-life_table <- function(.data, age, sex, mortality) {
+life_table <- function(.data, mortality) {
   # Index variable
   index <- tsibble::index_var(.data)
   # Keys including age
   keys <- tsibble::key_vars(.data)
 
-  # Find age and mortality columns
-  if (!missing(age)) {
-    age <- {{ age }}
-  } else {
-    age <- find_key(.data, c("age", "age_group"))
+  age <- attributes(.data)$agevar
+  if(is.null(age)) {
+    stop("No age variable found")
   }
-  if (!missing(sex)) {
-    sex <- {{ sex }}
-  } else {
-    sex <- find_key(.data, c("sex", "group"), return_error = FALSE)
+  sex <- attributes(.data)$sexvar
+  if(is.null(sex)) {
+    sex <- "None"
   }
   if (!missing(mortality)) {
     mortality <- {{ mortality }}
@@ -60,7 +55,8 @@ life_table <- function(.data, age, sex, mortality) {
   .data$data <- NULL
   tibble::as_tibble(.data) |>
     tidyr::unnest(cols = lt) |>
-    tsibble::as_tsibble(index = index, key = tidyselect::all_of(keys))
+    tsibble::as_tsibble(index = index, key = tidyselect::all_of(keys)) |>
+    as_vital(age = age, sex=sex)
 }
 
 # This is a revised version of the demography::lt function.
@@ -161,3 +157,5 @@ lt <- function(dt, sex, age, mortality) {
 
   return(result)
 }
+
+globalVariables(c("agevar","sexvar"))

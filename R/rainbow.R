@@ -3,9 +3,11 @@
 #' Produce rainbow plot (coloured by time index) of demographic variable against
 #' against age.
 #'
-#' @param .data A tsibble or fable object including an age variable and the variable you wish to plot.
+#' @param .data A vital, tsibble or fable object including an age variable and the variable you wish to plot.
 #' @param .vars A bare expression containing the name of the variable you wish to plot.
-#' @param age Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` or `Age_group` will be used (not case sensitive).
+#' @param age Variable in `.data` containing start year of age intervals.
+#' If omitted, and `.data` is not a vital object, the variable with name `Age` or `Age_group`
+#' will be used (not case sensitive).
 #'
 #' @author Rob Hyndman
 #' @references Hyndman, Rob J & Shang, Han Lin (2010) Rainbow plots, bagplots,
@@ -45,12 +47,18 @@ rainbow_plot <- function(.data, .vars = NULL, age) {
   # Index variable
   index <- tsibble::index_var(.data)
 
-  # Find age columns
-  if (!missing(age)) {
-    age <- {{ age }}
-  } else {
+  if(inherits(.data, "vital")) {
+    age <- attributes(.data)$agevar
+    if(is.null(age)) {
+      stop("No age variable found")
+    }
+  } else if(inherits(.data, "tbl_ts")) {
+    # Need to find the age variable
     age <- find_key(.data, c("age", "age_group"))
+  } else {
+    stop("Not sure how to handle this class")
   }
+
   # Drop Age as a key and nest results
   kv <- kv[kv != age]
   nk <- length(kv)

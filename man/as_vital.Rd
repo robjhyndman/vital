@@ -12,7 +12,7 @@ as_vital(x, ...)
 
 \method{as_vital}{tbl_ts}(
   x,
-  age,
+  age = NULL,
   sex = NULL,
   deaths = NULL,
   births = NULL,
@@ -31,21 +31,23 @@ as_vital(x, ...)
 of key variables leads to unique time indices (i.e. a valid tsibble). If you
 are sure that it's a valid input, specify `FALSE` to skip the checks.}
 
-\item{age}{Character string specifying name of age variable (required)}
+\item{age}{Character string specifying name of age variable}
 
-\item{sex}{Character string specifying name of sex variable (optional)}
+\item{sex}{Character string specifying name of sex variable}
 
-\item{deaths}{Character string specifying name of deaths variable (optional)}
+\item{deaths}{Character string specifying name of deaths variable}
 
-\item{births}{Character string specifying name of births variable (optional)}
+\item{births}{Character string specifying name of births variable}
 
-\item{population}{Character string specifying name of population variable (optional)}
+\item{population}{Character string specifying name of population variable}
 }
 \value{
 A vital object.
 }
 \description{
-A vital object is a type of tsibble that contains vital statistics such as births, deaths, and population counts, and mortality and fertility rates. It is a tsibble with a special class attribute that allows for special methods to be used.
+A vital object is a type of tsibble that contains vital statistics such as births, deaths, and population counts, and mortality and fertility rates.
+It is a tsibble with a special class that allows for special methods to be used.
+The object has an attribute that stores variables names needed for some functions, including age, sex, births, deaths and population.
 }
 \examples{
 # coerce demogdata object to vital

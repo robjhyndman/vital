@@ -3,10 +3,10 @@
 #' Collapse upper ages into a single age group. Counts are summed while
 #' rates are recomputed.
 #'
-#' @param .data A tsibble including an age variable and a variable containing mortality rates.
+#' @param .data A vital object including an age variable
 #' @param max_age Maximum age to include in the collapsed age group.
 #'
-#' @return A tsibble with the same variables as `.data` but with the upper ages collapsed into a single age group.
+#' @return A vital object with the same variables as `.data`, but with the upper ages collapsed into a single age group.
 #' @examples
 #' aus_mortality |>
 #'  dplyr::filter(State == "Victoria", Sex == "female") |>

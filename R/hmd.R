@@ -1,7 +1,7 @@
-#' Read data directly from HMD and construct a tsibble object for use in other functions
+#' Read data directly from HMD and construct a \code{vital} object for use in other functions
 #'
 #' \code{read_hmd} reads 1x1 data from the Human Mortality Database (HMD
-#' \url{https://www.mortality.org}) and constructs a tsibble object suitable
+#' \url{https://www.mortality.org}) and constructs a \code{vital} object suitable
 #' for use in other functions. This function uses \code{\link[HMDHFDplus]{readHMDweb}}
 #' to download the required data.
 #'
@@ -13,7 +13,7 @@
 #' @param password HMD password (case-sensitive)
 #' @param variables List of variables to download from the HMD.
 #'
-#' @return \code{read_hmd} returns a \code{tsibble} object with the following variables:
+#' @return \code{read_hmd} returns a \code{vital} object with the following variables:
 #' \item{Year}{Numerical vector containing year of observation}
 #' \item{Age}{Numerical vector containing age group}
 #' \item{OpenInterval}{Logical vector indicating if the age interval is open}
@@ -52,16 +52,27 @@ read_hmd <- function(country, username, password,
   }
 
   # Combine data into a single tsibble
+  deaths <- pop <- NULL
+  if("Deaths" %in% variables) {
+    deaths <- "Deaths"
+  }
+  if("Exposures" %in% variables) {
+    population <- "Exposures"
+  } else if ("Population" %in% variables) {
+    population <- "Population"
+  }
+
   purrr::reduce(data, dplyr::left_join, by = c("Year", "Age", "Sex", "OpenInterval")) |>
     tsibble::as_tsibble(index = Year, key = c(Age, Sex)) |>
     dplyr::arrange(Sex, Year, Age) |>
-    dplyr::rename(Mortality = Mx)
+    dplyr::rename(Mortality = Mx) |>
+    as_vital(age = "Age", sex = "Sex", deaths = deaths, population = population)
 }
 
-#' Read data from files downloaded from HMD and construct a tsibble object for use in other functions
+#' Read data from files downloaded from HMD and construct a \code{vital} object for use in other functions
 #'
 #' \code{read_hmd_files} reads 1x1 data from files downloaded from the Human Mortality
-#' Database (HMD \url{https://www.mortality.org}) and constructs a tsibble object suitable
+#' Database (HMD \url{https://www.mortality.org}) and constructs a \code{vital} object suitable
 #' for use in other functions. This function uses \code{\link[HMDHFDplus]{readHMD}}
 #' to parse the files. At least one file is required. If any file is missing, the corresponding
 #' variable will be missing from the output.
@@ -71,7 +82,7 @@ read_hmd <- function(country, username, password,
 #' @param Population File containing population data
 #' @param Mx File containing mortality data
 #'
-#' @return \code{read_hmd_files} returns a \code{tsibble} object with the following variables:
+#' @return \code{read_hmd_files} returns a \code{vital} object with the following variables:
 #' \item{Year}{Numerical vector containing year of observation}
 #' \item{Age}{Numerical vector containing age group}
 #' \item{OpenInterval}{Logical vector indicating if the age interval is open}
@@ -119,7 +130,20 @@ read_hmd_files <- function(Deaths = NULL, Exposures = NULL, Population = NULL, M
     out$Mortality <- out$Mx
     out$Mx <- NULL
   }
-  return(out)
+
+  # Combine data into a single tsibble
+  deaths <- pop <- NULL
+  if("Deaths" %in% variables) {
+    deaths <- "Deaths"
+  }
+  if("Exposures" %in% variables) {
+    population <- "Exposures"
+  } else if ("Population" %in% variables) {
+    population <- "Population"
+  }
+
+  out |>
+    as_vital(age = "Age", sex = "Sex", deaths = deaths, population = population)
 }
 
 globalVariables(c("Female","Total","Total1","Sex","Mx"))

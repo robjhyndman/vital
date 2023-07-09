@@ -4,19 +4,15 @@
 \alias{life_table}
 \title{Compute period lifetables from mortality rates}
 \usage{
-life_table(.data, age, sex, mortality)
+life_table(.data, mortality)
 }
 \arguments{
-\item{.data}{A tsibble including an age variable and a variable containing mortality rates.}
-
-\item{age}{Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` or `Age_group` will be used (not case sensitive).}
-
-\item{sex}{Optional variable in `.data` containing sex information. If omitted, the variable with name `Sex` or `Group` will be used (not case sensitive).}
+\item{.data}{A \code{vital} including an age variable and a variable containing mortality rates.}
 
 \item{mortality}{Variable in `.data` containing Mortality rates (mx). If omitted, the variable with name  `mx`, `Mortality` or `Rate` will be used (not case sensitive).}
 }
 \value{
-A tsibble object containing the index, keys, and the new life table variables `mx`, `qx`, `lx`, `dx`, `Lx`, `Tx` and `ex`.
+A vital object containing the index, keys, and the new life table variables `mx`, `qx`, `lx`, `dx`, `Lx`, `Tx` and `ex`.
 }
 \description{
 All available years and ages are included in the tables.

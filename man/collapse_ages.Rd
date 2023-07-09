@@ -8,12 +8,12 @@ rates are recomputed.}
 collapse_ages(.data, max_age = 100)
 }
 \arguments{
-\item{.data}{A tsibble including an age variable and a variable containing mortality rates.}
+\item{.data}{A vital object including an age variable}
 
 \item{max_age}{Maximum age to include in the collapsed age group.}
 }
 \value{
-A tsibble with the same variables as `.data` but with the upper ages collapsed into a single age group.
+A vital object with the same variables as `.data`, but with the upper ages collapsed into a single age group.
 }
 \description{
 Collapse upper ages into a single age group. Counts are summed while

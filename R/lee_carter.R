@@ -4,15 +4,10 @@
 #' standard Lee-Carter model by default, although many other options are
 #' available. Missing rates are set to the geometric mean rate for the relevant age.
 #'
-#' @param .data A tsibble including an age variable and a variable containing mortality or fertility rates.
-#' @param age Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` or `Age_group` will be used (not case sensitive).
-#' @param sex Optional variable in `.data` containing sex information. If omitted, the variable with name `Sex` or `Group` will be used (not case sensitive).
+#' @param .data A vital object including an age variable and a variable containing mortality or fertility rates.
 #' @param rates Variable in `.data` containing mortality or fertility rates.
 #' If omitted, it will search for a variable with one of the following names:
 #' `mx`, `mortality`, `fx`, `fertility` or `rate` (not case sensitive).
-#' @param pop Variable in `.data` containing population numbers. If omitted, it
-#' will search for a variable with one of the following names:
-#' `pop`, `population`, `ex`, `exposure`.
 #' @param adjust method to use for adjustment of coefficients \eqn{k_t kt}.
 #'   Possibilities are
 #'   \dQuote{dt} (Lee-Carter method, the default),
@@ -47,36 +42,29 @@
 #' autoplot(aus_lc$time, kt)
 #' @export
 
-lee_carter <- function(.data, age, sex, rates, pop,
+lee_carter <- function(.data, rates,
                        adjust = c("dt", "dxt", "e0", "none"),
                        scale = FALSE) {
   adjust <- match.arg(adjust)
+  if(!inherits(.data, "vital"))
+    stop(".data should be a vital object")
+  age <- attributes(.data)$agevar
+  if(is.null(age)) {
+    stop("No age variable found")
+  }
 
   # Index variable
   index <- tsibble::index_var(.data)
   # Keys including age
   keys <- tsibble::key_vars(.data)
 
-  # Find age and mortality columns
-  if (!missing(age)) {
-    age <- {{ age }}
-  } else {
-    age <- find_key(.data, c("age", "age_group", "agegroup"))
-  }
-  if (!missing(sex)) {
-    sex <- {{ sex }}
-  } else {
-    sex <- find_key(.data, c("sex", "group"), return_error = FALSE)
-  }
+  sex <- attributes(.data)$sexvar
+  pop <- attributes(.data)$populationvar
+
   if (!missing(rates)) {
     rates <- {{ rates }}
   } else {
     rates <- find_measure(.data, c("mx", "mortality", "fx", "fertility", "rate"))
-  }
-  if (!missing(pop)) {
-    pop <- {{ pop }}
-  } else {
-    pop <- find_measure(.data, c("pop", "population", "ex", "exposure"))
   }
 
   # Drop Age as a key and nest results

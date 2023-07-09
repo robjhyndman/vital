@@ -4,22 +4,14 @@
 \alias{fpc_model}
 \title{Fit a functional principal components model}
 \usage{
-fpc_model(.data, age, sex, rates, pop, order = 6)
+fpc_model(.data, rates, order = 6)
 }
 \arguments{
-\item{.data}{A tsibble including an age variable and a variable containing mortality or fertility rates.}
-
-\item{age}{Variable in `.data` containing start year of age intervals. If omitted, the variable with name `Age` or `Age_group` will be used (not case sensitive).}
-
-\item{sex}{Optional variable in `.data` containing sex information. If omitted, the variable with name `Sex` or `Group` will be used (not case sensitive).}
+\item{.data}{A vital object including an age variable and a variable containing mortality or fertility rates.}
 
 \item{rates}{Variable in `.data` containing mortality or fertility rates.
 If omitted, it will search for a variable with one of the following names:
 `mx`, `mortality`, `fx`, `fertility` or `rate` (not case sensitive).}
-
-\item{pop}{Variable in `.data` containing population numbers. If omitted, it
-will search for a variable with one of the following names:
-`pop`, `population`, `ex`, `exposure`.}
 
 \item{order}{Number of principal components to fit.}
 }
