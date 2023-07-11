@@ -4,8 +4,8 @@
 #' It is a tsibble with a special class that allows for special methods to be used.
 #' The object has an attribute that stores variables names needed for some functions, including age, sex, births, deaths and population.
 #'
-#' @param x Objects to be coerced to a vital format.
-#' @param ... Other arguments passed on to individual methods.
+#' @param x Object to be coerced to a vital format.
+#' @param ... Other arguments passed on to \code{\link[tsibble]{as_tsibble}}
 #'
 #' @return A vital object.
 #' @rdname as_vital
@@ -19,13 +19,10 @@ as_vital <- function(x, ...) {
   UseMethod("as_vital")
 }
 
-#' @param sex_groups Logical variable indicating of the groups denote sexes
-#' @param validate `TRUE` suggests to verify that each key or each combination
-#' of key variables leads to unique time indices (i.e. a valid tsibble). If you
-#' are sure that it's a valid input, specify `FALSE` to skip the checks.
+#' @param sex_groups Logical variable indicating if the groups denote sexes
 #' @rdname as_vital
 #' @export
-as_vital.demogdata <- function(x, sex_groups = TRUE, ..., validate = TRUE) {
+as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
   rates_included <- ("rate" %in% names(x))
   pop_included <- ("pop" %in% names(x))
   # Avoid CRAN error check by declaring variables
@@ -98,7 +95,7 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ..., validate = TRUE) {
       Age = as.integer(Age),
       Year = as.integer(Year)
     ) |>
-    as_tsibble(index = Year, key = c(AgeGroup, Age, Group), validate = validate) |>
+    as_tsibble(index = Year, key = c(AgeGroup, Age, Group), ...) |>
     arrange(Group, Year, Age)
   attr(output, "agevar") <- "Age"
   if(sex_groups) {
@@ -151,6 +148,19 @@ as_vital.tbl_ts <- function(x,
   class(x) <- c("vital", class(x))
   return(x)
 }
+
+#' @param index A variable to specify the time index variable.
+#' @param key Variable(s) that uniquely determine time indices. NULL for empty key, and \code{c()} for multiple variables. It works with tidy selector (e.g. \code{\link{dplyr::starts_with}()}).
+#' @param ... Other arguments passed to \code{\link[tsibble]{as_tsibble}}
+#' @rdname as_vital
+#' @export
+as_vital.data.frame <- function(x, key = NULL, index,
+    age = NULL, sex = NULL, deaths = NULL, births = NULL, population = NULL,
+    ...) {
+  as_tsibble(x, key = key, index = index, ...) |>
+    as_vital(age = age, sex = sex, deaths = deaths, births = births, population = population)
+}
+
 
 utils::globalVariables(c("Deaths","Births"))
 

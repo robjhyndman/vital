@@ -3,6 +3,7 @@
 S3method("[",vital)
 S3method(arrange,grouped_vital)
 S3method(arrange,vital)
+S3method(as_vital,data.frame)
 S3method(as_vital,demogdata)
 S3method(as_vital,tbl_ts)
 S3method(autoplot,fpc_model)

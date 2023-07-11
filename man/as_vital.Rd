@@ -4,11 +4,12 @@
 \alias{as_vital}
 \alias{as_vital.demogdata}
 \alias{as_vital.tbl_ts}
+\alias{as_vital.data.frame}
 \title{Coerce to a vital object}
 \usage{
 as_vital(x, ...)
 
-\method{as_vital}{demogdata}(x, sex_groups = TRUE, ..., validate = TRUE)
+\method{as_vital}{demogdata}(x, sex_groups = TRUE, ...)
 
 \method{as_vital}{tbl_ts}(
   x,
@@ -19,17 +20,25 @@ as_vital(x, ...)
   population = NULL,
   ...
 )
+
+\method{as_vital}{data.frame}(
+  x,
+  key = NULL,
+  index,
+  age = NULL,
+  sex = NULL,
+  deaths = NULL,
+  births = NULL,
+  population = NULL,
+  ...
+)
 }
 \arguments{
-\item{x}{Objects to be coerced to a vital format.}
+\item{x}{Object to be coerced to a vital format.}
 
-\item{...}{Other arguments passed on to individual methods.}
+\item{...}{Other arguments passed to \code{\link[tsibble]{as_tsibble}}}
 
-\item{sex_groups}{Logical variable indicating of the groups denote sexes}
-
-\item{validate}{`TRUE` suggests to verify that each key or each combination
-of key variables leads to unique time indices (i.e. a valid tsibble). If you
-are sure that it's a valid input, specify `FALSE` to skip the checks.}
+\item{sex_groups}{Logical variable indicating if the groups denote sexes}
 
 \item{age}{Character string specifying name of age variable}
 
@@ -40,6 +49,10 @@ are sure that it's a valid input, specify `FALSE` to skip the checks.}
 \item{births}{Character string specifying name of births variable}
 
 \item{population}{Character string specifying name of population variable}
+
+\item{key}{Variable(s) that uniquely determine time indices. NULL for empty key, and \code{c()} for multiple variables. It works with tidy selector (e.g. \code{\link{dplyr::starts_with}()}).}
+
+\item{index}{A variable to specify the time index variable.}
 }
 \value{
 A vital object.
