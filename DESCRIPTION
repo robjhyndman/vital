@@ -9,24 +9,27 @@ Description: Functions for analysing vital statistics based on tools
     forecasting.
 Authors@R: person("Rob", "Hyndman", email="Rob.Hyndman@monash.edu", role=c("aut", "cre", "cph"), comment = c(ORCID = "0000-0002-2140-5352"))
 Depends:
-  R (>= 3.6.0)
+  R (>= 4.1.0)
 Imports:
   cli,
   crayon,
+  distributional,
   dplyr,
   fable,
-  fabletools (>= 0.3.2.9000),
-  generics (>= 0.1.2),
+  fabletools (>= 0.3.3),
+  future.apply,
   ggplot2,
-  HMDHFDplus,
+  HMDHFDplus (>= 2.0.3),
   patchwork,
+  progressr,
   purrr,
   rlang,
   rstudioapi,
   tibble,
   tidyr,
   tidyselect,
-  tsibble
+  tsibble,
+  vctrs
 Suggests:
   demography,
   testthat (>= 3.0.0)

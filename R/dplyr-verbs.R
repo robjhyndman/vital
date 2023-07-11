@@ -21,7 +21,7 @@ select.vital <- function(.data, ...) {
            population = attr_data$populationvar)
 }
 
-#' @exportS3Method dplyr::transmute
+#' @export
 transmute.vital <- function(.data, ...) {
   attr_data <- attributes(.data)
   as_vital(NextMethod(), age = attr_data$agevar,
@@ -113,7 +113,7 @@ arrange.grouped_vital <- arrange.vital
 #' @export
 select.grouped_vital <- select.vital
 
-#' @exportS3Method dplyr::transmute
+#' @export
 transmute.grouped_vital <- transmute.vital
 
 #' @exportS3Method dplyr::summarise

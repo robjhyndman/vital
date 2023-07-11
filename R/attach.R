@@ -5,7 +5,7 @@
 
 core <- c(
   "tsibble",
-  "fable",
+#  "fable",
   "fabletools"
 )
 
