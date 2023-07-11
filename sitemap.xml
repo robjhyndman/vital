@@ -10,6 +10,9 @@
     <loc>https://pkg.robjhyndman.com/vital/index.html</loc>
   </url>
   <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/AVERAGE.html</loc>
+  </url>
+  <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/as_vital.html</loc>
   </url>
   <url>
@@ -25,13 +28,28 @@
     <loc>https://pkg.robjhyndman.com/vital/reference/collapse_ages.html</loc>
   </url>
   <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/fitted.model_ave.html</loc>
+  </url>
+  <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/forecast.lc_model.html</loc>
+  </url>
+  <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/forecast.model_ave.html</loc>
   </url>
   <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/fpc_model.html</loc>
   </url>
   <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/generate.model_ave.html</loc>
+  </url>
+  <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/glance.model_ave.html</loc>
+  </url>
+  <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/interpolate.html</loc>
   </url>
   <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/lee_carter.html</loc>
@@ -41,6 +59,9 @@
   </url>
   <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/life_table.html</loc>
+  </url>
+  <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/model.html</loc>
   </url>
   <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/rainbow_plot.html</loc>
@@ -53,6 +74,15 @@
   </url>
   <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/reexports.html</loc>
+  </url>
+  <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/refit.model_ave.html</loc>
+  </url>
+  <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/residuals.model_ave.html</loc>
+  </url>
+  <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/tidy.html</loc>
   </url>
   <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/total_fertility_rate.html</loc>
