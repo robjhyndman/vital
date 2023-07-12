@@ -14,7 +14,7 @@ train_ave <- function(.data, ...) {
     mutate(.resid = .data[[measures]] - .fitted)
   sigma <- out |>
     group_by(across(all_of(agevar))) |>
-    summarise(sd = sd(.resid, na.rm=TRUE))
+    summarise(sigma = sd(.resid, na.rm=TRUE))
   out <- out |>
     as_tsibble(index = indexvar, key=agevar) |>
     as_vital(.age = agevar) |>
@@ -26,7 +26,7 @@ train_ave <- function(.data, ...) {
   structure(
     list(
       fitted = out,
-    model = model,
+      model = model,
       nobs = sum(!is.na(.data[[measures]]))
     ),
     class = "model_ave"
@@ -100,9 +100,9 @@ AVERAGE <- function(formula, ...) {
 forecast.model_ave <- function(object, new_data, bootstrap = FALSE, times = 5000, ...) {
   h <- NROW(new_data)
 
-  y_ave <- object$mean
-  n <- length(object$resid)
-  sigma <- object$sigma
+  y_ave <- object$model$mean
+  n <- length(object$fitted$resid)
+  sigma <- object$model$sigma
 
   # Produce forecasts
   if (bootstrap) { # Compute prediction intervals using simulations
@@ -183,7 +183,7 @@ interpolate.model_ave <- function(object, new_data, ...) {
 #'
 #' @export
 fitted.model_ave <- function(object, ...) {
-  object$fitted
+  object$fitted$.fitted
 }
 
 #' Residuals from a mean model
@@ -193,7 +193,7 @@ fitted.model_ave <- function(object, ...) {
 #'
 #' @export
 residuals.model_ave <- function(object, ...) {
-  object$resid
+  object$fitted$.resid
 }
 
 #' Glance a average method model
@@ -208,7 +208,7 @@ residuals.model_ave <- function(object, ...) {
 #'
 #' @export
 glance.model_ave <- function(x, ...) {
-  tibble(sigma2 = x$sigma^2)
+  stop("Not sure what to put here yet")
 }
 
 #' Extract model coefficients from a mable
@@ -222,25 +222,22 @@ glance.model_ave <- function(x, ...) {
 #' @rdname tidy
 #' @export
 tidy.model_ave <- function(x, ...) {
-  mu <- x$mean
-  se <- x$sigma / sqrt(x$nobs)
-  stat <- mu/se
-  tibble(term = "mean", estimate = mu, std.error = se,
-         statistic = stat,
-         p.value = 2 * stats::pt(abs(stat), x$nobs - 1, lower.tail = FALSE))
+  x$model  |>
+    mutate(
+      term = "mean",
+      estimate = mean,
+      std.error = sigma / sqrt(x$nobs),
+      stat = mean/std.error,
+      p.value = 2 * stats::pt(abs(stat), x$nobs - 1, lower.tail = FALSE)
+    ) |>
+    select(-mean, -sigma)
 }
+
 
 #' @export
 report.model_ave <- function(object, ...) {
   cat("\n")
-  agevar <- attributes(object$data)$agevar
-  out <- tibble(
-    age = unique(object$data[[agevar]]),
-    mean = object$mean,
-    sigma = object$sigma
-  )
-  colnames(out)[1] <- agevar
-  print(out)
+  print(object$model)
 }
 
 #' @export
