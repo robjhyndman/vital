@@ -1,5 +1,5 @@
 #' @importFrom stats sd
-train_ave <- function(.data, ...) {
+train_fmean <- function(.data, ...) {
   indexvar <- index(.data)
   agevar <- attributes(.data)$agevar
   measures <- measured_vars(.data)
@@ -29,7 +29,7 @@ train_ave <- function(.data, ...) {
       model = model,
       nobs = sum(!is.na(.data[[measures]]))
     ),
-    class = "model_ave"
+    class = "model_fmean"
   )
 }
 
@@ -37,7 +37,7 @@ train_ave <- function(.data, ...) {
 #'
 #' \code{FMEAN()} returns an iid functional model applied to the formula's response variable.
 #'
-#' @aliases report.model_ave
+#' @aliases report.model_fmean
 #'
 #' @param formula Model specification.
 #' @param ... Not used.
@@ -52,7 +52,7 @@ train_ave <- function(.data, ...) {
 #'   model(mean = FMEAN(Mortality))
 #' @export
 FMEAN <- function(formula, ...) {
-  mean_model <- new_model_class("mean", train = train_ave)
+  mean_model <- new_model_class("mean", train = train_fmean)
   new_model_definition(mean_model, !!enquo(formula), ...)
 }
 
@@ -95,10 +95,10 @@ FMEAN <- function(formula, ...) {
 #' @importFrom utils tail
 #'
 #' @export
-forecast.model_ave <- function(object, new_data, bootstrap = FALSE, times = 5000, ...) {
+forecast.model_fmean <- function(object, new_data, bootstrap = FALSE, times = 5000, ...) {
   h <- NROW(new_data)
 
-  y_ave <- object$model$mean
+  y_fmean <- object$model$mean
   n <- length(object$fitted$resid)
   sigma <- object$model$sigma
 
@@ -111,7 +111,7 @@ forecast.model_ave <- function(object, new_data, bootstrap = FALSE, times = 5000
       map(as.numeric)
     distributional::dist_sample(sim)
   } else {
-    fc <- rep(y_ave, h)
+    fc <- rep(y_fmean, h)
     se <- sigma * sqrt(1 + 1 / n)
     distributional::dist_normal(fc, se)
   }
@@ -126,7 +126,7 @@ forecast.model_ave <- function(object, new_data, bootstrap = FALSE, times = 5000
 #' @importFrom stats na.omit
 #'
 #' @export
-generate.model_ave <- function(x, new_data, bootstrap = FALSE, ...) {
+generate.model_fmean <- function(x, new_data, bootstrap = FALSE, ...) {
   f <- x$mean
 
   if (!(".innov" %in% names(new_data))) {
@@ -155,7 +155,7 @@ generate.model_ave <- function(x, new_data, bootstrap = FALSE, ...) {
 #'
 #' @rdname interpolate
 #' @export
-interpolate.model_ave <- function(object, new_data, ...) {
+interpolate.model_fmean <- function(object, new_data, ...) {
   agevar <- attributes(new_data)$agevar
   measures <- measured_vars(new_data)
   measures <- measures[measures != agevar]
@@ -173,7 +173,7 @@ interpolate.model_ave <- function(object, new_data, ...) {
 #' @param ... Not used.
 #'
 #' @export
-fitted.model_ave <- function(object, ...) {
+fitted.model_fmean <- function(object, ...) {
   object$fitted$.fitted
 }
 
@@ -183,7 +183,7 @@ fitted.model_ave <- function(object, ...) {
 #' @param ... Not used.
 #'
 #' @export
-residuals.model_ave <- function(object, ...) {
+residuals.model_fmean <- function(object, ...) {
   object$fitted$.resid
 }
 
@@ -198,7 +198,7 @@ residuals.model_ave <- function(object, ...) {
 #' @return A one row tibble summarising the model's fit.
 #'
 #' @export
-glance.model_ave <- function(x, ...) {
+glance.model_fmean <- function(x, ...) {
   stop("Not sure what to put here yet")
 }
 
@@ -212,7 +212,7 @@ glance.model_ave <- function(x, ...) {
 #'
 #' @rdname tidy
 #' @export
-tidy.model_ave <- function(x, ...) {
+tidy.model_fmean <- function(x, ...) {
   x$model  |>
     mutate(
       term = "mean",
@@ -226,13 +226,13 @@ tidy.model_ave <- function(x, ...) {
 
 
 #' @export
-report.model_ave <- function(object, ...) {
+report.model_fmean <- function(object, ...) {
   cat("\n")
   print(object$model)
 }
 
 #' @export
-model_sum.model_ave <- function(x) {
+model_sum.model_fmean <- function(x) {
   paste0("FMEAN") # , ", intToUtf8(0x3BC), "=", format(x$par$estimate))
 }
 
