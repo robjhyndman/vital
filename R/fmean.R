@@ -96,12 +96,6 @@ FMEAN <- function(formula, ...) {
 #'
 #' @export
 forecast.model_fmean <- function(object, new_data, bootstrap = FALSE, times = 5000, ...) {
-  h <- NROW(new_data)
-
-  y_fmean <- object$model$mean
-  n <- length(object$fitted$resid)
-  sigma <- object$model$sigma
-
   # Produce forecasts
   if (bootstrap) { # Compute prediction intervals using simulations
     sim <- map(seq_len(times), function(x) {
@@ -111,9 +105,11 @@ forecast.model_fmean <- function(object, new_data, bootstrap = FALSE, times = 50
       map(as.numeric)
     distributional::dist_sample(sim)
   } else {
-    fc <- rep(y_fmean, h)
-    se <- sigma * sqrt(1 + 1 / n)
-    distributional::dist_normal(fc, se)
+    agevar <- attributes(new_data)$agevar
+    new_data |>
+      left_join(object$model, by = agevar) |>
+      transmute(fc = distributional::dist_normal(mean, sigma))  |>
+      pull(fc)
   }
 }
 
@@ -237,16 +233,16 @@ model_sum.model_fmean <- function(x) {
 }
 
 slide_dbl <- function (.x, .fn, ..., .size = 1, .partial = FALSE) {
-    out <- numeric(if (.partial)
-        length(.x)
+  out <- numeric(if (.partial)
+    length(.x)
     else length(.x) - .size + 1)
-    for (i in seq_along(out)) {
-        idx <- seq.int(i + .size * (-1L + !.partial) + .partial,
-            i + (.size * !.partial) - 1 + .partial, by = 1L)
-        idx[idx <= 0] <- NA_integer_
-        out[i] <- .fn(.x[idx], ...)
-    }
-    out
+  for (i in seq_along(out)) {
+    idx <- seq.int(i + .size * (-1L + !.partial) + .partial,
+                   i + (.size * !.partial) - 1 + .partial, by = 1L)
+    idx[idx <= 0] <- NA_integer_
+    out[i] <- .fn(.x[idx], ...)
+  }
+  out
 }
 
 globalVariables(c(".resid", "sigma", "std.error", "stat"))

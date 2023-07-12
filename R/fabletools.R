@@ -169,3 +169,37 @@ assert_key_data <- function (x) {
         abort("The `key` attribute must be a data frame with its last column called `.rows`.")
     }
 }
+
+build_fable <- function (x, response, distribution) {
+    response <- eval_tidy(enquo(response))
+    distribution <- names(x)[tidyselect::eval_select(enquo(distribution),
+        x)]
+    if (is_grouped_ts(x)) {
+        fbl <- structure(x, class = c("grouped_fbl", "grouped_ts",
+            "grouped_df", "fbl_ts", "tbl_ts", "tbl_df", "tbl",
+            "data.frame"), response = response, dist = distribution,
+            model_cn = ".model")
+    }
+    else {
+        fbl <- tsibble::new_tsibble(x, response = response, dist = distribution,
+            model_cn = ".model", class = "fbl_ts")
+    }
+    if (is.null(dimnames(fbl[[distribution]]))) {
+        warn("The dimnames of the fable's distribution are missing and have been set to match the response variables.")
+        dimnames(fbl[[distribution]]) <- response
+    }
+    if (!identical(response, dimnames(fbl[[distribution]]))) {
+        dimnames(fbl[[distribution]]) <- response
+    }
+    validate_fable(fbl)
+    fbl
+}
+validate_fable <- function (fbl)  {
+    stopifnot(inherits(fbl, "fbl_ts"))
+    chr_dist <- distribution_var(fbl)
+    if (!(chr_dist %in% names(fbl))) {
+        abort(sprintf("Could not find distribution variable `%s` in the fable. A fable must contain a distribution, if you want to remove it convert to a tsibble with `as_tsibble()`.",
+            chr_dist))
+    }
+    vctrs::vec_assert(fbl[[chr_dist]], distributional::new_dist(dimnames = response_vars(fbl)))
+}

@@ -327,17 +327,15 @@ interpolate.mdl_vtl_df <- function (object, new_data, ...) {
   if (length(mable_vars(object)) > 1) {
     abort("Interpolation can only be done using one model. \nPlease use select() to choose the model to interpolate with.")
   }
-  # Nest new_data to have same key structure as object
   keys <- key_vars(new_data)
   agevar <- attributes(new_data)$agevar
   keys_noage <- keys[keys != agevar]
   index <- index_var(new_data)
   object <- bind_new_data(object, new_data)
-  kv <- keys_noage
-  object <- transmute(as_tibble(object), !!!syms(kv),
+  object <- transmute(as_tibble(object), !!!syms(keys_noage),
           interpolated = map2(!!sym(mable_vars(object)), new_data, interpolate, ...))
   unnest_tbl(object, "interpolated") |>
-    as_tsibble(index = index, key = c(agevar, kv)) |>
+    as_tsibble(index = index, key = c(agevar, keys_noage)) |>
     as_vital(.age = agevar, reorder = TRUE)
 }
 
