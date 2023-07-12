@@ -158,21 +158,14 @@ generate.model_ave <- function(x, new_data, bootstrap = FALSE, ...) {
 #' @rdname interpolate
 #' @export
 interpolate.model_ave <- function(object, new_data, ...) {
-  # Get inputs
-  y <- new_data[[measured_vars(new_data)]]
-  window_size <- object$window
+  agevar <- attributes(new_data)$agevar
+  measures <- measured_vars(new_data)
+  measures <- measures[measures != agevar]
+  y <- new_data[[measures]]
   miss_val <- is.na(y)
+  fits <- object$fitted$.fitted
 
-  if (!is.na(window_size)) {
-    fits <- dplyr::lag(
-      slide_dbl(y, mean, na.rm = TRUE, .size = window_size, .partial = TRUE)
-    )[miss_val]
-  }
-  else {
-    fits <- object$mean
-  }
-
-  new_data[[measured_vars(new_data)]][miss_val] <- fits
+  new_data[[measures]][miss_val] <- fits[miss_val]
   new_data
 }
 

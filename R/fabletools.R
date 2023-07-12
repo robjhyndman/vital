@@ -99,3 +99,73 @@ unnest_tsbl <- function (.data, tsbl_col, parent_key = NULL, interval = NULL)
         ordered = is_ordered(tsbl), interval = interval %||% interval(tsbl),
         validate = FALSE)
 }
+
+bind_new_data <- function (object, new_data) {
+    if (inherits(new_data, "list")) {
+        scenario_nm <- attr(new_data, "names_to") %||% ".scenario"
+        new_data <- vctrs::vec_rbind(!!!map(new_data, compose(as_tibble,
+            bind_new_data), object = object), .names_to = scenario_nm)
+        return(build_mable(new_data, key = c(scenario_nm, key_vars(object)),
+            model = mable_vars(object)))
+    }
+    if (!is.data.frame(new_data)) {
+        abort(sprintf("`new_data` requires a data frame. Perhaps you intended to specify the forecast horizon? If so, use `h = %s`.",
+            deparse(new_data)))
+    }
+    keys <- key_vars(new_data)
+    agevar <- attributes(new_data)$agevar
+    keys_noage <- keys[keys != agevar]
+    if (!identical(key_vars(object), keys_noage)) {
+        abort("Provided data contains a different key structure to the models.")
+    }
+    new_data <- nest_keys(new_data, "new_data")
+    if (length(key_vars(object)) > 0) {
+        attr_object <- attributes(object)
+        object <- left_join(as_tibble(object), as_tibble(new_data), by = key_vars(object))
+        attributes(object) <- attr_object
+        colnames(object)[NCOL(object)] <- "new_data"
+        no_new_data <- map_lgl(object[["new_data"]], is_null)
+        if (any(no_new_data)) {
+            object[["new_data"]][no_new_data] <- rep(list(new_data[["new_data"]][[1]][0,
+                ]), sum(no_new_data))
+        }
+    }
+    else {
+        object[["new_data"]] <- new_data[["new_data"]]
+    }
+    object
+}
+build_mable <- function (x, key = NULL, key_data = NULL, model = NULL)  {
+    model <- names(tidyselect::eval_select(enquo(model), data = x))
+    if (length(resp_var <- unique(map(x[model], function(mdl) response_vars(mdl[[1]])))) >
+        1) {
+        abort("A mable can only contain models with the same response variable(s).")
+    }
+    if (length(resp_var) == 0) {
+        abort("A mable must contain at least one model.")
+    }
+    if (!is_null(key_data)) {
+        assert_key_data(key_data)
+        key <- utils::head(names(key_data), -1L)
+    }
+    else {
+        key <- names(tidyselect::eval_select(enquo(key), data = x))
+        key_data <- group_data(group_by(x, !!!syms(key)))
+    }
+    if (any(map_int(key_data[[length(key_data)]], length) > 1)) {
+        abort("The result is not a valid mable. The key variables must uniquely identify each row.")
+    }
+    build_mable_meta(x, key_data, model, response = resp_var[[1]])
+}
+
+build_mable_meta <- function (x, key_data, model, response) {
+    tibble::new_tibble(x, key = key_data, model = model, response = response,
+        nrow = NROW(x), class = "mdl_df", subclass = "mdl_df")
+}
+assert_key_data <- function (x) {
+    nc <- NCOL(x)
+    if (is_false(is.data.frame(x) && nc > 0 && is.list(x[[nc]]) &&
+        names(x)[[nc]] == ".rows")) {
+        abort("The `key` attribute must be a data frame with its last column called `.rows`.")
+    }
+}

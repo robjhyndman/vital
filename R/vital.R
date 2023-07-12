@@ -177,7 +177,11 @@ as_vital.tbl_ts <- function(x,
   class(x) <- c("vital", class(x))
   # Sort variables
   if(reorder) {
-    x <- select(x, index_var(x), attributes(x)$agevar, everything())
+    agevar <- attributes(x)$agevar
+    keys <- key_vars(x)
+    keys_noage <- keys[keys != agevar]
+    x <- select(x, index_var(x), attributes(x)$agevar, everything())  |>
+      arrange(across(all_of(c(index_var(x), keys_noage, agevar))))
   }
   return(x)
 }

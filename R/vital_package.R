@@ -3,7 +3,7 @@
 #' @import fabletools
 #' @importFrom crayon bold red green blue col_align col_nchar make_style style
 #' @importFrom dplyr mutate rename select arrange if_else full_join %>% transmute
-#' @importFrom dplyr ungroup group_by summarise left_join across
+#' @importFrom dplyr ungroup group_by summarise left_join across group_data
 #' @importFrom ggplot2 ggplot aes geom_line autoplot xlab
 #' @importFrom grDevices rainbow
 #' @importFrom purrr map map2 map_dfr map_chr map_lgl transpose possibly compose
@@ -14,7 +14,7 @@
 #' @importFrom rlang is_syntactic_literal is_symbol new_function set_names missing_arg
 #' @importFrom rlang call2 get_env new_formula expr_name new_environment enexpr
 #' @importFrom rlang quo_get_expr quo_is_call caller_env as_string
-#' @importFrom rlang rep_along new_quosure expr call_name as_label
+#' @importFrom rlang rep_along new_quosure expr call_name as_label is_false
 #' @importFrom stats na.omit ts residuals fitted
 #' @importFrom tibble as_tibble tibble
 #' @importFrom tidyselect eval_select everything all_of
