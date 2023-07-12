@@ -203,3 +203,4 @@ estimate.vital <- function (.data, .model, ...) {
   new_model(fit, .model, .data, parsed$response, parsed$transformation)
 }
 
+globalVariables(c(".rows","data"))

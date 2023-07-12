@@ -45,7 +45,7 @@ relocate.vital <- function(.data, ...) {
           .population = attr_data$populationvar)
 }
 
-#' @exportS3Method dplyr::summarise
+#' @export
 summarise.vital <- function(.data, ..., .groups = NULL) {
   attr_data <- attributes(.data)
   as_vital(NextMethod(),
@@ -90,7 +90,7 @@ dplyr_reconstruct.vital <- function(data, template) {
 }
 
 #' @importFrom dplyr group_by_drop_default
-#' @exportS3Method dplyr::group_by
+#' @export
 group_by.vital <- function(.data, ..., .add = FALSE,
                            .drop = group_by_drop_default(.data)) {
   attr_data <- attributes(.data)
@@ -106,7 +106,7 @@ group_by.vital <- function(.data, ..., .add = FALSE,
   return(tmp)
 }
 
-#' @exportS3Method dplyr::ungroup
+#' @export
 ungroup.grouped_vital <- function(x, ...) {
   attr_data <- attributes(x)
   as_vital(NextMethod(),
@@ -126,7 +126,7 @@ select.grouped_vital <- select.vital
 #' @export
 transmute.grouped_vital <- transmute.vital
 
-#' @exportS3Method dplyr::summarise
+#' @export
 summarise.grouped_vital <- summarise.vital
 
 #' @exportS3Method dplyr::dplyr_row_slice
