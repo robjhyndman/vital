@@ -7,22 +7,26 @@ train_ave <- function(.data, ...) {
   ave_measure <- .data |>
     as_tibble() |>
     group_by(across(all_of(agevar))) |>
-    summarise(fitted = mean(.data[[measures]], na.rm=TRUE))
+    summarise(.fitted = mean(.data[[measures]], na.rm=TRUE))
   out <- .data |>
     as_tibble() |>
     left_join(ave_measure, by = agevar) |>
-    mutate(resid = .data[[measures]] - fitted)
+    mutate(.resid = .data[[measures]] - .fitted)
   sigma <- out |>
     group_by(across(all_of(agevar))) |>
-    summarise(sd = sd(resid, na.rm=TRUE)) |>
-    pull(sd)
+    summarise(sd = sd(.resid, na.rm=TRUE))
+  out <- out |>
+    as_tsibble(index = indexvar, key=agevar) |>
+    as_vital(.age = agevar) |>
+    select(indexvar, agevar, everything())
+  model <- ave_measure |>
+    rename(mean = .fitted) |>
+    left_join(sigma, by = agevar)
+
   structure(
     list(
-      data = .data,
-      fitted = out$fitted,
-      resid = out$resid,
-      mean = ave_measure$fitted,
-      sigma = sigma,
+      fitted = out,
+    model = model,
       nobs = sum(!is.na(.data[[measures]]))
     ),
     class = "model_ave"
@@ -306,3 +310,5 @@ slide_dbl <- function (.x, .fn, ..., .size = 1, .partial = FALSE) {
     }
     out
 }
+
+globalVariables(c(".resid"))
