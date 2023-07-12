@@ -203,25 +203,3 @@ estimate.vital <- function (.data, .model, ...) {
   new_model(fit, .model, .data, parsed$response, parsed$transformation)
 }
 
-# More fabletools functions below
-
-is.formula <- function(x) {
-  inherits(x, "formula")
-}
-
-traverse <- function (x, .f = list, .g = identity, .h = identity,
-  base = function(.x)  is_syntactic_literal(.x) || is_symbol(.x))  {
-    if (base(x))
-        return(.h(x))
-    .f(lapply(.g(x), traverse, .f = .f, .g = .g, .h = .h, base = base),
-        .h(x))
-}
-
-names_no_null <- function (x) {
-    names(x) %||% rep_along(x, "")
-}
-
-new_model <- function (fit = NULL, model, data, response, transformation) {
-    structure(list(fit = fit, model = model, data = data, response = response,
-        transformation = transformation), class = "mdl_ts")
-}

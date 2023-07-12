@@ -7,7 +7,10 @@ Description: Functions for analysing vital statistics based on tools
     lifetable calculations, computing net migration numbers, Lee-Carter
     modelling; functional data modelling and stochastic population
     forecasting.
-Authors@R: person("Rob", "Hyndman", email="Rob.Hyndman@monash.edu", role=c("aut", "cre", "cph"), comment = c(ORCID = "0000-0002-2140-5352"))
+Authors@R: c(
+  person("Rob", "Hyndman", email="Rob.Hyndman@monash.edu", role=c("aut", "cre", "cph"), comment = c(ORCID = "0000-0002-2140-5352")),
+  person("Mitchell", "O'Hara-Wild", role = "aut", comment = c(ORCID = "0000-0001-6729-7695"))
+  )
 Depends:
   R (>= 4.1.0)
 Imports:
