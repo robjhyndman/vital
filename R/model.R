@@ -321,3 +321,5 @@ residuals.mdl_vtl_df <- function(object, ...) {
     as_tsibble(index = index, key = c(kv, agevar, ".model")) |>
     as_vital(.age = agevar, reorder = TRUE)
 }
+
+globalVariables(c(".rows", "data", "calc"))

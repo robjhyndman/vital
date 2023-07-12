@@ -308,4 +308,4 @@ slide_dbl <- function (.x, .fn, ..., .size = 1, .partial = FALSE) {
     out
 }
 
-globalVariables(c(".resid"))
+globalVariables(c(".resid", "sigma", "std.error", "stat"))
