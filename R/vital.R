@@ -7,14 +7,14 @@
 #' including age, sex, births, deaths and population.
 #' @param key Variable(s) that uniquely determine time indices. NULL for empty key,
 #' and \code{c()} for multiple variables. It works with tidy selector
-#' (e.g. \code{\link{dplyr::starts_with}()}).
+#' (e.g. \code{\link[dplyr]{starts_with}()}).
 #' @param ... A set of name-value pairs
 #' @param index A variable to specify the time index variable.
-#' @param .age Character string specifying name of age variable
-#' @param .sex Character string specifying name of sex variable
-#' @param .deaths Character string specifying name of deaths variable
-#' @param .births Character string specifying name of births variable
-#' @param .population Character string specifying name of population variable
+#' @param .age Name of age variable
+#' @param .sex Name of sex variable
+#' @param .deaths Name of deaths variable
+#' @param .births Name of births variable
+#' @param .population Name of population variable
 #' @param regular	Regular time interval (TRUE) or irregular (FALSE). The interval
 #' is determined by the greatest common divisor of index column, if TRUE.
 #' @param .drop If TRUE, empty key groups are dropped.
@@ -146,30 +146,30 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
            .births = birthsvar, .population = popvar)
 }
 
-#' @param .age Character string specifying name of age variable
-#' @param .sex Character string specifying name of sex variable
-#' @param .deaths Character string specifying name of deaths variable
-#' @param .births Character string specifying name of births variable
-#' @param .population Character string specifying name of population variable
+#' @param .age Name of age variable
+#' @param .sex Name of sex variable
+#' @param .deaths Name of deaths variable
+#' @param .births Name of births variable
+#' @param .population Name of population variable
 #' @rdname as_vital
 #' @export
 as_vital.tbl_ts <- function(x,
   .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL, ...) {
   # Add attributes to x to identify the various variables
-  if(!quo_is_null(enquo(.age))) {
-    attr(x, "agevar") <- names(eval_select(enquo(.age), data =x))
+  if(!is.null(.age) & !quo_is_null(enquo(.age))) {
+    attr(x, "agevar") <- as_name(.age)
   }
-  if(!quo_is_null(enquo(.sex))) {
-    attr(x, "sexvar") <- names(eval_select(enquo(.sex), data =x))
+  if(!is.null(.sex) & !quo_is_null(enquo(.sex))) {
+    attr(x, "sexvar") <- as.name(.sex)
   }
-  if(!quo_is_null(enquo(.deaths))) {
-    attr(x, "deathsvar") <- names(eval_select(enquo(.deaths), data =x))
+  if(!is.null(.deaths) & !quo_is_null(enquo(.deaths))) {
+    attr(x, "deathsvar") <- as.name(.deaths)
   }
-  if(!quo_is_null(enquo(.births))) {
-    attr(x, "birthsvar") <- names(eval_select(enquo(.births), data =x))
+  if(!is.null(.births) & !quo_is_null(enquo(.births))) {
+    attr(x, "birthsvar") <- as.name(.births)
   }
-  if(!quo_is_null(enquo(.population))) {
-    attr(x, "populationvar") <- names(eval_select(enquo(.population), data =x))
+  if(!is.null(.population) & !quo_is_null(enquo(.population))) {
+    attr(x, "populationvar") <- as.name(.population)
   }
   # Add additional class
   class(x) <- c("vital", class(x))
@@ -177,7 +177,9 @@ as_vital.tbl_ts <- function(x,
 }
 
 #' @param index A variable to specify the time index variable.
-#' @param key Variable(s) that uniquely determine time indices. NULL for empty key, and \code{c()} for multiple variables. It works with tidy selector (e.g. \code{\link{dplyr::starts_with}()}).
+#' @param key Variable(s) that uniquely determine time indices. NULL for empty key,
+#' and \code{c()} for multiple variables. It works with tidy selector
+#' (e.g. \code{\link[dplyr]{starts_with}()}).
 #' @param ... Other arguments passed to \code{\link[tsibble]{as_tsibble}}
 #' @rdname as_vital
 #' @export

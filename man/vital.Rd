@@ -22,19 +22,19 @@ vital(
 
 \item{key}{Variable(s) that uniquely determine time indices. NULL for empty key,
 and \code{c()} for multiple variables. It works with tidy selector
-(e.g. \code{\link{dplyr::starts_with}()}).}
+(e.g. \code{\link[dplyr]{starts_with}()}).}
 
 \item{index}{A variable to specify the time index variable.}
 
-\item{.age}{Character string specifying name of age variable}
+\item{.age}{Name of age variable}
 
-\item{.sex}{Character string specifying name of sex variable}
+\item{.sex}{Name of sex variable}
 
-\item{.deaths}{Character string specifying name of deaths variable}
+\item{.deaths}{Name of deaths variable}
 
-\item{.births}{Character string specifying name of births variable}
+\item{.births}{Name of births variable}
 
-\item{.population}{Character string specifying name of population variable}
+\item{.population}{Name of population variable}
 
 \item{regular}{Regular time interval (TRUE) or irregular (FALSE). The interval
 is determined by the greatest common divisor of index column, if TRUE.}

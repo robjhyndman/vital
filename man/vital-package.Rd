@@ -29,5 +29,10 @@ Useful links:
 \author{
 \strong{Maintainer}: Rob Hyndman \email{Rob.Hyndman@monash.edu} (\href{https://orcid.org/0000-0002-2140-5352}{ORCID}) [copyright holder]
 
+Authors:
+\itemize{
+  \item Mitchell O'Hara-Wild (\href{https://orcid.org/0000-0001-6729-7695}{ORCID})
+}
+
 }
 \keyword{internal}
