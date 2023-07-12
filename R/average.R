@@ -245,56 +245,6 @@ model_sum.model_ave <- function(x) {
   paste0("AVERAGE") # , ", intToUtf8(0x3BC), "=", format(x$par$estimate))
 }
 
-#' Refit a AVERAGE model
-#'
-#' Applies a fitted average method model to a new dataset.
-#'
-#' @param object A mable
-#' @param new_data A dataset with the same structure as the data used to fit the model.
-#' @param reestimate If `TRUE`, the mean for the fitted model will be re-estimated
-#' to suit the new data.
-#' @param ... Additional arguments not used.
-#'
-#' @examples
-#' lung_deaths_male <- as_tsibble(mdeaths)
-#' lung_deaths_female <- as_tsibble(fdeaths)
-#'
-#' fit <- lung_deaths_male %>%
-#'   model(AVERAGE(value))
-#'
-#' report(fit)
-#'
-#' fit %>%
-#'   refit(lung_deaths_female) %>%
-#'   report()
-#' @export
-refit.model_ave <- function(object, new_data, reestimate = FALSE, ...) {
-  # Update data for re-evaluation
-
-  if (reestimate) {
-    return(train_ave(new_data, ...))
-  }
-
-  y <- unclass(new_data)[[measured_vars(new_data)]]
-
-  if (all(is.na(y))) {
-    abort("All new observations are missing, model cannot be applied.")
-  }
-
-  n <- length(y)
-
-  fits <- rep(object$mean, n)
-  res <- y - fits
-  sigma <- sd(res, na.rm = TRUE)
-
-  object$fitted <- fits
-  object$resid <- res
-  object$sigma <- sigma
-  object$nobs <- sum(!is.na(y))
-  object
-}
-
-
 slide_dbl <- function (.x, .fn, ..., .size = 1, .partial = FALSE) {
     out <- numeric(if (.partial)
         length(.x)
