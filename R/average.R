@@ -35,7 +35,7 @@ train_ave <- function(.data, ...) {
 
 #' Mean models
 #'
-#' \code{AVERAGE()} returns an iid model applied to the formula's response variable.
+#' \code{FMEAN()} returns an iid functional model applied to the formula's response variable.
 #'
 #' @aliases report.model_ave
 #'
@@ -44,16 +44,14 @@ train_ave <- function(.data, ...) {
 #'
 #' @return A model specification.
 #'
-#' @seealso
-#' [Forecasting: Principles and Practices, Some simple forecasting methods (section 3.2)](https://otexts.com/fpp3/simple-methods.html)
 #'
 #' @examples
 #' library(dplyr)
 #' aus_mortality |>
 #'   filter(State == "Victoria", Sex == "female") |>
-#'   model(mean = AVERAGE(Mortality))
+#'   model(mean = FMEAN(Mortality))
 #' @export
-AVERAGE <- function(formula, ...) {
+FMEAN <- function(formula, ...) {
   mean_model <- new_model_class("mean", train = train_ave)
   new_model_definition(mean_model, !!enquo(formula), ...)
 }
@@ -235,7 +233,7 @@ report.model_ave <- function(object, ...) {
 
 #' @export
 model_sum.model_ave <- function(x) {
-  paste0("AVERAGE") # , ", intToUtf8(0x3BC), "=", format(x$par$estimate))
+  paste0("FMEAN") # , ", intToUtf8(0x3BC), "=", format(x$par$estimate))
 }
 
 slide_dbl <- function (.x, .fn, ..., .size = 1, .partial = FALSE) {
