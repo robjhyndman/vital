@@ -151,10 +151,12 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
 #' @param .deaths Name of deaths variable
 #' @param .births Name of births variable
 #' @param .population Name of population variable
+#' @param reorder Logical indicating if the variables should be reordered.
 #' @rdname as_vital
 #' @export
 as_vital.tbl_ts <- function(x,
-  .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL, ...) {
+  .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
+  reorder = FALSE, ...) {
   # Add attributes to x to identify the various variables
   if(!is.null(.age) & !quo_is_null(enquo(.age))) {
     attr(x, "agevar") <- as_name(.age)
@@ -173,6 +175,10 @@ as_vital.tbl_ts <- function(x,
   }
   # Add additional class
   class(x) <- c("vital", class(x))
+  # Sort variables
+  if(reorder) {
+    x <- select(x, index_var(x), attributes(x)$agevar, everything())
+  }
   return(x)
 }
 

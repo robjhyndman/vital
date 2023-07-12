@@ -18,6 +18,7 @@ as_vital(x, ...)
   .deaths = NULL,
   .births = NULL,
   .population = NULL,
+  reorder = FALSE,
   ...
 )
 
@@ -49,6 +50,8 @@ as_vital(x, ...)
 \item{.births}{Name of births variable}
 
 \item{.population}{Name of population variable}
+
+\item{reorder}{Logical indicating if the variables should be reordered.}
 
 \item{key}{Variable(s) that uniquely determine time indices. NULL for empty key,
 and \code{c()} for multiple variables. It works with tidy selector
