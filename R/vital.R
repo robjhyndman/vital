@@ -1,3 +1,33 @@
+#' Create a vital object
+#'
+#' A vital object is a type of tsibble that contains vital statistics such as
+#' births, deaths, and population counts, and mortality and fertility rates.
+#' It is a tsibble with a special class that allows for special methods to be used.
+#' The object has an attribute that stores variables names needed for some functions,
+#' including age, sex, births, deaths and population.
+#' @param key Variable(s) that uniquely determine time indices. NULL for empty key,
+#' and \code{c()} for multiple variables. It works with tidy selector
+#' (e.g. \code{\link{dplyr::starts_with}()}).
+#' @param ... A set of name-value pairs
+#' @param index A variable to specify the time index variable.
+#' @param .age Character string specifying name of age variable
+#' @param .sex Character string specifying name of sex variable
+#' @param .deaths Character string specifying name of deaths variable
+#' @param .births Character string specifying name of births variable
+#' @param .population Character string specifying name of population variable
+#' @param regular	Regular time interval (TRUE) or irregular (FALSE). The interval
+#' is determined by the greatest common divisor of index column, if TRUE.
+#' @param .drop If TRUE, empty key groups are dropped.
+#' @seealso \code{\link[tsibble]{tsibble}()}
+#' @export
+vital <- function(..., key = NULL, index,
+                  .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
+                  regular = TRUE, .drop = TRUE) {
+  tsibble(..., key = !!enquo(key), index=!!enquo(index), regular = regular, .drop = .drop) |>
+    as_vital(.age = !!enquo(.age), .sex = !!enquo(.sex), .deaths = !!enquo(.deaths),
+             .births = !!enquo(.births), .population = !!enquo(.population))
+}
+
 #' Coerce to a vital object
 #'
 #' A vital object is a type of tsibble that contains vital statistics such as births, deaths, and population counts, and mortality and fertility rates.

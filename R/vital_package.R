@@ -16,6 +16,17 @@
 #' @importFrom tidyselect eval_select everything
 #' @importFrom tsibble as_tsibble group_by_key measured_vars n_keys
 #' @importFrom tsibble key_data is_ordered is_regular
+#' @aliases NULL vital-package
+#' @examples
+#' # create a vital with only age as a key
+#' vital(
+#'   year = rep(2010:2015, 100),
+#'   age = rep(0:99, each = 6),
+#'   mx = runif(600, 0, 1),
+#'   index = year,
+#'   key = age,
+#'   .age = age
+#' )
 "_PACKAGE"
 
 #' @export
