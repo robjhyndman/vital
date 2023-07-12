@@ -57,16 +57,30 @@ The object has an attribute that stores variables names needed for some function
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">as_vital</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for demogdata</span></span>
-<span><span class="fu">as_vital</span><span class="op">(</span><span class="va">x</span>, sex_groups <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span>, validate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">as_vital</span><span class="op">(</span><span class="va">x</span>, sex_groups <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for tbl_ts</span></span>
 <span><span class="fu">as_vital</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
-<span>  age <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sex <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  deaths <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  births <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  population <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .age <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .sex <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .deaths <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .births <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .population <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  reorder <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for data.frame</span></span>
+<span><span class="fu">as_vital</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  key <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">index</span>,</span>
+<span>  .age <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .sex <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .deaths <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .births <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .population <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -74,41 +88,49 @@ The object has an attribute that stores variables names needed for some function
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
-<dd><p>Objects to be coerced to a vital format.</p></dd>
+<dd><p>Object to be coerced to a vital format.</p></dd>
 
 
 <dt>...</dt>
-<dd><p>Other arguments passed on to individual methods.</p></dd>
+<dd><p>Other arguments passed to <code><a href="https://tsibble.tidyverts.org/reference/as-tsibble.html" class="external-link">as_tsibble</a></code></p></dd>
 
 
 <dt>sex_groups</dt>
-<dd><p>Logical variable indicating of the groups denote sexes</p></dd>
+<dd><p>Logical variable indicating if the groups denote sexes</p></dd>
 
 
-<dt>validate</dt>
-<dd><p>`TRUE` suggests to verify that each key or each combination
-of key variables leads to unique time indices (i.e. a valid tsibble). If you
-are sure that it's a valid input, specify `FALSE` to skip the checks.</p></dd>
+<dt>.age</dt>
+<dd><p>Name of age variable</p></dd>
 
 
-<dt>age</dt>
-<dd><p>Character string specifying name of age variable</p></dd>
+<dt>.sex</dt>
+<dd><p>Name of sex variable</p></dd>
 
 
-<dt>sex</dt>
-<dd><p>Character string specifying name of sex variable</p></dd>
+<dt>.deaths</dt>
+<dd><p>Name of deaths variable</p></dd>
 
 
-<dt>deaths</dt>
-<dd><p>Character string specifying name of deaths variable</p></dd>
+<dt>.births</dt>
+<dd><p>Name of births variable</p></dd>
 
 
-<dt>births</dt>
-<dd><p>Character string specifying name of births variable</p></dd>
+<dt>.population</dt>
+<dd><p>Name of population variable</p></dd>
 
 
-<dt>population</dt>
-<dd><p>Character string specifying name of population variable</p></dd>
+<dt>reorder</dt>
+<dd><p>Logical indicating if the variables should be reordered.</p></dd>
+
+
+<dt>key</dt>
+<dd><p>Variable(s) that uniquely determine time indices. NULL for empty key,
+and <code><a href="https://rdrr.io/r/base/c.html" class="external-link">c()</a></code> for multiple variables. It works with tidy selector
+(e.g. <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a>()</code>).</p></dd>
+
+
+<dt>index</dt>
+<dd><p>A variable to specify the time index variable.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -148,7 +170,7 @@ are sure that it's a valid input, specify `FALSE` to skip the checks.</p></dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by <a href="http://robjhyndman.com" class="external-link">Rob Hyndman</a>.</p>
+  <p></p><p>Developed by <a href="http://robjhyndman.com" class="external-link">Rob Hyndman</a>, Mitchell O’Hara-Wild.</p>
 </div>
 
 <div class="pkgdown-footer-right">
