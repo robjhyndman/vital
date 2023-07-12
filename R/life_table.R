@@ -56,7 +56,7 @@ life_table <- function(.data, mortality) {
   tibble::as_tibble(.data) |>
     tidyr::unnest(cols = lt) |>
     tsibble::as_tsibble(index = index, key = tidyselect::all_of(keys)) |>
-    as_vital(age = age, sex=sex)
+    as_vital(.age = age, .sex=sex)
 }
 
 # This is a revised version of the demography::lt function.

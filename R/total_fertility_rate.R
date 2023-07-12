@@ -46,8 +46,8 @@ total_fertility_rate <- function(.data,  fertility) {
   out <- out[col_names]
   out |>
     as_tsibble(index = index, key = keys_noage) |>
-    as_vital(sex=vital_names$sexvar, births=vital_names$births,
-             population = vital_names$populationvar)
+    as_vital(.sex=vital_names$sexvar, .births=vital_names$births,
+             .population = vital_names$populationvar)
 }
 
 tfr <- function(dt, fertility) {

@@ -13,11 +13,11 @@ as_vital(x, ...)
 
 \method{as_vital}{tbl_ts}(
   x,
-  age = NULL,
-  sex = NULL,
-  deaths = NULL,
-  births = NULL,
-  population = NULL,
+  .age = NULL,
+  .sex = NULL,
+  .deaths = NULL,
+  .births = NULL,
+  .population = NULL,
   ...
 )
 
@@ -25,11 +25,11 @@ as_vital(x, ...)
   x,
   key = NULL,
   index,
-  age = NULL,
-  sex = NULL,
-  deaths = NULL,
-  births = NULL,
-  population = NULL,
+  .age = NULL,
+  .sex = NULL,
+  .deaths = NULL,
+  .births = NULL,
+  .population = NULL,
   ...
 )
 }
@@ -40,15 +40,15 @@ as_vital(x, ...)
 
 \item{sex_groups}{Logical variable indicating if the groups denote sexes}
 
-\item{age}{Character string specifying name of age variable}
+\item{.age}{Character string specifying name of age variable}
 
-\item{sex}{Character string specifying name of sex variable}
+\item{.sex}{Character string specifying name of sex variable}
 
-\item{deaths}{Character string specifying name of deaths variable}
+\item{.deaths}{Character string specifying name of deaths variable}
 
-\item{births}{Character string specifying name of births variable}
+\item{.births}{Character string specifying name of births variable}
 
-\item{population}{Character string specifying name of population variable}
+\item{.population}{Character string specifying name of population variable}
 
 \item{key}{Variable(s) that uniquely determine time indices. NULL for empty key, and \code{c()} for multiple variables. It works with tidy selector (e.g. \code{\link{dplyr::starts_with}()}).}
 

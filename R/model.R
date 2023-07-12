@@ -167,7 +167,7 @@ nest_keys <- function(.data, nm = "data"){
       index = idx, index2 = idx2, ordered = ordered,
       interval = if(length(i) > 1 && regular) tsibble::interval_pull(out[[idx]]) else tsibble::interval(.data)
     ) |>
-      as_vital(age = attr_data$agevar, sex = attr_data$sexvar)
+      as_vital(.age = attr_data$agevar, .sex = attr_data$sexvar)
   }, x = tibble::as_tibble(.data), j = col_nest)
   tibble::as_tibble(out)
 }

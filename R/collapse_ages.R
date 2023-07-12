@@ -60,8 +60,8 @@ collapse_ages <- function(.data, max_age = 100) {
   }
 
   # Return result
-  return(as_vital(collapsed, age = age, sex = sex,
-    deaths = deaths, births = births, population = pop)[,colnames]
+  return(as_vital(collapsed, .age = age, .sex = sex,
+    .deaths = deaths, .births = births, .population = pop)[,colnames]
   )
 }
 

@@ -66,7 +66,7 @@ read_hmd <- function(country, username, password,
     tsibble::as_tsibble(index = Year, key = c(Age, Sex)) |>
     dplyr::arrange(Sex, Year, Age) |>
     dplyr::rename(Mortality = Mx) |>
-    as_vital(age = "Age", sex = "Sex", deaths = deaths, population = population)
+    as_vital(.age = "Age", .sex = "Sex", .deaths = deaths, .population = population)
 }
 
 #' Read data from files downloaded from HMD and construct a \code{vital} object for use in other functions
@@ -143,7 +143,7 @@ read_hmd_files <- function(Deaths = NULL, Exposures = NULL, Population = NULL, M
   }
 
   out |>
-    as_vital(age = "Age", sex = "Sex", deaths = deaths, population = population)
+    as_vital(.age = "Age", .sex = "Sex", .deaths = deaths, .population = population)
 }
 
 globalVariables(c("Female","Total","Total1","Sex","Mx"))

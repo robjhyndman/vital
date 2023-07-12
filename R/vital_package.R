@@ -13,7 +13,7 @@
 #' @importFrom rlang rep_along new_quosure
 #' @importFrom stats na.omit ts residuals
 #' @importFrom tibble as_tibble tibble
-#' @importFrom tidyselect everything
+#' @importFrom tidyselect eval_select everything
 #' @importFrom tsibble as_tsibble group_by_key measured_vars n_keys
 #' @importFrom tsibble key_data is_ordered is_regular
 "_PACKAGE"

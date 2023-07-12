@@ -97,52 +97,49 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
     ) |>
     as_tsibble(index = Year, key = c(AgeGroup, Age, Group), ...) |>
     arrange(Group, Year, Age)
-  attr(output, "agevar") <- "Age"
+  sexvar <- deathsvar <- birthsvar <- popvar <- NULL
   if(sex_groups) {
     output <- output  |>
       rename(Sex = Group)
-    attr(output, "sexvar") <- "Sex"
+    sexvar <- "Sex"
   }
-  if("Deaths" %in% colnames(output)) {
-    attr(output, "deathsvar") <- "Deaths"
-  }
-  if("Births" %in% colnames(output)) {
-    attr(output, "birthsvar") <- "Births"
-  }
+  if("Deaths" %in% colnames(output))
+    deathsvar <- "Deaths"
+  if("Births" %in% colnames(output))
+    birthsvar <- "Births"
   if("Exposure" %in% colnames(output)) {
-    attr(output, "populationvar") <- "Exposure"
+    popvar <- "Exposure"
   } else if("Population" %in% colnames(output)) {
-    attr(output, "populationvar") <- "Population"
+    popvar <- "Population"
   }
-  # Add additional class
-  class(output) <- c("vital", class(output))
-  return(output)
+  as_vital(output, .age = "Age", .sex = sexvar, .deaths = deathsvar,
+           .births = birthsvar, .population = popvar)
 }
 
-#' @param age Character string specifying name of age variable
-#' @param sex Character string specifying name of sex variable
-#' @param deaths Character string specifying name of deaths variable
-#' @param births Character string specifying name of births variable
-#' @param population Character string specifying name of population variable
+#' @param .age Character string specifying name of age variable
+#' @param .sex Character string specifying name of sex variable
+#' @param .deaths Character string specifying name of deaths variable
+#' @param .births Character string specifying name of births variable
+#' @param .population Character string specifying name of population variable
 #' @rdname as_vital
 #' @export
 as_vital.tbl_ts <- function(x,
-  age = NULL, sex = NULL, deaths = NULL, births = NULL, population = NULL, ...) {
+  .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL, ...) {
   # Add attributes to x to identify the various variables
-  if(!is.null(age)) {
-    attr(x, "agevar") <- age
+  if(!quo_is_null(enquo(.age))) {
+    attr(x, "agevar") <- names(eval_select(enquo(.age), data =x))
   }
-  if(!is.null(sex)) {
-    attr(x, "sexvar") <- sex
+  if(!quo_is_null(enquo(.sex))) {
+    attr(x, "sexvar") <- names(eval_select(enquo(.sex), data =x))
   }
-  if(!is.null(deaths)) {
-    attr(x, "deathsvar") <- deaths
+  if(!quo_is_null(enquo(.deaths))) {
+    attr(x, "deathsvar") <- names(eval_select(enquo(.deaths), data =x))
   }
-  if(!is.null(births)) {
-    attr(x, "birthsvar") <- births
+  if(!quo_is_null(enquo(.births))) {
+    attr(x, "birthsvar") <- names(eval_select(enquo(.births), data =x))
   }
-  if(!is.null(population)) {
-    attr(x, "populationvar") <- population
+  if(!quo_is_null(enquo(.population))) {
+    attr(x, "populationvar") <- names(eval_select(enquo(.population), data =x))
   }
   # Add additional class
   class(x) <- c("vital", class(x))
@@ -155,10 +152,11 @@ as_vital.tbl_ts <- function(x,
 #' @rdname as_vital
 #' @export
 as_vital.data.frame <- function(x, key = NULL, index,
-    age = NULL, sex = NULL, deaths = NULL, births = NULL, population = NULL,
+    .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
     ...) {
   as_tsibble(x, key = key, index = index, ...) |>
-    as_vital(age = age, sex = sex, deaths = deaths, births = births, population = population)
+    as_vital(.age = .age, .sex = .sex, .deaths = .deaths, .births = .births,
+             .population = .population)
 }
 
 
