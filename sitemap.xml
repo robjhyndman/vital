@@ -13,6 +13,9 @@
     <loc>https://pkg.robjhyndman.com/vital/reference/FMEAN.html</loc>
   </url>
   <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/LC.html</loc>
+  </url>
+  <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/as_vital.html</loc>
   </url>
   <url>
@@ -31,6 +34,9 @@
     <loc>https://pkg.robjhyndman.com/vital/reference/fitted.model_fmean.html</loc>
   </url>
   <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/fitted.model_lc.html</loc>
+  </url>
+  <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/forecast.html</loc>
   </url>
   <url>
@@ -46,7 +52,13 @@
     <loc>https://pkg.robjhyndman.com/vital/reference/generate.model_fmean.html</loc>
   </url>
   <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/generate.model_lc.html</loc>
+  </url>
+  <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/glance.model_fmean.html</loc>
+  </url>
+  <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/glance.model_lc.html</loc>
   </url>
   <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/index.html</loc>
@@ -80,6 +92,9 @@
   </url>
   <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/residuals.model_fmean.html</loc>
+  </url>
+  <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/residuals.model_lc.html</loc>
   </url>
   <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/tidy.html</loc>
