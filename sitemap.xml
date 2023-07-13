@@ -31,13 +31,16 @@
     <loc>https://pkg.robjhyndman.com/vital/reference/fitted.model_fmean.html</loc>
   </url>
   <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/forecast.html</loc>
+  </url>
+  <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/forecast.lc_model.html</loc>
   </url>
   <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/forecast.model_fmean.html</loc>
+    <loc>https://pkg.robjhyndman.com/vital/reference/fpc_model.html</loc>
   </url>
   <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/fpc_model.html</loc>
+    <loc>https://pkg.robjhyndman.com/vital/reference/generate.mdl_vtl_df.html</loc>
   </url>
   <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/generate.model_fmean.html</loc>
