@@ -3,12 +3,21 @@
 \name{LC}
 \alias{LC}
 \alias{report.model_lc}
-\title{Lee-Carter models}
+\title{Model mortality or fertility data using Lee-Carter approach}
 \usage{
 LC(formula, adjust = c("dt", "dxt", "e0", "none"), scale = FALSE, ...)
 }
 \arguments{
 \item{formula}{Model specification.}
+
+\item{adjust}{method to use for adjustment of coefficients \eqn{k_t kt}.
+Possibilities are
+\dQuote{dt} (Lee-Carter method, the default),
+\dQuote{dxt} (BMS method),
+\dQuote{e0} (Lee-Miller method based on life expectancy) and
+\dQuote{none}.}
+
+\item{scale}{If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.}
 
 \item{...}{Not used.}
 }
@@ -16,6 +25,9 @@ LC(formula, adjust = c("dt", "dxt", "e0", "none"), scale = FALSE, ...)
 A model specification.
 }
 \description{
+Lee-Carter model of mortality or fertility rates. \code{lee_carter} produces a
+standard Lee-Carter model by default, although many other options are
+available. Missing rates are set to the geometric mean rate for the relevant age.
 \code{LC()} returns a Lee-Carter model applied to the formula's response variable as a function of age.
 }
 \examples{
@@ -23,4 +35,21 @@ library(dplyr)
 aus_mortality |>
   filter(State == "Victoria", Sex == "female") |>
   model(lee_carter = LC(Mortality))
+}
+\references{
+Basellini, U, Camarda, C G, and Booth, H (2022) Thirty years on:
+A review of the Lee-Carter method for forecasting mortality.
+
+Booth, H., Maindonald, J., and Smith, L. (2002) Applying Lee-Carter
+under conditions of variable mortality decline. \emph{Population Studies}, \bold{56}, 325-336.
+
+Lee, R D, and Carter, L R (1992) Modeling and forecasting US mortality.
+\emph{Journal of the American Statistical Association}, \bold{87}, 659-671.
+
+Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
+  method for forecasting mortality. \emph{Demography}, \bold{38}(4), 537–549.
+\emph{International Journal of Forecasting}, to appear.
+}
+\author{
+Rob J Hyndman.
 }

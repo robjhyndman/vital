@@ -98,7 +98,7 @@ train_fmean <- function(.data, ...) {
 #' @export
 forecast.model_fmean <- function(object, new_data, bootstrap = FALSE, times = 5000, ...) {
   # Produce forecasts
-  if (bootstrap) { # Compute prediction intervals using simulations
+  if (bootstrap) {
     sim <- map(seq_len(times), function(x) {
       generate(object, new_data, bootstrap = TRUE)[[".sim"]]
     }) %>%

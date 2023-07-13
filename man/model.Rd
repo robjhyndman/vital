@@ -7,15 +7,17 @@
 \method{model}{vital}(.data, ..., .safely = TRUE)
 }
 \arguments{
-\item{.data}{A data structure suitable for the models (such as a `tsibble`)}
+\item{.data}{A vital object including an age variable.}
 
 \item{...}{Definitions for the models to be used. All models must share the
 same response variable.}
 
-\item{.safely}{If a model encounters an error, rather than aborting the process a [NULL model][null_model()] will be returned instead. This allows for an error to occur when computing many models, without losing the results of the successful models.}
+\item{.safely}{If a model encounters an error, rather than aborting the process
+a [NULL model][null_model()] will be returned instead. This allows for an error
+to occur when computing many models, without losing the results of the successful models.}
 }
 \description{
-Trains specified model definition(s) to a dataset. This function will
+Trains specified model definition(s) on a dataset. This function will
 estimate the a set of model definitions (passed via `...`) to each series
 within `.data` (as identified by the key structure). The result will be a
 mable (a model table), which neatly stores the estimated models in a tabular

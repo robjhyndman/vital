@@ -5,7 +5,15 @@
 \alias{forecast.model_fmean}
 \title{Produce forecasts from a vital model}
 \usage{
-\method{forecast}{model_lc}(object, new_data, bootstrap = FALSE, times = 5000, ...)
+\method{forecast}{model_lc}(
+  object,
+  new_data,
+  bootstrap = FALSE,
+  times = 5000,
+  se = c("innovdrift", "innovonly"),
+  jumpchoice = c("fit", "actual"),
+  ...
+)
 
 \method{forecast}{model_fmean}(object, new_data, bootstrap = FALSE, times = 5000, ...)
 }
@@ -18,21 +26,18 @@
 
 \item{times}{The number of sample paths to use in estimating the forecast distribution when `bootstrap = TRUE`.}
 
+\item{se}{Method used for computation of standard error.
+Possibilities: \dQuote{innovdrift} (innovations and drift) and \dQuote{innovonly} (innovations only).}
+
+\item{jumpchoice}{Method used for computation of jumpchoice.
+Possibilities: \dQuote{actual} (use actual rates from final year) and \dQuote{fit} (use fitted rates).
+The original Lee-Carter method used 'fit' (the default), but Lee and Miller (2001)
+and most other authors prefer 'actual' (the default).}
+
 \item{...}{Additional arguments not used.
 #'}
 }
 \value{
-A fable containing the following columns:
-- `.model`: The name of the model used to obtain the forecast. Taken from
-  the column names of models in the provided mable.
-- The forecast distribution. The name of this column will be the same as the
-  dependent variable in the model(s). If multiple dependent variables exist,
-  it will be named `.distribution`.
-- Point forecasts computed from the distribution using the functions in the
-  `point_forecast` argument.
-- All columns in `new_data`, excluding those whose names conflict with the
-  above.
-
 A fable containing the following columns:
 - `.model`: The name of the model used to obtain the forecast. Taken from
   the column names of models in the provided mable.
@@ -52,22 +57,8 @@ model formula, the transformation will be automatically back-transformed
 and bias-adjusted. More details about
 transformations in the fable framework can be found in
 `vignette("transformations", package = "fable")`.
-
-The forecast function allows you to produce future predictions of a functional
-time series model, where the response is a function of age.
-If the response variable has been transformed in the
-model formula, the transformation will be automatically back-transformed
-and bias-adjusted. More details about
-transformations in the fable framework can be found in
-`vignette("transformations", package = "fable")`.
 }
 \details{
-The forecasts returned contain both point forecasts and their distribution.
-A specific forecast interval can be extracted from the distribution using the
-[`hilo()`] function, and multiple intervals can be obtained using [`report()`].
-These intervals are stored in a single column using the `hilo` class, to
-extract the numerical upper and lower bounds you can use [`unpack_hilo()`].
-
 The forecasts returned contain both point forecasts and their distribution.
 A specific forecast interval can be extracted from the distribution using the
 [`hilo()`] function, and multiple intervals can be obtained using [`report()`].

@@ -1,6 +1,6 @@
 #' Estimate models for vital data
 #'
-#' Trains specified model definition(s) to a dataset. This function will
+#' Trains specified model definition(s) on a dataset. This function will
 #' estimate the a set of model definitions (passed via `...`) to each series
 #' within `.data` (as identified by the key structure). The result will be a
 #' mable (a model table), which neatly stores the estimated models in a tabular
@@ -8,13 +8,15 @@
 #' each model column contains all models from that model definition. Each cell
 #' in the mable identifies a single model.
 #'
-#' @param .data A data structure suitable for the models (such as a `tsibble`)
+#' @param .data A vital object including an age variable.
 #' @param ... Definitions for the models to be used. All models must share the
 #' same response variable.
 #'
 #' @rdname model
 #'
-#' @param .safely If a model encounters an error, rather than aborting the process a [NULL model][null_model()] will be returned instead. This allows for an error to occur when computing many models, without losing the results of the successful models.
+#' @param .safely If a model encounters an error, rather than aborting the process
+#' a [NULL model][null_model()] will be returned instead. This allows for an error
+#' to occur when computing many models, without losing the results of the successful models.
 #'
 #' @section Parallel:
 #'
@@ -76,9 +78,10 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
 
   if (is_attached("package:future")) {
     require_package("future.apply")
-    eval_models <- function(models, lst_data) {
+    eval_models <- function(models, lst_data, sex) {
       out <- future.apply::future_mapply(
         rep(lst_data, length(models)),
+        rep(sex, length(models)),
         rep(models, each = length(lst_data)),
         FUN = estimate_progress,
         SIMPLIFY = FALSE,
