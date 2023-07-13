@@ -232,4 +232,4 @@ model_sum.model_fmean <- function(x) {
   paste0("FMEAN")
 }
 
-globalVariables(c(".resid", "sigma", "std.error", "stat"))
+globalVariables(c(".resid", "sigma", "std.error", "stat", ".innov"))

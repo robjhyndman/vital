@@ -15,7 +15,7 @@
 #' @importFrom rlang call2 get_env new_formula expr_name new_environment enexpr set_env
 #' @importFrom rlang quo_get_expr quo_is_call caller_env as_string
 #' @importFrom rlang rep_along new_quosure expr call_name as_label is_false
-#' @importFrom stats na.omit ts residuals fitted
+#' @importFrom stats na.omit ts residuals fitted var
 #' @importFrom tibble as_tibble tibble
 #' @importFrom tidyselect eval_select everything all_of
 #' @importFrom tidyr pivot_longer pivot_wider

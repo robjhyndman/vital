@@ -81,13 +81,13 @@ generate.mdl_vtl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = 
     new_data$.innov <- if(bootstrap_block_size == 1) {
       sample(res, nrow(new_data), replace = TRUE)
     } else {
-      if(any(has_gaps(x$data)$.gaps)) abort("Residuals must be regularly spaced without gaps to use a block bootstrap method.")
+      if(any(tsibble::has_gaps(x$data)$.gaps)) abort("Residuals must be regularly spaced without gaps to use a block bootstrap method.")
       kr <- tsibble::key_rows(new_data)
       # idx <- x$data[[index_var(x$data)]]
       # new_idx <- new_data[[index_var(new_data)]]
       # block_pos <- ((new_idx - min(idx))%%bootstrap_block_size)+1
       innov <- lapply(lengths(kr), function(n) block_bootstrap(res, bootstrap_block_size, size = n))
-      vec_c(!!!innov)
+      vctrs::vec_c(!!!innov)
     }
   }
 
