@@ -17,8 +17,8 @@
 #'   model(mean = FMEAN(Mortality))
 #' @export
 FMEAN <- function(formula, ...) {
-  mean_model <- new_model_class("mean", train = train_fmean)
-  new_model_definition(mean_model, !!enquo(formula), ...)
+  fmean_model <- new_model_class("fmean", train = train_fmean)
+  new_model_definition(fmean_model, !!enquo(formula), ...)
 }
 
 #' @importFrom stats sd
