@@ -5,8 +5,7 @@ template:
   bslib:
     base_font: {google: "Fira Sans"}
     heading_font: {google: "Fira Sans"}
-    code_font:
-      link: {family: "Hack", href: 'https://robjhyndman.com/fonts/hack-regular.woff?sha=3114f1256'}
+    code_font: {google: "Source Code Pro"}
 
 authors:
   Rob Hyndman:
