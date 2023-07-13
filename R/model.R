@@ -45,6 +45,7 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   # Keys including age
   keys <- tsibble::key_vars(.data)
   agevar <- attributes(.data)$agevar
+  sexvar <- attributes(.data)$sexvar
   # Drop Age as a key
   kv <- keys[!(keys %in% c(agevar, "Age", "AgeGroup"))]
   n_ages <- length(unique(.data[[agevar]]))
@@ -56,8 +57,8 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   .data <- nest_keys(.data, "lst_data")
 
   if (.safely) {
-    estimate <- function(dt, mdl) {
-      out <- purrr::safely(estimate.vital)(dt, mdl)
+    estimate <- function(dt, mdl, sex) {
+      out <- purrr::safely(estimate.vital)(dt, mdl, sex)
       if (is.null(out$result)) {
         f <- quo(!!mdl$formula)
         f <- rlang::set_env(f, mdl$env)
@@ -67,8 +68,8 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
     }
   }
 
-  estimate_progress <- function(dt, mdl) {
-    out <- estimate(dt, mdl)
+  estimate_progress <- function(dt, sex, mdl) {
+    out <- estimate(dt, mdl, sex)
     p()
     out
   }
@@ -86,14 +87,13 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
       unname(split(out, rep(seq_len(num_mdl), each = num_key)))
     }
   } else {
-    eval_models <- function(models, lst_data) {
+    eval_models <- function(models, lst_data, sex) {
       purrr::map(models, function(model) {
-        purrr::map(lst_data, estimate_progress, model)
+        purrr::map2(lst_data, sex, estimate_progress, model)
       })
     }
   }
-
-  fits <- eval_models(models, .data[["lst_data"]])
+  fits <- eval_models(models, .data[["lst_data"]], as.list(.data[[sexvar]]))
   names(fits) <- ifelse(nchar(names(models)), names(models), nm)
 
   # Report errors if estimated safely
@@ -169,7 +169,9 @@ nest_keys <- function(.data, nm = "data") {
       index = idx, index2 = idx2, ordered = ordered,
       interval = if (length(i) > 1 && regular) tsibble::interval_pull(out[[idx]]) else tsibble::interval(.data)
     ) |>
-      as_vital(.age = attr_data$agevar, .sex = attr_data$sexvar)
+      as_vital(.age = attr_data$agevar, .sex = attr_data$sexvar,
+               .births = attr_data$birthsvar, .deaths = attr_data$deathsvar,
+               .population = attr_data$populationvar)
   }, x = tibble::as_tibble(.data), j = col_nest)
   tibble::as_tibble(out)
 }
@@ -178,7 +180,7 @@ list_of_models <- function(x = list()) {
   vctrs::new_vctr(x, class = "lst_mdl")
 }
 
-estimate.vital <- function(.data, .model, ...) {
+estimate.vital <- function(.data, .model, sex, ...) {
   if (!inherits(.model, "mdl_defn")) {
     abort("Model definition incorrectly created. Check that specified model(s) are model definitions.")
   }
@@ -188,21 +190,23 @@ estimate.vital <- function(.data, .model, ...) {
   parsed <- parse_model(.model)
   .dt_attr <- attributes(.data)
   agevar <- .dt_attr$agevar
-  sexvar <- .dt_attr$sexvar
+  popvar <- .dt_attr$populationvar
   age <- .data[[agevar]]
+  pop <- .data[[popvar]]
   resp <- map(parsed$expressions, eval_tidy,
-    data = .data,
-    env = .model$specials
+              data = .data,
+              env = .model$specials
   )
   .data <- unclass(.data)[index_var(.data)]
   .data[map_chr(parsed$expressions, rlang::expr_name)] <- resp
   .data[[agevar]] <- age
+  .data[[popvar]] <- pop
   attributes(.data) <- c(attributes(.data), .dt_attr[setdiff(
     names(.dt_attr),
     names(attributes(.data))
   )])
   fit <- eval_tidy(
-    expr(.model$train(.data = .data, specials = parsed$specials, !!!.model$extra))
+    expr(.model$train(.data = .data, sex=sex, specials = parsed$specials, !!!.model$extra))
   )
   .model$remove_data()
   .model$stage <- NULL
@@ -247,8 +251,8 @@ fitted.mdl_vtl_df <- function(object, ...) {
     function(x) lapply(x, fitted, ...)
   ))
   object <- pivot_longer(object, mbl_vars,
-    names_to = ".model",
-    values_to = ".fitted"
+                         names_to = ".model",
+                         values_to = ".fitted"
   )
 
   unnest_tbl(object, ".fitted") |>
@@ -314,8 +318,8 @@ residuals.mdl_vtl_df <- function(object, ...) {
     function(x) lapply(x, residuals, ...)
   ))
   object <- pivot_longer(object, mbl_vars,
-    names_to = ".model",
-    values_to = ".resid"
+                         names_to = ".model",
+                         values_to = ".resid"
   )
   unnest_tbl(object, ".resid") |>
     as_tsibble(index = index, key = c(agevar, kv, ".model")) |>
@@ -333,7 +337,7 @@ interpolate.mdl_vtl_df <- function (object, new_data, ...) {
   index <- index_var(new_data)
   object <- bind_new_data(object, new_data)
   object <- transmute(as_tibble(object), !!!syms(keys_noage),
-          interpolated = map2(!!sym(mable_vars(object)), new_data, interpolate, ...))
+                      interpolated = map2(!!sym(mable_vars(object)), new_data, interpolate, ...))
   unnest_tbl(object, "interpolated") |>
     as_tsibble(index = index, key = c(agevar, keys_noage)) |>
     as_vital(.age = agevar, reorder = TRUE)
