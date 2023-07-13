@@ -73,7 +73,6 @@ generate.mdl_vtl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = 
     new_data <- build_tsibble(new_data, index = !!idx, key = !!kv, interval = intvl) |>
       as_vital(.age = agevar)
   }
-  browser()
 
   if(bootstrap) {
     res <- residuals(x$fit)

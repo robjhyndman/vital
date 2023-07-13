@@ -302,7 +302,7 @@ print.fpc_model <- function(x, ...) {
   {
     cat("Functional data model\n")
   }
-  cat("\nFit:\n")
+  cat("\nSub-groups:\n")
   print(x$fit)
 }
 
