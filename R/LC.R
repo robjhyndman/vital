@@ -31,7 +31,6 @@ train_lc <- function(.data, sex = NULL, specials,  adjust = c("dt", "dxt", "e0",
   agevar <- attrx$agevar
   measures <- measured_vars(.data)
   measures <- measures[!(measures %in% c(agevar, attrx$populationvar))]
-  browser()
   out <- lca(.data, sex=sex, age=attrx$agevar, pop = attrx$populationvar,
       rates = find_measure(.data, c("mx", "mortality", "fx", "fertility", "rate")))
 
@@ -207,15 +206,7 @@ glance.model_lc <- function(x, ...) {
 #' @rdname tidy
 #' @export
 tidy.model_lc <- function(x, ...) {
-  x$model  |>
-    mutate(
-      term = "mean",
-      estimate = mean,
-      std.error = sigma / sqrt(x$nobs),
-      stat = mean/std.error,
-      p.value = 2 * stats::pt(abs(stat), x$nobs - 1, lower.tail = FALSE)
-    ) |>
-    select(-mean, -sigma)
+  return(NULL)
 }
 
 #' @export
