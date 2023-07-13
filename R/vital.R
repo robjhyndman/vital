@@ -18,14 +18,24 @@
 #' @param regular	Regular time interval (TRUE) or irregular (FALSE). The interval
 #' is determined by the greatest common divisor of index column, if TRUE.
 #' @param .drop If TRUE, empty key groups are dropped.
+#' @examples
+#' # create a vital with only age as a key
+#' vital(
+#'   year = rep(2010:2015, 100),
+#'   age = rep(0:99, each = 6),
+#'   mx = runif(600, 0, 1),
+#'   index = year,
+#'   key = age,
+#'   .age = age
+#' )
 #' @seealso \code{\link[tsibble]{tsibble}()}
 #' @export
 vital <- function(..., key = NULL, index,
-                  .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
-                  regular = TRUE, .drop = TRUE) {
+    .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
+    regular = TRUE, .drop = TRUE) {
   tsibble(..., key = !!enquo(key), index=!!enquo(index), regular = regular, .drop = .drop) |>
-    as_vital(.age = !!enquo(.age), .sex = !!enquo(.sex), .deaths = !!enquo(.deaths),
-             .births = !!enquo(.births), .population = !!enquo(.population))
+    as_vital(.age = enquo(.age), .sex = enquo(.sex), .deaths = enquo(.deaths),
+             .births = enquo(.births), .population = enquo(.population))
 }
 
 #' Coerce to a vital object
@@ -162,16 +172,16 @@ as_vital.tbl_ts <- function(x,
     attr(x, "agevar") <- as_name(.age)
   }
   if(!is.null(.sex) & !quo_is_null(enquo(.sex))) {
-    attr(x, "sexvar") <- as.name(.sex)
+    attr(x, "sexvar") <- as_name(.sex)
   }
   if(!is.null(.deaths) & !quo_is_null(enquo(.deaths))) {
-    attr(x, "deathsvar") <- as.name(.deaths)
+    attr(x, "deathsvar") <- as_name(.deaths)
   }
   if(!is.null(.births) & !quo_is_null(enquo(.births))) {
-    attr(x, "birthsvar") <- as.name(.births)
+    attr(x, "birthsvar") <- as_name(.births)
   }
   if(!is.null(.population) & !quo_is_null(enquo(.population))) {
-    attr(x, "populationvar") <- as.name(.population)
+    attr(x, "populationvar") <- as_name(.population)
   }
   # Add additional class
   class(x) <- c("vital", class(x))

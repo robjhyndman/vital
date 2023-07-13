@@ -23,16 +23,6 @@
 #' @importFrom tsibble key_data is_ordered is_regular index index_var key_vars
 #' @importFrom tsibble is_tsibble build_tsibble index2 is_grouped_ts
 #' @aliases NULL vital-package
-#' @examples
-#' # create a vital with only age as a key
-#' vital(
-#'   year = rep(2010:2015, 100),
-#'   age = rep(0:99, each = 6),
-#'   mx = runif(600, 0, 1),
-#'   index = year,
-#'   key = age,
-#'   .age = age
-#' )
 "_PACKAGE"
 
 #' @export

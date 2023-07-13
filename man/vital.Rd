@@ -48,6 +48,17 @@ It is a tsibble with a special class that allows for special methods to be used.
 The object has an attribute that stores variables names needed for some functions,
 including age, sex, births, deaths and population.
 }
+\examples{
+# create a vital with only age as a key
+vital(
+  year = rep(2010:2015, 100),
+  age = rep(0:99, each = 6),
+  mx = runif(600, 0, 1),
+  index = year,
+  key = age,
+  .age = age
+)
+}
 \seealso{
 \code{\link[tsibble]{tsibble}()}
 }

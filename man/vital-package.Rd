@@ -7,17 +7,6 @@
 \description{
 Functions for analysing vital statistics based on tools consistent with the tidyverse. Tools are provided for data visualization, lifetable calculations, computing net migration numbers, Lee-Carter modelling; functional data modelling and stochastic population forecasting.
 }
-\examples{
-# create a vital with only age as a key
-vital(
-  year = rep(2010:2015, 100),
-  age = rep(0:99, each = 6),
-  mx = runif(600, 0, 1),
-  index = year,
-  key = age,
-  .age = age
-)
-}
 \seealso{
 Useful links:
 \itemize{
