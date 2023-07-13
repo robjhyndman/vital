@@ -40,9 +40,6 @@
     <loc>https://pkg.robjhyndman.com/vital/reference/forecast.html</loc>
   </url>
   <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/forecast.lc_model.html</loc>
-  </url>
-  <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/fpc_model.html</loc>
   </url>
   <url>
@@ -65,9 +62,6 @@
   </url>
   <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/interpolate.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/lee_carter.html</loc>
   </url>
   <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/life_expectancy.html</loc>
