@@ -96,7 +96,7 @@ unnest_tsbl <- function (.data, tsbl_col, parent_key = NULL, interval = NULL)
     key <- c(parent_key, key_vars(tsbl))
     .data <- unnest_tbl(.data, tsbl_col)
     build_tsibble(.data, key = !!key, index = !!idx, index2 = !!index2(tsbl),
-        ordered = is_ordered(tsbl), interval = interval %||% interval(tsbl),
+        ordered = is_ordered(tsbl), interval = interval %||% tsibble::interval(tsbl),
         validate = FALSE)
 }
 
@@ -202,4 +202,8 @@ validate_fable <- function (fbl)  {
             chr_dist))
     }
     vctrs::vec_assert(fbl[[chr_dist]], distributional::new_dist(dimnames = response_vars(fbl)))
+}
+
+dist_types <- function (dist) {
+    map_chr(vctrs::vec_data(dist), function(x) class(x)[1])
 }

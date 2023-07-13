@@ -33,20 +33,12 @@ forecast.mdl_vtl_df <- function(
 
 #' @export
 forecast.mdl_vtl_ts <- function(
-    object, new_data = NULL, h = NULL, bias_adjust = NULL,
+    object, new_data = NULL, h = NULL,
     simulate = FALSE, bootstrap = FALSE, times = 5000,
     point_forecast = list(.mean = mean), ...) {
   if (!is.null(h) && !is.null(new_data)) {
     warn("Input forecast horizon `h` will be ignored as `new_data` has been provided.")
     h <- NULL
-  }
-  if (!is.null(bias_adjust)) {
-    deprecate_warn("0.2.0", "forecast(bias_adjust = )", "forecast(point_forecast = )")
-    point_forecast <- if (bias_adjust) {
-      list(.mean = mean)
-    } else {
-      list(.median = stats::median)
-    }
   }
   if (is.null(new_data)) {
     new_data <- make_future_data(object$data, h)
@@ -94,14 +86,14 @@ forecast.mdl_vtl_ts <- function(
     inv_trans <- `attributes<-`(x, NULL)
     req_vars <- setdiff(all.vars(body(trans)), names(formals(trans)))
     if (any(req_vars %in% names(new_data))) {
-      trans <- lapply(vec_chop(new_data[req_vars]), function(transform_data) {
+      trans <- lapply(vctrs::vec_chop(new_data[req_vars]), function(transform_data) {
         set_env(trans, new_environment(
           transform_data,
           get_env(trans)
         ))
       })
       attr(trans, "inverse") <- lapply(
-        vec_chop(new_data[req_vars]),
+        vctrs::vec_chop(new_data[req_vars]),
         function(transform_data) {
           set_env(inv_trans, new_environment(
             transform_data,
@@ -114,10 +106,7 @@ forecast.mdl_vtl_ts <- function(
       structure(list(trans), inverse = list(inv_trans))
     }
   })
-  is_transformed <- vapply(
-    bt, function(x) !is_symbol(body(x[[1]])),
-    logical(1L)
-  )
+  is_transformed <- vapply(bt, function(x) !is_symbol(body(x[[1]])), logical(1L))
   if (length(bt) > 1) {
     if (any(is_transformed)) {
       abort("Transformations of multivariate forecasts are not yet supported")
@@ -126,15 +115,11 @@ forecast.mdl_vtl_ts <- function(
   if (any(is_transformed)) {
     if (identical(unique(dist_types(fc)), "dist_sample")) {
       fc <- distributional::dist_sample(.mapply(exec, list(
-        bt[[1]],
-        distributional::parameters(fc)$x
-      ), MoreArgs = NULL))
+        bt[[1]], distributional::parameters(fc)$x), MoreArgs = NULL))
     } else {
       bt <- bt[[1]]
       fc <- distributional::dist_transformed(fc, `attributes<-`(
-        bt,
-        NULL
-      ), bt %@% "inverse")
+        bt, NULL ), bt %@% "inverse")
     }
   }
   dimnames(fc) <- resp_vars
@@ -144,12 +129,15 @@ forecast.mdl_vtl_ts <- function(
   cn <- c(dist_col, names(point_fc))
   attrs <- attributes(new_data)
   agevar <- attrs$agevar
-  fbl <- build_tsibble_meta(
-    as_tibble(new_data)[unique(c(idx,agevar, cn, mv))],
+  fbl <- tsibble::build_tsibble_meta(
+    as_tibble(new_data)[unique(c(idx, agevar, cn, mv))],
     key_data(new_data), index = idx, index2 = idx,
-    ordered = is_ordered(new_data), interval = attrs$interval
+    ordered = is_ordered(new_data), interval = tsibble::interval(new_data)
   )
-  build_fable(fbl, response = resp_vars, distribution = !!sym(dist_col))
+  final <- build_fable(fbl, response = resp_vars, distribution = !!sym(dist_col))
+  class(final) <- c("fbl_vtl_ts", class(final))
+  attr(final, "agevar") <- agevar
+  return(final)
 }
 
 #' Forecasts using Lee-Carter method.
@@ -265,4 +253,4 @@ calc <- function (f, ...) {
     f(...)
 }
 
-globalVariables(c("agedf", "timedf", ".mean", "Year", "Mortality"))
+globalVariables(c("agedf", "timedf", ".mean", "Year", "Mortality", "fc"))
