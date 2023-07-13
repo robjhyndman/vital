@@ -165,8 +165,8 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
 #' @rdname as_vital
 #' @export
 as_vital.tbl_ts <- function(x,
-  .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
-  reorder = FALSE, ...) {
+                            .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
+                            reorder = FALSE, ...) {
   # Add attributes to x to identify the various variables
   if(!is.null(.age) & !quo_is_null(enquo(.age))) {
     attr(x, "agevar") <- as_name(.age)
@@ -204,8 +204,8 @@ as_vital.tbl_ts <- function(x,
 #' @rdname as_vital
 #' @export
 as_vital.data.frame <- function(x, key = NULL, index,
-    .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
-    ...) {
+                                .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
+                                ...) {
   as_tsibble(x, key = key, index = index, ...) |>
     as_vital(.age = .age, .sex = .sex, .deaths = .deaths, .births = .births,
              .population = .population)

@@ -77,8 +77,8 @@ forecast.mdl_vtl_ts <- function(
     object$model$remove_data()
     object$model$stage <- NULL
     fc <- forecast(object$fit, new_data,
-      specials = specials,
-      times = times, ...
+                   specials = specials,
+                   times = times, ...
     )
   }
   bt <- map(object$transformation, function(x) {
@@ -206,16 +206,16 @@ forecast.lc_model <- function(
   time_df <- tidyr::nest(fc, timedf = -!!keys)
   df <- df |> dplyr::left_join(time_df, by = keys)
   mx.forecast <- purrr::map2(df[["agedf"]], df[["timedf"]],
-    function(x, y, agevar) {
-      h <- NROW(y)
-      nages <- NROW(x)
-      idx <- tsibble::index_var(y)
-      out <- tidyr::expand_grid(Year = y[[idx]], Age = x[[agevar]]) |>
-        dplyr::left_join(x, by = "Age") |>
-        dplyr::left_join(y, by = "Year") |>
-        dplyr::mutate(Mortality = exp(ax + bx * kt))
-    },
-    agevar = object$agevar
+                             function(x, y, agevar) {
+                               h <- NROW(y)
+                               nages <- NROW(x)
+                               idx <- tsibble::index_var(y)
+                               out <- tidyr::expand_grid(Year = y[[idx]], Age = x[[agevar]]) |>
+                                 dplyr::left_join(x, by = "Age") |>
+                                 dplyr::left_join(y, by = "Year") |>
+                                 dplyr::mutate(Mortality = exp(ax + bx * kt))
+                             },
+                             agevar = object$agevar
   )
   # Package results as a fable object
   out <- df |>
@@ -229,28 +229,28 @@ forecast.lc_model <- function(
 }
 
 make_future_data <- function (.data, h = NULL) {
-    n <- get_frequencies(h, .data, .auto = "smallest")
-    if (length(n) > 1) {
-        warn("More than one forecast horizon specified, using the smallest.")
-        n <- min(n)
-    }
-    if (is.null(h))
-        n <- n * 2
-    out <- tsibble::new_data(.data, round(n))
-    indexvar <- index_var(out)
-    agevar <- attributes(.data)$agevar
-    .ages <- .data[[agevar]] |> unique() |> sort()
-    out <- tidyr::expand_grid(out, .ages)
-    colnames(out)[colnames(out) == ".ages"] <- agevar
-    as_tsibble(out, index = indexvar, key = agevar) |>
-      as_vital(.age = agevar)
+  n <- get_frequencies(h, .data, .auto = "smallest")
+  if (length(n) > 1) {
+    warn("More than one forecast horizon specified, using the smallest.")
+    n <- min(n)
+  }
+  if (is.null(h))
+    n <- n * 2
+  out <- tsibble::new_data(.data, round(n))
+  indexvar <- index_var(out)
+  agevar <- attributes(.data)$agevar
+  .ages <- .data[[agevar]] |> unique() |> sort()
+  out <- tidyr::expand_grid(out, .ages)
+  colnames(out)[colnames(out) == ".ages"] <- agevar
+  as_tsibble(out, index = indexvar, key = agevar) |>
+    as_vital(.age = agevar)
 }
 
 compute_point_forecasts <- function (distribution, measures) {
   map(measures, calc, distribution)
 }
 calc <- function (f, ...) {
-    f(...)
+  f(...)
 }
 
 globalVariables(c("agedf", "timedf", ".mean", "Year", "Mortality", "fc"))

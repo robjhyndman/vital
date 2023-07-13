@@ -3,7 +3,7 @@
 \name{FMEAN}
 \alias{FMEAN}
 \alias{report.model_fmean}
-\title{Mean models}
+\title{Functional mean models}
 \usage{
 FMEAN(formula, ...)
 }
@@ -16,7 +16,7 @@ FMEAN(formula, ...)
 A model specification.
 }
 \description{
-\code{FMEAN()} returns an iid functional model applied to the formula's response variable.
+\code{FMEAN()} returns an iid functional model applied to the formula's response variable as a function of age.
 }
 \examples{
 library(dplyr)

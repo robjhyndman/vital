@@ -31,10 +31,11 @@ A fable containing the following columns:
   above.
 }
 \description{
-The forecast function allows you to produce future predictions of a time series
-from fitted models. If the response variable has been transformed in the
+The forecast function allows you to produce future predictions of a functional
+time series model, where the response is a function of age.
+If the response variable has been transformed in the
 model formula, the transformation will be automatically back-transformed
-(and bias adjusted if `bias_adjust` is `TRUE`). More details about
+and bias-adjusted. More details about
 transformations in the fable framework can be found in
 `vignette("transformations", package = "fable")`.
 }

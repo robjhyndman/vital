@@ -1,3 +1,26 @@
+#' Functional mean models
+#'
+#' \code{FMEAN()} returns an iid functional model applied to the formula's response variable as a function of age.
+#'
+#' @aliases report.model_fmean
+#'
+#' @param formula Model specification.
+#' @param ... Not used.
+#'
+#' @return A model specification.
+#'
+#'
+#' @examples
+#' library(dplyr)
+#' aus_mortality |>
+#'   filter(State == "Victoria", Sex == "female") |>
+#'   model(mean = FMEAN(Mortality))
+#' @export
+FMEAN <- function(formula, ...) {
+  mean_model <- new_model_class("mean", train = train_fmean)
+  new_model_definition(mean_model, !!enquo(formula), ...)
+}
+
 #' @importFrom stats sd
 train_fmean <- function(.data, ...) {
   indexvar <- index(.data)
@@ -33,35 +56,13 @@ train_fmean <- function(.data, ...) {
   )
 }
 
-#' Mean models
-#'
-#' \code{FMEAN()} returns an iid functional model applied to the formula's response variable.
-#'
-#' @aliases report.model_fmean
-#'
-#' @param formula Model specification.
-#' @param ... Not used.
-#'
-#' @return A model specification.
-#'
-#'
-#' @examples
-#' library(dplyr)
-#' aus_mortality |>
-#'   filter(State == "Victoria", Sex == "female") |>
-#'   model(mean = FMEAN(Mortality))
-#' @export
-FMEAN <- function(formula, ...) {
-  mean_model <- new_model_class("mean", train = train_fmean)
-  new_model_definition(mean_model, !!enquo(formula), ...)
-}
-
 #' Produce forecasts from a vital model
 #'
-#' The forecast function allows you to produce future predictions of a time series
-#' from fitted models. If the response variable has been transformed in the
+#' The forecast function allows you to produce future predictions of a functional
+#' time series model, where the response is a function of age.
+#' If the response variable has been transformed in the
 #' model formula, the transformation will be automatically back-transformed
-#' (and bias adjusted if `bias_adjust` is `TRUE`). More details about
+#' and bias-adjusted. More details about
 #' transformations in the fable framework can be found in
 #' `vignette("transformations", package = "fable")`.
 #'
@@ -89,15 +90,16 @@ FMEAN <- function(formula, ...) {
 #' - All columns in `new_data`, excluding those whose names conflict with the
 #'   above.
 #'
-#'
 #' @importFrom fabletools forecast
 #' @importFrom stats qnorm time
 #' @importFrom utils tail
 #'
+#' @rdname forecast
 #' @export
 forecast.model_fmean <- function(object, new_data, bootstrap = FALSE, times = 5000, ...) {
   # Produce forecasts
   if (bootstrap) { # Compute prediction intervals using simulations
+    browser()
     sim <- map(seq_len(times), function(x) {
       generate(object, new_data, bootstrap = TRUE)[[".sim"]]
     }) %>%
@@ -123,22 +125,21 @@ forecast.model_fmean <- function(object, new_data, bootstrap = FALSE, times = 50
 #'
 #' @export
 generate.model_fmean <- function(x, new_data, bootstrap = FALSE, ...) {
-  f <- x$mean
+  agevar <- attributes(new_data)$agevar
+  new_data <- new_data |>
+    dplyr::left_join(x$model, by = agevar)
 
   if (!(".innov" %in% names(new_data))) {
     if (bootstrap) {
       res <- residuals(x)
-      new_data$.innov <- sample(na.omit(res) - mean(res, na.rm = TRUE),
-                                NROW(new_data),
-                                replace = TRUE
-      )
+      new_data$.innov <- sample(na.omit(res), NROW(new_data), replace = TRUE)
     }
     else {
-      new_data$.innov <- stats::rnorm(NROW(new_data), sd = x$sigma)
+      new_data$.innov <- stats::rnorm(NROW(new_data), sd = x$model$sigma)
     }
   }
 
-  transmute(group_by_key(new_data), ".sim" := f + !!sym(".innov"))
+  transmute(group_by_key(new_data), ".sim" := mean + .innov)
 }
 
 #' Interpolate missing values
@@ -220,7 +221,6 @@ tidy.model_fmean <- function(x, ...) {
     select(-mean, -sigma)
 }
 
-
 #' @export
 report.model_fmean <- function(object, ...) {
   cat("\n")
@@ -229,20 +229,7 @@ report.model_fmean <- function(object, ...) {
 
 #' @export
 model_sum.model_fmean <- function(x) {
-  paste0("FMEAN") # , ", intToUtf8(0x3BC), "=", format(x$par$estimate))
-}
-
-slide_dbl <- function (.x, .fn, ..., .size = 1, .partial = FALSE) {
-  out <- numeric(if (.partial)
-    length(.x)
-    else length(.x) - .size + 1)
-  for (i in seq_along(out)) {
-    idx <- seq.int(i + .size * (-1L + !.partial) + .partial,
-                   i + (.size * !.partial) - 1 + .partial, by = 1L)
-    idx[idx <= 0] <- NA_integer_
-    out[i] <- .fn(.x[idx], ...)
-  }
-  out
+  paste0("FMEAN")
 }
 
 globalVariables(c(".resid", "sigma", "std.error", "stat"))
