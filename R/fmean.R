@@ -196,7 +196,7 @@ residuals.model_fmean <- function(object, ...) {
 #'
 #' @export
 glance.model_fmean <- function(x, ...) {
-  stop("Not sure what to put here yet")
+  tibble(sigma2 = var(x$fitted$.resid, na.rm=TRUE))
 }
 
 #' Extract model coefficients from a mable
