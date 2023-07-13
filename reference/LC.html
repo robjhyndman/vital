@@ -74,17 +74,6 @@
 <span class="r-in"><span><span class="va">aus_mortality</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">State</span> <span class="op">==</span> <span class="st">"Victoria"</span>, <span class="va">Sex</span> <span class="op">==</span> <span class="st">"female"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">model</span><span class="op">(</span>lee_carter <span class="op">=</span> <span class="fu">LC</span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Called from: .model$train(.data = .data, sex = sex, specials = parsed$specials, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     adjust = "dt", scale = FALSE)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: out &lt;- lca(.data, sex = sex, age = attrx$agevar, pop = attrx$populationvar, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     rates = find_measure(.data, c("mx", "mortality", "fx", "fertility", </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         "rate")))</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: fits &lt;- select(mutate(left_join(left_join(as_tibble(.data), out$by_t, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     by = indexvar), out$by_x, by = agevar), .fitted = ax + kt * </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     bx, .resid = .data[[measures]] - .fitted), all_of(c(indexvar, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     agevar, ".fitted", ".resid")))</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: structure(list(model = out, fitted = fits, nobs = sum(!is.na(.data[[measures]]))), </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     class = "model_lc")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A mable: 1 x 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Key:     Sex, State, Code [1]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Sex    State    Code  lee_carter</span>
