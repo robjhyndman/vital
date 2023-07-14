@@ -228,4 +228,29 @@ model_sum.model_fmean <- function(x) {
   paste0("FMEAN")
 }
 
+
+#' @export
+prepare_autoplot.model_fmean <- function(object, ...) {
+  object$model
+}
+
+#' @export
+autoplot.model_fmean <- function(object, age = "Age",...) {
+  keys <- colnames(object)
+  keys <- keys[!(keys %in% c("mean","sigma", age))]
+  nk <- length(keys)
+  object <- object |> rename(.mean = mean)
+  aes_spec <- list(x = sym(age), y = expr(.mean))
+  if(nk > 0) {
+    aes_spec[["colour"]] <- expr(interaction(!!!syms(keys), sep="/"))
+  }
+  p <- ggplot(object, eval_tidy(expr(aes(!!!aes_spec)))) +
+    geom_line() + ggplot2::labs(x = age, y = "Mean")
+  if(nk > 1) {
+    p <- p + ggplot2::guides(colour = ggplot2::guide_legend(paste0(keys, collapse="/")))
+  }
+  print(p)
+}
+
+
 globalVariables(c(".resid", "sigma", "std.error", "stat", ".innov"))
