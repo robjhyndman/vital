@@ -228,7 +228,6 @@ model_sum.model_fmean <- function(x) {
   paste0("FMEAN")
 }
 
-
 #' @export
 prepare_autoplot.model_fmean <- function(object, ...) {
   object$model

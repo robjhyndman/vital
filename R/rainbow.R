@@ -47,6 +47,7 @@ rainbow_plot <- function(.data, .vars = NULL, age) {
   # Index variable
   index <- tsibble::index_var(.data)
 
+  # Age variable
   if(inherits(.data, "vital")) {
     age <- attributes(.data)$agevar
     if(is.null(age)) {

@@ -113,3 +113,5 @@ block_bootstrap <- function (x, window_size, size = length(x)) {
   start_from <- sample(0:(window_size - 1), 1) + 1
   bx[seq(start_from, length.out = size)]
 }
+
+globalVariables(".sim")

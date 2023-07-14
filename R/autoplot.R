@@ -20,7 +20,7 @@ autoplot.mdl_vtl_df <- function (object, ...) {
 #' @export
 prepare_autoplot.lst_mdl <- function(object, ...) {
   # Combine results from list
-  purrr:::map(object, prepare_autoplot)
+  purrr::map(object, prepare_autoplot)
 }
 
 #' @export
@@ -30,8 +30,6 @@ prepare_autoplot.mdl_vtl_ts <- function (object, ...) {
   })
 }
 
-
-#' @export
 prepare_autoplot <- function(object, ...) {
   UseMethod("prepare_autoplot")
 }
