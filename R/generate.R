@@ -73,42 +73,24 @@ generate.mdl_vtl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = 
     new_data <- build_tsibble(new_data, index = !!idx, key = !!kv, interval = intvl) |>
       as_vital(.age = agevar)
   }
-
-  if(bootstrap) {
-    res <- residuals(x$fit)
-    res <- stats::na.omit(res)
-    new_data$.innov <- if(bootstrap_block_size == 1) {
-      sample(res, nrow(new_data), replace = TRUE)
-    } else {
-      if(any(tsibble::has_gaps(x$data)$.gaps)) abort("Residuals must be regularly spaced without gaps to use a block bootstrap method.")
-      kr <- tsibble::key_rows(new_data)
-      # idx <- x$data[[index_var(x$data)]]
-      # new_idx <- new_data[[index_var(new_data)]]
-      # block_pos <- ((new_idx - min(idx))%%bootstrap_block_size)+1
-      innov <- lapply(lengths(kr), function(n) block_bootstrap(res, bootstrap_block_size, size = n))
-      vctrs::vec_c(!!!innov)
-    }
-  }
-
   # Compute specials with new_data
   x$model$stage <- "generate"
   x$model$add_data(new_data)
-  specials <- tryCatch(parse_model_rhs(x$model),
-                       error = function(e){
-                         abort(sprintf(
-                           "%s
-Unable to compute required variables from provided `new_data`.
+  specials <- tryCatch(
+    parse_model_rhs(x$model),
+    error = function(e) {
+      abort(sprintf("%s\n Unable to compute required variables from provided `new_data`.
 Does your model require extra variables to produce simulations?", e$message))
-                       }, interrupt = function(e) {
-                         stop("Terminated by user", call. = FALSE)
-                       })
+    },
+    interrupt = function(e) {
+      stop("Terminated by user", call. = FALSE)
+    }
+  )
 
   x$model$remove_data()
   x$model$stage <- NULL
-
   if(length(x$response) > 1) abort("Generating paths from multivariate models is not yet supported.")
   .sim <- generate(x[["fit"]], new_data = new_data, specials = specials, bootstrap = bootstrap, ...)[[".sim"]]
-
 
   # Back-transform forecast distributions
   bt <- map(x$transformation, function(x){

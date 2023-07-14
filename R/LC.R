@@ -124,20 +124,19 @@ forecast.model_lc <- function(object, new_data, bootstrap = FALSE, times = 5000,
 #' @export
 generate.model_lc <- function(x, new_data, bootstrap = FALSE, ...) {
   agevar <- attributes(new_data)$agevar
+  indexvar <- index_var(new_data)
+
+  # Forecast all kt series using random walks with drift terms
+  h <- length(unique(new_data[[index_var(new_data)]]))
+  fc <- x$model$by_t |>
+    fabletools::model(rw = fable::RW(kt ~ drift())) |>
+    generate(h = h, bootstrap = bootstrap, ...)
   new_data <- new_data |>
-    dplyr::left_join(x$model, by = agevar)
+    left_join(x$model$by_x, by = agevar) |>
+    left_join(fc, by = c(indexvar, ".rep")) |>
+    mutate(fitted = exp(ax + bx*.sim))
 
-  if (!(".innov" %in% names(new_data))) {
-    if (bootstrap) {
-      res <- residuals(x)
-      new_data$.innov <- sample(na.omit(res), NROW(new_data), replace = TRUE)
-    }
-    else {
-      new_data$.innov <- stats::rnorm(NROW(new_data), sd = x$model$sigma)
-    }
-  }
-
-  transmute(group_by_key(new_data), ".sim" := mean + .innov)
+  transmute(group_by_key(new_data), ".sim" := fitted)
 }
 
 #' Interpolate missing values
