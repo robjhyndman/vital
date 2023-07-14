@@ -352,13 +352,5 @@ autoplot.fpc_model <- function(object, show_order = 2, ...) {
 }
 
 
-# Plot a variable against age by key
-age_plot <- function(object, .var, keys) {
-  # Convert age to time and use fabletools::autoplot.tbl_ts
-  names <- colnames(object)[!(colnames(object) %in% c(keys, deparse(substitute(.var))))]
-  age <- names[grep("age", names, ignore.case=TRUE)]
-  object_ts <- tsibble::as_tsibble(object, index=age, key = keys[keys != age])
-  fabletools::autoplot(object_ts, {{ .var }}) + ggplot2::xlab(age)
-}
 
 globalVariables(c(".fitted"))
