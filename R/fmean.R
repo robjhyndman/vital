@@ -23,18 +23,22 @@ FMEAN <- function(formula, ...) {
 
 #' @importFrom stats sd
 train_fmean <- function(.data, ...) {
-  indexvar <- index(.data)
-  agevar <- attributes(.data)$agevar
+  attrx <- attributes(.data)
+  indexvar <- index_var(.data)
+  agevar <- attrx$agevar
   measures <- measured_vars(.data)
-  measures <- measures[measures != agevar]
+  measures <- measures[!(measures %in% c(agevar, attrx$populationvar))]
   ave_measure <- .data |>
     as_tibble() |>
-    group_by(across(all_of(agevar))) |>
+    group_by(!!sym(agevar)) |>
     summarise(.fitted = mean(.data[[measures]], na.rm=TRUE))
   out <- .data |>
     as_tibble() |>
     left_join(ave_measure, by = agevar) |>
-    mutate(.resid = .data[[measures]] - .fitted)
+    mutate(
+      .resid = .data[[measures]] - .fitted,
+      .innov = .resid
+    )
   sigma <- out |>
     group_by(across(all_of(agevar))) |>
     summarise(sigma = sd(.resid, na.rm=TRUE))
