@@ -5,7 +5,7 @@ template:
   bslib:
     base_font: {google: "Fira Sans"}
     heading_font: {google: "Fira Sans"}
-    code_font: {google: "Source Code Pro"}
+    code_font: "Hack, mono"
 
 authors:
   Rob Hyndman:
