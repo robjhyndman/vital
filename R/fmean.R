@@ -131,11 +131,24 @@ generate.model_fmean <- function(x, new_data, bootstrap = FALSE, ...) {
   agevar <- attributes(new_data)$agevar
   new_data <- new_data |>
     dplyr::left_join(x$model, by = agevar)
+  times <- length(unique(new_data$.rep))
 
   if (!(".innov" %in% names(new_data))) {
     if (bootstrap) {
-      res <- residuals(x)
-      new_data$.innov <- sample(na.omit(res), NROW(new_data), replace = TRUE)
+      indexvar <- index_var(new_data)
+      innov <- as_tibble(x$fitted) |>
+        select(agevar, .innov) |>
+        nest_by(!!sym(agevar)) |>
+        mutate(
+          data = list(
+            tibble(
+              .innov = sample(unlist(na.omit(data)), times, replace = TRUE),
+              .rep = as.character(seq_along(.innov))
+            ))
+        ) |>
+        tidyr::unnest(data)
+      new_data <- new_data |>
+        left_join(innov, by=c(agevar, ".rep"))
     }
     else {
       new_data$.innov <- stats::rnorm(NROW(new_data), sd = x$model$sigma)
