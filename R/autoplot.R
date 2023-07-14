@@ -47,3 +47,9 @@ age_plot <- function(object, .var, keys) {
 autoplot.vital <- function(object, ...) {
   rainbow_plot(object, ...)
 }
+
+
+#' @export
+autoplot.fbl_vtl_ts <- function(object, ...) {
+  rainbow_plot(object, ...)
+}

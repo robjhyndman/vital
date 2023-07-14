@@ -28,7 +28,9 @@ forecast.mdl_vtl_df <- function(
   out <- suppressWarnings(
     unnest_tsbl(as_tibble(object)[c(kv, ".fc")], ".fc", parent_key = kv)
   )
-  build_fable(out, response = fbl_attr$response, distribution = fbl_attr$dist)
+  final <- build_fable(out, response = fbl_attr$response, distribution = fbl_attr$dist)
+  class(final) <- c("fbl_vtl_ts", class(final))
+  return(final)
 }
 
 #' @export
