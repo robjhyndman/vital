@@ -41,9 +41,9 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="create-vitals">Create vitals<a class="anchor" aria-label="anchor" href="#create-vitals"></a></h2>
       
-      
+      <p class="section-desc"></p><p>Functions for creating vital objects</p>
 
       
     </div><div id="" class="section level2">
@@ -53,100 +53,14 @@
 
       <dl><dt>
           
-          <code><a href="FMEAN.html">FMEAN()</a></code> 
+          <code><a href="vital.html">vital()</a></code> 
         </dt>
-        <dd>Functional mean models</dd>
-      </dl><dl><dt>
-          
-          <code><a href="LC.html">LC()</a></code> 
-        </dt>
-        <dd>Model mortality or fertility data using Lee-Carter approach</dd>
+        <dd>Create a vital object</dd>
       </dl><dl><dt>
           
           <code><a href="as_vital.html">as_vital()</a></code> 
         </dt>
         <dd>Coerce to a vital object</dd>
-      </dl><dl><dt>
-          
-          <code><a href="aus_fertility.html">aus_fertility</a></code> 
-        </dt>
-        <dd>Australian fertility data</dd>
-      </dl><dl><dt>
-          
-          <code><a href="aus_mortality.html">aus_mortality</a></code> 
-        </dt>
-        <dd>Australian mortality data</dd>
-      </dl><dl><dt>
-          
-          <code><a href="autoplot.fpc_model.html">autoplot(<i>&lt;fpc_model&gt;</i>)</a></code> 
-        </dt>
-        <dd>Plot of functional data model components</dd>
-      </dl><dl><dt>
-          
-          <code><a href="collapse_ages.html">collapse_ages()</a></code> 
-        </dt>
-        <dd>Collapse upper ages into a single age group. Counts are summed while
-rates are recomputed.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="forecast.html">forecast(<i>&lt;model_lc&gt;</i>)</a></code> <code><a href="forecast.html">forecast(<i>&lt;model_fmean&gt;</i>)</a></code> 
-        </dt>
-        <dd>Produce forecasts from a vital model</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fpc_model.html">fpc_model()</a></code> 
-        </dt>
-        <dd>Fit a functional principal components model</dd>
-      </dl><dl><dt>
-          
-          <code><a href="generate.mdl_vtl_df.html">generate(<i>&lt;mdl_vtl_df&gt;</i>)</a></code> <code><a href="generate.mdl_vtl_df.html">generate(<i>&lt;mdl_vtl_ts&gt;</i>)</a></code> 
-        </dt>
-        <dd>Generate responses from a mable</dd>
-      </dl><dl><dt>
-          
-          <code><a href="generate.model_fmean.html">generate(<i>&lt;model_fmean&gt;</i>)</a></code> 
-        </dt>
-        <dd>Generate from a mean model</dd>
-      </dl><dl><dt>
-          
-          <code><a href="generate.model_lc.html">generate(<i>&lt;model_lc&gt;</i>)</a></code> 
-        </dt>
-        <dd>Generate from a mean model</dd>
-      </dl><dl><dt>
-          
-          <code><a href="glance.model_fmean.html">glance(<i>&lt;model_fmean&gt;</i>)</a></code> 
-        </dt>
-        <dd>Glance a average method model</dd>
-      </dl><dl><dt>
-          
-          <code><a href="glance.model_lc.html">glance(<i>&lt;model_lc&gt;</i>)</a></code> 
-        </dt>
-        <dd>Glance a average method model</dd>
-      </dl><dl><dt>
-          
-          <code><a href="interpolate.html">interpolate(<i>&lt;model_lc&gt;</i>)</a></code> <code><a href="interpolate.html">interpolate(<i>&lt;model_fmean&gt;</i>)</a></code> 
-        </dt>
-        <dd>Interpolate missing values</dd>
-      </dl><dl><dt>
-          
-          <code><a href="life_expectancy.html">life_expectancy()</a></code> 
-        </dt>
-        <dd>Compute life expectancy from mortality rates</dd>
-      </dl><dl><dt>
-          
-          <code><a href="life_table.html">life_table()</a></code> 
-        </dt>
-        <dd>Compute period lifetables from mortality rates</dd>
-      </dl><dl><dt>
-          
-          <code><a href="model.html">model(<i>&lt;vital&gt;</i>)</a></code> 
-        </dt>
-        <dd>Estimate models for vital data</dd>
-      </dl><dl><dt>
-          
-          <code><a href="rainbow_plot.html">rainbow_plot()</a></code> 
-        </dt>
-        <dd>Rainbow plot of demographic data against age</dd>
       </dl><dl><dt>
           
           <code><a href="read_hmd.html">read_hmd()</a></code> 
@@ -157,22 +71,154 @@ rates are recomputed.</dd>
           <code><a href="read_hmd_files.html">read_hmd_files()</a></code> 
         </dt>
         <dd>Read data from files downloaded from HMD and construct a <code>vital</code> object for use in other functions</dd>
+      </dl></div><div class="section level2">
+      <h2 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a></h2>
+      
+      <p class="section-desc"></p><p>Data sets included in the package</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="aus_mortality.html">aus_mortality</a></code> 
+        </dt>
+        <dd>Australian mortality data</dd>
       </dl><dl><dt>
           
-          <code><a href="tidy.html">tidy(<i>&lt;model_lc&gt;</i>)</a></code> <code><a href="tidy.html">tidy(<i>&lt;model_fmean&gt;</i>)</a></code> 
+          <code><a href="aus_fertility.html">aus_fertility</a></code> 
         </dt>
-        <dd>Extract model coefficients from a mable</dd>
+        <dd>Australian fertility data</dd>
+      </dl></div><div class="section level2">
+      <h2 id="computing-with-vitals">Computing with vitals<a class="anchor" aria-label="anchor" href="#computing-with-vitals"></a></h2>
+      
+      <p class="section-desc"></p><p>Functions for computing on vital objects</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="collapse_ages.html">collapse_ages()</a></code> 
+        </dt>
+        <dd>Collapse upper ages into a single age group. Counts are summed while
+rates are recomputed.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="life_table.html">life_table()</a></code> 
+        </dt>
+        <dd>Compute period lifetables from age-specific mortality rates</dd>
+      </dl><dl><dt>
+          
+          <code><a href="life_expectancy.html">life_expectancy()</a></code> 
+        </dt>
+        <dd>Compute life expectancy from age-specific mortality rates</dd>
       </dl><dl><dt>
           
           <code><a href="total_fertility_rate.html">total_fertility_rate()</a></code> 
         </dt>
         <dd>Compute total fertility rate from age-specific fertility rates</dd>
+      </dl></div><div class="section level2">
+      <h2 id="modelling">Modelling<a class="anchor" aria-label="anchor" href="#modelling"></a></h2>
+      
+      <p class="section-desc"></p><p>Functions for fitting models to vitals</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="model.html">model(<i>&lt;vital&gt;</i>)</a></code> 
+        </dt>
+        <dd>Estimate models for vital data</dd>
       </dl><dl><dt>
           
-          <code><a href="vital.html">vital()</a></code> 
+          <code><a href="FMEAN.html">FMEAN()</a></code> 
         </dt>
-        <dd>Create a vital object</dd>
+        <dd>Functional mean models</dd>
       </dl><dl><dt>
+          
+          <code><a href="LC.html">LC()</a></code> 
+        </dt>
+        <dd>Model mortality or fertility data using Lee-Carter approach</dd>
+      </dl></div><div class="section level2">
+      <h2 id="methods-for-vital-models">Methods for vital models<a class="anchor" aria-label="anchor" href="#methods-for-vital-models"></a></h2>
+      
+      <p class="section-desc"></p><p>Functions that work with vital mables</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="forecast.html">forecast(<i>&lt;LC&gt;</i>)</a></code> <code><a href="forecast.html">forecast(<i>&lt;FMEAN&gt;</i>)</a></code> <code><a href="forecast.html">forecast(<i>&lt;mdl_vtl_df&gt;</i>)</a></code> 
+        </dt>
+        <dd>Produce forecasts from a vital model</dd>
+      </dl><dl><dt>
+          
+          <code><a href="generate.html">generate(<i>&lt;LC&gt;</i>)</a></code> <code><a href="generate.html">generate(<i>&lt;FMEAN&gt;</i>)</a></code> <code><a href="generate.html">generate(<i>&lt;mdl_vtl_df&gt;</i>)</a></code> 
+        </dt>
+        <dd>Generate responses from a mable</dd>
+      </dl><dl><dt>
+          
+          <code><a href="interpolate.html">interpolate(<i>&lt;LC&gt;</i>)</a></code> <code><a href="interpolate.html">interpolate(<i>&lt;FMEAN&gt;</i>)</a></code> 
+        </dt>
+        <dd>Interpolate missing values</dd>
+      </dl><dl><dt>
+          
+          <code><a href="tidy.html">tidy(<i>&lt;LC&gt;</i>)</a></code> <code><a href="tidy.html">tidy(<i>&lt;FMEAN&gt;</i>)</a></code> 
+        </dt>
+        <dd>Extract model coefficients from a mable</dd>
+      </dl></div><div class="section level2">
+      <h2 id="graphics">Graphics<a class="anchor" aria-label="anchor" href="#graphics"></a></h2>
+      
+      <p class="section-desc"></p><p>Plotting functions for visualizing data and models</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="autoplot.mdl_vtl_df.html">autoplot(<i>&lt;mdl_vtl_df&gt;</i>)</a></code> 
+        </dt>
+        <dd>Plot output from a vital model</dd>
+      </dl><dl><dt>
+          
+          <code><a href="autoplot.fbl_vtl_ts.html">autoplot(<i>&lt;fbl_vtl_ts&gt;</i>)</a></code> 
+        </dt>
+        <dd>Plot forecasts from a vital model</dd>
+      </dl><dl><dt>
+          
+          <code><a href="autoplot.vital.html">autoplot(<i>&lt;vital&gt;</i>)</a></code> 
+        </dt>
+        <dd>Rainbow plot of demographic data against age</dd>
+      </dl></div><div class="section level2">
+      <h2 id="utility">Utility<a class="anchor" aria-label="anchor" href="#utility"></a></h2>
+      
+      <p class="section-desc"></p><p>Functions used when the package is loaded</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
           
           <code><a href="vital_conflicts.html">vital_conflicts()</a></code> 
         </dt>
@@ -182,12 +228,39 @@ rates are recomputed.</dd>
           <code><a href="vital_packages.html">vital_packages()</a></code> 
         </dt>
         <dd>List all packages loaded by vital</dd>
+      </dl><dl><dt>
+          
+          <code><a href="reexports.html">reexports</a></code> <code><a href="reexports.html">autoplot</a></code> <code><a href="reexports.html">forecast</a></code> 
+        </dt>
+        <dd>Objects exported from other packages</dd>
+      </dl></div><div class="section level2">
+      <h2 id="deprecated">Deprecated<a class="anchor" aria-label="anchor" href="#deprecated"></a></h2>
+      
+      <p class="section-desc"></p><p>Functions to be removed</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="fpc_model.html">fpc_model()</a></code> 
+        </dt>
+        <dd>Fit a functional principal components model</dd>
+      </dl><dl><dt>
+          
+          <code><a href="autoplot.fpc_model.html">autoplot(<i>&lt;fpc_model&gt;</i>)</a></code> 
+        </dt>
+        <dd>Plot of functional data model components</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by <a href="http://robjhyndman.com" class="external-link">Rob Hyndman</a>, Mitchell O’Hara-Wild.</p>
+  <p></p><p>Developed by Rob Hyndman, Mitchell O’Hara-Wild.</p>
 </div>
 
 <div class="pkgdown-footer-right">

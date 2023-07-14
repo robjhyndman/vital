@@ -92,9 +92,9 @@ Deaths:Number of deaths
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 280,871 more rows</span></span>
 <span class="r-in"><span><span class="va">aus_mortality</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">State</span><span class="op">==</span><span class="st">"Victoria"</span>, <span class="va">Sex</span> <span class="op">!=</span> <span class="st">"total"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="rainbow_plot.html">rainbow_plot</a></span><span class="op">(</span><span class="va">Exposure</span><span class="op">/</span><span class="fl">1000</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu">rainbow_plot</span><span class="op">(</span><span class="va">Exposure</span><span class="op">/</span><span class="fl">1000</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Population at 30 June (thousands)"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="aus_mortality-1.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rainbow_plot(dplyr::filter(aus_mortality, State == "Victoria",     Sex != "total"), Exposure/1000):</span> could not find function "rainbow_plot"</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -103,7 +103,7 @@ Deaths:Number of deaths
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by <a href="http://robjhyndman.com" class="external-link">Rob Hyndman</a>, Mitchell O’Hara-Wild.</p>
+  <p></p><p>Developed by Rob Hyndman, Mitchell O’Hara-Wild.</p>
 </div>
 
 <div class="pkgdown-footer-right">
