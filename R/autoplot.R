@@ -42,3 +42,8 @@ age_plot <- function(object, .var, keys) {
   object_ts <- tsibble::as_tsibble(object, index=age, key = keys[keys != age])
   fabletools::autoplot(object_ts, {{ .var }}) + ggplot2::xlab(age)
 }
+
+#' @export
+autoplot.vital <- function(object, ...) {
+  rainbow_plot(object, ...)
+}
