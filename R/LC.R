@@ -159,26 +159,6 @@ interpolate.model_lc <- function(object, new_data, ...) {
   new_data
 }
 
-#' Fitted values from a mean model
-#'
-#' @param object TBD
-#' @param ... Not used.
-#'
-#' @export
-fitted.model_lc <- function(object, ...) {
-  object$fitted$.fitted
-}
-
-#' Residuals from a mean model
-#'
-#' @param object TBD
-#' @param ... Not used.
-#'
-#' @export
-residuals.model_lc <- function(object, ...) {
-  object$fitted$.resid
-}
-
 #' Glance a average method model
 #'
 #' Construct a single row summary of the average method model.
