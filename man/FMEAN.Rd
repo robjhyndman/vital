@@ -2,7 +2,7 @@
 % Please edit documentation in R/fmean.R
 \name{FMEAN}
 \alias{FMEAN}
-\alias{report.model_fmean}
+\alias{report.FMEAN}
 \title{Functional mean models}
 \usage{
 FMEAN(formula, ...)
@@ -23,4 +23,7 @@ library(dplyr)
 aus_mortality |>
   filter(State == "Victoria", Sex == "female") |>
   model(mean = FMEAN(Mortality))
+}
+\author{
+Rob J Hyndman
 }

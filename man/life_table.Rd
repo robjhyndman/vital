@@ -2,7 +2,7 @@
 % Please edit documentation in R/life_table.R
 \name{life_table}
 \alias{life_table}
-\title{Compute period lifetables from mortality rates}
+\title{Compute period lifetables from age-specific mortality rates}
 \usage{
 life_table(.data, mortality)
 }
@@ -31,4 +31,7 @@ Chiang CL. (1984) \emph{The life table and its applications}. Robert E Krieger P
 Keyfitz, N, and Caswell, H. (2005) \emph{Applied mathematical demography}, Springer-Verlag: New York.
 
 Preston, S.H., Heuveline, P., and Guillot, M. (2001) \emph{Demography: measuring and modeling population processes}. Blackwell
+}
+\author{
+Rob J Hyndman
 }

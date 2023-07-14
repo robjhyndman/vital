@@ -7,6 +7,7 @@
 #' @param max_age Maximum age to include in the collapsed age group.
 #'
 #' @return A vital object with the same variables as `.data`, but with the upper ages collapsed into a single age group.
+#' @author Rob J Hyndman
 #' @examples
 #' aus_mortality |>
 #'  dplyr::filter(State == "Victoria", Sex == "female") |>

@@ -1,4 +1,4 @@
-#' Compute life expectancy from mortality rates
+#' Compute life expectancy from age-specific mortality rates
 #'
 #' Returns remaining life expectancy at a given age (0 by default).
 #'
@@ -19,6 +19,7 @@
 #' aus_mortality |>
 #'   dplyr::filter(Code == "AUS", Sex == "female") |>
 #'   life_expectancy()
+#' @author Rob J Hyndman
 #' @export
 
 life_expectancy <- function(.data, from_age = 0, mortality) {

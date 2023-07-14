@@ -18,6 +18,7 @@
 #' @param regular	Regular time interval (TRUE) or irregular (FALSE). The interval
 #' is determined by the greatest common divisor of index column, if TRUE.
 #' @param .drop If TRUE, empty key groups are dropped.
+#' @author Rob J Hyndman
 #' @examples
 #' # create a vital with only age as a key
 #' vital(
@@ -48,6 +49,7 @@ vital <- function(..., key = NULL, index,
 #' @param ... Other arguments passed on to \code{\link[tsibble]{as_tsibble}}
 #'
 #' @return A vital object.
+#' @author Rob J Hyndman
 #' @rdname as_vital
 #' @seealso \code{\link[tsibble]{tsibble}()}
 #'

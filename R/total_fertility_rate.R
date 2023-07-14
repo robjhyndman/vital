@@ -12,6 +12,7 @@
 #' # Compute Australian total fertility rates over time
 #' aus_fertility |>
 #'   total_fertility_rate()
+#' @author Rob J Hyndman
 #' @export
 
 total_fertility_rate <- function(.data,  fertility) {

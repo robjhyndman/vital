@@ -39,6 +39,6 @@ mortality and fertility rates: a functional data approach.
 \url{https://robjhyndman.com/publications/funcfor/}
 }
 \author{
-Rob J Hyndman.
+Rob J Hyndman
 }
 \keyword{models}

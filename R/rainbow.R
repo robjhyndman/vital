@@ -1,24 +1,4 @@
-#' Rainbow plot of demographic data against age
-#'
-#' Produce rainbow plot (coloured by time index) of demographic variable against
-#' against age.
-#'
-#' @param .data A vital, tsibble or fable object including an age variable and the variable you wish to plot.
-#' @param .vars A bare expression containing the name of the variable you wish to plot.
-#' @param age Variable in `.data` containing start year of age intervals.
-#' If omitted, and `.data` is not a vital object, the variable with name `Age` or `Age_group`
-#' will be used (not case sensitive).
-#'
-#' @author Rob Hyndman
-#' @references Hyndman, Rob J & Shang, Han Lin (2010) Rainbow plots, bagplots,
-#' and boxplots for functional data. \emph{Journal of Computational and Graphical Statistics},
-#' \bold{19}(1), 29-45.
-#'
-#' @return A ggplot2 object.
-#'
-#' @examples
-#' rainbow_plot(aus_fertility, Fertility)
-#' @export
+
 
 rainbow_plot <- function(.data, .vars = NULL, age) {
   quo_vars <- rlang::enquo(.vars)

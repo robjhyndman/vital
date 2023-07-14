@@ -24,3 +24,6 @@ aus_mortality |>
  dplyr::filter(State == "Victoria", Sex == "female") |>
  collapse_ages(max_age = 85)
 }
+\author{
+Rob J Hyndman
+}

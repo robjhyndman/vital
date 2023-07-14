@@ -2,7 +2,7 @@
 #'
 #' \code{FMEAN()} returns an iid functional model applied to the formula's response variable as a function of age.
 #'
-#' @aliases report.model_fmean
+#' @aliases report.FMEAN
 #'
 #' @param formula Model specification.
 #' @param ... Not used.
@@ -10,6 +10,7 @@
 #' @return A model specification.
 #'
 #'
+#' @author Rob J Hyndman
 #' @examples
 #' library(dplyr)
 #' aus_mortality |>
@@ -56,51 +57,13 @@ train_fmean <- function(.data, ...) {
       model = model,
       nobs = sum(!is.na(.data[[measures]]))
     ),
-    class = "model_fmean"
+    class = "FMEAN"
   )
 }
 
-#' Produce forecasts from a vital model
-#'
-#' The forecast function allows you to produce future predictions of a functional
-#' time series model, where the response is a function of age.
-#' If the response variable has been transformed in the
-#' model formula, the transformation will be automatically back-transformed
-#' and bias-adjusted. More details about
-#' transformations in the fable framework can be found in
-#' `vignette("transformations", package = "fable")`.
-#'
-#' The forecasts returned contain both point forecasts and their distribution.
-#' A specific forecast interval can be extracted from the distribution using the
-#' [`hilo()`] function, and multiple intervals can be obtained using [`report()`].
-#' These intervals are stored in a single column using the `hilo` class, to
-#' extract the numerical upper and lower bounds you can use [`unpack_hilo()`].
-#'
-#' @param object A mable containing one or more models.
-#' @param new_data A `tsibble` containing future information used to forecast.
-#' @param bootstrap If `TRUE`, then forecast distributions are computed using simulation with resampled errors.
-#' @param times The number of sample paths to use in estimating the forecast distribution when `bootstrap = TRUE`.
-#' @param ... Additional arguments not used.
-#'#'
-#' @return
-#' A fable containing the following columns:
-#' - `.model`: The name of the model used to obtain the forecast. Taken from
-#'   the column names of models in the provided mable.
-#' - The forecast distribution. The name of this column will be the same as the
-#'   dependent variable in the model(s). If multiple dependent variables exist,
-#'   it will be named `.distribution`.
-#' - Point forecasts computed from the distribution using the functions in the
-#'   `point_forecast` argument.
-#' - All columns in `new_data`, excluding those whose names conflict with the
-#'   above.
-#'
-#' @importFrom fabletools forecast
-#' @importFrom stats qnorm time
-#' @importFrom utils tail
-#'
 #' @rdname forecast
 #' @export
-forecast.model_fmean <- function(object, new_data, bootstrap = FALSE, times = 5000, ...) {
+forecast.FMEAN <- function(object, new_data, bootstrap = FALSE, times = 5000, ...) {
   # Produce forecasts
   if (bootstrap) {
     sim <- map(seq_len(times), function(x) {
@@ -118,16 +81,9 @@ forecast.model_fmean <- function(object, new_data, bootstrap = FALSE, times = 50
   }
 }
 
-#' Generate from a mean model
-#'
-#' @param x A mable.
-#' @param new_data A `tsibble` containing future information used to forecast.
-#' @param bootstrap If `TRUE`, then forecast distributions are computed using simulation with resampled errors.
-#' @param ... Additional arguments not used.
-#' @importFrom stats na.omit
-#'
+#' @rdname generate
 #' @export
-generate.model_fmean <- function(x, new_data, bootstrap = FALSE, ...) {
+generate.FMEAN <- function(x, new_data, h = NULL, bootstrap = FALSE, times = 1, seed = NULL,  ...) {
   agevar <- attributes(new_data)$agevar
   new_data <- new_data |>
     dplyr::left_join(x$model, by = agevar)
@@ -167,8 +123,9 @@ generate.model_fmean <- function(x, new_data, bootstrap = FALSE, ...) {
 #' @param ... Other arguments passed to interpolate methods.
 #'
 #' @rdname interpolate
+#' @author Rob J Hyndman
 #' @export
-interpolate.model_fmean <- function(object, new_data, ...) {
+interpolate.FMEAN <- function(object, new_data, ...) {
   agevar <- attributes(new_data)$agevar
   measures <- measured_vars(new_data)
   measures <- measures[measures != agevar]
@@ -180,18 +137,8 @@ interpolate.model_fmean <- function(object, new_data, ...) {
   new_data
 }
 
-#' Glance a average method model
-#'
-#' Construct a single row summary of the average method model.
-#'
-#' Contains the variance of residuals (`sigma2`).
-#'
-#' @inheritParams generics::glance
-#'
-#' @return A one row tibble summarising the model's fit.
-#'
 #' @export
-glance.model_fmean <- function(x, ...) {
+glance.FMEAN <- function(x, ...) {
   tibble(sigma2 = var(x$fitted$.resid, na.rm=TRUE))
 }
 
@@ -204,8 +151,9 @@ glance.model_fmean <- function(x, ...) {
 #' @param ... Arguments for model methods.
 #'
 #' @rdname tidy
+#' @author Rob J Hyndman
 #' @export
-tidy.model_fmean <- function(x, ...) {
+tidy.FMEAN <- function(x, ...) {
   x$model  |>
     mutate(
       term = "mean",
@@ -218,23 +166,23 @@ tidy.model_fmean <- function(x, ...) {
 }
 
 #' @export
-report.model_fmean <- function(object, ...) {
+report.FMEAN <- function(object, ...) {
   cat("\n")
   print(object$model)
 }
 
 #' @export
-model_sum.model_fmean <- function(x) {
+model_sum.FMEAN <- function(x) {
   paste0("FMEAN")
 }
 
 #' @export
-prepare_autoplot.model_fmean <- function(object, ...) {
+prepare_autoplot.FMEAN <- function(object, ...) {
   object$model
 }
 
 #' @export
-autoplot.model_fmean <- function(object, age = "Age",...) {
+autoplot.FMEAN <- function(object, age = "Age",...) {
   object <- object  |>
     tidyr::unnest("out")
   keys <- colnames(object)
@@ -250,7 +198,7 @@ autoplot.model_fmean <- function(object, age = "Age",...) {
   if(nk > 1) {
     p <- p + ggplot2::guides(colour = ggplot2::guide_legend(paste0(keys, collapse="/")))
   }
-  print(p)
+  p
 }
 
 

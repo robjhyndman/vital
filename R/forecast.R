@@ -1,3 +1,32 @@
+#' Produce forecasts from a vital model
+#'
+#' The forecast function allows you to produce future predictions of a functional
+#' time series model, where the response is a function of age.
+#' The forecasts returned contain both point forecasts and their distribution.
+#'
+#' @param object A mable containing one or more models.
+#' @param new_data A `tsibble` containing future information used to forecast.
+#' @param h Number of time steps ahead to forecast. This can be used instead of \code{new_data}
+#' when there are no covariates in the model. It is ignored if \code{new_data} is provided.
+#' @param point_forecast A list of functions used to compute point forecasts from the forecast distribution.
+#' @param bootstrap If `TRUE`, then forecast distributions are computed using simulation with resampled errors.
+#' @param times The number of sample paths to use in estimating the forecast distribution when `bootstrap = TRUE`.
+#' @param ... Additional arguments not used.
+#' @author Rob J Hyndman and Mitchell O'Hara-Wild
+#'
+#' @return
+#' A fable containing the following columns:
+#' - `.model`: The name of the model used to obtain the forecast. Taken from
+#'   the column names of models in the provided mable.
+#' - The forecast distribution. The name of this column will be the same as the
+#'   dependent variable in the model(s). If multiple dependent variables exist,
+#'   it will be named `.distribution`.
+#' - Point forecasts computed from the distribution using the functions in the
+#'   `point_forecast` argument.
+#' - All columns in `new_data`, excluding those whose names conflict with the
+#'   above.
+#'
+#' @rdname forecast
 #' @export
 forecast.mdl_vtl_df <- function(
     object, new_data = NULL, h = NULL, point_forecast = list(.mean = mean), ...

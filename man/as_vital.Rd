@@ -74,3 +74,6 @@ as_vital(demography::fr.mort)
 \seealso{
 \code{\link[tsibble]{tsibble}()}
 }
+\author{
+Rob J Hyndman
+}

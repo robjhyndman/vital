@@ -1,3 +1,4 @@
+
 #' Generate responses from a mable
 #'
 #' Use a model's fitted distribution to simulate additional data with similar
@@ -5,20 +6,22 @@
 #' `\link[stats]{simulate}`.
 #'
 #' Innovations are sampled by the model's assumed error distribution.
-#' If `bootstrap` is `TRUE`, innovations will be sampled from the model's
-#' residuals. If `new_data` contains the `.innov` column, those values will be
-#' treated as innovations for the simulated paths..
+#' If `bootstrap` is `TRUE`, innovations will be sampled from the model's residuals.
 #'
 #' @param x A mable.
 #' @param new_data The data to be generated (time index and exogenous regressors)
-#' @param h The simulation horizon (can be used instead of `new_data` for regular
-#' time series with no exogenous regressors).
+#' @param h The simulation horizon (can be used instead of `new_data` for regular time series with no exogenous regressors).
 #' @param times The number of replications.
 #' @param seed The seed for the random generation from distributions.
-#' @param ... Additional arguments for individual simulation methods.
+#' @param ... Additional arguments
+#' @param bootstrap If `TRUE`, then forecast distributions are computed using simulation with resampled errors.
+#' @param bootstrap If TRUE, then forecast distributions are computed using simulation with resampled errors.
+#' @param bootstrap_block_size The bootstrap block size specifies the number of contiguous residuals to be taken in each bootstrap sample.
+#' @author Rob J Hyndman and Mitchell O'Hara-Wild
+#' @rdname generate
 #'
 #' @export
-generate.mdl_vtl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL, ...){
+generate.mdl_vtl_df <- function(x, new_data = NULL, h = NULL, bootstrap = FALSE, times = 1, seed = NULL, bootstrap_block_size = 1, ...){
   mdls <- mable_vars(x)
   if(!is.null(new_data)){
     x <- bind_new_data(x, new_data)
@@ -30,7 +33,7 @@ generate.mdl_vtl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = 
   # Evaluate simulations
   x[[".sim"]] <- map2(x[[".sim"]],
                  x[["new_data"]] %||% rep(list(NULL), length.out = NROW(x)),
-                 generate, h = h, times = times, seed = seed, ...)
+                 generate, h = h, times = times, seed = seed, bootstrap_block_size = bootstrap_block_size,...)
   x[["new_data"]] <- NULL
   agevar <- attributes(x$.sim[[1]])$agevar
   index <- index_var(x$.sim[[1]])
@@ -40,14 +43,10 @@ generate.mdl_vtl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = 
     as_vital(.age = agevar, reorder = TRUE)
 }
 
-#' @rdname generate.mdl_vtl_df
-#'
-#' @param bootstrap If TRUE, then forecast distributions are computed using simulation with resampled errors.
-#' @param bootstrap_block_size The bootstrap block size specifies the number of contiguous residuals to be taken in each bootstrap sample.
-#'
 #' @export
-generate.mdl_vtl_ts <- function(x, new_data = NULL, h = NULL, times = 1, seed = NULL,
-                            bootstrap = FALSE, bootstrap_block_size = 1, ...){
+generate.mdl_vtl_ts <- function(x, new_data = NULL, h = NULL,
+    bootstrap = FALSE, times = 1, seed = NULL,
+    bootstrap_block_size = 1, ...){
   if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
     stats::runif(1)
   if (is.null(seed))

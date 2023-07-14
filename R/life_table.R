@@ -1,4 +1,4 @@
-#' Compute period lifetables from mortality rates
+#' Compute period lifetables from age-specific mortality rates
 #'
 #' All available years and ages are included in the tables.
 #' qx = mx/(1 + ((1-ax) * mx)) as per Chiang (1984).
@@ -7,6 +7,7 @@
 #' @param .data A \code{vital} including an age variable and a variable containing mortality rates.
 #' @param mortality Variable in `.data` containing Mortality rates (mx). If omitted, the variable with name  `mx`, `Mortality` or `Rate` will be used (not case sensitive).
 #'
+#' @author Rob J Hyndman
 #' @return A vital object containing the index, keys, and the new life table variables `mx`, `qx`, `lx`, `dx`, `Lx`, `Tx` and `ex`.
 #' @rdname life_table
 #'

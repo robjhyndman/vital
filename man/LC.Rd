@@ -2,7 +2,7 @@
 % Please edit documentation in R/LC.R
 \name{LC}
 \alias{LC}
-\alias{report.model_lc}
+\alias{report.LC}
 \title{Model mortality or fertility data using Lee-Carter approach}
 \usage{
 LC(formula, adjust = c("dt", "dxt", "e0", "none"), scale = FALSE, ...)
@@ -51,5 +51,5 @@ Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
 \emph{International Journal of Forecasting}, to appear.
 }
 \author{
-Rob J Hyndman.
+Rob J Hyndman
 }

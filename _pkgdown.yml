@@ -4,12 +4,64 @@ template:
   bootswatch: flatly
   includes:
     in_header: <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hack-font@3/build/web/hack-subset.css">
-
   bslib:
     base_font: {google: "Fira Sans"}
     heading_font: {google: "Fira Sans"}
     code_font: "Hack, mono"
 
 authors:
-  Rob Hyndman:
+  Rob J Hyndman:
     href: http://robjhyndman.com
+
+reference:
+  - title: Create vitals
+    desc: Functions for creating vital objects
+    contents:
+      - vital
+      - as_vital
+      - read_hmd
+      - read_hmd_files
+  - title: Data
+    desc: Data sets included in the package
+    contents:
+      - aus_mortality
+      - aus_fertility
+  - title: Computing with vitals
+    desc: Functions for computing on vital objects
+    contents:
+      - collapse_ages
+      - life_table
+      - life_expectancy
+      - total_fertility_rate
+  - title: Modelling
+    desc: Functions for fitting models to vitals
+    contents:
+      - model.vital
+      - FMEAN
+      - LC
+  - title: Methods for vital models
+    desc: Functions that work with vital mables
+    contents:
+      - forecast.mdl_vtl_df
+      - generate.mdl_vtl_df
+      - interpolate.LC
+      - interpolate.FMEAN
+      - tidy.LC
+      - tidy.FMEAN
+  - title: Graphics
+    desc: Plotting functions for visualizing data and models
+    contents:
+      - autoplot.mdl_vtl_df
+      - autoplot.fbl_vtl_ts
+      - autoplot.vital
+  - title: "Utility"
+    desc: Functions used when the package is loaded
+    contents:
+      - vital_conflicts
+      - vital_packages
+      - reexports
+  - title: Deprecated
+    desc: Functions to be removed
+    contents:
+      - fpc_model
+      - autoplot.fpc_model

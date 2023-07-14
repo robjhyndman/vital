@@ -13,6 +13,7 @@
 #' same response variable.
 #'
 #' @rdname model
+#' @author Rob J Hyndman and Mitchell O'Hara-Wild
 #'
 #' @param .safely If a model encounters an error, rather than aborting the process
 #' a [NULL model][null_model()] will be returned instead. This allows for an error

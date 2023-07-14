@@ -15,14 +15,14 @@
 #' @importFrom rlang call2 get_env new_formula expr_name new_environment enexpr set_env
 #' @importFrom rlang quo_get_expr quo_is_call caller_env as_string
 #' @importFrom rlang rep_along new_quosure expr call_name as_label is_false
-#' @importFrom stats na.omit ts residuals fitted var
+#' @importFrom stats na.omit ts residuals fitted var qnorm time
 #' @importFrom tibble as_tibble tibble
 #' @importFrom tidyselect eval_select everything all_of
 #' @importFrom tidyr pivot_longer pivot_wider
 #' @importFrom tsibble as_tsibble group_by_key measured_vars n_keys tsibble
 #' @importFrom tsibble key_data is_ordered is_regular index index_var key_vars
 #' @importFrom tsibble is_tsibble build_tsibble index2 is_grouped_ts
-#' @importFrom utils head
+#' @importFrom utils head tail
 #' @aliases NULL vital-package
 "_PACKAGE"
 

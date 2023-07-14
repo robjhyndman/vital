@@ -5,7 +5,7 @@
 #' available. Missing rates are set to the geometric mean rate for the relevant age.
 #' \code{LC()} returns a Lee-Carter model applied to the formula's response variable as a function of age.
 #'
-#' @aliases report.model_lc
+#' @aliases report.LC
 #' @param adjust method to use for adjustment of coefficients \eqn{k_t kt}.
 #'   Possibilities are
 #'   \dQuote{dt} (Lee-Carter method, the default),
@@ -26,7 +26,7 @@
 #' @references Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
 #'   method for forecasting mortality. \emph{Demography}, \bold{38}(4), 537–549.
 #' \emph{International Journal of Forecasting}, to appear.
-#' @author Rob J Hyndman.
+#' @author Rob J Hyndman
 #' @return A model specification.
 #'
 #' @examples
@@ -71,7 +71,7 @@ train_lc <- function(.data, sex = NULL, specials,  adjust = c("dt", "dxt", "e0",
       fitted = fits,
       nobs = sum(!is.na(.data[[measures]]))
     ),
-    class = "model_lc"
+    class = "LC"
   )
 }
 #' @param se Method used for computation of standard error.
@@ -82,7 +82,7 @@ train_lc <- function(.data, sex = NULL, specials,  adjust = c("dt", "dxt", "e0",
 #' and most other authors prefer 'actual' (the default).
 #' @rdname forecast
 #' @export
-forecast.model_lc <- function(object, new_data, bootstrap = FALSE, times = 5000,
+forecast.LC <- function(object, new_data, bootstrap = FALSE,
     se = c("innovdrift", "innovonly"), jumpchoice = c("fit", "actual"), ...) {
   se <- match.arg(se)
   jumpchoice <- match.arg(jumpchoice)
@@ -113,16 +113,9 @@ forecast.model_lc <- function(object, new_data, bootstrap = FALSE, times = 5000,
   }
 }
 
-#' Generate from a mean model
-#'
-#' @param x A mable.
-#' @param new_data A `tsibble` containing future information used to forecast.
-#' @param bootstrap If `TRUE`, then forecast distributions are computed using simulation with resampled errors.
-#' @param ... Additional arguments not used.
-#' @importFrom stats na.omit
-#'
+#' @rdname generate
 #' @export
-generate.model_lc <- function(x, new_data, bootstrap = FALSE, ...) {
+generate.LC <- function(x, new_data, bootstrap = FALSE, ...) {
   agevar <- attributes(new_data)$agevar
   indexvar <- index_var(new_data)
   times <- length(unique(new_data$.rep))
@@ -150,7 +143,7 @@ generate.model_lc <- function(x, new_data, bootstrap = FALSE, ...) {
 #'
 #' @rdname interpolate
 #' @export
-interpolate.model_lc <- function(object, new_data, ...) {
+interpolate.LC <- function(object, new_data, ...) {
   agevar <- attributes(new_data)$agevar
   measures <- measured_vars(new_data)
   measures <- measures[measures != agevar]
@@ -162,18 +155,8 @@ interpolate.model_lc <- function(object, new_data, ...) {
   new_data
 }
 
-#' Glance a average method model
-#'
-#' Construct a single row summary of the average method model.
-#'
-#' Contains the variance of residuals (`sigma2`).
-#'
-#' @inheritParams generics::glance
-#'
-#' @return A one row tibble summarising the model's fit.
-#'
 #' @export
-glance.model_lc <- function(x, ...) {
+glance.LC <- function(x, ...) {
   tibble(sigma2 = var(x$fitted$.resid, na.rm=TRUE))
 }
 
@@ -187,18 +170,18 @@ glance.model_lc <- function(x, ...) {
 #'
 #' @rdname tidy
 #' @export
-tidy.model_lc <- function(x, ...) {
+tidy.LC <- function(x, ...) {
   return(NULL)
 }
 
 #' @export
-report.model_lc <- function(object, ...) {
+report.LC <- function(object, ...) {
   cat("\n")
   print(object$model)
 }
 
 #' @export
-model_sum.model_lc <- function(x) {
+model_sum.LC <- function(x) {
   paste0("LC")
 }
 
@@ -483,12 +466,12 @@ newroot <- function(FUN, guess, ...) {
 
 
 #' @export
-prepare_autoplot.model_lc <- function(object, ...) {
+prepare_autoplot.LC <- function(object, ...) {
   object$model
 }
 
 #' @export
-autoplot.model_lc <- function(object, age = "Age", ...) {
+autoplot.LC <- function(object, age = "Age", ...) {
   meanvar <- "ax"
   timevar <- "kt"
   agevar <- "bx"

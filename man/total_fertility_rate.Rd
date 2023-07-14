@@ -23,3 +23,6 @@ given the fertility rate at each age of a woman's life.
 aus_fertility |>
   total_fertility_rate()
 }
+\author{
+Rob J Hyndman
+}

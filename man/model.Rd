@@ -42,3 +42,6 @@ Progress on model estimation can be obtained by wrapping the code with
 reported can be controlled using the `progressr` package.
 }
 
+\author{
+Rob J Hyndman and Mitchell O'Hara-Wild
+}

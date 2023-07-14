@@ -2,7 +2,7 @@
 % Please edit documentation in R/life_expectancy.R
 \name{life_expectancy}
 \alias{life_expectancy}
-\title{Compute life expectancy from mortality rates}
+\title{Compute life expectancy from age-specific mortality rates}
 \usage{
 life_expectancy(.data, from_age = 0, mortality)
 }
@@ -34,4 +34,7 @@ Preston, S.H., Heuveline, P., and Guillot, M. (2001) \emph{Demography: measuring
 }
 \seealso{
 \code{\link{life_table}()}
+}
+\author{
+Rob J Hyndman
 }

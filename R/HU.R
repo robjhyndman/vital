@@ -16,7 +16,7 @@
 #' mortality and fertility rates: a functional data approach.
 #' \emph{Computational Statistics & Data Analysis}, \bold{51}, 4942-4956.
 #' \url{https://robjhyndman.com/publications/funcfor/}
-#' @author Rob J Hyndman.
+#' @author Rob J Hyndman
 #'
 #' @keywords models
 #' @examples

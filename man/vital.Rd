@@ -62,3 +62,6 @@ vital(
 \seealso{
 \code{\link[tsibble]{tsibble}()}
 }
+\author{
+Rob J Hyndman
+}
