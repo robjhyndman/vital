@@ -31,12 +31,6 @@
     <loc>https://pkg.robjhyndman.com/vital/reference/collapse_ages.html</loc>
   </url>
   <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/fitted.model_fmean.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/fitted.model_lc.html</loc>
-  </url>
-  <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/forecast.html</loc>
   </url>
   <url>
@@ -83,12 +77,6 @@
   </url>
   <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/reexports.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/residuals.model_fmean.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/residuals.model_lc.html</loc>
   </url>
   <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/tidy.html</loc>
