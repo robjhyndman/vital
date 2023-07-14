@@ -70,7 +70,7 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
     }
   }
 
-  estimate_progress <- function(dt, sex, mdl) {
+  estimate_progress <- function(dt, sex=NULL, mdl) {
     out <- estimate(dt, mdl, sex)
     p()
     out
@@ -78,6 +78,7 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
 
   if (is_attached("package:future")) {
     require_package("future.apply")
+    stop("Not implemented")
     eval_models <- function(models, lst_data, sex) {
       out <- future.apply::future_mapply(
         rep(lst_data, length(models)),
@@ -91,12 +92,23 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
     }
   } else {
     eval_models <- function(models, lst_data, sex) {
-      purrr::map(models, function(model) {
-        purrr::map2(lst_data, sex, estimate_progress, model)
-      })
+      if(is.null(sex)) {
+        purrr::map(models, function(model) {
+          purrr::map(lst_data, estimate_progress, model, sex = NULL)
+        })
+      } else {
+        purrr::map(models, function(model) {
+          purrr::map2(lst_data, sex, estimate_progress, model)
+        })
+      }
     }
   }
-  fits <- eval_models(models, .data[["lst_data"]], as.list(.data[[sexvar]]))
+  if(is.null(sexvar)) {
+    sex <- NULL
+  } else {
+    sex <- as.list(.data[[sexvar]])
+  }
+  fits <- eval_models(models, .data[["lst_data"]], sex)
   names(fits) <- ifelse(nchar(names(models)), names(models), nm)
 
   # Report errors if estimated safely
