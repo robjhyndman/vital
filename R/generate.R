@@ -36,7 +36,7 @@ generate.mdl_vtl_df <- function(x, new_data = NULL, h = NULL, times = 1, seed = 
   index <- index_var(x$.sim[[1]])
 
   unnest_tsbl(x, ".sim", parent_key = kv) |>
-    as_tsibble(index = index, key = c(agevar, kv)) |>
+    as_tsibble(index = index, key = c(agevar, kv, ".rep")) |>
     as_vital(.age = agevar, reorder = TRUE)
 }
 

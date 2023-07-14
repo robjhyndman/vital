@@ -125,12 +125,13 @@ forecast.model_lc <- function(object, new_data, bootstrap = FALSE, times = 5000,
 generate.model_lc <- function(x, new_data, bootstrap = FALSE, ...) {
   agevar <- attributes(new_data)$agevar
   indexvar <- index_var(new_data)
+  times <- length(unique(new_data$.rep))
 
   # Forecast all kt series using random walks with drift terms
   h <- length(unique(new_data[[index_var(new_data)]]))
   fc <- x$model$by_t |>
     fabletools::model(rw = fable::RW(kt ~ drift())) |>
-    generate(h = h, bootstrap = bootstrap, ...)
+    generate(h = h, bootstrap = bootstrap, times = times, ...)
   new_data <- new_data |>
     left_join(x$model$by_x, by = agevar) |>
     left_join(fc, by = c(indexvar, ".rep")) |>
