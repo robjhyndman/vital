@@ -349,9 +349,12 @@ lca <- function(data, sex, age, rates, pop,
   ktlinfit <- mean(kt) + drift * (1:m - (m + 1) / 2)
   deathslinfit <- fitmx(ktlinfit, ax, bx, transform = FALSE) * pop
   dflogadd <- (m - 2) * (n - 1)
-  mdevlogadd <- 2 / dflogadd * sum(deaths * log(deaths / deathsadjfit) - (deaths - deathsadjfit))
+  # Drop zero deaths from mdev calculation
+  d_nozero <- deaths
+  d_nozero[deaths == 0] <- .000001
+  mdevlogadd <- 2 / dflogadd * sum(deaths * log(d_nozero / deathsadjfit) - (deaths - deathsadjfit))
   dfloglin <- (m - 2) * n
-  mdevloglin <- 2 / dfloglin * sum(deaths * log(deaths / deathslinfit) - (deaths - deathslinfit))
+  mdevloglin <- 2 / dfloglin * sum(deaths * log(d_nozero / deathslinfit) - (deaths - deathslinfit))
   mdev <- c(mdevlogadd, mdevloglin)
   names(mdev) <- c("Mean deviance base", "Mean deviance total")
 
