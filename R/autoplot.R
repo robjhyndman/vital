@@ -6,14 +6,13 @@ autoplot.mdl_vtl_df <- function (object, ...) {
     stop("Model plotting is only supported for one class of models. To produce a plot for a specific class of models, use `select()`")
   } else {
     model <- mable_vars(object)
-    output <- prepare_autoplot(object[[model]], ...)
+    output <- prepare_autoplot(object[[model]])
     out <- attributes(object)$key |>
       select(-.rows) |>
-      mutate(out = output) |>
-      tidyr::unnest("out")
+      mutate(out = output)
     class(out) <- c(class(object[[model]][[1]]$fit), class(out))
     agevar <- attributes(object[[model]][[1]]$fit$fitted)$agevar
-    autoplot(out, age = agevar)
+    autoplot(out, age = agevar, ...)
   }
   invisible(out)
 }

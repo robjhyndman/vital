@@ -236,6 +236,8 @@ prepare_autoplot.model_fmean <- function(object, ...) {
 
 #' @export
 autoplot.model_fmean <- function(object, age = "Age",...) {
+  object <- object  |>
+    tidyr::unnest("out")
   keys <- colnames(object)
   keys <- keys[!(keys %in% c("mean","sigma", age))]
   nk <- length(keys)

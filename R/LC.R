@@ -482,4 +482,39 @@ newroot <- function(FUN, guess, ...) {
 }
 
 
+#' @export
+prepare_autoplot.model_lc <- function(object, ...) {
+  object$model
+}
+
+#' @export
+autoplot.model_lc <- function(object, age = "Age", ...) {
+  meanvar <- "ax"
+  timevar <- "kt"
+  agevar <- "bx"
+  index <- index_var(object$out[[1]]$by_t)
+  keys <- head(colnames(object), -1)
+  # Construct time and age data frames
+  obj_time <- obj_x <- object
+  obj_time$out <- lapply(obj_time$out, function(x) as_tibble(x$by_t))
+  obj_time <- obj_time |>
+    tidyr::unnest("out") |>
+    as_tsibble(index = index, key=keys)
+  obj_x$out  <- lapply(obj_x$out, function(x) as_tibble(x$by_x))
+  obj_x <- obj_x |> tidyr::unnest("out")
+
+  # Set up list of plots
+  p <- list()
+  p[[1]] <- age_plot(obj_x, get(meanvar), keys) +
+    ggplot2::ylab(meanvar)
+  p[[2]] <- age_plot(obj_x, get(agevar), keys) +
+      ggplot2::ylab(agevar)
+  p[[3]] <- patchwork::guide_area()
+  p[[4]] <- fabletools::autoplot(obj_time, get(timevar)) +
+      ggplot2::labs(x = index, y = timevar)
+  output <- patchwork::wrap_plots(p) +
+    patchwork::plot_layout(ncol = 2, nrow = 2, guides = "collect")
+  print(output)
+}
+
 utils::globalVariables(c("kt", "ax", "bx", "varprop", "lst_data", "by_x", "by_t"))
