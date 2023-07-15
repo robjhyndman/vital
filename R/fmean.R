@@ -12,9 +12,8 @@
 #'
 #' @author Rob J Hyndman
 #' @examples
-#' library(dplyr)
 #' aus_mortality |>
-#'   filter(State == "Victoria", Sex == "female") |>
+#'   dplyr::filter(State == "Victoria", Sex == "female") |>
 #'   model(mean = FMEAN(Mortality))
 #' @export
 FMEAN <- function(formula, ...) {

@@ -76,11 +76,11 @@ tibble(
   age = rep(0:99, each = 6),
   mx = runif(600, 0, 1)
 ) |>
-as_vital(
-  index = year,
-  key = age,
-  .age = "age"
-)
+  as_vital(
+    index = year,
+    key = age,
+    .age = "age"
+  )
 }
 \seealso{
 \code{\link[tsibble]{tsibble}()}

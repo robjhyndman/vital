@@ -34,10 +34,9 @@ autoplot.vital <- function(object, .vars = NULL, ...) {
 #' @return A ggplot2 object.
 #'
 #' @examples
-#' library(dplyr)
 #' library(ggplot2)
 #' aus_mortality |>
-#'  filter(State == "Victoria") |>
+#'  dplyr::filter(State == "Victoria") |>
 #'  model(ave = FMEAN(Mortality)) |>
 #'  forecast(h = 10) |>
 #'  autoplot() + scale_y_log10()
@@ -60,10 +59,9 @@ autoplot.fbl_vtl_ts <- function(object, ...) {
 #' @return A ggplot2 object.
 #'
 #' @examples
-#' library(dplyr)
 #' library(ggplot2)
 #' aus_mortality |>
-#'  filter(State == "Victoria") |>
+#'  dplyr::filter(State == "Victoria") |>
 #'  model(ave = FMEAN(Mortality)) |>
 #'  autoplot() + scale_y_log10()
 #'

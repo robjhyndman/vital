@@ -35,7 +35,11 @@ variable will be missing from the output.
 }
 \examples{
 \dontrun{
-read_hmd_files("Deaths_1x1.txt", "Exposures_1x1.txt", "Population.txt", "Mx_1x1.txt")
+read_hmd_files(
+  Deaths = "Deaths_1x1.txt",
+  Exposures = "Exposures_1x1.txt",
+  Population = "Population.txt",
+  Mx = "Mx_1x1.txt")
 }
 }
 \author{

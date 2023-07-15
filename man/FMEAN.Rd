@@ -19,9 +19,8 @@ A model specification.
 \code{FMEAN()} returns an iid functional model applied to the formula's response variable as a function of age.
 }
 \examples{
-library(dplyr)
 aus_mortality |>
-  filter(State == "Victoria", Sex == "female") |>
+  dplyr::filter(State == "Victoria", Sex == "female") |>
   model(mean = FMEAN(Mortality))
 }
 \author{

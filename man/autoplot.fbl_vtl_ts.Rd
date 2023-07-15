@@ -18,10 +18,9 @@ A ggplot2 object.
 Produces a plot showing forecasts obtained from a model applied to a vital object.
 }
 \examples{
-library(dplyr)
 library(ggplot2)
 aus_mortality |>
- filter(State == "Victoria") |>
+ dplyr::filter(State == "Victoria") |>
  model(ave = FMEAN(Mortality)) |>
  forecast(h = 10) |>
  autoplot() + scale_y_log10()

@@ -20,10 +20,9 @@ to one type of model only. So use select() to choose the model column to plot.
 If there are multiple keys, separate models will be identified by colour.
 }
 \examples{
-library(dplyr)
 library(ggplot2)
 aus_mortality |>
- filter(State == "Victoria") |>
+ dplyr::filter(State == "Victoria") |>
  model(ave = FMEAN(Mortality)) |>
  autoplot() + scale_y_log10()
 

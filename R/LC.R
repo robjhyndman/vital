@@ -30,9 +30,8 @@
 #' @return A model specification.
 #'
 #' @examples
-#' library(dplyr)
 #' aus_mortality |>
-#'   filter(State == "Victoria", Sex == "female") |>
+#'   dplyr::filter(State == "Victoria", Sex == "female") |>
 #'   model(lee_carter = LC(Mortality))
 #' @export
 LC <- function(formula, adjust = c("dt", "dxt", "e0", "none"),
