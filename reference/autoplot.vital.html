@@ -52,23 +52,21 @@ against age.</p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for vital</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">object</span>, .vars <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>.data</dt>
-<dd><p>A vital, tsibble or fable object including an age variable and the variable you wish to plot.</p></dd>
+    <dl><dt>object</dt>
+<dd><p>A vital including an age variable and the variable you wish to plot.</p></dd>
 
 
 <dt>.vars</dt>
-<dd><p>A bare expression containing the name of the variable you wish to plot.</p></dd>
+<dd><p>The name of the variable you wish to plot.</p></dd>
 
 
-<dt>age</dt>
-<dd><p>Variable in `.data` containing start year of age intervals.
-If omitted, and `.data` is not a vital object, the variable with name `Age` or `Age_group`
-will be used (not case sensitive).</p></dd>
+<dt>...</dt>
+<dd><p>Further arguments not used.</p></dd>
 
 </dl></div>
     <div class="section level2">

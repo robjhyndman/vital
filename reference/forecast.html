@@ -59,13 +59,14 @@ The forecasts returned contain both point forecasts and their distribution.</p>
 <span>  <span class="va">object</span>,</span>
 <span>  <span class="va">new_data</span>,</span>
 <span>  bootstrap <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  times <span class="op">=</span> <span class="fl">5000</span>,</span>
 <span>  se <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"innovdrift"</span>, <span class="st">"innovonly"</span><span class="op">)</span>,</span>
 <span>  jumpchoice <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fit"</span>, <span class="st">"actual"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for FMEAN</span></span>
-<span><span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">new_data</span>, bootstrap <span class="op">=</span> <span class="cn">FALSE</span>, times <span class="op">=</span> <span class="fl">5000</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">new_data</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for mdl_vtl_df</span></span>
 <span><span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span></span>
@@ -91,6 +92,10 @@ The forecasts returned contain both point forecasts and their distribution.</p>
 <dd><p>If `TRUE`, then forecast distributions are computed using simulation with resampled errors.</p></dd>
 
 
+<dt>times</dt>
+<dd><p>The number of sample paths to use in estimating the forecast distribution when `bootstrap = TRUE`.</p></dd>
+
+
 <dt>se</dt>
 <dd><p>Method used for computation of standard error.
 Possibilities: “innovdrift” (innovations and drift) and “innovonly” (innovations only).</p></dd>
@@ -105,10 +110,6 @@ and most other authors prefer 'actual' (the default).</p></dd>
 
 <dt>...</dt>
 <dd><p>Additional arguments not used.</p></dd>
-
-
-<dt>times</dt>
-<dd><p>The number of sample paths to use in estimating the forecast distribution when `bootstrap = TRUE`.</p></dd>
 
 
 <dt>h</dt>
