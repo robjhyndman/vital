@@ -26,7 +26,11 @@
 #' @author Rob J Hyndman
 #' @examples
 #' \dontrun{
-#' norway <- read_hmd("NOR", "Nora.Nilsen@mymail.com", "FF!5xeEFa6")
+#' norway <- read_hmd(
+#'   country = "NOR",
+#'   username = "Nora.Nilsen@mymail.com",
+#'   password = "FF!5xeEFa6"
+#' )
 #' }
 #' @export
 

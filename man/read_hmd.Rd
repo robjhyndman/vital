@@ -43,7 +43,11 @@ HMD website (\url{https://www.mortality.org}), and obtain a valid username and p
 }
 \examples{
 \dontrun{
-norway <- read_hmd("NOR", "Nora.Nilsen@mymail.com", "FF!5xeEFa6")
+norway <- read_hmd(
+  country = "NOR",
+  username = "Nora.Nilsen@mymail.com",
+  password = "FF!5xeEFa6"
+)
 }
 }
 \author{

@@ -194,12 +194,25 @@ as_vital.tbl_ts <- function(x,
 #' (e.g. \code{\link[dplyr]{starts_with}()}).
 #' @param ... Other arguments passed to \code{\link[tsibble]{as_tsibble}}
 #' @rdname as_vital
+#' @examples
+#' # create a vital with only age as a key
+#' tibble(
+#'   year = rep(2010:2015, 100),
+#'   age = rep(0:99, each = 6),
+#'   mx = runif(600, 0, 1)
+#' ) |>
+#' as_vital(
+#'   index = year,
+#'   key = age,
+#'   .age = "age"
+#' )
 #' @export
 as_vital.data.frame <- function(x, key = NULL, index,
                                 .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
                                 ...) {
-  as_tsibble(x, key = key, index = index, ...) |>
-    as_vital(.age = .age, .sex = .sex, .deaths = .deaths, .births = .births,
+  as_tsibble(x, key = !!enquo(key), index = !!enquo(index), ...) |>
+    as_vital(.age = .age, .sex = .sex,
+             .deaths = .deaths, .births = .births,
              .population = .population)
 }
 

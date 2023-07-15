@@ -70,6 +70,17 @@ The object has an attribute that stores variables names needed for some function
 \examples{
 # coerce demogdata object to vital
 as_vital(demography::fr.mort)
+# create a vital with only age as a key
+tibble(
+  year = rep(2010:2015, 100),
+  age = rep(0:99, each = 6),
+  mx = runif(600, 0, 1)
+) |>
+as_vital(
+  index = year,
+  key = age,
+  .age = "age"
+)
 }
 \seealso{
 \code{\link[tsibble]{tsibble}()}
