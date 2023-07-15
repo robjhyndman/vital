@@ -64,7 +64,7 @@ train_lc <- function(.data, sex = NULL, specials,  adjust = c("dt", "dxt", "e0",
       .fitted = exp(.fitted),
       .resid = .data[[measures]] - .fitted
     ) |>
-    select(indexvar, agevar, .fitted, .resid, .innov)
+    select(all_of(c(indexvar, agevar)), .fitted, .resid, .innov)
 
   structure(
     list(

@@ -46,7 +46,7 @@ train_fmean <- function(.data, ...) {
   out <- out |>
     as_tsibble(index = indexvar, key=agevar) |>
     as_vital(.age = agevar) |>
-    select(indexvar, agevar, everything())
+    select(all_of(c(indexvar, agevar)), everything())
   model <- ave_measure |>
     rename(mean = .fitted) |>
     left_join(sigma, by = agevar)
@@ -92,7 +92,7 @@ generate.FMEAN <- function(x, new_data = NULL, h = NULL,
     if (bootstrap) {
       indexvar <- index_var(new_data)
       innov <- as_tibble(x$fitted) |>
-        select(agevar, .innov) |>
+        select(all_of(agevar), .innov) |>
         nest_by(!!sym(agevar)) |>
         mutate(
           data = list(
