@@ -70,13 +70,16 @@ forecast.FMEAN <- function(object, new_data, ...) {
     pull(fc)
 }
 
-#' @rdname generate
 #' @export
-generate.FMEAN <- function(x, new_data, h = NULL, bootstrap = FALSE, times = 1, seed = NULL,  ...) {
+generate.FMEAN <- function(x, new_data = NULL, h = NULL,
+    bootstrap = FALSE, times = 1, seed = NULL,  ...) {
   agevar <- attributes(new_data)$agevar
   new_data <- new_data |>
     dplyr::left_join(x$model, by = agevar)
-  times <- length(unique(new_data$.rep))
+  if(times != length(unique(new_data$.rep)))
+    stop("We have a problem")
+  # Note that seed has already been set in generate.mdl_vtl_df
+  # So it is not re-set here
 
   if (!(".innov" %in% names(new_data))) {
     if (bootstrap) {

@@ -107,12 +107,15 @@ forecast.LC <- function(object, new_data, bootstrap = FALSE, times = 5000,
     pull(fc)
 }
 
-#' @rdname generate
 #' @export
-generate.LC <- function(x, new_data, bootstrap = FALSE, ...) {
+generate.LC <- function(x, new_data = NULL, h = NULL,
+  bootstrap = FALSE, times = 1, seed = NULL, ...) {
   agevar <- attributes(new_data)$agevar
   indexvar <- index_var(new_data)
-  times <- length(unique(new_data$.rep))
+  if(times != length(unique(new_data$.rep)))
+    stop("We have a problem")
+  # Note that seed has already been set in generate.mdl_vtl_df
+  # So it is not re-set here
 
   # Forecast all kt series using random walks with drift terms
   h <- length(unique(new_data[[index_var(new_data)]]))

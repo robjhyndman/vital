@@ -1,27 +1,44 @@
 
 #' Generate responses from a mable
 #'
-#' Use a model's fitted distribution to simulate additional data with similar
-#' behaviour to the response. This is a tidy implementation of
-#' `\link[stats]{simulate}`.
+#' Use a fitted model to simulate future data with similar
+#' behaviour to the response.
 #'
 #' Innovations are sampled by the model's assumed error distribution.
 #' If `bootstrap` is `TRUE`, innovations will be sampled from the model's residuals.
 #'
 #' @param x A mable.
-#' @param new_data The data to be generated (time index and exogenous regressors)
+#' @param new_data Future data needed for generation (should include the time index and exogenous regressors)
 #' @param h The simulation horizon (can be used instead of `new_data` for regular time series with no exogenous regressors).
 #' @param times The number of replications.
 #' @param seed The seed for the random generation from distributions.
 #' @param ... Additional arguments
 #' @param bootstrap If `TRUE`, then forecast distributions are computed using simulation with resampled errors.
 #' @param bootstrap If TRUE, then forecast distributions are computed using simulation with resampled errors.
-#' @param bootstrap_block_size The bootstrap block size specifies the number of contiguous residuals to be taken in each bootstrap sample.
 #' @author Rob J Hyndman and Mitchell O'Hara-Wild
 #' @rdname generate
+#' @examples
+#' aus_mortality |>
+#'   dplyr::filter(State == "Victoria") |>
+#'   model(lc = LC(Mortality)) |>
+#'   generate(times = 3, bootstrap = TRUE)
 #'
 #' @export
-generate.mdl_vtl_df <- function(x, new_data = NULL, h = NULL, bootstrap = FALSE, times = 1, seed = NULL, bootstrap_block_size = 1, ...){
+generate.mdl_vtl_df <- function(x, new_data = NULL, h = NULL,
+  bootstrap = FALSE, times = 1, seed = NULL, ...){
+  # Set seed here, even though seed is passed on to ensure it appears in docs
+  # for specific methods
+  if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
+    stats::runif(1)
+  if (is.null(seed))
+    RNGstate <- get(".Random.seed", envir = .GlobalEnv)
+  else {
+    R.seed <- get(".Random.seed", envir = .GlobalEnv)
+    set.seed(seed)
+    RNGstate <- structure(seed, kind = as.list(RNGkind()))
+    on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
+  }
+
   mdls <- mable_vars(x)
   if(!is.null(new_data)){
     x <- bind_new_data(x, new_data)
@@ -33,7 +50,7 @@ generate.mdl_vtl_df <- function(x, new_data = NULL, h = NULL, bootstrap = FALSE,
   # Evaluate simulations
   x[[".sim"]] <- map2(x[[".sim"]],
                  x[["new_data"]] %||% rep(list(NULL), length.out = NROW(x)),
-                 generate, h = h, times = times, seed = seed, bootstrap_block_size = bootstrap_block_size,...)
+                 generate, h = h, times = times, seed = seed, ...)
   x[["new_data"]] <- NULL
   agevar <- attributes(x$.sim[[1]])$agevar
   index <- index_var(x$.sim[[1]])
@@ -45,18 +62,7 @@ generate.mdl_vtl_df <- function(x, new_data = NULL, h = NULL, bootstrap = FALSE,
 
 #' @export
 generate.mdl_vtl_ts <- function(x, new_data = NULL, h = NULL,
-    bootstrap = FALSE, times = 1, seed = NULL,
-    bootstrap_block_size = 1, ...){
-  if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
-    stats::runif(1)
-  if (is.null(seed))
-    RNGstate <- get(".Random.seed", envir = .GlobalEnv)
-  else {
-    R.seed <- get(".Random.seed", envir = .GlobalEnv)
-    set.seed(seed)
-    RNGstate <- structure(seed, kind = as.list(RNGkind()))
-    on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
-  }
+    bootstrap = FALSE, times = 1, seed = NULL, ...){
   if(is.null(new_data)){
     new_data <- make_future_data(x$data, h)
   }
@@ -89,7 +95,8 @@ Does your model require extra variables to produce simulations?", e$message))
   x$model$remove_data()
   x$model$stage <- NULL
   if(length(x$response) > 1) abort("Generating paths from multivariate models is not yet supported.")
-  .sim <- generate(x[["fit"]], new_data = new_data, specials = specials, bootstrap = bootstrap, ...)[[".sim"]]
+  .sim <- generate(x[["fit"]], new_data = new_data, specials = specials,
+                   bootstrap = bootstrap, times = times, seed = seed, ...)[[".sim"]]
 
   # Back-transform forecast distributions
   bt <- map(x$transformation, function(x){
@@ -100,17 +107,6 @@ Does your model require extra variables to produce simulations?", e$message))
 
   new_data[[".sim"]] <- bt[[1]](.sim)
   new_data
-}
-
-block_bootstrap <- function (x, window_size, size = length(x)) {
-  n_blocks <- size%/%window_size + 2
-  bx <- numeric(n_blocks * window_size)
-  for (i in seq_len(n_blocks)) {
-    block_pos <- sample(seq_len(length(x) - window_size + 1), 1)
-    bx[((i - 1) * window_size + 1):(i * window_size)] <- x[block_pos:(block_pos + window_size - 1)]
-  }
-  start_from <- sample(0:(window_size - 1), 1) + 1
-  bx[seq(start_from, length.out = size)]
 }
 
 globalVariables(".sim")
