@@ -8,21 +8,39 @@
 \usage{
 \method{forecast}{LC}(
   object,
-  new_data,
+  new_data = NULL,
+  h = NULL,
+  point_forecast = list(.mean = mean),
+  simulate = FALSE,
   bootstrap = FALSE,
   times = 5000,
+  seed = NULL,
   se = c("innovdrift", "innovonly"),
   jumpchoice = c("fit", "actual"),
   ...
 )
 
-\method{forecast}{FMEAN}(object, new_data, ...)
+\method{forecast}{FMEAN}(
+  object,
+  new_data = NULL,
+  h = NULL,
+  point_forecast = list(.mean = mean),
+  simulate = FALSE,
+  bootstrap = FALSE,
+  times = 5000,
+  seed = NULL,
+  ...
+)
 
 \method{forecast}{mdl_vtl_df}(
   object,
   new_data = NULL,
   h = NULL,
   point_forecast = list(.mean = mean),
+  simulate = FALSE,
+  bootstrap = FALSE,
+  times = 5000,
+  seed = NULL,
   ...
 )
 }
@@ -31,9 +49,18 @@
 
 \item{new_data}{A `tsibble` containing future information used to forecast.}
 
-\item{bootstrap}{If `TRUE`, then forecast distributions are computed using simulation with resampled errors.}
+\item{h}{Number of time steps ahead to forecast. This can be used instead of \code{new_data}
+when there are no covariates in the model. It is ignored if \code{new_data} is provided.}
+
+\item{point_forecast}{A list of functions used to compute point forecasts from the forecast distribution.}
+
+\item{simulate}{If  `TRUE`, then forecast distributions are computed using simulation from a parametric model.}
+
+\item{bootstrap}{If `TRUE`, then forecast distributions are computed using simulation with resampling.}
 
 \item{times}{The number of sample paths to use in estimating the forecast distribution when `bootstrap = TRUE`.}
+
+\item{seed}{The seed for the random generation from distributions.}
 
 \item{se}{Method used for computation of standard error.
 Possibilities: \dQuote{innovdrift} (innovations and drift) and \dQuote{innovonly} (innovations only).}
@@ -43,12 +70,7 @@ Possibilities: \dQuote{actual} (use actual rates from final year) and \dQuote{fi
 The original Lee-Carter method used 'fit' (the default), but Lee and Miller (2001)
 and most other authors prefer 'actual' (the default).}
 
-\item{...}{Additional arguments not used.}
-
-\item{h}{Number of time steps ahead to forecast. This can be used instead of \code{new_data}
-when there are no covariates in the model. It is ignored if \code{new_data} is provided.}
-
-\item{point_forecast}{A list of functions used to compute point forecasts from the forecast distribution.}
+\item{...}{Additional arguments passed to the specific model method.}
 }
 \value{
 A fable containing the following columns:
@@ -63,8 +85,8 @@ A fable containing the following columns:
   above.
 }
 \description{
-The forecast function allows you to produce future predictions of a functional
-time series model, where the response is a function of age.
+The forecast function allows you to produce future predictions of a vital
+model, where the response is a function of age.
 The forecasts returned contain both point forecasts and their distribution.
 }
 \author{

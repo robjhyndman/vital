@@ -25,15 +25,17 @@ Possibilities are
 A model specification.
 }
 \description{
-Lee-Carter model of mortality or fertility rates. \code{lee_carter} produces a
-standard Lee-Carter model by default, although many other options are
-available. Missing rates are set to the geometric mean rate for the relevant age.
-\code{LC()} returns a Lee-Carter model applied to the formula's response variable as a function of age.
+Lee-Carter model of mortality or fertility rates.
+\code{LC()} returns a Lee-Carter model applied to the formula's response
+variable as a function of age. This produces a standard Lee-Carter model by
+default, although many other options are available. Missing rates are set to
+the geometric mean rate for the relevant age.
 }
 \examples{
 aus_mortality |>
   dplyr::filter(State == "Victoria", Sex == "female") |>
-  model(lee_carter = LC(Mortality))
+  model(lee_carter = LC(Mortality)) |>
+  report()
 }
 \references{
 Basellini, U, Camarda, C G, and Booth, H (2022) Thirty years on:

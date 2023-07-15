@@ -47,17 +47,14 @@ reference:
     contents:
       - forecast.mdl_vtl_df
       - generate.mdl_vtl_df
-      - interpolate.LC
-      - interpolate.FMEAN
-      - tidy.LC
-      - tidy.FMEAN
+      - interpolate.mdl_vtl_df
   - title: Graphics
     desc: Plotting functions for visualizing data and models
     contents:
       - autoplot.mdl_vtl_df
       - autoplot.fbl_vtl_ts
       - autoplot.vital
-  - title: "Utility"
+  - title: Utilities
     desc: Functions used when the package is loaded
     contents:
       - vital_conflicts

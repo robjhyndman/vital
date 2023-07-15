@@ -14,7 +14,8 @@
 #' @examples
 #' aus_mortality |>
 #'   dplyr::filter(State == "Victoria", Sex == "female") |>
-#'   model(mean = FMEAN(Mortality))
+#'   model(mean = FMEAN(Mortality)) |>
+#'   report()
 #' @export
 FMEAN <- function(formula, ...) {
   fmean_model <- new_model_class("fmean", train = train_fmean)
@@ -62,7 +63,13 @@ train_fmean <- function(.data, ...) {
 
 #' @rdname forecast
 #' @export
-forecast.FMEAN <- function(object, new_data, ...) {
+forecast.FMEAN <- function(object, new_data = NULL, h = NULL,
+    point_forecast = list(.mean = mean),
+    simulate = FALSE, bootstrap = FALSE, times = 5000, seed = NULL, ...) {
+  # simulation/bootstrap not actually used here as forecast.mdl_vtl_ts
+  # handles this using generate() and forecast.LC is never called.
+  # The arguments are included so they show in the docs
+  # Similarly for h and point_forecast
   agevar <- attributes(new_data)$agevar
   new_data |>
     left_join(object$model, by = agevar) |>
@@ -106,16 +113,7 @@ generate.FMEAN <- function(x, new_data = NULL, h = NULL,
   transmute(group_by_key(new_data), ".sim" := mean + .innov)
 }
 
-#' Interpolate missing values
-#'
-#' Uses a fitted model to interpolate missing values from a dataset.
-#'
-#' @param object A mable containing a single model column.
-#' @param new_data A dataset with the same structure as the data used to fit the model.
-#' @param ... Other arguments passed to interpolate methods.
-#'
-#' @rdname interpolate
-#' @author Rob J Hyndman
+
 #' @export
 interpolate.FMEAN <- function(object, new_data, ...) {
   agevar <- attributes(new_data)$agevar
@@ -134,16 +132,6 @@ glance.FMEAN <- function(x, ...) {
   tibble(sigma2 = var(x$fitted$.resid, na.rm=TRUE))
 }
 
-#' Extract model coefficients from a mable
-#'
-#' This function will obtain the coefficients (and associated statistics) for
-#' each model in the mable.
-#'
-#' @param x A mable.
-#' @param ... Arguments for model methods.
-#'
-#' @rdname tidy
-#' @author Rob J Hyndman
 #' @export
 tidy.FMEAN <- function(x, ...) {
   x$model  |>

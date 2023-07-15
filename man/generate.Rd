@@ -21,7 +21,7 @@
 
 \item{h}{The simulation horizon (can be used instead of `new_data` for regular time series with no exogenous regressors).}
 
-\item{bootstrap}{If TRUE, then forecast distributions are computed using simulation with resampled errors.}
+\item{bootstrap}{If `TRUE`, then forecast distributions are computed using simulation with resampled errors.}
 
 \item{times}{The number of replications.}
 

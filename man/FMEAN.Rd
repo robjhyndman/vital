@@ -21,7 +21,8 @@ A model specification.
 \examples{
 aus_mortality |>
   dplyr::filter(State == "Victoria", Sex == "female") |>
-  model(mean = FMEAN(Mortality))
+  model(mean = FMEAN(Mortality)) |>
+  report()
 }
 \author{
 Rob J Hyndman

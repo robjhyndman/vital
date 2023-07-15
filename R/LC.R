@@ -1,9 +1,10 @@
 #' Model mortality or fertility data using Lee-Carter approach
 #'
-#' Lee-Carter model of mortality or fertility rates. \code{lee_carter} produces a
-#' standard Lee-Carter model by default, although many other options are
-#' available. Missing rates are set to the geometric mean rate for the relevant age.
-#' \code{LC()} returns a Lee-Carter model applied to the formula's response variable as a function of age.
+#' Lee-Carter model of mortality or fertility rates.
+#' \code{LC()} returns a Lee-Carter model applied to the formula's response
+#' variable as a function of age. This produces a standard Lee-Carter model by
+#' default, although many other options are available. Missing rates are set to
+#' the geometric mean rate for the relevant age.
 #'
 #' @aliases report.LC
 #' @param adjust method to use for adjustment of coefficients \eqn{k_t kt}.
@@ -32,7 +33,8 @@
 #' @examples
 #' aus_mortality |>
 #'   dplyr::filter(State == "Victoria", Sex == "female") |>
-#'   model(lee_carter = LC(Mortality))
+#'   model(lee_carter = LC(Mortality)) |>
+#'   report()
 #' @export
 LC <- function(formula, adjust = c("dt", "dxt", "e0", "none"),
                scale = FALSE, ...) {
@@ -82,12 +84,15 @@ train_lc <- function(.data, sex = NULL, specials,  adjust = c("dt", "dxt", "e0",
 #' and most other authors prefer 'actual' (the default).
 #' @rdname forecast
 #' @export
-forecast.LC <- function(object, new_data, bootstrap = FALSE, times = 5000,
+
+
+forecast.LC <- function(object, new_data = NULL, h = NULL, point_forecast = list(.mean = mean),
+  simulate = FALSE, bootstrap = FALSE, times = 5000, seed = NULL,
     se = c("innovdrift", "innovonly"), jumpchoice = c("fit", "actual"), ...) {
   se <- match.arg(se)
   jumpchoice <- match.arg(jumpchoice)
 
-# bootstrap and times arguments not actually used here as forecast.mdl_vtl_ts
+# simulation/bootstrap not actually used here as forecast.mdl_vtl_ts
 # handles this using generate() and forecast.LC is never called.
 # The arguments are included to avoid a warning message.
 
@@ -130,15 +135,6 @@ generate.LC <- function(x, new_data = NULL, h = NULL,
   transmute(group_by_key(new_data), ".sim" := fitted)
 }
 
-#' Interpolate missing values
-#'
-#' Uses a fitted model to interpolate missing values from a dataset.
-#'
-#' @param object A mable containing a single model column.
-#' @param new_data A dataset with the same structure as the data used to fit the model.
-#' @param ... Other arguments passed to interpolate methods.
-#'
-#' @rdname interpolate
 #' @export
 interpolate.LC <- function(object, new_data, ...) {
   agevar <- attributes(new_data)$agevar
@@ -152,20 +148,12 @@ interpolate.LC <- function(object, new_data, ...) {
   new_data
 }
 
+
 #' @export
 glance.LC <- function(x, ...) {
   tibble(sigma2 = var(x$fitted$.resid, na.rm=TRUE))
 }
 
-#' Extract model coefficients from a mable
-#'
-#' This function will obtain the coefficients (and associated statistics) for
-#' each model in the mable.
-#'
-#' @param x A mable.
-#' @param ... Arguments for model methods.
-#'
-#' @rdname tidy
 #' @export
 tidy.LC <- function(x, ...) {
   return(NULL)

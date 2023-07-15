@@ -1,4 +1,14 @@
 
+#' Interpolate missing values using a vital model
+#'
+#' Uses a fitted vital model to interpolate missing values from a dataset.
+#'
+#' @param object A mable containing a single model column.
+#' @param new_data A dataset with the same structure as the data used to fit the model.
+#' @param ... Other arguments passed to interpolate methods.
+#'
+#' @rdname interpolate
+#' @author Rob J Hyndman
 #' @export
 interpolate.mdl_vtl_df <- function (object, new_data, ...) {
   if (length(mable_vars(object)) > 1) {

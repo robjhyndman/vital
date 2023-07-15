@@ -1,7 +1,7 @@
 #' Produce forecasts from a vital model
 #'
-#' The forecast function allows you to produce future predictions of a functional
-#' time series model, where the response is a function of age.
+#' The forecast function allows you to produce future predictions of a vital
+#' model, where the response is a function of age.
 #' The forecasts returned contain both point forecasts and their distribution.
 #'
 #' @param object A mable containing one or more models.
@@ -9,9 +9,11 @@
 #' @param h Number of time steps ahead to forecast. This can be used instead of \code{new_data}
 #' when there are no covariates in the model. It is ignored if \code{new_data} is provided.
 #' @param point_forecast A list of functions used to compute point forecasts from the forecast distribution.
-#' @param bootstrap If `TRUE`, then forecast distributions are computed using simulation with resampled errors.
+#' @param simulate If  `TRUE`, then forecast distributions are computed using simulation from a parametric model.
+#' @param bootstrap If `TRUE`, then forecast distributions are computed using simulation with resampling.
 #' @param times The number of sample paths to use in estimating the forecast distribution when `bootstrap = TRUE`.
-#' @param ... Additional arguments not used.
+#' @param seed The seed for the random generation from distributions.
+#' @param ... Additional arguments passed to the specific model method.
 #' @author Rob J Hyndman and Mitchell O'Hara-Wild
 #'
 #' @return
@@ -29,8 +31,24 @@
 #' @rdname forecast
 #' @export
 forecast.mdl_vtl_df <- function(
-    object, new_data = NULL, h = NULL, point_forecast = list(.mean = mean), ...
+    object, new_data = NULL, h = NULL, point_forecast = list(.mean = mean),
+    simulate = FALSE, bootstrap = FALSE, times = 5000, seed = NULL, ...
   ) {
+  # Set seed here if necessary, even though seed is passed on to ensure
+  # it appears in docs for specific methods
+  if(simulate || bootstrap) {
+    if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
+      stats::runif(1)
+    if (is.null(seed))
+      RNGstate <- get(".Random.seed", envir = .GlobalEnv)
+    else {
+      R.seed <- get(".Random.seed", envir = .GlobalEnv)
+      set.seed(seed)
+      RNGstate <- structure(seed, kind = as.list(RNGkind()))
+      on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
+    }
+  }
+
   mdls <- mable_vars(object)
   if (!is.null(h) && !is.null(new_data)) {
     warn("Input forecast horizon `h` will be ignored as `new_data` has been provided.")
@@ -44,6 +62,7 @@ forecast.mdl_vtl_df <- function(
   object <- dplyr::mutate_at(as_tibble(object), vars(!!!mdls),
     forecast,
     new_data = object[["new_data"]], h = h, point_forecast = point_forecast,
+    simulate = simulate, bootstrap = bootstrap, times = times, seed = seed,
     ..., key_data = key_data(object)
   )
   object <- tidyr::pivot_longer(object, !!mdls,
@@ -96,7 +115,8 @@ forecast.mdl_vtl_ts <- function(
     object$model$add_data(new_data)
     specials <- tryCatch(parse_model_rhs(object$model), error = function(e) {
       abort(sprintf(
-        "%s\n  Unable to compute required variables from provided `new_data`.\n  Does your model require extra variables to produce forecasts?",
+        "%s\n  Unable to compute required variables from provided `new_data`.
+Does your model require extra variables to produce forecasts?",
         e$message
       ))
     }, interrupt = function(e) {

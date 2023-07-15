@@ -10,11 +10,10 @@
 #' @param x A mable.
 #' @param new_data Future data needed for generation (should include the time index and exogenous regressors)
 #' @param h The simulation horizon (can be used instead of `new_data` for regular time series with no exogenous regressors).
+#' @param bootstrap If `TRUE`, then forecast distributions are computed using simulation with resampled errors.
 #' @param times The number of replications.
 #' @param seed The seed for the random generation from distributions.
 #' @param ... Additional arguments
-#' @param bootstrap If `TRUE`, then forecast distributions are computed using simulation with resampled errors.
-#' @param bootstrap If TRUE, then forecast distributions are computed using simulation with resampled errors.
 #' @author Rob J Hyndman and Mitchell O'Hara-Wild
 #' @rdname generate
 #' @examples
