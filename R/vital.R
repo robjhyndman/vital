@@ -31,12 +31,15 @@
 #' )
 #' @seealso \code{\link[tsibble]{tsibble}()}
 #' @export
-vital <- function(..., key = NULL, index,
+vital <- function(
+    ..., key = NULL, index,
     .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
     regular = TRUE, .drop = TRUE) {
-  tsibble(..., key = !!enquo(key), index=!!enquo(index), regular = regular, .drop = .drop) |>
-    as_vital(.age = enquo(.age), .sex = enquo(.sex), .deaths = enquo(.deaths),
-             .births = enquo(.births), .population = enquo(.population))
+  tsibble(..., key = !!enquo(key), index = !!enquo(index), regular = regular, .drop = .drop) |>
+    as_vital(
+      .age = enquo(.age), .sex = enquo(.sex), .deaths = enquo(.deaths),
+      .births = enquo(.births), .population = enquo(.population)
+    )
 }
 
 #' Coerce to a vital object
@@ -87,7 +90,7 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
     }
     # Assume Inf rates are due to 0/0
     rates <- rates |>
-      mutate(Rates = if_else(Rates==Inf, NA_real_, Rates))
+      mutate(Rates = if_else(Rates == Inf, NA_real_, Rates))
     if (x$type == "mortality") {
       rates <- rename(rates, Mortality = Rates)
     } else if (x$type == "fertility") {
@@ -140,22 +143,26 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
     as_tsibble(index = Year, key = c(AgeGroup, Age, Group), ...) |>
     arrange(Group, Year, Age)
   sexvar <- deathsvar <- birthsvar <- popvar <- NULL
-  if(sex_groups) {
-    output <- output  |>
+  if (sex_groups) {
+    output <- output |>
       rename(Sex = Group)
     sexvar <- "Sex"
   }
-  if("Deaths" %in% colnames(output))
+  if ("Deaths" %in% colnames(output)) {
     deathsvar <- "Deaths"
-  if("Births" %in% colnames(output))
+  }
+  if ("Births" %in% colnames(output)) {
     birthsvar <- "Births"
-  if("Exposure" %in% colnames(output)) {
+  }
+  if ("Exposure" %in% colnames(output)) {
     popvar <- "Exposure"
-  } else if("Population" %in% colnames(output)) {
+  } else if ("Population" %in% colnames(output)) {
     popvar <- "Population"
   }
-  as_vital(output, .age = "Age", .sex = sexvar, .deaths = deathsvar,
-           .births = birthsvar, .population = popvar)
+  as_vital(output,
+    .age = "Age", .sex = sexvar, .deaths = deathsvar,
+    .births = birthsvar, .population = popvar
+  )
 }
 
 #' @param .age Character string with name of age variable
@@ -167,8 +174,8 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
 #' @rdname as_vital
 #' @export
 as_vital.tbl_ts <- function(x,
-     .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
-     reorder = FALSE, ...) {
+                            .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
+                            reorder = FALSE, ...) {
   # Add attributes to x to identify the various variables
   attr(x, "agevar") <- .age
   attr(x, "sexvar") <- .sex
@@ -178,11 +185,11 @@ as_vital.tbl_ts <- function(x,
   # Add additional class
   class(x) <- c("vital", class(x))
   # Sort variables
-  if(reorder) {
+  if (reorder) {
     agevar <- attributes(x)$agevar
     keys <- key_vars(x)
     keys_noage <- keys[keys != agevar]
-    x <- select(x, index_var(x), attributes(x)$agevar, everything())  |>
+    x <- select(x, index_var(x), attributes(x)$agevar, everything()) |>
       arrange(across(all_of(c(index_var(x), keys_noage, agevar))))
   }
   return(x)
@@ -201,23 +208,25 @@ as_vital.tbl_ts <- function(x,
 #'   age = rep(0:99, each = 6),
 #'   mx = runif(600, 0, 1)
 #' ) |>
-#' as_vital(
-#'   index = year,
-#'   key = age,
-#'   .age = "age"
-#' )
+#'   as_vital(
+#'     index = year,
+#'     key = age,
+#'     .age = "age"
+#'   )
 #' @export
 as_vital.data.frame <- function(x, key = NULL, index,
                                 .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
                                 ...) {
   as_tsibble(x, key = !!enquo(key), index = !!enquo(index), ...) |>
-    as_vital(.age = .age, .sex = .sex,
-             .deaths = .deaths, .births = .births,
-             .population = .population)
+    as_vital(
+      .age = .age, .sex = .sex,
+      .deaths = .deaths, .births = .births,
+      .population = .population
+    )
 }
 
 
-utils::globalVariables(c("Deaths","Births"))
+utils::globalVariables(c("Deaths", "Births"))
 
 # Functions need for printing vital objects
 
@@ -231,8 +240,7 @@ tbl_sum.vital <- function(x) {
   first <- c(`A vital` = paste(dim_x, brackets(fnt_int)))
   if (is_empty(tsibble::key(x))) {
     first
-  }
-  else {
+  } else {
     n_keys <- big_mark(tsibble::n_keys(x))
     key_sum <- c(Key = paste(comma(tsibble::key_vars(x)), brackets(n_keys)))
     c(first, key_sum)
@@ -262,21 +270,21 @@ tbl_sum.grouped_vital <- function(x) {
   }
 }
 
-big_mark <- function (x, ...) {
-  mark <- if (identical(getOption("OutDec"), ","))
+big_mark <- function(x, ...) {
+  mark <- if (identical(getOption("OutDec"), ",")) {
     "."
-  else ","
+  } else {
+    ","
+  }
   ret <- formatC(x, big.mark = mark, format = "d", ...)
   ret[is.na(x)] <- "??"
   ret
 }
 
-brackets <- function (x) {
+brackets <- function(x) {
   paste0("[", x, "]")
 }
 
-comma <- function (...)  {
+comma <- function(...) {
   paste(..., collapse = ", ")
 }
-
-
