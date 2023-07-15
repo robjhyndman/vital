@@ -13,7 +13,7 @@
 #' @importFrom rlang is_quosures eval_tidy := sym abort syms is_null list2 is_call
 #' @importFrom rlang is_syntactic_literal is_symbol new_function set_names missing_arg
 #' @importFrom rlang call2 get_env new_formula expr_name new_environment enexpr set_env
-#' @importFrom rlang quo_get_expr quo_is_call caller_env as_string
+#' @importFrom rlang quo_get_expr quo_is_call caller_env as_string quo_name
 #' @importFrom rlang rep_along new_quosure expr call_name as_label is_false
 #' @importFrom stats na.omit ts residuals fitted var qnorm time
 #' @importFrom tibble as_tibble tibble

@@ -4,16 +4,14 @@
 \alias{autoplot.vital}
 \title{Rainbow plot of demographic data against age}
 \usage{
-\method{autoplot}{vital}(object, ...)
+\method{autoplot}{vital}(object, .vars = NULL, ...)
 }
 \arguments{
-\item{.data}{A vital, tsibble or fable object including an age variable and the variable you wish to plot.}
+\item{object}{A vital including an age variable and the variable you wish to plot.}
 
-\item{.vars}{A bare expression containing the name of the variable you wish to plot.}
+\item{.vars}{The name of the variable you wish to plot.}
 
-\item{age}{Variable in `.data` containing start year of age intervals.
-If omitted, and `.data` is not a vital object, the variable with name `Age` or `Age_group`
-will be used (not case sensitive).}
+\item{...}{Further arguments not used.}
 }
 \value{
 A ggplot2 object.

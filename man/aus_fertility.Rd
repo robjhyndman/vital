@@ -28,7 +28,7 @@ The extreme age groups (15 and 49) also include a few younger and older mothers 
 library(ggplot2)
 aus_fertility
 aus_fertility |>
-  rainbow_plot(Fertility) +
+  autoplot(Fertility) +
   ylab("Fertility rate")
 
 }

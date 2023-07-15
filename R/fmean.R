@@ -63,22 +63,12 @@ train_fmean <- function(.data, ...) {
 
 #' @rdname forecast
 #' @export
-forecast.FMEAN <- function(object, new_data, bootstrap = FALSE, times = 5000, ...) {
-  # Produce forecasts
-  if (bootstrap) {
-    sim <- map(seq_len(times), function(x) {
-      generate(object, new_data, bootstrap = TRUE)[[".sim"]]
-    }) %>%
-      transpose() %>%
-      map(as.numeric)
-    distributional::dist_sample(sim)
-  } else {
-    agevar <- attributes(new_data)$agevar
-    new_data |>
-      left_join(object$model, by = agevar) |>
-      transmute(fc = distributional::dist_normal(mean, sigma))  |>
-      pull(fc)
-  }
+forecast.FMEAN <- function(object, new_data, ...) {
+  agevar <- attributes(new_data)$agevar
+  new_data |>
+    left_join(object$model, by = agevar) |>
+    transmute(fc = distributional::dist_normal(mean, sigma))  |>
+    pull(fc)
 }
 
 #' @rdname generate

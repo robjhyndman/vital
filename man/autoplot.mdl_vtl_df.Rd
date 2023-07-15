@@ -11,6 +11,9 @@
 
 \item{...}{Further arguments ignored.}
 }
+\value{
+A ggplot2 object.
+}
 \description{
 Produces a plot showing a model applied to a vital object. This can be applied
 to one type of model only. So use select() to choose the model column to plot.

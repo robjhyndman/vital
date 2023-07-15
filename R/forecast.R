@@ -37,12 +37,9 @@ forecast.mdl_vtl_df <- function(
     h <- NULL
   }
   if (!is.null(new_data)) {
-    keys <- key_vars(new_data)
-    agevar <- attributes(new_data)$agevar
-    keys_noage <- keys[keys != agevar]
-    index <- index_var(new_data)
     object <- bind_new_data(object, new_data)
   }
+  agevar <- attributes(object[[mdls[1]]][[1]]$data)$agevar
   kv <- c(key_vars(object), ".model")
   object <- dplyr::mutate_at(as_tibble(object), vars(!!!mdls),
     forecast,
@@ -59,6 +56,7 @@ forecast.mdl_vtl_df <- function(
   )
   final <- build_fable(out, response = fbl_attr$response, distribution = fbl_attr$dist)
   class(final) <- c("fbl_vtl_ts", class(final))
+  attr(final, "agevar") <- agevar
   return(final)
 }
 
@@ -196,3 +194,6 @@ calc <- function (f, ...) {
 }
 
 globalVariables(c("agedf", "timedf", ".mean", "Year", "Mortality", "fc"))
+
+
+

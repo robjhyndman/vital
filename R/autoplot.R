@@ -1,3 +1,53 @@
+#' Rainbow plot of demographic data against age
+#'
+#' Produce rainbow plot (coloured by time index) of demographic variable against
+#' against age.
+#'
+#' @param object A vital including an age variable and the variable you wish to plot.
+#' @param .vars The name of the variable you wish to plot.
+#' @param ... Further arguments not used.
+#'
+#' @author Rob J Hyndman
+#' @references Hyndman, Rob J & Shang, Han Lin (2010) Rainbow plots, bagplots,
+#' and boxplots for functional data. \emph{Journal of Computational and Graphical Statistics},
+#' \bold{19}(1), 29-45.
+#'
+#' @return A ggplot2 object.
+#'
+#' @examples
+#' autoplot(aus_fertility, Fertility)
+#' @export
+autoplot.vital <- function(object, .vars = NULL, ...) {
+  if(!quo_is_null(enquo(.vars))) {
+    .vars <- as_name(enquo(.vars))
+  }
+  rainbow_plot(object, .vars = .vars, age = attributes(object)$agevar)
+}
+
+#' Plot forecasts from a vital model
+#'
+#' Produces a plot showing forecasts obtained from a model applied to a vital object.
+#'
+#' @param object A fable object obtained from a vital model.
+#' @param ... Further arguments ignored.
+#' @author Rob J Hyndman
+#' @return A ggplot2 object.
+#'
+#' @examples
+#' library(dplyr)
+#' library(ggplot2)
+#' aus_mortality |>
+#'  filter(State == "Victoria") |>
+#'  model(ave = FMEAN(Mortality)) |>
+#'  forecast(h = 10) |>
+#'  autoplot() + scale_y_log10()
+#'
+#' @author Rob J Hyndman
+#' @export
+autoplot.fbl_vtl_ts <- function(object, ...) {
+  rainbow_plot(object, .vars = ".mean", age = attributes(object)$agevar)
+}
+
 #' Plot output from a vital model
 #'
 #' Produces a plot showing a model applied to a vital object. This can be applied
@@ -7,6 +57,7 @@
 #' @param object A mable object obtained from a vital.
 #' @param ... Further arguments ignored.
 #' @author Rob J Hyndman
+#' @return A ggplot2 object.
 #'
 #' @examples
 #' library(dplyr)
@@ -57,51 +108,4 @@ age_plot <- function(object, .var, keys) {
   age <- names[grep("age", names, ignore.case=TRUE)]
   object_ts <- tsibble::as_tsibble(object, index=age, key = keys[keys != age])
   fabletools::autoplot(object_ts, {{ .var }}) + ggplot2::xlab(age)
-}
-
-#' Rainbow plot of demographic data against age
-#'
-#' Produce rainbow plot (coloured by time index) of demographic variable against
-#' against age.
-#'
-#' @param .data A vital, tsibble or fable object including an age variable and the variable you wish to plot.
-#' @param .vars A bare expression containing the name of the variable you wish to plot.
-#' @param age Variable in `.data` containing start year of age intervals.
-#' If omitted, and `.data` is not a vital object, the variable with name `Age` or `Age_group`
-#' will be used (not case sensitive).
-#'
-#' @author Rob J Hyndman
-#' @references Hyndman, Rob J & Shang, Han Lin (2010) Rainbow plots, bagplots,
-#' and boxplots for functional data. \emph{Journal of Computational and Graphical Statistics},
-#' \bold{19}(1), 29-45.
-#'
-#' @return A ggplot2 object.
-#'
-#' @examples
-#' autoplot(aus_fertility, Fertility)
-#' @export
-autoplot.vital <- function(object, ...) {
-  rainbow_plot(object, ...)
-}
-
-#' Plot forecasts from a vital model
-#'
-#' Produces a plot showing forecasts obtained from a model applied to a vital object.
-#'
-#' @param object A fable object obtained from a vital model.
-#' @param ... Further arguments passed to rainbow_plot().
-#' @author Rob J Hyndman
-#'
-#' @examples
-#' library(dplyr)
-#' library(ggplot2)
-#' aus_mortality |>
-#'  filter(State == "Victoria") |>
-#'  model(ave = FMEAN(Mortality)) |>
-#'  autoplot() + scale_y_log10()
-#'
-#' @author Rob J Hyndman
-#' @export
-autoplot.fbl_vtl_ts <- function(object, ...) {
-  rainbow_plot(object, ...)
 }

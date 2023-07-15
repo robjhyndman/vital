@@ -23,7 +23,7 @@
 #' library(ggplot2)
 #' aus_fertility
 #' aus_fertility |>
-#'   rainbow_plot(Fertility) +
+#'   autoplot(Fertility) +
 #'   ylab("Fertility rate")
 #'
 NULL
@@ -57,7 +57,7 @@ NULL
 #' aus_mortality
 #' aus_mortality |>
 #'   dplyr::filter(State=="Victoria", Sex != "total") |>
-#'   rainbow_plot(Exposure/1000) +
+#'   autoplot(Exposure) +
 #'   ylab("Population at 30 June (thousands)")
 #'
 NULL

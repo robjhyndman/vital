@@ -26,15 +26,15 @@ and \code{c()} for multiple variables. It works with tidy selector
 
 \item{index}{A variable to specify the time index variable.}
 
-\item{.age}{Name of age variable}
+\item{.age}{Character string with name of age variable}
 
-\item{.sex}{Name of sex variable}
+\item{.sex}{Character string with name of sex variable}
 
-\item{.deaths}{Name of deaths variable}
+\item{.deaths}{Character string with name of deaths variable}
 
-\item{.births}{Name of births variable}
+\item{.births}{Character string with name of births variable}
 
-\item{.population}{Name of population variable}
+\item{.population}{Character string with name of population variable}
 
 \item{regular}{Regular time interval (TRUE) or irregular (FALSE). The interval
 is determined by the greatest common divisor of index column, if TRUE.}
@@ -56,7 +56,7 @@ vital(
   mx = runif(600, 0, 1),
   index = year,
   key = age,
-  .age = age
+  .age = "age"
 )
 }
 \seealso{

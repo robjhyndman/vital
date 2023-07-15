@@ -9,7 +9,10 @@
 \arguments{
 \item{object}{A fable object obtained from a vital model.}
 
-\item{...}{Further arguments passed to rainbow_plot().}
+\item{...}{Further arguments ignored.}
+}
+\value{
+A ggplot2 object.
 }
 \description{
 Produces a plot showing forecasts obtained from a model applied to a vital object.
@@ -20,6 +23,7 @@ library(ggplot2)
 aus_mortality |>
  filter(State == "Victoria") |>
  model(ave = FMEAN(Mortality)) |>
+ forecast(h = 10) |>
  autoplot() + scale_y_log10()
 
 }

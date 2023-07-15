@@ -10,12 +10,13 @@
   object,
   new_data,
   bootstrap = FALSE,
+  times = 5000,
   se = c("innovdrift", "innovonly"),
   jumpchoice = c("fit", "actual"),
   ...
 )
 
-\method{forecast}{FMEAN}(object, new_data, bootstrap = FALSE, times = 5000, ...)
+\method{forecast}{FMEAN}(object, new_data, ...)
 
 \method{forecast}{mdl_vtl_df}(
   object,
@@ -32,6 +33,8 @@
 
 \item{bootstrap}{If `TRUE`, then forecast distributions are computed using simulation with resampled errors.}
 
+\item{times}{The number of sample paths to use in estimating the forecast distribution when `bootstrap = TRUE`.}
+
 \item{se}{Method used for computation of standard error.
 Possibilities: \dQuote{innovdrift} (innovations and drift) and \dQuote{innovonly} (innovations only).}
 
@@ -41,8 +44,6 @@ The original Lee-Carter method used 'fit' (the default), but Lee and Miller (200
 and most other authors prefer 'actual' (the default).}
 
 \item{...}{Additional arguments not used.}
-
-\item{times}{The number of sample paths to use in estimating the forecast distribution when `bootstrap = TRUE`.}
 
 \item{h}{Number of time steps ahead to forecast. This can be used instead of \code{new_data}
 when there are no covariates in the model. It is ignored if \code{new_data} is provided.}

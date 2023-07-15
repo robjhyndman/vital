@@ -10,11 +10,11 @@
 #' (e.g. \code{\link[dplyr]{starts_with}()}).
 #' @param ... A set of name-value pairs
 #' @param index A variable to specify the time index variable.
-#' @param .age Name of age variable
-#' @param .sex Name of sex variable
-#' @param .deaths Name of deaths variable
-#' @param .births Name of births variable
-#' @param .population Name of population variable
+#' @param .age Character string with name of age variable
+#' @param .sex Character string with name of sex variable
+#' @param .deaths Character string with name of deaths variable
+#' @param .births Character string with name of births variable
+#' @param .population Character string with name of population variable
 #' @param regular	Regular time interval (TRUE) or irregular (FALSE). The interval
 #' is determined by the greatest common divisor of index column, if TRUE.
 #' @param .drop If TRUE, empty key groups are dropped.
@@ -27,7 +27,7 @@
 #'   mx = runif(600, 0, 1),
 #'   index = year,
 #'   key = age,
-#'   .age = age
+#'   .age = "age"
 #' )
 #' @seealso \code{\link[tsibble]{tsibble}()}
 #' @export
@@ -158,33 +158,23 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
            .births = birthsvar, .population = popvar)
 }
 
-#' @param .age Name of age variable
-#' @param .sex Name of sex variable
-#' @param .deaths Name of deaths variable
-#' @param .births Name of births variable
-#' @param .population Name of population variable
+#' @param .age Character string with name of age variable
+#' @param .sex Character string with name of sex variable
+#' @param .deaths Character string with name of deaths variable
+#' @param .births Character string with name of births variable
+#' @param .population Character string with name of population variable
 #' @param reorder Logical indicating if the variables should be reordered.
 #' @rdname as_vital
 #' @export
 as_vital.tbl_ts <- function(x,
-                            .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
-                            reorder = FALSE, ...) {
+     .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
+     reorder = FALSE, ...) {
   # Add attributes to x to identify the various variables
-  if(!is.null(.age) & !quo_is_null(enquo(.age))) {
-    attr(x, "agevar") <- as_name(.age)
-  }
-  if(!is.null(.sex) & !quo_is_null(enquo(.sex))) {
-    attr(x, "sexvar") <- as_name(.sex)
-  }
-  if(!is.null(.deaths) & !quo_is_null(enquo(.deaths))) {
-    attr(x, "deathsvar") <- as_name(.deaths)
-  }
-  if(!is.null(.births) & !quo_is_null(enquo(.births))) {
-    attr(x, "birthsvar") <- as_name(.births)
-  }
-  if(!is.null(.population) & !quo_is_null(enquo(.population))) {
-    attr(x, "populationvar") <- as_name(.population)
-  }
+  attr(x, "agevar") <- .age
+  attr(x, "sexvar") <- .sex
+  attr(x, "birthsvar") <- .births
+  attr(x, "deathsvar") <- .deaths
+  attr(x, "populationvar") <- .population
   # Add additional class
   class(x) <- c("vital", class(x))
   # Sort variables
@@ -275,3 +265,5 @@ brackets <- function (x) {
 comma <- function (...)  {
   paste(..., collapse = ", ")
 }
+
+

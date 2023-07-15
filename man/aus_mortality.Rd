@@ -32,7 +32,7 @@ library(ggplot2)
 aus_mortality
 aus_mortality |>
   dplyr::filter(State=="Victoria", Sex != "total") |>
-  rainbow_plot(Exposure/1000) +
+  autoplot(Exposure) +
   ylab("Population at 30 June (thousands)")
 
 }

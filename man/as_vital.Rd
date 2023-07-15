@@ -41,15 +41,15 @@ as_vital(x, ...)
 
 \item{sex_groups}{Logical variable indicating if the groups denote sexes}
 
-\item{.age}{Name of age variable}
+\item{.age}{Character string with name of age variable}
 
-\item{.sex}{Name of sex variable}
+\item{.sex}{Character string with name of sex variable}
 
-\item{.deaths}{Name of deaths variable}
+\item{.deaths}{Character string with name of deaths variable}
 
-\item{.births}{Name of births variable}
+\item{.births}{Character string with name of births variable}
 
-\item{.population}{Name of population variable}
+\item{.population}{Character string with name of population variable}
 
 \item{reorder}{Logical indicating if the variables should be reordered.}
 

@@ -74,6 +74,7 @@ train_lc <- function(.data, sex = NULL, specials,  adjust = c("dt", "dxt", "e0",
     class = "LC"
   )
 }
+
 #' @param se Method used for computation of standard error.
 #' Possibilities: \dQuote{innovdrift} (innovations and drift) and \dQuote{innovonly} (innovations only).
 #' @param jumpchoice Method used for computation of jumpchoice.
@@ -82,10 +83,14 @@ train_lc <- function(.data, sex = NULL, specials,  adjust = c("dt", "dxt", "e0",
 #' and most other authors prefer 'actual' (the default).
 #' @rdname forecast
 #' @export
-forecast.LC <- function(object, new_data, bootstrap = FALSE,
+forecast.LC <- function(object, new_data, bootstrap = FALSE, times = 5000,
     se = c("innovdrift", "innovonly"), jumpchoice = c("fit", "actual"), ...) {
   se <- match.arg(se)
   jumpchoice <- match.arg(jumpchoice)
+
+# bootstrap and times arguments not actually used here as forecast.mdl_vtl_ts
+# handles this using generate() and forecast.LC is never called.
+# The arguments are included to avoid a warning message.
 
   # Forecast all kt series using random walks with drift terms
   h <- length(unique(new_data[[index_var(new_data)]]))
@@ -96,21 +101,11 @@ forecast.LC <- function(object, new_data, bootstrap = FALSE,
   # Create forecasts of response series
   agevar <- colnames(object$model$by_x)[1]
   indexvar <- index_var(object$model$by_t)
-
-  if(bootstrap) {
-    sim <- map(seq_len(times), function(x) {
-        generate(object, new_data, bootstrap = TRUE)[[".sim"]]
-      }) |>
-      transpose() |>
-      map(as.numeric)
-    distributional::dist_sample(sim)
-  } else {
-    new_data |>
-      left_join(object$model$by_x, by = agevar) |>
-      left_join(fc, by = indexvar) |>
-      transmute(fc = exp(ax + bx * kt)) |>
-      pull(fc)
-  }
+  new_data |>
+    left_join(object$model$by_x, by = agevar) |>
+    left_join(fc, by = indexvar) |>
+    transmute(fc = exp(ax + bx * kt)) |>
+    pull(fc)
 }
 
 #' @rdname generate
