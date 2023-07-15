@@ -78,7 +78,7 @@ behaviour to the response.</p>
 
 
 <dt>bootstrap</dt>
-<dd><p>If TRUE, then forecast distributions are computed using simulation with resampled errors.</p></dd>
+<dd><p>If `TRUE`, then forecast distributions are computed using simulation with resampled errors.</p></dd>
 
 
 <dt>times</dt>
@@ -113,16 +113,16 @@ If `bootstrap` is `TRUE`, innovations will be sampled from the model's residuals
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Key:     Age, Sex, State, Code, .model, .rep [909]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Year   Age Sex    State    Code  .model .rep   .sim</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">2</span>004     0 female Victoria VIC   lc     1     0.307</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">2</span>004     1 female Victoria VIC   lc     1     0.315</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">2</span>004     2 female Victoria VIC   lc     1     0.329</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">2</span>004     3 female Victoria VIC   lc     1     0.311</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">2</span>004     4 female Victoria VIC   lc     1     0.311</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">2</span>004     5 female Victoria VIC   lc     1     0.299</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">2</span>004     6 female Victoria VIC   lc     1     0.304</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">2</span>004     7 female Victoria VIC   lc     1     0.321</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">2</span>004     8 female Victoria VIC   lc     1     0.290</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">2</span>004     9 female Victoria VIC   lc     1     0.312</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">2</span>004     0 female Victoria VIC   lc     1     0.908</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">2</span>004     1 female Victoria VIC   lc     1     0.926</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">2</span>004     2 female Victoria VIC   lc     1     0.988</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">2</span>004     3 female Victoria VIC   lc     1     0.925</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">2</span>004     4 female Victoria VIC   lc     1     0.914</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">2</span>004     5 female Victoria VIC   lc     1     0.870</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">2</span>004     6 female Victoria VIC   lc     1     0.896</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">2</span>004     7 female Victoria VIC   lc     1     0.956</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">2</span>004     8 female Victoria VIC   lc     1     0.834</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">2</span>004     9 female Victoria VIC   lc     1     0.918</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,808 more rows</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
