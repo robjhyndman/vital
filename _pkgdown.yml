@@ -6,9 +6,11 @@ template:
   bslib:
     base_font: {google: "Fira Sans"}
     heading_font: {google: "Fira Sans"}
-    code_font: "Hack, monospace"
+    code_font: "Hack_ligatured, monospace"
     primary: "#234460"
     link-color: "#234460"
+  includes:
+    in_header: <link rel="stylesheet" href="https://robjhyndman.com/fonts/hack_ligatured.css">
 
 authors:
   Rob J Hyndman:
