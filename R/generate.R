@@ -55,7 +55,7 @@ generate.mdl_vtl_df <- function(x, new_data = NULL, h = NULL,
   index <- index_var(x$.sim[[1]])
 
   unnest_tsbl(x, ".sim", parent_key = kv) |>
-    as_tsibble(index = index, key = c(agevar, kv, ".rep")) |>
+    as_tsibble(index = index, key = all_of(c(agevar, kv, ".rep"))) |>
     as_vital(.age = agevar, reorder = TRUE)
 }
 

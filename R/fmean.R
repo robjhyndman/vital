@@ -92,7 +92,7 @@ generate.FMEAN <- function(x, new_data = NULL, h = NULL,
     if (bootstrap) {
       indexvar <- index_var(new_data)
       innov <- as_tibble(x$fitted) |>
-        select(all_of(agevar), .innov) |>
+        select(all_of(c(agevar, ".innov"))) |>
         nest_by(!!sym(agevar)) |>
         mutate(
           data = list(

@@ -159,7 +159,7 @@ nest_keys <- function(.data, nm = "data") {
 
   out <- key_data(.data) |>
     tidyr::unnest(.rows) |>
-    select(all_of(keys_noage), .rows) |>
+    select(all_of(c(keys_noage, ".rows"))) |>
     dplyr::group_by(dplyr::across(dplyr::all_of(keys_noage))) |>
     tidyr::nest() |>
     mutate(data = list(unlist(data))) |>

@@ -47,7 +47,7 @@ train_fdm <- function(.data, specials, order, ts_model_fn, ...) {
       .fitted = exp(.fitted),
       .resid = .data[[measures]] - .fitted
     ) |>
-    select(all_of(c(indexvar, agevar)), .fitted, .resid, .innov)
+    select(all_of(c(indexvar, agevar, ".fitted", ".resid", ".innov")))
 
   ts_models <- out$ts_models
   out$data <- out$ts_models <- NULL
@@ -209,7 +209,7 @@ autoplot.FDM <- function(object, show_order = 2, ...) {
   obj_time$out <- lapply(obj_time$out, function(x) as_tibble(x$by_t))
   obj_time <- obj_time |>
     tidyr::unnest("out") |>
-    as_tsibble(index = index, key=keys)
+    as_tsibble(index = index, key=all_of(keys))
   obj_x$out  <- lapply(obj_x$out, function(x) as_tibble(x$by_x))
   obj_x <- obj_x |> tidyr::unnest("out")
 

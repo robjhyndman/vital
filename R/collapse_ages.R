@@ -41,7 +41,7 @@ collapse_ages <- function(.data, max_age = 100) {
     dplyr::group_by_at(dplyr::vars(c(index, keys_noage))) |>
     dplyr::reframe(dplyr::across(dplyr::where(is.numeric),
       function(x) { collapse_age_vector(x, ages, max_age) } )) |>
-    as_tsibble(index = index, key = keys)
+    as_tsibble(index = index, key = all_of(keys))
 
   # Recompute rates
   for(i in rates) {

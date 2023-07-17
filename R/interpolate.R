@@ -22,7 +22,7 @@ interpolate.mdl_vtl_df <- function (object, new_data, ...) {
   object <- transmute(as_tibble(object), !!!syms(keys_noage),
                       interpolated = map2(!!sym(mable_vars(object)), new_data, interpolate, ...))
   unnest_tbl(object, "interpolated") |>
-    as_tsibble(index = index, key = c(agevar, keys_noage)) |>
+    as_tsibble(index = index, key = all_of(c(agevar, keys_noage))) |>
     as_vital(.age = agevar, reorder = TRUE)
 }
 

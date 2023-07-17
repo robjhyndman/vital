@@ -21,7 +21,7 @@ aus_mortality <- bind_rows(
   as_vital(addb::wa) |> mutate(State = "Western Australia", Code = "WA") |> as_tibble()
 ) |>
   select(-AgeGroup) |>
-  as_tsibble(index = Year, key = c(Age, Sex, State, Code)) |>
+  as_tsibble(index = Year, key = all_of(c(Age, Sex, State, Code))) |>
   select(Year, Age, Sex, State, Code, everything()) |>
   arrange(State, Sex, Year, Age) |>
   as_vital(.age = "Age", .sex = "Sex", .deaths = "Deaths", .population = "Exposure")
