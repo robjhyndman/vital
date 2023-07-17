@@ -14,7 +14,6 @@
 #'   \dQuote{e0} (Lee-Miller method based on life expectancy) and
 #'   \dQuote{none}.
 #' @param scale If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.
-#'
 #' @param formula Model specification.
 #' @param ... Not used.
 #'
@@ -64,7 +63,7 @@ train_lc <- function(.data, sex = NULL, specials,  adjust = c("dt", "dxt", "e0",
       .fitted = exp(.fitted),
       .resid = .data[[measures]] - .fitted
     ) |>
-    select(all_of(c(indexvar, agevar)), .fitted, .resid, .innov)
+    select(all_of(c(indexvar, agevar, ".fitted", ".resid", ".innov")))
 
   structure(
     list(
@@ -98,8 +97,7 @@ forecast.LC <- function(object, new_data = NULL, h = NULL, point_forecast = list
 
   # Forecast kt series using random walk with drift terms
   h <- length(unique(new_data[[index_var(new_data)]]))
-  fc <- object$model$by_t |>
-    fabletools::model(rw = fable::RW(kt ~ drift())) |>
+  fc <- object$model$fit_kt |>
     forecast(h = h)
 
   # Create forecasts of response series
@@ -124,9 +122,8 @@ generate.LC <- function(x, new_data = NULL, h = NULL,
 
   # Forecast kt series using random walk with drift term
   h <- length(unique(new_data[[index_var(new_data)]]))
-  fc <- x$model$by_t |>
-    fabletools::model(rw = fable::RW(kt ~ drift())) |>
-    generate(h = h, bootstrap = bootstrap, times = times, ...)
+  fc <- x$model$fit_kt |>
+    generate(h = h, bootstrap = bootstrap, times = times)
   new_data <- new_data |>
     left_join(x$model$by_x, by = agevar) |>
     left_join(fc, by = c(indexvar, ".rep")) |>
@@ -162,7 +159,14 @@ tidy.LC <- function(x, ...) {
 #' @export
 report.LC <- function(object, ...) {
   cat("\n")
-  print(object$model)
+  cat("Age functions\n")
+  print(object$model$by_x, n=5)
+  cat("\nTime coefficients\n")
+  print(object$model$by_t, n=5)
+  cat("\nTime series model: ")
+  cat(model_sum(object$model$fit_kt$rw[[1]]$fit), "\n")
+  cat("\nVariance explained: ")
+  cat(paste0(round(object$model$varprop*100, 2),"%\n"))
 }
 
 #' @export
@@ -325,9 +329,14 @@ lca <- function(data, sex, age, rates, pop,
   colnames(output2)[1] <- index
   output2 <- as_tsibble(output2, index=index)
 
+  # Fit model to kt series
+  fit_kt <- output2 |>
+    fabletools::model(rw = fable::RW(kt ~ drift()))
+
   # Return
   list(
     by_x = output1, by_t = output2,
+    fit_kt = fit_kt,
     varprop = svd.mx$d[1]^2 / sum(svd.mx$d^2), mdev = mdev,
     adjust = adjust
   )
@@ -467,7 +476,7 @@ autoplot.LC <- function(object, age = "Age", ...) {
   obj_time$out <- lapply(obj_time$out, function(x) as_tibble(x$by_t))
   obj_time <- obj_time |>
     tidyr::unnest("out") |>
-    as_tsibble(index = index, key=keys)
+    as_tsibble(index = index, key=all_of(keys))
   obj_x$out  <- lapply(obj_x$out, function(x) as_tibble(x$by_x))
   obj_x <- obj_x |> tidyr::unnest("out")
 
