@@ -42,6 +42,7 @@ reference:
       - model.vital
       - FMEAN
       - LC
+      - FDM
   - title: Methods for vital models
     desc: Functions that work with vital mables
     contents:
@@ -60,8 +61,3 @@ reference:
       - vital_conflicts
       - vital_packages
       - reexports
-  - title: Deprecated
-    desc: Functions to be removed
-    contents:
-      - fpc_model
-      - autoplot.fpc_model

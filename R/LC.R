@@ -96,7 +96,7 @@ forecast.LC <- function(object, new_data = NULL, h = NULL, point_forecast = list
 # handles this using generate() and forecast.LC is never called.
 # The arguments are included to avoid a warning message.
 
-  # Forecast all kt series using random walks with drift terms
+  # Forecast kt series using random walk with drift terms
   h <- length(unique(new_data[[index_var(new_data)]]))
   fc <- object$model$by_t |>
     fabletools::model(rw = fable::RW(kt ~ drift())) |>
@@ -122,7 +122,7 @@ generate.LC <- function(x, new_data = NULL, h = NULL,
   # Note that seed has already been set in generate.mdl_vtl_df
   # So it is not re-set here
 
-  # Forecast all kt series using random walks with drift terms
+  # Forecast kt series using random walk with drift term
   h <- length(unique(new_data[[index_var(new_data)]]))
   fc <- x$model$by_t |>
     fabletools::model(rw = fable::RW(kt ~ drift())) |>

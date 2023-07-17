@@ -102,8 +102,17 @@ prepare_autoplot <- function(object, ...) {
 # Plot a variable against age by key
 age_plot <- function(object, .var, keys) {
   # Convert age to time and use fabletools::autoplot.tbl_ts
-  names <- colnames(object)[!(colnames(object) %in% c(keys, deparse(substitute(.var))))]
+  names <- colnames(object)[!(colnames(object) %in% c(keys, as_string(.var)))]
   age <- names[grep("age", names, ignore.case=TRUE)]
   object_ts <- tsibble::as_tsibble(object, index=age, key = keys[keys != age])
   fabletools::autoplot(object_ts, {{ .var }}) + ggplot2::xlab(age)
+}
+
+# Plot a variable against time by key
+time_plot <- function(object, .var, keys) {
+  # Just use fabletools::autoplot.tbl_ts
+  # Why can't I do this without first calling as_string(.var)
+  tmp <- as_string(.var)
+  fabletools::autoplot(object, {{ .var }}) +
+    ggplot2::xlab(tsibble::index_var(object))
 }
