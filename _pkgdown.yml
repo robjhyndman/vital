@@ -43,9 +43,10 @@ reference:
     desc: Functions for fitting models to vitals
     contents:
       - model.vital
-      - FMEAN
-      - LC
       - FDM
+      - FMEAN
+      - FNAIVE
+      - LC
   - title: Methods for vital models
     desc: Functions that work with vital mables
     contents:
