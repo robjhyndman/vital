@@ -16,6 +16,9 @@ authors:
   Rob J Hyndman:
     href: http://robjhyndman.com
 
+navbar:
+  type: light
+
 reference:
   - title: Create vitals
     desc: Functions for creating vital objects
