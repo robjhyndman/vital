@@ -1,6 +1,6 @@
-#' Model mortality or fertility data using functional data approach
+#' Functional data model
 #'
-#' Functional data model of mortality or fertility rates.
+#' Functional data model of mortality or fertility rates as a function of age.
 #' \code{FDM()} returns a functional data model applied to the formula's response
 #' variable as a function of age.
 #'
@@ -187,15 +187,14 @@ model_sum.FDM <- function(x) {
   paste0("FDM")
 }
 
-
-
-#' @export
-prepare_autoplot.FDM <- function(object, ...) {
-  object$model
-}
-
 #' @export
 autoplot.FDM <- function(object, show_order = 2, ...) {
+  modelname <- attributes(object)$model
+  object <- object |>
+    mutate(out = purrr::map(object[[modelname]], function(x){x$fit$model})) |>
+    as_tibble()
+  object[[modelname]] <- NULL
+
   meanvar <- "mean"
   tmp <- colnames(object$out[[1]]$by_t)
   timevar <- tmp[grepl("beta", tmp)]
@@ -215,14 +214,13 @@ autoplot.FDM <- function(object, show_order = 2, ...) {
 
   # Set up list of plots
   p <- list()
-  p[[1]] <- age_plot(obj_x, sym(meanvar), keys) +
-    ggplot2::ylab(meanvar)
+  p[[1]] <- age_plot(obj_x, meanvar, keys) + ggplot2::ylab(meanvar)
   for (i in seq(show_order)) {
-    p[[i + 1]] <- age_plot(obj_x, sym(agevar[i]), keys)
+    p[[i + 1]] <- age_plot(obj_x, agevar[i], keys)
   }
   p[[show_order + 2]] <- patchwork::guide_area()
   for (i in seq(show_order)) {
-    p[[i + 2 + show_order]] <- time_plot(obj_time, sym(timevar[i]), keys)
+    p[[i + 2 + show_order]] <- time_plot(obj_time, timevar[i], keys)
   }
   patchwork::wrap_plots(p) +
     patchwork::plot_layout(ncol = show_order + 1, nrow = 2, guides = "collect")

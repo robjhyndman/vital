@@ -1,4 +1,4 @@
-#' Functional mean models
+#' Functional mean model
 #'
 #' \code{FMEAN()} returns an iid functional model applied to the formula's response variable as a function of age.
 #'
@@ -158,12 +158,11 @@ model_sum.FMEAN <- function(x) {
 }
 
 #' @export
-prepare_autoplot.FMEAN <- function(object, ...) {
-  object$model
-}
-
-#' @export
 autoplot.FMEAN <- function(object, age = "Age",...) {
+  modelname <- attributes(object)$model
+  object <- object |>
+    mutate(out = purrr::map(object[[modelname]], function(x){x$fit$model}))
+  object[[modelname]] <- NULL
   object <- object  |>
     tidyr::unnest("out")
   keys <- colnames(object)

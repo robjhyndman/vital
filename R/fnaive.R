@@ -1,4 +1,4 @@
-#' Functional mean models
+#' Functional naive model
 #'
 #' \code{FNAIVE()} returns an random walk functional model applied to the formula's response variable as a function of age.
 #'
@@ -171,14 +171,13 @@ model_sum.FNAIVE <- function(x) {
 }
 
 #' @export
-prepare_autoplot.FNAIVE <- function(object, ...) {
-  object$model
-}
-
-#' @export
 autoplot.FNAIVE <- function(object, age = "Age", ...) {
   browser()
+  modelname <- attributes(object)$model
   object <- object |>
+    mutate(out = purrr::map(object[[modelname]], function(x){x$fit$model}))
+  object[[modelname]] <- NULL
+  object <- object  |>
     tidyr::unnest("out")
   keys <- colnames(object)
   keys <- keys[!(keys %in% c("mean", "sigma", age))]

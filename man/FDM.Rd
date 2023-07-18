@@ -3,7 +3,7 @@
 \name{FDM}
 \alias{FDM}
 \alias{report.FDM}
-\title{Model mortality or fertility data using functional data approach}
+\title{Functional data model}
 \usage{
 FDM(formula, order = 6, ts_model_fn = fable::ARIMA, ...)
 }
@@ -20,7 +20,7 @@ FDM(formula, order = 6, ts_model_fn = fable::ARIMA, ...)
 A model specification.
 }
 \description{
-Functional data model of mortality or fertility rates.
+Functional data model of mortality or fertility rates as a function of age.
 \code{FDM()} returns a functional data model applied to the formula's response
 variable as a function of age.
 }

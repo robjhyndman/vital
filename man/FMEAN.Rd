@@ -3,7 +3,7 @@
 \name{FMEAN}
 \alias{FMEAN}
 \alias{report.FMEAN}
-\title{Functional mean models}
+\title{Functional mean model}
 \usage{
 FMEAN(formula, ...)
 }

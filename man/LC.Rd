@@ -3,7 +3,7 @@
 \name{LC}
 \alias{LC}
 \alias{report.LC}
-\title{Model mortality or fertility data using Lee-Carter approach}
+\title{Lee-Carter model}
 \usage{
 LC(formula, adjust = c("dt", "dxt", "e0", "none"), scale = FALSE, ...)
 }

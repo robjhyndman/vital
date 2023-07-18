@@ -3,7 +3,7 @@
 \name{FNAIVE}
 \alias{FNAIVE}
 \alias{report.FNAIVE}
-\title{Functional mean models}
+\title{Functional naive model}
 \usage{
 FNAIVE(formula, ...)
 }

@@ -1,4 +1,4 @@
-#' Model mortality or fertility data using Lee-Carter approach
+#' Lee-Carter model
 #'
 #' Lee-Carter model of mortality or fertility rates.
 #' \code{LC()} returns a Lee-Carter model applied to the formula's response
@@ -458,17 +458,13 @@ newroot <- function(FUN, guess, ...) {
   return(junk$estimate)
 }
 
-
-#' @export
-prepare_autoplot.LC <- function(object, ...) {
-  object$model
-}
-
 #' @export
 autoplot.LC <- function(object, age = "Age", ...) {
-  meanvar <- "ax"
-  timevar <- "kt"
-  agevar <- "bx"
+  modelname <- attributes(object)$model
+  object <- object |>
+    mutate(out = purrr::map(object[[modelname]], function(x){x$fit$model})) |>
+    as_tibble()
+  object[[modelname]] <- NULL
   index <- index_var(object$out[[1]]$by_t)
   keys <- head(colnames(object), -1)
   # Construct time and age data frames
@@ -482,13 +478,10 @@ autoplot.LC <- function(object, age = "Age", ...) {
 
   # Set up list of plots
   p <- list()
-  p[[1]] <- age_plot(obj_x, get(meanvar), keys) +
-    ggplot2::ylab(meanvar)
-  p[[2]] <- age_plot(obj_x, get(agevar), keys) +
-      ggplot2::ylab(agevar)
+  p[[1]] <- age_plot(obj_x, "ax", keys) + ggplot2::ylab("ax")
+  p[[2]] <- age_plot(obj_x, "bx", keys) + ggplot2::ylab("bx")
   p[[3]] <- patchwork::guide_area()
-  p[[4]] <- fabletools::autoplot(obj_time, get(timevar)) +
-      ggplot2::labs(x = index, y = timevar)
+  p[[4]] <- time_plot(obj_time, "kt") + ggplot2::labs(x = index, y = "kt")
   output <- patchwork::wrap_plots(p) +
     patchwork::plot_layout(ncol = 2, nrow = 2, guides = "collect")
   print(output)
