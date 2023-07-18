@@ -29,15 +29,16 @@ train_fmean <- function(.data, ...) {
   agevar <- attrx$agevar
   measures <- measured_vars(.data)
   measures <- measures[!(measures %in% c(agevar, attrx$populationvar))]
+  measure <- measures[1]
   ave_measure <- .data |>
     as_tibble() |>
     group_by(!!sym(agevar)) |>
-    summarise(.fitted = mean(.data[[measures]], na.rm=TRUE))
+    summarise(.fitted = mean(.data[[measure]], na.rm=TRUE))
   out <- .data |>
     as_tibble() |>
     left_join(ave_measure, by = agevar) |>
     mutate(
-      .resid = .data[[measures]] - .fitted,
+      .resid = .data[[measure]] - .fitted,
       .innov = .resid
     )
   sigma <- out |>
@@ -55,7 +56,7 @@ train_fmean <- function(.data, ...) {
     list(
       fitted = out,
       model = model,
-      nobs = sum(!is.na(.data[[measures]]))
+      nobs = sum(!is.na(.data[[measure]]))
     ),
     class = "FMEAN"
   )
