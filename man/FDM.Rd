@@ -25,10 +25,11 @@ Functional data model of mortality or fertility rates as a function of age.
 variable as a function of age.
 }
 \examples{
-aus_mortality |>
+hu <- aus_mortality |>
   dplyr::filter(State == "Victoria", Sex == "female") |>
-  model(hyndman_ullah = FDM(Mortality)) |>
-  report()
+  model(hyndman_ullah = FDM(Mortality))
+report(hu)
+autoplot(hu)
 }
 \references{
 Hyndman, R.J., and Ullah, S. (2007) Robust forecasting of

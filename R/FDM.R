@@ -20,10 +20,11 @@
 #' @return A model specification.
 #'
 #' @examples
-#' aus_mortality |>
+#' hu <- aus_mortality |>
 #'   dplyr::filter(State == "Victoria", Sex == "female") |>
-#'   model(hyndman_ullah = FDM(Mortality)) |>
-#'   report()
+#'   model(hyndman_ullah = FDM(Mortality))
+#' report(hu)
+#' autoplot(hu)
 #' @export
 FDM <- function(formula, order = 6, ts_model_fn = fable::ARIMA, ...) {
   fd_model <- new_model_class("fdm", train = train_fdm)

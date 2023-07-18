@@ -5,6 +5,7 @@ test_that("Functional naive", {
     dplyr::filter(State == "Victoria") |>
     model(fnaive = FNAIVE(Mortality))
   fc <- forecast(fnaive)
+  expect_no_error(autoplot(fc))
   expect_equal(dim(fnaive), c(3L, 4L))
   expect_equal(dim(tidy(fnaive)), c(0L,5L))
   expect_equal(colnames(glance(fnaive)), c("Sex", "State", "Code", ".model", "sigma2"))

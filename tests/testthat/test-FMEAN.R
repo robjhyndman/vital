@@ -5,6 +5,7 @@ test_that("Functional mean", {
     dplyr::filter(State == "Victoria") |>
     model(fm = FMEAN(Mortality))
   fc <- forecast(fm)
+  expect_no_error(autoplot(fc))
   expect_equal(dim(fm), c(3L, 4L))
   expect_equal(dim(tidy(fm)), c(303L,10L))
   expect_equal(colnames(glance(fm)), c("Sex", "State", "Code", ".model", "sigma2"))

@@ -32,10 +32,11 @@ default, although many other options are available. Missing rates are set to
 the geometric mean rate for the relevant age.
 }
 \examples{
-aus_mortality |>
+lc <- aus_mortality |>
   dplyr::filter(State == "Victoria", Sex == "female") |>
-  model(lee_carter = LC(Mortality)) |>
-  report()
+  model(lee_carter = LC(Mortality))
+report(lc)
+autoplot(lc)
 }
 \references{
 Basellini, U, Camarda, C G, and Booth, H (2022) Thirty years on:

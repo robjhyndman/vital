@@ -30,10 +30,11 @@
 #' @return A model specification.
 #'
 #' @examples
-#' aus_mortality |>
+#' lc <- aus_mortality |>
 #'   dplyr::filter(State == "Victoria", Sex == "female") |>
-#'   model(lee_carter = LC(Mortality)) |>
-#'   report()
+#'   model(lee_carter = LC(Mortality))
+#' report(lc)
+#' autoplot(lc)
 #' @export
 LC <- function(formula, adjust = c("dt", "dxt", "e0", "none"),
                scale = FALSE, ...) {

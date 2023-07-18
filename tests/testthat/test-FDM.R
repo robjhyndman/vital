@@ -6,6 +6,7 @@ test_that("Functional data model", {
     dplyr::filter(State == "Victoria") |>
     model(hu = FDM(Mortality))
   fc <- forecast(hu)
+  expect_no_error(autoplot(fc))
   expect_equal(dim(hu), c(3L, 4L))
   expect_equal(NROW(tidy(hu)), 0L)
   expect_equal(colnames(glance(hu)), c("Sex", "State", "Code", ".model", "sigma2", "varprop"))

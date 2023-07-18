@@ -12,10 +12,11 @@
 #'
 #' @author Rob J Hyndman
 #' @examples
-#' aus_mortality |>
+#' fnaive <- aus_mortality |>
 #'   dplyr::filter(State == "Victoria", Sex == "female") |>
-#'   model(mean = FNAIVE(Mortality)) |>
-#'   report()
+#'   model(fit = FNAIVE(Mortality))
+#' report(fnaive)
+#' autoplot(fnaive) + ggplot2::scale_y_log10()
 #' @export
 FNAIVE <- function(formula, ...) {
   fnaive_model <- new_model_class("fnaive", train = train_fnaive)
@@ -172,7 +173,6 @@ model_sum.FNAIVE <- function(x) {
 
 #' @export
 autoplot.FNAIVE <- function(object, age = "Age", ...) {
-  browser()
   modelname <- attributes(object)$model
   object <- object |>
     mutate(out = purrr::map(object[[modelname]], function(x){x$fit$model}))
@@ -180,16 +180,15 @@ autoplot.FNAIVE <- function(object, age = "Age", ...) {
   object <- object  |>
     tidyr::unnest("out")
   keys <- colnames(object)
-  keys <- keys[!(keys %in% c("mean", "sigma", age))]
+  keys <- keys[!(keys %in% c("sigma", age))]
   nk <- length(keys)
-  object <- object |> rename(.mean = mean)
-  aes_spec <- list(x = sym(age), y = expr(.mean))
+  aes_spec <- list(x = sym(age), y = expr(sigma))
   if (nk > 0) {
     aes_spec[["colour"]] <- expr(interaction(!!!syms(keys), sep = "/"))
   }
   p <- ggplot(object, eval_tidy(expr(aes(!!!aes_spec)))) +
     geom_line() +
-    ggplot2::labs(x = age, y = "Mean")
+    ggplot2::labs(x = age, y = "Sigma")
   if (nk > 1) {
     p <- p + ggplot2::guides(colour = ggplot2::guide_legend(paste0(keys, collapse = "/")))
   }
@@ -197,4 +196,4 @@ autoplot.FNAIVE <- function(object, age = "Age", ...) {
 }
 
 
-globalVariables(c(".resid", "sigma", "std.error", "stat", ".innov", "fit"))
+globalVariables(c(".resid", "sigma", "std.error", "stat", ".innov", "fit", "horizon"))

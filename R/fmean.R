@@ -12,10 +12,11 @@
 #'
 #' @author Rob J Hyndman
 #' @examples
-#' aus_mortality |>
+#' fmean <- aus_mortality |>
 #'   dplyr::filter(State == "Victoria", Sex == "female") |>
-#'   model(mean = FMEAN(Mortality)) |>
-#'   report()
+#'   model(mean = FMEAN(Mortality))
+#' report(fmean)
+#' autoplot(fmean) + ggplot2::scale_y_log10()
 #' @export
 FMEAN <- function(formula, ...) {
   fmean_model <- new_model_class("fmean", train = train_fmean)

@@ -19,10 +19,11 @@ A model specification.
 \code{FMEAN()} returns an iid functional model applied to the formula's response variable as a function of age.
 }
 \examples{
-aus_mortality |>
+fmean <- aus_mortality |>
   dplyr::filter(State == "Victoria", Sex == "female") |>
-  model(mean = FMEAN(Mortality)) |>
-  report()
+  model(mean = FMEAN(Mortality))
+report(fmean)
+autoplot(fmean) + ggplot2::scale_y_log10()
 }
 \author{
 Rob J Hyndman

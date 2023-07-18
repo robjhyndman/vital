@@ -5,6 +5,7 @@ test_that("Lee Carter", {
     dplyr::filter(State == "Victoria") |>
     model(lc = LC(Mortality))
   fc <- forecast(lc)
+  expect_no_error(autoplot(fc))
   expect_equal(dim(lc), c(3L, 4L))
   expect_equal(NROW(tidy(lc)), 0L)
   expect_equal(colnames(glance(lc)), c("Sex", "State", "Code", ".model", "sigma2"))
