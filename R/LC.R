@@ -138,20 +138,6 @@ generate.LC <- function(x, new_data = NULL, h = NULL,
 }
 
 #' @export
-interpolate.LC <- function(object, new_data, ...) {
-  agevar <- attributes(new_data)$agevar
-  measures <- measured_vars(new_data)
-  measures <- measures[measures != agevar]
-  y <- new_data[[measures]]
-  miss_val <- is.na(y)
-  fits <- object$fitted$.fitted
-
-  new_data[[measures]][miss_val] <- fits[miss_val]
-  new_data
-}
-
-
-#' @export
 glance.LC <- function(x, ...) {
   tibble(sigma2 = var(x$fitted$.resid, na.rm=TRUE))
 }

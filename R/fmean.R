@@ -115,20 +115,6 @@ generate.FMEAN <- function(x, new_data = NULL, h = NULL,
   transmute(group_by_key(new_data), ".sim" := mean + .innov)
 }
 
-
-#' @export
-interpolate.FMEAN <- function(object, new_data, ...) {
-  agevar <- attributes(new_data)$agevar
-  measures <- measured_vars(new_data)
-  measures <- measures[measures != agevar]
-  y <- new_data[[measures]]
-  miss_val <- is.na(y)
-  fits <- object$fitted$.fitted
-
-  new_data[[measures]][miss_val] <- fits[miss_val]
-  new_data
-}
-
 #' @export
 glance.FMEAN <- function(x, ...) {
   tibble(sigma2 = var(x$fitted$.resid, na.rm=TRUE))
