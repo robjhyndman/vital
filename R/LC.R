@@ -483,9 +483,8 @@ autoplot.LC <- function(object, age = "Age", ...) {
   p[[2]] <- age_plot(obj_x, "bx", keys) + ggplot2::ylab("bx")
   p[[3]] <- patchwork::guide_area()
   p[[4]] <- time_plot(obj_time, "kt") + ggplot2::labs(x = index, y = "kt")
-  output <- patchwork::wrap_plots(p) +
+  patchwork::wrap_plots(p) +
     patchwork::plot_layout(ncol = 2, nrow = 2, guides = "collect")
-  print(output)
 }
 
 utils::globalVariables(c("kt", "ax", "bx", "varprop", "lst_data", "by_x", "by_t"))
