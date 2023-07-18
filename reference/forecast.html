@@ -42,7 +42,7 @@ The forecasts returned contain both point forecasts and their distribution."><!-
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Produce forecasts from a vital model</h1>
-      <small class="dont-index">Source: <a href="http://github.com/robjhyndman/vital/blob/HEAD/R/FDM.R" class="external-link"><code>R/FDM.R</code></a>, <a href="http://github.com/robjhyndman/vital/blob/HEAD/R/LC.R" class="external-link"><code>R/LC.R</code></a>, <a href="http://github.com/robjhyndman/vital/blob/HEAD/R/fmean.R" class="external-link"><code>R/fmean.R</code></a>, and 1 more</small>
+      <small class="dont-index">Source: <a href="http://github.com/robjhyndman/vital/blob/HEAD/R/FDM.R" class="external-link"><code>R/FDM.R</code></a>, <a href="http://github.com/robjhyndman/vital/blob/HEAD/R/LC.R" class="external-link"><code>R/LC.R</code></a>, <a href="http://github.com/robjhyndman/vital/blob/HEAD/R/fmean.R" class="external-link"><code>R/fmean.R</code></a>, and 2 more</small>
       <div class="d-none name"><code>forecast.Rd</code></div>
     </div>
 
@@ -83,6 +83,19 @@ The forecasts returned contain both point forecasts and their distribution.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for FMEAN</span></span>
+<span><span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  new_data <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  h <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  point_forecast <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>.mean <span class="op">=</span> <span class="va">mean</span><span class="op">)</span>,</span>
+<span>  simulate <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  bootstrap <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  times <span class="op">=</span> <span class="fl">5000</span>,</span>
+<span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for FNAIVE</span></span>
 <span><span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span></span>
 <span>  <span class="va">object</span>,</span>
 <span>  new_data <span class="op">=</span> <span class="cn">NULL</span>,</span>
