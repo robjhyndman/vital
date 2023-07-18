@@ -49,7 +49,7 @@ generate.mdl_vtl_df <- function(x, new_data = NULL, h = NULL,
   # Evaluate simulations
   x[[".sim"]] <- map2(x[[".sim"]],
                  x[["new_data"]] %||% rep(list(NULL), length.out = NROW(x)),
-                 generate, h = h, times = times, seed = seed, ...)
+                 generate, h = h, bootstrap = bootstrap, times = times, seed = seed, ...)
   x[["new_data"]] <- NULL
   agevar <- attributes(x$.sim[[1]])$agevar
   index <- index_var(x$.sim[[1]])
