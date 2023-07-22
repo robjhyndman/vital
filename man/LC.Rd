@@ -5,7 +5,13 @@
 \alias{report.LC}
 \title{Lee-Carter model}
 \usage{
-LC(formula, adjust = c("dt", "dxt", "e0", "none"), scale = FALSE, ...)
+LC(
+  formula,
+  adjust = c("dt", "dxt", "e0", "none"),
+  jumpchoice = c("fit", "actual"),
+  scale = FALSE,
+  ...
+)
 }
 \arguments{
 \item{formula}{Model specification.}
@@ -15,7 +21,10 @@ Possibilities are
 \dQuote{dt} (Lee-Carter method, the default),
 \dQuote{dxt} (BMS method),
 \dQuote{e0} (Lee-Miller method based on life expectancy) and
-\dQuote{none}.}
+\dQuote{none}.
+y).}
+
+\item{jumpchoice}{Method used for computation of jumpchoice. Possibilities: “actual” (use actual rates from final year) and “fit” (use fitted rates).}
 
 \item{scale}{If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.}
 

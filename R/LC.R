@@ -13,6 +13,8 @@
 #'   \dQuote{dxt} (BMS method),
 #'   \dQuote{e0} (Lee-Miller method based on life expectancy) and
 #'   \dQuote{none}.
+#'   y).
+#' @param jumpchoice Method used for computation of jumpchoice. Possibilities: “actual” (use actual rates from final year) and “fit” (use fitted rates).
 #' @param scale If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.
 #' @param formula Model specification.
 #' @param ... Not used.
@@ -41,7 +43,8 @@
 #' autoplot(lc)
 #' @export
 LC <- function(formula, adjust = c("dt", "dxt", "e0", "none"),
-               scale = FALSE, ...) {
+               jumpchoice = c("fit", "actual"), scale = FALSE,
+               ...) {
   adjust <- match.arg(adjust)
   lc_model <- new_model_class("lc", train = train_lc)
   new_model_definition(lc_model, !!enquo(formula), adjust = adjust, scale = scale, ...)
@@ -91,14 +94,14 @@ train_lc <- function(.data, sex = NULL, specials,  adjust = c("dt", "dxt", "e0",
 
 
 forecast.LC <- function(object, new_data = NULL, h = NULL, point_forecast = list(.mean = mean),
-  simulate = FALSE, bootstrap = FALSE, times = 5000, seed = NULL,
-    se = c("innovdrift", "innovonly"), jumpchoice = c("fit", "actual"), ...) {
-  se <- match.arg(se)
-  jumpchoice <- match.arg(jumpchoice)
+  simulate = FALSE, bootstrap = FALSE, times = 5000, seed = NULL,  ...) {
+  se <- object$moddel$se
+  jumpchoice <- object$model$jumpchoice
 
 # simulation/bootstrap not actually used here as forecast.mdl_vtl_ts
 # handles this using generate() and forecast.LC is never called.
-# The arguments are included to avoid a warning message.
+# The arguments are included to avoid a warning message, and because this is how it
+# appears to work to the user.
 
   # Forecast kt series using random walk with drift terms
   h <- length(unique(new_data[[index_var(new_data)]]))
@@ -191,8 +194,8 @@ lca <- function(data, sex, age, rates, pop,
   ages <- sort(unique(data[[age]]))
   n <- length(ages)
   m <- length(year)
-  mx <- matrix(data[[rates]], nrow = n, ncol = m)
-  pop <- matrix(data[[pop]], nrow = n, ncol = m)
+  mx <- matrix(data[[rates]], nrow = n, ncol = m, byrow=TRUE)
+  pop <- matrix(data[[pop]], nrow = n, ncol = m, byrow=TRUE)
 
   # Transpose data and get deaths and logrates
   mx <- t(mx)
@@ -450,7 +453,7 @@ newroot <- function(FUN, guess, ...) {
 }
 
 #' @export
-autoplot.LC <- function(object, age = "Age", ...) {
+time_components.LC <- function(object, ...) {
   modelname <- attributes(object)$model
   object <- object |>
     mutate(out = purrr::map(object[[modelname]], function(x){x$fit$model})) |>
@@ -459,15 +462,36 @@ autoplot.LC <- function(object, age = "Age", ...) {
   index <- index_var(object$out[[1]]$by_t)
   keys <- head(colnames(object), -1)
   # Construct time and age data frames
-  obj_time <- obj_x <- object
+  obj_time <- object
   obj_time$out <- lapply(obj_time$out, function(x) as_tibble(x$by_t))
   obj_time <- obj_time |>
     tidyr::unnest("out") |>
     as_tsibble(index = index, key=all_of(keys))
+}
+
+#' @export
+age_components.LC <- function(object, ...) {
+  modelname <- attributes(object)$model
+  object <- object |>
+    mutate(out = purrr::map(object[[modelname]], function(x){x$fit$model})) |>
+    as_tibble()
+  # Construct time and age data frames
+  obj_x <- object
   obj_x$out  <- lapply(obj_x$out, function(x) as_tibble(x$by_x))
   obj_x <- obj_x |> tidyr::unnest("out")
+  obj_x[[modelname]] <- NULL
+  return(obj_x)
+}
 
-  # Set up list of plots
+#' @export
+autoplot.LC <- function(object, age = "Age", ...) {
+  obj_time <- time_components(object)
+  obj_x <- age_components(object)
+  index <- index_var(obj_time)
+  keys <- colnames(obj_time)
+  keys <- keys[!(keys %in% c(index, "kt"))]
+
+    # Set up list of plots
   p <- list()
   p[[1]] <- age_plot(obj_x, "ax", keys) + ggplot2::ylab("ax")
   p[[2]] <- age_plot(obj_x, "bx", keys) + ggplot2::ylab("bx")

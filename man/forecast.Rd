@@ -30,8 +30,6 @@
   bootstrap = FALSE,
   times = 5000,
   seed = NULL,
-  se = c("innovdrift", "innovonly"),
-  jumpchoice = c("fit", "actual"),
   ...
 )
 
