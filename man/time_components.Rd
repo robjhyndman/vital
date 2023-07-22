@@ -8,6 +8,8 @@ time_components(object, ...)
 }
 \arguments{
 \item{object}{A vital mable object with a single model column.}
+
+\item{...}{Not currently used.}
 }
 \value{
 tsibble object containing the time components from the model.

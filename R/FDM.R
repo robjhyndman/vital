@@ -63,8 +63,6 @@ train_fdm <- function(.data, specials, order, ts_model_fn, ...) {
   )
 }
 
-#' @param se Method used for computation of standard error.
-#' Possibilities: \dQuote{innovdrift} (innovations and drift) and \dQuote{innovonly} (innovations only).
 #' @rdname forecast
 #' @export
 

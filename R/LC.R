@@ -7,6 +7,7 @@
 #' the geometric mean rate for the relevant age.
 #'
 #' @aliases report.LC
+#' @param formula Model specification.
 #' @param adjust method to use for adjustment of coefficients \eqn{k_t kt}.
 #'   Possibilities are
 #'   \dQuote{dt} (Lee-Carter method, the default),
@@ -14,9 +15,11 @@
 #'   \dQuote{e0} (Lee-Miller method based on life expectancy) and
 #'   \dQuote{none}.
 #'   y).
-#' @param jumpchoice Method used for computation of jumpchoice. Possibilities: “actual” (use actual rates from final year) and “fit” (use fitted rates).
+#' @param jumpchoice Method used for computation of jumpchoice.
+#' Possibilities: \dQuote{actual} (use actual rates from final year) and \dQuote{fit} (use fitted rates).
+#' The original Lee-Carter method used 'fit' (the default), but Lee and Miller (2001)
+#' and most other authors prefer 'actual' (the default).
 #' @param scale If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.
-#' @param formula Model specification.
 #' @param ... Not used.
 #'
 #' @references Basellini, U, Camarda, C G, and Booth, H (2022) Thirty years on:
@@ -90,12 +93,6 @@ train_lc <- function(.data, sex = NULL, specials,  adjust,
   )
 }
 
-#' @param se Method used for computation of standard error.
-#' Possibilities: \dQuote{innovdrift} (innovations and drift) and \dQuote{innovonly} (innovations only).
-#' @param jumpchoice Method used for computation of jumpchoice.
-#' Possibilities: \dQuote{actual} (use actual rates from final year) and \dQuote{fit} (use fitted rates).
-#' The original Lee-Carter method used 'fit' (the default), but Lee and Miller (2001)
-#' and most other authors prefer 'actual' (the default).
 #' @rdname forecast
 #' @export
 

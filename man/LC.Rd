@@ -24,7 +24,10 @@ Possibilities are
 \dQuote{none}.
 y).}
 
-\item{jumpchoice}{Method used for computation of jumpchoice. Possibilities: “actual” (use actual rates from final year) and “fit” (use fitted rates).}
+\item{jumpchoice}{Method used for computation of jumpchoice.
+Possibilities: \dQuote{actual} (use actual rates from final year) and \dQuote{fit} (use fitted rates).
+The original Lee-Carter method used 'fit' (the default), but Lee and Miller (2001)
+and most other authors prefer 'actual' (the default).}
 
 \item{scale}{If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.}
 

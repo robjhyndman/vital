@@ -4,6 +4,7 @@
 #' that are indexed by age.
 #'
 #' @param object A vital mable object with a single model column.
+#' @param ... Not currently used.
 #'
 #' @return vital object containing the age components from the model.
 #'
@@ -24,6 +25,7 @@ age_components <- function(object, ...) {
 #' that are indexed by time.
 #'
 #' @param object A vital mable object with a single model column.
+#' @param ... Not currently used.
 #'
 #' @return tsibble object containing the time components from the model.
 #'

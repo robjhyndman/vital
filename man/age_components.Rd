@@ -8,6 +8,8 @@ age_components(object, ...)
 }
 \arguments{
 \item{object}{A vital mable object with a single model column.}
+
+\item{...}{Not currently used.}
 }
 \value{
 vital object containing the age components from the model.

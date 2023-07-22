@@ -88,14 +88,6 @@ when there are no covariates in the model. It is ignored if \code{new_data} is p
 \item{seed}{The seed for the random generation from distributions.}
 
 \item{...}{Additional arguments passed to the specific model method.}
-
-\item{se}{Method used for computation of standard error.
-Possibilities: \dQuote{innovdrift} (innovations and drift) and \dQuote{innovonly} (innovations only).}
-
-\item{jumpchoice}{Method used for computation of jumpchoice.
-Possibilities: \dQuote{actual} (use actual rates from final year) and \dQuote{fit} (use fitted rates).
-The original Lee-Carter method used 'fit' (the default), but Lee and Miller (2001)
-and most other authors prefer 'actual' (the default).}
 }
 \value{
 A fable containing the following columns:
