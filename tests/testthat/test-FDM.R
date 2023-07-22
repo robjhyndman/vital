@@ -24,4 +24,7 @@ test_that("Functional data model", {
                  dplyr::pull(Mortality) |>
                  unlist() |>
                  length(), 7)
+  expect_equal(colnames(time_components(hu)), c("Sex", "State", "Code", "Year", "mean", paste0("beta",1:6)))
+  expect_equal(colnames(age_components(hu)), c("Sex", "State", "Code", "Age", "mean", paste0("phi",1:6)))
+
 })

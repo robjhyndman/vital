@@ -174,30 +174,50 @@ model_sum.FDM <- function(x) {
   paste0("FDM")
 }
 
+
 #' @export
-autoplot.FDM <- function(object, show_order = 2, ...) {
+time_components.FDM <- function(object, ...) {
   modelname <- attributes(object)$model
   object <- object |>
     mutate(out = purrr::map(object[[modelname]], function(x){x$fit$model})) |>
     as_tibble()
   object[[modelname]] <- NULL
-
-  meanvar <- "mean"
-  tmp <- colnames(object$out[[1]]$by_t)
-  timevar <- tmp[grepl("beta", tmp)]
-  tmp <- colnames(object$out[[1]]$by_x)
-  agevar <- tmp[grepl("phi", tmp)]
   index <- index_var(object$out[[1]]$by_t)
   keys <- head(colnames(object), -1)
-
-  # Construct time and age data frames
-  obj_time <- obj_x <- object
+  obj_time <- object
   obj_time$out <- lapply(obj_time$out, function(x) as_tibble(x$by_t))
-  obj_time <- obj_time |>
+  obj_time |>
     tidyr::unnest("out") |>
     as_tsibble(index = index, key=all_of(keys))
+}
+
+
+#' @export
+age_components.FDM <- function(object, ...) {
+  modelname <- attributes(object)$model
+  object <- object |>
+    mutate(out = purrr::map(object[[modelname]], function(x){x$fit$model})) |>
+    as_tibble()
+  object[[modelname]] <- NULL
+  obj_x <- object
   obj_x$out  <- lapply(obj_x$out, function(x) as_tibble(x$by_x))
   obj_x <- obj_x |> tidyr::unnest("out")
+  obj_x[[modelname]] <- NULL
+  return(obj_x)
+}
+
+#' @export
+autoplot.FDM <- function(object, show_order = 2, ...) {
+  obj_time <- time_components(object)
+  obj_x <- age_components(object)
+
+  meanvar <- "mean"
+  tmp <- colnames(obj_time)
+  timevar <- tmp[grepl("beta", tmp)]
+  tmp <- colnames(obj_x)
+  agevar <- tmp[grepl("phi", tmp)]
+  index <- index_var(obj_time)
+  keys <- head(colnames(object), -1)
 
   # Set up list of plots
   p <- list()
