@@ -35,26 +35,12 @@ test_that("Lee Carter", {
     collapse_ages(max_age = 100) |>
     model(LC(Mortality))
   expect_true(sum(abs(lc1$kt- time_components(lc2)$kt)) < 0.0018)
-
+  expect_true(sum(abs(lc1$ax - age_components(lc2)$ax)) < 1e-10)
+  expect_true(sum(abs(lc1$bx - age_components(lc2)$bx)) < 1e-10)
+  fc1 <- forecast(lc1)
+  fc2 <- forecast(lc2)
+  fc1$rate$female[1:5,1]
+  fc2 |> filter(Year == 2007, Sex == "female", Age <= 4) |> pull(.mean)
 })
-
-
-#
-# > head(lc1$kt)
-# Time Series:
-#   Start = 1816
-# End = 1821
-# Frequency = 1
-# [1] 69.73314 71.32003 73.70916 75.76700 72.32889 68.9159
-
-
-
-
-
-
-
-
-
-
 
 

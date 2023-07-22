@@ -46,21 +46,23 @@ LC <- function(formula, adjust = c("dt", "dxt", "e0", "none"),
                jumpchoice = c("fit", "actual"), scale = FALSE,
                ...) {
   adjust <- match.arg(adjust)
+  jumpchoice <- match.arg(jumpchoice)
   lc_model <- new_model_class("lc", train = train_lc)
-  new_model_definition(lc_model, !!enquo(formula), adjust = adjust, scale = scale,
-                       jumpchoice = jumpchoice, ...)
+  new_model_definition(lc_model, !!enquo(formula), adjust = adjust,
+                       jumpchoice = jumpchoice, scale = scale, ...)
 }
 
 #' @importFrom stats sd
-train_lc <- function(.data, sex = NULL, specials,  adjust = c("dt", "dxt", "e0", "none"),
-                     scale = FALSE, ...) {
+train_lc <- function(.data, sex = NULL, specials,  adjust,
+                     jumpchoice, scale = FALSE, ...) {
   attrx <- attributes(.data)
   indexvar <- index_var(.data)
   agevar <- attrx$agevar
   measures <- measured_vars(.data)
   measures <- measures[!(measures %in% c(agevar, attrx$populationvar))]
   out <- lca(.data, sex=sex, age=attrx$agevar, pop = attrx$populationvar,
-      rates = find_measure(.data, c("mx", "mortality", "fx", "fertility", "rate")))
+      rates = find_measure(.data, c("mx", "mortality", "fx", "fertility", "rate")),
+      adjust = adjust, jumpchoice = jumpchoice, scale = scale)
 
   # Save jumpchoice for forecasting
   out$jumpchoice <- jumpchoice
@@ -100,7 +102,6 @@ train_lc <- function(.data, sex = NULL, specials,  adjust = c("dt", "dxt", "e0",
 
 forecast.LC <- function(object, new_data = NULL, h = NULL, point_forecast = list(.mean = mean),
   simulate = FALSE, bootstrap = FALSE, times = 5000, seed = NULL,  ...) {
-  se <- object$moddel$se
   jumpchoice <- object$model$jumpchoice
 
 # simulation/bootstrap not actually used here as forecast.mdl_vtl_ts
@@ -108,19 +109,29 @@ forecast.LC <- function(object, new_data = NULL, h = NULL, point_forecast = list
 # The arguments are included to avoid a warning message, and because this is how it
 # appears to work to the user.
 
-  # Forecast kt series using random walk with drift terms
   h <- length(unique(new_data[[index_var(new_data)]]))
+  agevar <- colnames(object$model$by_x)[1]
+  indexvar <- index_var(object$model$by_t)
+
+  # Time series estimation of kt as Random walk with drift
   fc <- object$model$fit_kt |>
     forecast(h = h)
 
   # Create forecasts of response series
-  agevar <- colnames(object$model$by_x)[1]
-  indexvar <- index_var(object$model$by_t)
-  new_data |>
+  fc2 <- new_data |>
     left_join(object$model$by_x, by = agevar) |>
     left_join(fc, by = indexvar) |>
-    transmute(fc = exp(ax + bx * kt)) |>
-    pull(fc)
+    transmute(fc = exp(ax + bx * kt))
+
+  if(jumpchoice == "actual") {
+    # Adjust forecasts based on last year
+    lastresid <- object$fitted[object$fitted[[indexvar]] == max(object$fitted[[indexvar]]),] |>
+      dplyr::select(all_of(c(agevar, ".resid")))
+    fc2 <- fc2 |>
+      left_join(lastresid, by=agevar) |>
+      mutate(fc = fc + .resid)
+  }
+  fc2 |> pull(fc)
 }
 
 #' @export
@@ -187,9 +198,9 @@ model_sum.LC <- function(x) {
 # Based on demography::lca()
 
 lca <- function(data, sex, age, rates, pop,
-                adjust = c("dt", "dxt", "e0", "none"), scale = FALSE) {
-  adjust <- match.arg(adjust)
-
+                adjust,
+                jumpchoice,
+                scale) {
   index <- tsibble::index_var(data)
   startage <- min(data[[age]])
 
@@ -296,6 +307,8 @@ lca <- function(data, sex, age, rates, pop,
     kt <- kt / avdiffk
   }
 
+
+
   # Compute deviances
   logfit <- fitmx(kt, ax, bx, transform = TRUE)
   deathsadjfit <- exp(logfit) * pop
@@ -327,6 +340,7 @@ lca <- function(data, sex, age, rates, pop,
   )
   colnames(output2)[1] <- index
   output2 <- as_tsibble(output2, index=index)
+
 
   # Fit model to kt series
   fit_kt <- output2 |>
