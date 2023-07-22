@@ -23,6 +23,8 @@ test_that("Lee Carter", {
                  dplyr::pull(Mortality) |>
                  unlist() |>
                  length(), 7)
+  expect_equal(colnames(time_components(lc)), c("Sex", "State", "Code", "Year", "kt"))
+  expect_equal(colnames(age_components(lc)), c("Sex", "State", "Code", "Age", "ax", "bx"))
 
   # Compare against demography
   library(demography)
