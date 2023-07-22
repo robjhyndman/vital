@@ -47,7 +47,8 @@ LC <- function(formula, adjust = c("dt", "dxt", "e0", "none"),
                ...) {
   adjust <- match.arg(adjust)
   lc_model <- new_model_class("lc", train = train_lc)
-  new_model_definition(lc_model, !!enquo(formula), adjust = adjust, scale = scale, ...)
+  new_model_definition(lc_model, !!enquo(formula), adjust = adjust, scale = scale,
+                       jumpchoice = jumpchoice, ...)
 }
 
 #' @importFrom stats sd
@@ -61,6 +62,10 @@ train_lc <- function(.data, sex = NULL, specials,  adjust = c("dt", "dxt", "e0",
   out <- lca(.data, sex=sex, age=attrx$agevar, pop = attrx$populationvar,
       rates = find_measure(.data, c("mx", "mortality", "fx", "fertility", "rate")))
 
+  # Save jumpchoice for forecasting
+  out$jumpchoice <- jumpchoice
+
+  # Compute fitted values and residuals
   fits <- as_tibble(.data) |>
     left_join(out$by_t, by = indexvar) |>
     left_join(out$by_x, by = agevar) |>
