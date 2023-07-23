@@ -207,8 +207,15 @@ estimate.vital <- function(.data, .model, sex, ...) {
   .dt_attr <- attributes(.data)
   agevar <- .dt_attr$agevar
   popvar <- .dt_attr$populationvar
+  deathsvar <- .dt_attr$deathsvar
+  birthsvar <- .dt_attr$birthsvar
   age <- .data[[agevar]]
-  pop <- .data[[popvar]]
+  if(!is.null(popvar))
+    pop <- .data[[popvar]]
+  if(!is.null(deathsvar))
+    deaths <- .data[[deathsvar]]
+  if(!is.null(birthsvar))
+    births <- .data[[birthsvar]]
   resp <- map(parsed$expressions, eval_tidy,
               data = .data,
               env = .model$specials
@@ -216,7 +223,12 @@ estimate.vital <- function(.data, .model, sex, ...) {
   .data <- unclass(.data)[index_var(.data)]
   .data[map_chr(parsed$expressions, rlang::expr_name)] <- resp
   .data[[agevar]] <- age
-  .data[[popvar]] <- pop
+  if(!is.null(popvar))
+    .data[[popvar]] <- pop
+  if(!is.null(deathsvar))
+    .data[[deathsvar]] <- deaths
+  if(!is.null(birthsvar))
+    .data[[birthsvar]] <- births
   attributes(.data) <- c(attributes(.data), .dt_attr[setdiff(
     names(.dt_attr),
     names(attributes(.data))
