@@ -51,9 +51,8 @@ LC <- function(formula, adjust = c("dt", "dxt", "e0", "none"),
   adjust <- match.arg(adjust)
   jump_choice <- match.arg(jump_choice)
   lc_model <- new_model_class("lc", train = train_lc)
-  out <- new_model_definition(lc_model, !!enquo(formula), adjust = adjust,
+  new_model_definition(lc_model, !!enquo(formula), adjust = adjust,
                        jump_choice = jump_choice, scale = scale, ...)
-  out
 }
 
 #' @importFrom stats sd
@@ -81,8 +80,6 @@ train_lc <- function(.data, sex = NULL, specials,  adjust,
       .fitted = ax + kt*bx,
       .innov = .data[[measures]] - .fitted,
       .innov = if_else(.innov < -1e20, NA, .innov),
-      #.fitted = exp(.fitted),
-      #.resid = exp(.data[[measures]]) - .fitted
     ) |>
     select(all_of(c(indexvar, agevar, ".fitted", ".innov")))
 
