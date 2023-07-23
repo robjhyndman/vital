@@ -51,8 +51,9 @@ LC <- function(formula, adjust = c("dt", "dxt", "e0", "none"),
   adjust <- match.arg(adjust)
   jump_choice <- match.arg(jump_choice)
   lc_model <- new_model_class("lc", train = train_lc)
-  new_model_definition(lc_model, !!enquo(formula), adjust = adjust,
+  out <- new_model_definition(lc_model, !!enquo(formula), adjust = adjust,
                        jump_choice = jump_choice, scale = scale, ...)
+  out
 }
 
 #' @importFrom stats sd
@@ -80,10 +81,10 @@ train_lc <- function(.data, sex = NULL, specials,  adjust,
       .fitted = ax + kt*bx,
       .innov = .data[[measures]] - .fitted,
       .innov = if_else(.innov < -1e20, NA, .innov),
-      .fitted = exp(.fitted),
-      .resid = exp(.data[[measures]]) - .fitted
+      #.fitted = exp(.fitted),
+      #.resid = exp(.data[[measures]]) - .fitted
     ) |>
-    select(all_of(c(indexvar, agevar, ".fitted", ".resid", ".innov")))
+    select(all_of(c(indexvar, agevar, ".fitted", ".innov")))
 
   structure(
     list(
@@ -97,7 +98,6 @@ train_lc <- function(.data, sex = NULL, specials,  adjust,
 
 #' @rdname forecast
 #' @export
-
 
 forecast.LC <- function(object, new_data = NULL, h = NULL, point_forecast = list(.mean = mean),
   simulate = FALSE, bootstrap = FALSE, times = 5000, seed = NULL,  ...) {
@@ -120,7 +120,7 @@ forecast.LC <- function(object, new_data = NULL, h = NULL, point_forecast = list
   fc2 <- new_data |>
     left_join(object$model$by_x, by = agevar) |>
     left_join(fc, by = indexvar) |>
-    transmute(fc = exp(ax + bx * kt))
+    transmute(fc = ax + bx * kt)
 
   if(jump_choice == "actual") {
     # Adjust forecasts based on last year
@@ -128,7 +128,7 @@ forecast.LC <- function(object, new_data = NULL, h = NULL, point_forecast = list
       dplyr::select(all_of(c(agevar, ".innov")))
     fc2 <- fc2 |>
       left_join(lastresid, by=agevar) |>
-      mutate(fc = exp(log(fc) + .innov))
+      mutate(fc = fc + .innov)
   }
 
   fc2 |> pull(fc)
@@ -158,7 +158,11 @@ generate.LC <- function(x, new_data = NULL, h = NULL,
 
 #' @export
 glance.LC <- function(x, ...) {
-  tibble(sigma2 = var(x$fitted$.resid, na.rm=TRUE))
+  tibble(
+    varprop = x$model$varprop,
+    base_deviance = x$model$mdev[1],
+    total_deviance = x$model$mdev[2]
+  )
 }
 
 #' @export
@@ -208,7 +212,7 @@ lca <- function(data, sex, age, rates, pop, deaths,
 
   # Check transformation
   if(substr(rates,1,3) != "log")
-    warning("This function asssumes a log transformation. It may give unreliable results otherwise.")
+    stop("Lee-Carter models require a log transformation of the response variable.")
 
   # Extract mortality rates and population numbers
   year <- sort(unique(data[[index]]))
@@ -218,6 +222,7 @@ lca <- function(data, sex, age, rates, pop, deaths,
   m <- length(year)
 
   logrates <- t(matrix(data[[rates]], nrow = n, ncol = m, byrow=TRUE))
+  logrates[logrates == -Inf] <- NA
   logrates[is.na(logrates)] <- 0
 
   if(!is.null(pop)) {
@@ -249,29 +254,28 @@ lca <- function(data, sex, age, rates, pop, deaths,
   bx <- svd.mx$v[, 1] / sumv
   kt <- svd.mx$d[1] * svd.mx$u[, 1] * sumv
 
-  # Adjust kt
+  # Adjust kt to match deaths or life expectancy
   ktadj <- kt
-  logdeathsadj <- matrix(NA, n, m)
-  z <- log(t(pop)) + ax
 
   # Use regression to guess suitable range for root finding method
-  x <- seq(m)
-  ktse <- stats::predict(stats::lm(kt ~ x), se.fit = TRUE)$se.fit
+  ktse <- stats::predict(stats::lm(kt ~ seq(m)), se.fit = TRUE)$se.fit
   ktse[is.na(ktse)] <- 1
-  agegroup <- ages[4] - ages[3]
 
   if (adjust == "dxt") {
-    options(warn = -1) # Prevent warnings on non-integer population values
+    # Fit to age-specific deaths.
+    options(warn = -1) # Prevent warnings if population is non-integer
+    # Offset
+    z <- log(t(pop)) + ax
     for (i in seq(m)) {
       y <- as.numeric(deaths[i, ])
       zi <- as.numeric(z[, i])
       weight <- as.numeric(zi > -1e-8) # Avoid -infinity due to zero population
       yearglm <- stats::glm(y ~ offset(zi) - 1 + bx, family = stats::poisson, weights = weight)
       ktadj[i] <- yearglm$coef[1]
-      logdeathsadj[, i] <- z[, i] + bx * ktadj[i]
     }
     options(warn = 0)
   } else if (adjust == "dt") {
+    # Fit to total deaths
     FUN <- function(p, Dt, bx, ax, popi) {
       Dt - sum(exp(p * bx + ax) * popi)
     }
@@ -283,13 +287,15 @@ lca <- function(data, sex, age, rates, pop, deaths,
         } else {
           guess <- mean(c(ktadj[i - 1], kt[i]))
         }
-        ktadj[i] <- findroot(FUN, guess = guess, margin = 10 * ktse[i], ax = ax, bx = bx, popi = pop[i, ], Dt = sum_deaths)
+        ktadj[i] <- findroot(FUN, guess = guess, margin = 10 * ktse[i],
+                             ax = ax, bx = bx, popi = pop[i, ], Dt = sum_deaths)
       }
-      logdeathsadj[, i] <- z[, i] + bx * ktadj[i]
     }
   } else if (adjust == "e0") {
+    # Fit to life expectancy
     stop("Not yet working")
     startage <- min(data[[age]])
+    agegroup <- ages[4] - ages[3]
 
     e0 <- apply(mx, 1, get.e0, agegroup = ages, sex = sex, startage = startage)
     FUN2 <- function(p, e0i, ax, bx, ages, sex, startage) {
@@ -309,8 +315,6 @@ lca <- function(data, sex, age, rates, pop, deaths,
   }
 
   kt <- ktadj
-
-  names(ax) <- names(bx) <- ages
 
   # Rescaling bx, kt
   if (scale) {
