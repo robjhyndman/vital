@@ -63,9 +63,11 @@ train_lc <- function(.data, sex = NULL, specials,  adjust,
   agevar <- attrx$agevar
   measures <- measured_vars(.data)
   measures <- measures[!(measures %in% c(agevar, attrx$populationvar))]
+  measures <- measures[1]
   out <- lca(.data, sex=sex, age=attrx$agevar, pop = attrx$populationvar,
-      rates = find_measure(.data, c("mx", "mortality", "fx", "fertility", "rate")),
-      adjust = adjust, jump_choice = jump_choice, scale = scale)
+             deaths = attrx$deathsvar,
+             rates = colnames(.data)[2],
+             adjust = adjust, jump_choice = jump_choice, scale = scale)
 
   # Save jump_choice for forecasting
   out$jump_choice <- jump_choice
@@ -76,10 +78,10 @@ train_lc <- function(.data, sex = NULL, specials,  adjust,
     left_join(out$by_x, by = agevar) |>
     mutate(
       .fitted = ax + kt*bx,
-      .innov = log(.data[[measures]]) - .fitted,
+      .innov = .data[[measures]] - .fitted,
       .innov = if_else(.innov < -1e20, NA, .innov),
       .fitted = exp(.fitted),
-      .resid = .data[[measures]] - .fitted
+      .resid = exp(.data[[measures]]) - .fitted
     ) |>
     select(all_of(c(indexvar, agevar, ".fitted", ".resid", ".innov")))
 
@@ -198,13 +200,15 @@ model_sum.LC <- function(x) {
 
 
 # Based on demography::lca()
+# But assumes any log transformation has already occurred
 
-lca <- function(data, sex, age, rates, pop,
-                adjust,
-                jump_choice,
-                scale) {
+lca <- function(data, sex, age, rates, pop, deaths,
+                adjust, jump_choice, scale) {
   index <- tsibble::index_var(data)
-  startage <- min(data[[age]])
+
+  # Check transformation
+  if(substr(rates,1,3) != "log")
+    warning("This function asssumes a log transformation. It may give unreliable results otherwise.")
 
   # Extract mortality rates and population numbers
   year <- sort(unique(data[[index]]))
@@ -212,17 +216,19 @@ lca <- function(data, sex, age, rates, pop,
   ages <- sort(unique(data[[age]]))
   n <- length(ages)
   m <- length(year)
-  mx <- matrix(data[[rates]], nrow = n, ncol = m, byrow=TRUE)
-  pop <- matrix(data[[pop]], nrow = n, ncol = m, byrow=TRUE)
 
-  # Transpose data and get deaths and logrates
-  mx <- t(mx)
-  mx[mx == 0] <- NA
-  logrates <- log(mx)
+  logrates <- t(matrix(data[[rates]], nrow = n, ncol = m, byrow=TRUE))
+  logrates[is.na(logrates)] <- 0
 
-  pop <- t(pop)
-  deaths <- pop * mx
-  deaths[is.na(deaths)] <- 0
+  if(!is.null(pop)) {
+    pop <- t(matrix(data[[pop]], nrow = n, ncol = m, byrow=TRUE))
+    pop[is.na(pop)] <- 0
+  }
+  if(!is.null(deaths)) {
+    deaths <- t(matrix(data[[deaths]], nrow = n, ncol = m, byrow=TRUE))
+    deaths[is.na(deaths)] <- 0
+  }
+
 
   # Do SVD
   ax <- apply(logrates, 2, mean, na.rm = TRUE) # ax is mean of logrates by column
@@ -233,6 +239,7 @@ lca <- function(data, sex, age, rates, pop,
   }
   clogrates <- sweep(logrates, 2, ax) # central log rates (with ax subtracted) (dimensions m*n)
   # Set missing central rates to 0 (effectively setting mx to ax)
+  clogrates[clogrates == -Inf] <- NA
   clogrates[is.na(clogrates)] <- 0
   # Take SVD
   svd.mx <- svd(clogrates)
@@ -281,6 +288,9 @@ lca <- function(data, sex, age, rates, pop,
       logdeathsadj[, i] <- z[, i] + bx * ktadj[i]
     }
   } else if (adjust == "e0") {
+    stop("Not yet working")
+    startage <- min(data[[age]])
+
     e0 <- apply(mx, 1, get.e0, agegroup = ages, sex = sex, startage = startage)
     FUN2 <- function(p, e0i, ax, bx, ages, sex, startage) {
       e0i - estimate.e0(p, ax, bx, ages, sex, startage)
