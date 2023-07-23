@@ -22,6 +22,9 @@
     <loc>https://pkg.robjhyndman.com/vital/reference/LC.html</loc>
   </url>
   <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/age_components.html</loc>
+  </url>
+  <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/as_vital.html</loc>
   </url>
   <url>
@@ -71,6 +74,9 @@
   </url>
   <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/reexports.html</loc>
+  </url>
+  <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/time_components.html</loc>
   </url>
   <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/total_fertility_rate.html</loc>

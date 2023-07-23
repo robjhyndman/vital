@@ -77,8 +77,6 @@ The forecasts returned contain both point forecasts and their distribution.</p>
 <span>  bootstrap <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">5000</span>,</span>
 <span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  se <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"innovdrift"</span>, <span class="st">"innovonly"</span><span class="op">)</span>,</span>
-<span>  jumpchoice <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fit"</span>, <span class="st">"actual"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -159,18 +157,6 @@ when there are no covariates in the model. It is ignored if <code>new_data</code
 
 <dt>...</dt>
 <dd><p>Additional arguments passed to the specific model method.</p></dd>
-
-
-<dt>se</dt>
-<dd><p>Method used for computation of standard error.
-Possibilities: “innovdrift” (innovations and drift) and “innovonly” (innovations only).</p></dd>
-
-
-<dt>jumpchoice</dt>
-<dd><p>Method used for computation of jumpchoice.
-Possibilities: “actual” (use actual rates from final year) and “fit” (use fitted rates).
-The original Lee-Carter method used 'fit' (the default), but Lee and Miller (2001)
-and most other authors prefer 'actual' (the default).</p></dd>
 
 </dl></div>
     <div class="section level2">
