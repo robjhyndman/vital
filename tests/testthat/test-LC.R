@@ -52,6 +52,11 @@ test_that("Lee Carter", {
       fc2 |> filter(Year == 2016, Sex == "female") |> pull(.median)
     )) < 1e-7
   )
+
+  # Test LC on fertility
+  expect_no_error(aus_fertility |>
+    model(LC(log(Fertility))) |>
+    autoplot())
 })
 
 
