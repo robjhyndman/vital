@@ -44,7 +44,7 @@ time_components <- function(object, ...) {
 #' @export
 time_components.mdl_vtl_df <- function(object, ...) {
   if (length(mable_vars(object)) > 1) {
-    stop("Model plotting is only supported for one class of models. To produce a plot for a specific class of models, use `select()`")
+    stop("Extracting components is only supported for individual models. Please use `select()` to choose one model column.")
   } else {
     model <- mable_vars(object)
     class(object) <- c(class(object[[model]][[1]]$fit), class(object))
@@ -58,7 +58,7 @@ time_components.mdl_vtl_df <- function(object, ...) {
 #' @export
 age_components.mdl_vtl_df <- function(object, ...) {
   if (length(mable_vars(object)) > 1) {
-    stop("Model plotting is only supported for one class of models. To produce a plot for a specific class of models, use `select()`")
+    stop("Extracting components is only supported for individual models. Please use `select()` to choose one model column.")
   } else {
     model <- mable_vars(object)
     class(object) <- c(class(object[[model]][[1]]$fit), class(object))
