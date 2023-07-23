@@ -200,7 +200,7 @@ make_future_data <- function (.data, h = NULL) {
   indexvar <- index_var(out)
   agevar <- attributes(.data)$agevar
   .ages <- .data[[agevar]] |> unique() |> sort()
-  out <- tidyr::expand_grid(out, .ages)
+  out <- tidyr::expand_grid(as_tibble(out), .ages)
   colnames(out)[colnames(out) == ".ages"] <- agevar
   as_tsibble(out, index = indexvar, key = agevar) |>
     as_vital(.age = agevar)
