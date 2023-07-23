@@ -3,8 +3,12 @@
 test_that("Lee Carter", {
   lc <- aus_mortality |>
     dplyr::filter(State == "Victoria") |>
-    model(lc = LC(Mortality))
+    model(
+      fit = LC(Mortality),
+      actual = LC(Mortality, jump = "actual", adjust = "dxt")
+    )
   fc <- forecast(lc)
+
   expect_no_error(autoplot(fc))
   expect_equal(dim(lc), c(3L, 4L))
   expect_equal(NROW(tidy(lc)), 0L)
@@ -33,14 +37,18 @@ test_that("Lee Carter", {
   lc2 <- as_vital(fr.mort) |>
     filter(Sex == "female") |>
     collapse_ages(max_age = 100) |>
-    model(LC(Mortality))
+    model(LC(Mortality, jump="actual"))
   expect_true(sum(abs(lc1$kt- time_components(lc2)$kt)) < 0.0018)
   expect_true(sum(abs(lc1$ax - age_components(lc2)$ax)) < 1e-10)
   expect_true(sum(abs(lc1$bx - age_components(lc2)$bx)) < 1e-10)
-  fc1 <- forecast(lc1)
-  fc2 <- forecast(lc2)
-  fc1$rate$female[1:5,1]
-  fc2 |> filter(Year == 2007, Sex == "female", Age <= 4) |> pull(.mean)
+  fc1 <- forecast(lc1, jump="actual", h=10)
+  fc2 <- forecast(lc2, point_forecast = list(.median=median), h=10)
+  expect_true(
+    sum(abs(
+      fc1$rate$female[,10] -
+      fc2 |> filter(Year == 2016, Sex == "female") |> pull(.median)
+    )) < 1e-7
+  )
 })
 
 

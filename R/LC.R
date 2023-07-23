@@ -15,10 +15,10 @@
 #'   \dQuote{e0} (Lee-Miller method based on life expectancy) and
 #'   \dQuote{none}.
 #'   y).
-#' @param jumpchoice Method used for computation of jumpchoice.
+#' @param jump_choice Method used for computation of jump-off point for forecasts.
 #' Possibilities: \dQuote{actual} (use actual rates from final year) and \dQuote{fit} (use fitted rates).
 #' The original Lee-Carter method used 'fit' (the default), but Lee and Miller (2001)
-#' and most other authors prefer 'actual' (the default).
+#' and most other authors prefer 'actual'.
 #' @param scale If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.
 #' @param ... Not used.
 #'
@@ -46,18 +46,18 @@
 #' autoplot(lc)
 #' @export
 LC <- function(formula, adjust = c("dt", "dxt", "e0", "none"),
-               jumpchoice = c("fit", "actual"), scale = FALSE,
+               jump_choice = c("fit", "actual"), scale = FALSE,
                ...) {
   adjust <- match.arg(adjust)
-  jumpchoice <- match.arg(jumpchoice)
+  jump_choice <- match.arg(jump_choice)
   lc_model <- new_model_class("lc", train = train_lc)
   new_model_definition(lc_model, !!enquo(formula), adjust = adjust,
-                       jumpchoice = jumpchoice, scale = scale, ...)
+                       jump_choice = jump_choice, scale = scale, ...)
 }
 
 #' @importFrom stats sd
 train_lc <- function(.data, sex = NULL, specials,  adjust,
-                     jumpchoice, scale = FALSE, ...) {
+                     jump_choice, scale = FALSE, ...) {
   attrx <- attributes(.data)
   indexvar <- index_var(.data)
   agevar <- attrx$agevar
@@ -65,10 +65,10 @@ train_lc <- function(.data, sex = NULL, specials,  adjust,
   measures <- measures[!(measures %in% c(agevar, attrx$populationvar))]
   out <- lca(.data, sex=sex, age=attrx$agevar, pop = attrx$populationvar,
       rates = find_measure(.data, c("mx", "mortality", "fx", "fertility", "rate")),
-      adjust = adjust, jumpchoice = jumpchoice, scale = scale)
+      adjust = adjust, jump_choice = jump_choice, scale = scale)
 
-  # Save jumpchoice for forecasting
-  out$jumpchoice <- jumpchoice
+  # Save jump_choice for forecasting
+  out$jump_choice <- jump_choice
 
   # Compute fitted values and residuals
   fits <- as_tibble(.data) |>
@@ -99,7 +99,7 @@ train_lc <- function(.data, sex = NULL, specials,  adjust,
 
 forecast.LC <- function(object, new_data = NULL, h = NULL, point_forecast = list(.mean = mean),
   simulate = FALSE, bootstrap = FALSE, times = 5000, seed = NULL,  ...) {
-  jumpchoice <- object$model$jumpchoice
+  jump_choice <- object$model$jump_choice
 
 # simulation/bootstrap not actually used here as forecast.mdl_vtl_ts
 # handles this using generate() and forecast.LC is never called.
@@ -120,14 +120,15 @@ forecast.LC <- function(object, new_data = NULL, h = NULL, point_forecast = list
     left_join(fc, by = indexvar) |>
     transmute(fc = exp(ax + bx * kt))
 
-  if(jumpchoice == "actual") {
+  if(jump_choice == "actual") {
     # Adjust forecasts based on last year
     lastresid <- object$fitted[object$fitted[[indexvar]] == max(object$fitted[[indexvar]]),] |>
-      dplyr::select(all_of(c(agevar, ".resid")))
+      dplyr::select(all_of(c(agevar, ".innov")))
     fc2 <- fc2 |>
       left_join(lastresid, by=agevar) |>
-      mutate(fc = fc + .resid)
+      mutate(fc = exp(log(fc) + .innov))
   }
+
   fc2 |> pull(fc)
 }
 
@@ -165,8 +166,12 @@ tidy.LC <- function(x, ...) {
 
 #' @export
 report.LC <- function(object, ...) {
-  cat("\n")
-  cat("Age functions\n")
+  cat("\nOptions:")
+  cat("\n  Adjust method: ")
+  cat(object$model$adjust)
+  cat("\n  Jump choice: ")
+  cat(object$model$jump_choice)
+  cat("\n\nAge functions\n")
   print(object$model$by_x, n=5)
   cat("\nTime coefficients\n")
   print(object$model$by_t, n=5)
@@ -196,7 +201,7 @@ model_sum.LC <- function(x) {
 
 lca <- function(data, sex, age, rates, pop,
                 adjust,
-                jumpchoice,
+                jump_choice,
                 scale) {
   index <- tsibble::index_var(data)
   startage <- min(data[[age]])

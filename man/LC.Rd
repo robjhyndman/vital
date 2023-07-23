@@ -8,7 +8,7 @@
 LC(
   formula,
   adjust = c("dt", "dxt", "e0", "none"),
-  jumpchoice = c("fit", "actual"),
+  jump_choice = c("fit", "actual"),
   scale = FALSE,
   ...
 )
@@ -24,10 +24,10 @@ Possibilities are
 \dQuote{none}.
 y).}
 
-\item{jumpchoice}{Method used for computation of jumpchoice.
+\item{jump_choice}{Method used for computation of jump-off point for forecasts.
 Possibilities: \dQuote{actual} (use actual rates from final year) and \dQuote{fit} (use fitted rates).
 The original Lee-Carter method used 'fit' (the default), but Lee and Miller (2001)
-and most other authors prefer 'actual' (the default).}
+and most other authors prefer 'actual'.}
 
 \item{scale}{If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.}
 
