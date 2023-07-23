@@ -41,7 +41,7 @@
 #' @examples
 #' lc <- aus_mortality |>
 #'   dplyr::filter(State == "Victoria", Sex == "female") |>
-#'   model(lee_carter = LC(Mortality))
+#'   model(lee_carter = LC(log(Mortality)))
 #' report(lc)
 #' autoplot(lc)
 #' @export
@@ -58,12 +58,15 @@ LC <- function(formula, adjust = c("dt", "dxt", "e0", "none"),
 #' @importFrom stats sd
 train_lc <- function(.data, sex = NULL, specials,  adjust,
                      jump_choice, scale = FALSE, ...) {
+  # Variable names
   attrx <- attributes(.data)
   indexvar <- index_var(.data)
   agevar <- attrx$agevar
   measures <- measured_vars(.data)
   measures <- measures[!(measures %in% c(agevar, attrx$populationvar))]
   measures <- measures[1]
+
+  # Compute Lee-Carter model
   out <- lca(.data, sex=sex, age=attrx$agevar, pop = attrx$populationvar,
              deaths = attrx$deathsvar,
              rates = colnames(.data)[2],

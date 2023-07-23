@@ -40,7 +40,7 @@ train_fnaive <- function(.data, ...) {
     as_tibble() |>
     left_join(last_measure, by = c(indexvar, agevar)) |>
     mutate(
-      .resid = .data[[measures]] - .fitted,
+      .resid = .data[[measure]] - .fitted,
       .innov = .resid
     )
   model <- out |>

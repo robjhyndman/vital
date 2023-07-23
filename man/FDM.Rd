@@ -27,7 +27,7 @@ variable as a function of age.
 \examples{
 hu <- aus_mortality |>
   dplyr::filter(State == "Victoria", Sex == "female") |>
-  model(hyndman_ullah = FDM(Mortality))
+  model(hyndman_ullah = FDM(log(Mortality)))
 report(hu)
 autoplot(hu)
 }

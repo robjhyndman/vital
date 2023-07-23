@@ -46,7 +46,7 @@ the geometric mean rate for the relevant age.
 \examples{
 lc <- aus_mortality |>
   dplyr::filter(State == "Victoria", Sex == "female") |>
-  model(lee_carter = LC(Mortality))
+  model(lee_carter = LC(log(Mortality)))
 report(lc)
 autoplot(lc)
 }

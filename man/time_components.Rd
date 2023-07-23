@@ -21,7 +21,7 @@ that are indexed by time.
 \examples{
 aus_mortality |>
   dplyr::filter(State == "Victoria", Sex == "female") |>
-  model(lee_carter = LC(Mortality)) |>
+  model(lee_carter = LC(log(Mortality))) |>
   time_components()
 
 }
