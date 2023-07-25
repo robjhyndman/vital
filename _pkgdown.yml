@@ -39,6 +39,13 @@ reference:
       - life_table
       - life_expectancy
       - total_fertility_rate
+  - title: Smoothing
+    desc: Functions for smoothing vital objects
+    contents:
+      - smooth_mortality
+      - smooth_fertility
+      - smooth_spline
+      - smooth_loess
   - title: Modelling
     desc: Functions for fitting models to vitals
     contents:
@@ -61,9 +68,7 @@ reference:
       - autoplot.mdl_vtl_df
       - autoplot.fbl_vtl_ts
       - autoplot.vital
-  - title: Utilities
-    desc: Functions used when the package is loaded
+  - title: Re-exports
+    desc: Exports from other packages
     contents:
-      - vital_conflicts
-      - vital_packages
       - reexports
