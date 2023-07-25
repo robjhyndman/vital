@@ -1,14 +1,14 @@
 #' Lee-Carter model
 #'
 #' Lee-Carter model of mortality or fertility rates.
-#' \code{LC()} returns a Lee-Carter model applied to the formula's response
+#' `LC()` returns a Lee-Carter model applied to the formula's response
 #' variable as a function of age. This produces a standard Lee-Carter model by
 #' default, although many other options are available. Missing rates are set to
 #' the geometric mean rate for the relevant age.
 #'
 #' @aliases report.LC
 #' @param formula Model specification.
-#' @param adjust method to use for adjustment of coefficients \eqn{k_t kt}.
+#' @param adjust method to use for adjustment of coefficients $k_t$.
 #'   Possibilities are
 #'   \dQuote{dt} (Lee-Carter method, the default),
 #'   \dQuote{dxt} (BMS method),
@@ -16,7 +16,8 @@
 #'   \dQuote{none}.
 #'   y).
 #' @param jump_choice Method used for computation of jump-off point for forecasts.
-#' Possibilities: \dQuote{actual} (use actual rates from final year) and \dQuote{fit} (use fitted rates).
+#' Possibilities: \dQuote{actual} (use actual rates from final year) and
+#' \dQuote{fit} (use fitted rates).
 #' The original Lee-Carter method used 'fit' (the default), but Lee and Miller (2001)
 #' and most other authors prefer 'actual'.
 #' @param scale If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.
@@ -24,17 +25,17 @@
 #'
 #' @references Basellini, U, Camarda, C G, and Booth, H (2022) Thirty years on:
 #' A review of the Lee-Carter method for forecasting mortality.
-#' \emph{International Journal of Forecasting}, \bold{39}(3), 1033-1049.
-#' \url{https://doi.org/10.1016/j.ijforecast.2022.11.002}
+#' *International Journal of Forecasting*, **39**(3), 1033-1049.
+#' <https://doi.org/10.1016/j.ijforecast.2022.11.002>
 #' @references Booth, H., Maindonald, J., and Smith, L. (2002) Applying Lee-Carter
-#' under conditions of variable mortality decline. \emph{Population Studies},
-#' \bold{56}, 325-336. \url{https://doi.org/10.1080/00324720215935}
+#' under conditions of variable mortality decline. *Population Studies*,
+#' **56**, 325-336. <https://doi.org/10.1080/00324720215935>
 #' @references Lee, R D, and Carter, L R (1992) Modeling and forecasting US mortality.
-#' \emph{Journal of the American Statistical Association}, \bold{87}, 659-671.
-#' \url{https://doi.org/10.1080/01621459.1992.10475265}
+#' *Journal of the American Statistical Association*, **87**, 659-671.
+#' <https://doi.org/10.1080/01621459.1992.10475265>
 #' @references Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
-#'   method for forecasting mortality. \emph{Demography}, \bold{38}(4), 537–549.
-#' \url{https://doi.org/10.1353/dem.2001.0036}
+#' method for forecasting mortality. *Demography*, **38**(4), 537–549.
+#' <https://doi.org/10.1353/dem.2001.0036>
 #' @author Rob J Hyndman
 #' @return A model specification.
 #'

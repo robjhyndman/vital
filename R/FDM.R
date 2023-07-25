@@ -1,7 +1,7 @@
 #' Functional data model
 #'
 #' Functional data model of mortality or fertility rates as a function of age.
-#' \code{FDM()} returns a functional data model applied to the formula's response
+#' `FDM()` returns a functional data model applied to the formula's response
 #' variable as a function of age.
 #'
 #' @aliases report.FDM
@@ -13,8 +13,8 @@
 #'
 #' @references Hyndman, R.J., and Ullah, S. (2007) Robust forecasting of
 #' mortality and fertility rates: a functional data approach.
-#' \emph{Computational Statistics & Data Analysis}, \bold{51}, 4942-4956.
-#' \url{https://robjhyndman.com/publications/funcfor/}
+#' *Computational Statistics & Data Analysis*, **51**, 4942-4956.
+#' <https://robjhyndman.com/publications/funcfor/>
 #'
 #' @author Rob J Hyndman
 #' @return A model specification.

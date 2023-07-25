@@ -29,7 +29,7 @@ read_hmd_files(Deaths = NULL, Exposures = NULL, Population = NULL, Mx = NULL)
 \description{
 \code{read_hmd_files} reads 1x1 data from files downloaded from the Human Mortality
 Database (HMD \url{https://www.mortality.org}) and constructs a \code{vital} object suitable
-for use in other functions. This function uses \code{\link[HMDHFDplus]{readHMD}}
+for use in other functions. This function uses \code{\link[HMDHFDplus:readHMD]{HMDHFDplus::readHMD()}}
 to parse the files. At least one file is required. If any file is missing, the corresponding
 variable will be missing from the output.
 }

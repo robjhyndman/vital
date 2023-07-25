@@ -4,26 +4,26 @@
 \alias{aus_mortality}
 \title{Australian mortality data}
 \format{
-Time series of class `vital`
+Time series of class \code{vital}
 }
 \source{
 Australian Human Mortality Database
 }
 \description{
-\code{aus_mortality} is an annual `vital` with three values:
+\code{aus_mortality} is an annual \code{vital} with three values:
 \tabular{ll}{
-    Mortality: \tab Mortality rate \cr
-    Exposure:  \tab Population at 30 June each year\cr
-    Deaths:    \tab Number of deaths \cr
+Mortality: \tab Mortality rate \cr
+Exposure:  \tab Population at 30 June each year\cr
+Deaths:    \tab Number of deaths \cr
 }
 }
 \details{
 The data is disaggregated using four keys:
 \tabular{ll}{
-    Age:   \tab Age at death\cr
-    Sex:   \tab male or female \cr
-    State: \tab State of Australia\cr
-    Code: \tab Short code for state\cr
+Age:   \tab Age at death\cr
+Sex:   \tab male or female \cr
+State: \tab State of Australia\cr
+Code: \tab Short code for state\cr
 }
 The age group 100 also includes people who died aged older than 100.
 }

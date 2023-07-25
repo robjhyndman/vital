@@ -19,9 +19,9 @@
 
 \item{new_data}{Future data needed for generation (should include the time index and exogenous regressors)}
 
-\item{h}{The simulation horizon (can be used instead of `new_data` for regular time series with no exogenous regressors).}
+\item{h}{The simulation horizon (can be used instead of \code{new_data} for regular time series with no exogenous regressors).}
 
-\item{bootstrap}{If `TRUE`, then forecast distributions are computed using simulation with resampled errors.}
+\item{bootstrap}{If \code{TRUE}, then forecast distributions are computed using simulation with resampled errors.}
 
 \item{times}{The number of replications.}
 
@@ -35,7 +35,7 @@ behaviour to the response.
 }
 \details{
 Innovations are sampled by the model's assumed error distribution.
-If `bootstrap` is `TRUE`, innovations will be sampled from the model's residuals.
+If \code{bootstrap} is \code{TRUE}, innovations will be sampled from the model's residuals.
 }
 \examples{
 aus_mortality |>

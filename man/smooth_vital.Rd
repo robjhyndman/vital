@@ -38,15 +38,15 @@ vital with added columns containing smoothed values and their standard errors
 \description{
 These smoothing functions allow smoothing of a variable in a vital object.
 The vital object is returned along with some additional columns containing
-information about the smoothed variable: usually `.smooth` containing the
-smoothed values, and `.smooth_se` containing the corresponding standard errors.
+information about the smoothed variable: usually \code{.smooth} containing the
+smoothed values, and \code{.smooth_se} containing the corresponding standard errors.
 }
 \details{
-`smooth_mortality()` use penalized regression splines applied to log mortality
-with a monotonicity constraint above age `b`. The methodology is based on Wood (1994).
-`smooth_fertility()` uses weighted regression B-splines with a concavity constraint,
-based on He and Ng (1999). The function `smooth_loess()` uses locally quadratic
-regression, while `smooth_spline()` uses penalized regression splines.
+\code{smooth_mortality()} use penalized regression splines applied to log mortality
+with a monotonicity constraint above age \code{b}. The methodology is based on Wood (1994).
+\code{smooth_fertility()} uses weighted regression B-splines with a concavity constraint,
+based on He and Ng (1999). The function \code{smooth_loess()} uses locally quadratic
+regression, while \code{smooth_spline()} uses penalized regression splines.
 }
 \examples{
 library(dplyr)
@@ -55,6 +55,12 @@ aus_mortality |>
 	smooth_mortality(Mortality)
 aus_fertility |>
 	smooth_fertility(Fertility)
+}
+\references{
+Hyndman, R.J., and Ullah, S. (2007) Robust forecasting of
+mortality and fertility rates: a functional data approach.
+\emph{Computational Statistics & Data Analysis}, \strong{51}, 4942-4956.
+\url{https://robjhyndman.com/publications/funcfor/}
 }
 \author{
 Rob J Hyndman

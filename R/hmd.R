@@ -1,19 +1,19 @@
-#' Read data directly from HMD and construct a \code{vital} object for use in other functions
+#' Read data directly from HMD and construct a `vital` object for use in other functions
 #'
-#' \code{read_hmd} reads 1x1 data from the Human Mortality Database (HMD
-#' \url{https://www.mortality.org}) and constructs a \code{vital} object suitable
-#' for use in other functions. This function uses \code{\link[HMDHFDplus]{readHMDweb}}
+#' `read_hmd` reads 1x1 data from the Human Mortality Database (HMD
+#' <https://www.mortality.org>) and constructs a `vital` object suitable
+#' for use in other functions. This function uses [HMDHFDplus::readHMDweb()]
 #' to download the required data.
 #'
 #' In order to read the data, users are required to create an account with the
-#' HMD website (\url{https://www.mortality.org}), and obtain a valid username and password.
+#' HMD website (<https://www.mortality.org>), and obtain a valid username and password.
 #'
 #' @param country Directory abbreviation from the HMD. For instance, Australia = "AUS".
 #' @param username HMD username (case-sensitive)
 #' @param password HMD password (case-sensitive)
 #' @param variables List of variables to download from the HMD.
 #'
-#' @return \code{read_hmd} returns a \code{vital} object with the following variables:
+#' @return `read_hmd` returns a `vital` object with the following variables:
 #' \item{Year}{Numerical vector containing year of observation}
 #' \item{Age}{Numerical vector containing age group}
 #' \item{OpenInterval}{Logical vector indicating if the age interval is open}
@@ -73,11 +73,11 @@ read_hmd <- function(country, username, password,
     as_vital(.age = "Age", .sex = "Sex", .deaths = deaths, .population = population)
 }
 
-#' Read data from files downloaded from HMD and construct a \code{vital} object for use in other functions
+#' Read data from files downloaded from HMD and construct a `vital` object for use in other functions
 #'
-#' \code{read_hmd_files} reads 1x1 data from files downloaded from the Human Mortality
-#' Database (HMD \url{https://www.mortality.org}) and constructs a \code{vital} object suitable
-#' for use in other functions. This function uses \code{\link[HMDHFDplus]{readHMD}}
+#' `read_hmd_files` reads 1x1 data from files downloaded from the Human Mortality
+#' Database (HMD <https://www.mortality.org>) and constructs a `vital` object suitable
+#' for use in other functions. This function uses [HMDHFDplus::readHMD()]
 #' to parse the files. At least one file is required. If any file is missing, the corresponding
 #' variable will be missing from the output.
 #'
@@ -86,7 +86,7 @@ read_hmd <- function(country, username, password,
 #' @param Population File containing population data
 #' @param Mx File containing mortality data
 #'
-#' @return \code{read_hmd_files} returns a \code{vital} object with the following variables:
+#' @return `read_hmd_files` returns a `vital` object with the following variables:
 #' \item{Year}{Numerical vector containing year of observation}
 #' \item{Age}{Numerical vector containing age group}
 #' \item{OpenInterval}{Logical vector indicating if the age interval is open}

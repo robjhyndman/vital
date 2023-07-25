@@ -21,8 +21,8 @@ vital(
 \item{...}{A set of name-value pairs}
 
 \item{key}{Variable(s) that uniquely determine time indices. NULL for empty key,
-and \code{c()} for multiple variables. It works with tidy selector
-(e.g. \code{\link[dplyr]{starts_with}()}).}
+and \code{\link[=c]{c()}} for multiple variables. It works with tidy selector
+(e.g. \code{\link[tidyselect:starts_with]{tidyselect::starts_with()}})}
 
 \item{index}{A variable to specify the time index variable.}
 
@@ -36,10 +36,10 @@ and \code{c()} for multiple variables. It works with tidy selector
 
 \item{.population}{Character string with name of population variable}
 
-\item{regular}{Regular time interval (TRUE) or irregular (FALSE). The interval
-is determined by the greatest common divisor of index column, if TRUE.}
+\item{regular}{Regular time interval (\code{TRUE}) or irregular (\code{FALSE}). The interval
+is determined by the greatest common divisor of index column, if \code{TRUE}.}
 
-\item{.drop}{If TRUE, empty key groups are dropped.}
+\item{.drop}{If \code{TRUE}, empty key groups are dropped.}
 }
 \description{
 A vital object is a type of tsibble that contains vital statistics such as
@@ -60,7 +60,7 @@ vital(
 )
 }
 \seealso{
-\code{\link[tsibble]{tsibble}()}
+\code{\link[tsibble:tsibble]{tsibble::tsibble()}}
 }
 \author{
 Rob J Hyndman

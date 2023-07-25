@@ -19,6 +19,11 @@
 #' @param lambda Penalty for constrained regression spline.
 #' @param weights Vector of weights.
 #' @return vital with added columns containing smoothed values and their standard errors
+#' @references Hyndman, R.J., and Ullah, S. (2007) Robust forecasting of
+#' mortality and fertility rates: a functional data approach.
+#' *Computational Statistics & Data Analysis*, **51**, 4942-4956.
+#' <https://robjhyndman.com/publications/funcfor/>
+
 #' @keywords smooth
 #' @rdname smooth_vital
 #' @author Rob J Hyndman

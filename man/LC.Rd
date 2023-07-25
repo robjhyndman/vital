@@ -16,7 +16,7 @@ LC(
 \arguments{
 \item{formula}{Model specification.}
 
-\item{adjust}{method to use for adjustment of coefficients \eqn{k_t kt}.
+\item{adjust}{method to use for adjustment of coefficients $k_t$.
 Possibilities are
 \dQuote{dt} (Lee-Carter method, the default),
 \dQuote{dxt} (BMS method),
@@ -25,7 +25,8 @@ Possibilities are
 y).}
 
 \item{jump_choice}{Method used for computation of jump-off point for forecasts.
-Possibilities: \dQuote{actual} (use actual rates from final year) and \dQuote{fit} (use fitted rates).
+Possibilities: \dQuote{actual} (use actual rates from final year) and
+\dQuote{fit} (use fitted rates).
 The original Lee-Carter method used 'fit' (the default), but Lee and Miller (2001)
 and most other authors prefer 'actual'.}
 
@@ -53,19 +54,19 @@ autoplot(lc)
 \references{
 Basellini, U, Camarda, C G, and Booth, H (2022) Thirty years on:
 A review of the Lee-Carter method for forecasting mortality.
-\emph{International Journal of Forecasting}, \bold{39}(3), 1033-1049.
+\emph{International Journal of Forecasting}, \strong{39}(3), 1033-1049.
 \url{https://doi.org/10.1016/j.ijforecast.2022.11.002}
 
 Booth, H., Maindonald, J., and Smith, L. (2002) Applying Lee-Carter
 under conditions of variable mortality decline. \emph{Population Studies},
-\bold{56}, 325-336. \url{https://doi.org/10.1080/00324720215935}
+\strong{56}, 325-336. \url{https://doi.org/10.1080/00324720215935}
 
 Lee, R D, and Carter, L R (1992) Modeling and forecasting US mortality.
-\emph{Journal of the American Statistical Association}, \bold{87}, 659-671.
+\emph{Journal of the American Statistical Association}, \strong{87}, 659-671.
 \url{https://doi.org/10.1080/01621459.1992.10475265}
 
 Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
-  method for forecasting mortality. \emph{Demography}, \bold{38}(4), 537–549.
+method for forecasting mortality. \emph{Demography}, \strong{38}(4), 537–549.
 \url{https://doi.org/10.1353/dem.2001.0036}
 }
 \author{

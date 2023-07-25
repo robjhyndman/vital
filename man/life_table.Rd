@@ -9,14 +9,14 @@ life_table(.data, mortality)
 \arguments{
 \item{.data}{A \code{vital} including an age variable and a variable containing mortality rates.}
 
-\item{mortality}{Variable in `.data` containing Mortality rates (mx). If omitted, the variable with name  `mx`, `Mortality` or `Rate` will be used (not case sensitive).}
+\item{mortality}{Variable in \code{.data} containing Mortality rates (mx). If omitted, the variable with name  \code{mx}, \code{Mortality} or \code{Rate} will be used (not case sensitive).}
 }
 \value{
-A vital object containing the index, keys, and the new life table variables `mx`, `qx`, `lx`, `dx`, `Lx`, `Tx` and `ex`.
+A vital object containing the index, keys, and the new life table variables \code{mx}, \code{qx}, \code{lx}, \code{dx}, \code{Lx}, \code{Tx} and \code{ex}.
 }
 \description{
 All available years and ages are included in the tables.
-qx = mx/(1 + ((1-ax) * mx)) as per Chiang (1984).
+$qx = mx/(1 + ((1-ax) * mx))$ as per Chiang (1984).
 Warning: the code has only been tested for data based on single-year age groups.
 }
 \examples{

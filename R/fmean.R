@@ -1,6 +1,6 @@
 #' Functional mean model
 #'
-#' \code{FMEAN()} returns an iid functional model applied to the formula's response variable as a function of age.
+#' `FMEAN()` returns an iid functional model applied to the formula's response variable as a function of age.
 #'
 #' @aliases report.FMEAN
 #'

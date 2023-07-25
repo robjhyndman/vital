@@ -1,6 +1,6 @@
 #' Functional naive model
 #'
-#' \code{FNAIVE()} returns an random walk functional model applied to the formula's response variable as a function of age.
+#' `FNAIVE()` returns an random walk functional model applied to the formula's response variable as a function of age.
 #'
 #' @aliases report.FNAIVE
 #'

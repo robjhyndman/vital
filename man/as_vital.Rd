@@ -37,7 +37,7 @@ as_vital(x, ...)
 \arguments{
 \item{x}{Object to be coerced to a vital format.}
 
-\item{...}{Other arguments passed to \code{\link[tsibble]{as_tsibble}}}
+\item{...}{Other arguments passed to \code{\link[tsibble:as-tsibble]{tsibble::as_tsibble()}}}
 
 \item{sex_groups}{Logical variable indicating if the groups denote sexes}
 
@@ -54,8 +54,8 @@ as_vital(x, ...)
 \item{reorder}{Logical indicating if the variables should be reordered.}
 
 \item{key}{Variable(s) that uniquely determine time indices. NULL for empty key,
-and \code{c()} for multiple variables. It works with tidy selector
-(e.g. \code{\link[dplyr]{starts_with}()}).}
+and \code{\link[=c]{c()}} for multiple variables. It works with tidy selector
+(e.g. \code{\link[tidyselect:starts_with]{tidyselect::starts_with()}}).}
 
 \item{index}{A variable to specify the time index variable.}
 }
@@ -63,9 +63,11 @@ and \code{c()} for multiple variables. It works with tidy selector
 A vital object.
 }
 \description{
-A vital object is a type of tsibble that contains vital statistics such as births, deaths, and population counts, and mortality and fertility rates.
+A vital object is a type of tsibble that contains vital statistics such as
+births, deaths, and population counts, and mortality and fertility rates.
 It is a tsibble with a special class that allows for special methods to be used.
-The object has an attribute that stores variables names needed for some functions, including age, sex, births, deaths and population.
+The object has an attribute that stores variables names needed for some
+functions, including age, sex, births, deaths and population.
 }
 \examples{
 # coerce demogdata object to vital
@@ -83,7 +85,7 @@ tibble::tibble(
   )
 }
 \seealso{
-\code{\link[tsibble]{tsibble}()}
+\code{\link[tsibble:tsibble]{tsibble::tsibble()}}
 }
 \author{
 Rob J Hyndman

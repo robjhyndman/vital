@@ -72,18 +72,18 @@
 \arguments{
 \item{object}{A mable containing one or more models.}
 
-\item{new_data}{A `tsibble` containing future information used to forecast.}
+\item{new_data}{A \code{tsibble} containing future information used to forecast.}
 
 \item{h}{Number of time steps ahead to forecast. This can be used instead of \code{new_data}
 when there are no covariates in the model. It is ignored if \code{new_data} is provided.}
 
 \item{point_forecast}{A list of functions used to compute point forecasts from the forecast distribution.}
 
-\item{simulate}{If  `TRUE`, then forecast distributions are computed using simulation from a parametric model.}
+\item{simulate}{If  \code{TRUE}, then forecast distributions are computed using simulation from a parametric model.}
 
-\item{bootstrap}{If `TRUE`, then forecast distributions are computed using simulation with resampling.}
+\item{bootstrap}{If \code{TRUE}, then forecast distributions are computed using simulation with resampling.}
 
-\item{times}{The number of sample paths to use in estimating the forecast distribution when `bootstrap = TRUE`.}
+\item{times}{The number of sample paths to use in estimating the forecast distribution when \code{bootstrap = TRUE}.}
 
 \item{seed}{The seed for the random generation from distributions.}
 
@@ -91,15 +91,17 @@ when there are no covariates in the model. It is ignored if \code{new_data} is p
 }
 \value{
 A fable containing the following columns:
-- `.model`: The name of the model used to obtain the forecast. Taken from
-  the column names of models in the provided mable.
-- The forecast distribution. The name of this column will be the same as the
-  dependent variable in the model(s). If multiple dependent variables exist,
-  it will be named `.distribution`.
-- Point forecasts computed from the distribution using the functions in the
-  `point_forecast` argument.
-- All columns in `new_data`, excluding those whose names conflict with the
-  above.
+\itemize{
+\item \code{.model}: The name of the model used to obtain the forecast. Taken from
+the column names of models in the provided mable.
+\item The forecast distribution. The name of this column will be the same as the
+dependent variable in the model(s). If multiple dependent variables exist,
+it will be named \code{.distribution}.
+\item Point forecasts computed from the distribution using the functions in the
+\code{point_forecast} argument.
+\item All columns in \code{new_data}, excluding those whose names conflict with the
+above.
+}
 }
 \description{
 The forecast function allows you to produce future predictions of a vital

@@ -11,10 +11,10 @@ life_expectancy(.data, from_age = 0, mortality)
 
 \item{from_age}{Age at which life expectancy to be calculated. Either a scalar or a vector of ages.}
 
-\item{mortality}{Variable in `.data` containing Mortality rates (mx). If omitted, the variable with name  `mx`, `Mortality` or `Rate` will be used (not case sensitive).}
+\item{mortality}{Variable in \code{.data} containing Mortality rates (mx). If omitted, the variable with name  \code{mx}, \code{Mortality} or \code{Rate} will be used (not case sensitive).}
 }
 \value{
-A \code{vital} object with life expectancy in column `ex`.
+A \code{vital} object with life expectancy in column \code{ex}.
 }
 \description{
 Returns remaining life expectancy at a given age (0 by default).
@@ -36,7 +36,7 @@ Preston, S.H., Heuveline, P., and Guillot, M. (2001)
 \emph{Demography: measuring and modeling population processes}. Blackwell
 }
 \seealso{
-\code{\link{life_table}()}
+\code{\link[=life_table]{life_table()}}
 }
 \author{
 Rob J Hyndman

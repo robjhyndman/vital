@@ -6,8 +6,8 @@
 #'
 #' @param object A mable containing one or more models.
 #' @param new_data A `tsibble` containing future information used to forecast.
-#' @param h Number of time steps ahead to forecast. This can be used instead of \code{new_data}
-#' when there are no covariates in the model. It is ignored if \code{new_data} is provided.
+#' @param h Number of time steps ahead to forecast. This can be used instead of `new_data`
+#' when there are no covariates in the model. It is ignored if `new_data` is provided.
 #' @param point_forecast A list of functions used to compute point forecasts from the forecast distribution.
 #' @param simulate If  `TRUE`, then forecast distributions are computed using simulation from a parametric model.
 #' @param bootstrap If `TRUE`, then forecast distributions are computed using simulation with resampling.
