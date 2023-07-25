@@ -188,7 +188,9 @@ as_vital.tbl_ts <- function(x,
   if (reorder) {
     agevar <- attributes(x)$agevar
     keys <- key_vars(x)
-    keys_noage <- keys[keys != agevar]
+    agevars <- colnames(x)
+    agevars <- agevars[grep("age", agevars, ignore.case=TRUE)]
+    keys_noage <- keys[!(keys %in% c(agevar, agevars))]
     x <- select(x, all_of(c(index_var(x), attributes(x)$agevar)), everything()) |>
       arrange(across(all_of(c(index_var(x), keys_noage, agevar))))
   }

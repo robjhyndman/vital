@@ -210,7 +210,10 @@ smooth.monotonic <- function(x, y, b, k = -1, w = NULL, newx = x) {
 }
 
 smooth_vital <- function(.data, .var, smooth_fn, ...) {
-	# Index variable
+  if(rlang::quo_is_missing(enquo(.var))) {
+    stop("Please specify which variable to smooth. .var is missing with no default.")
+  }
+  # Index variable
 	index <- tsibble::index_var(.data)
 	# Keys including age
 	keys <- tsibble::key_vars(.data)
