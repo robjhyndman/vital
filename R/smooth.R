@@ -36,8 +36,8 @@ smooth_spline <- function(.data, .var, k = -1, weights = NULL) {
 
 smooth_spline_x <- function(data, var, age, k = -1, weights = NULL) {
 	# smoothing with penalized spline
-	form <- as.formula(paste(var, "~", age))
-	fit <- mgcv::gam(form, k = k, weights = weights, data = data)
+	form <- as.formula(paste(var, "~ s(", age, ",k =", k, ")"))
+	fit <- mgcv::gam(form, weights = weights, data = data)
 	out <- as_tibble(mgcv::predict.gam(fit, se.fit = TRUE))
 	out[[age]] <- data[[age]]
 	colnames(out) <- c(".smooth", ".smooth_se", age)
