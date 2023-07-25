@@ -127,7 +127,7 @@ The forecasts returned contain both point forecasts and their distribution.</p>
 
 
 <dt>new_data</dt>
-<dd><p>A `tsibble` containing future information used to forecast.</p></dd>
+<dd><p>A <code>tsibble</code> containing future information used to forecast.</p></dd>
 
 
 <dt>h</dt>
@@ -140,15 +140,15 @@ when there are no covariates in the model. It is ignored if <code>new_data</code
 
 
 <dt>simulate</dt>
-<dd><p>If  `TRUE`, then forecast distributions are computed using simulation from a parametric model.</p></dd>
+<dd><p>If  <code>TRUE</code>, then forecast distributions are computed using simulation from a parametric model.</p></dd>
 
 
 <dt>bootstrap</dt>
-<dd><p>If `TRUE`, then forecast distributions are computed using simulation with resampling.</p></dd>
+<dd><p>If <code>TRUE</code>, then forecast distributions are computed using simulation with resampling.</p></dd>
 
 
 <dt>times</dt>
-<dd><p>The number of sample paths to use in estimating the forecast distribution when `bootstrap = TRUE`.</p></dd>
+<dd><p>The number of sample paths to use in estimating the forecast distribution when <code>bootstrap = TRUE</code>.</p></dd>
 
 
 <dt>seed</dt>
@@ -163,17 +163,16 @@ when there are no covariates in the model. It is ignored if <code>new_data</code
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A fable containing the following columns:
-- `.model`: The name of the model used to obtain the forecast. Taken from
-  the column names of models in the provided mable.
-- The forecast distribution. The name of this column will be the same as the
-  dependent variable in the model(s). If multiple dependent variables exist,
-  it will be named `.distribution`.
-- Point forecasts computed from the distribution using the functions in the
-  `point_forecast` argument.
-- All columns in `new_data`, excluding those whose names conflict with the
-  above.</p>
-    </div>
+<p>A fable containing the following columns:</p><ul><li><p><code>.model</code>: The name of the model used to obtain the forecast. Taken from
+the column names of models in the provided mable.</p></li>
+<li><p>The forecast distribution. The name of this column will be the same as the
+dependent variable in the model(s). If multiple dependent variables exist,
+it will be named <code>.distribution</code>.</p></li>
+<li><p>Point forecasts computed from the distribution using the functions in the
+<code>point_forecast</code> argument.</p></li>
+<li><p>All columns in <code>new_data</code>, excluding those whose names conflict with the
+above.</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p>Rob J Hyndman and Mitchell O'Hara-Wild</p>
