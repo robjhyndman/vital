@@ -25,16 +25,18 @@
 #' @examples
 #' library(dplyr)
 #' aus_mortality |>
-#'   filter(State == "Victoria", Sex == "female") |>
-#'   smooth_mortality(Mortality)
+#' 	filter(State == "Victoria", Sex == "female") |>
+#' 	smooth_mortality(Mortality)
+#' aus_fertility |>
+#' 	smooth_fertility(Fertility)
 #' @export
 smooth_spline <- function(.data, .var, k = -1, weights = NULL) {
-  smooth_vital(.data, {{ .var }}, smooth_spline_x, k=k, weights=weights)
+	smooth_vital(.data, {{ .var }}, smooth_spline_x, k = k, weights = weights)
 }
 
 smooth_spline_x <- function(data, var, age, k = -1, weights = NULL) {
 	# smoothing with penalized spline
-  form <- as.formula(paste(var, "~", age))
+	form <- as.formula(paste(var, "~", age))
 	fit <- mgcv::gam(form, k = k, weights = weights, data = data)
 	out <- as_tibble(mgcv::predict.gam(fit, se.fit = TRUE))
 	out[[age]] <- data[[age]]
@@ -50,50 +52,71 @@ smooth_spline_x <- function(data, var, age, k = -1, weights = NULL) {
 
 #' @rdname smooth_vital
 #' @export
-smooth_mortality <- function(.data, .var, b=65, power = 0.4, weights = NULL) {
-  smooth_vital(.data, {{ .var }}, smooth_mortality_x, b=b, power=power, weights=weights)
+smooth_mortality <- function(.data, .var, b = 65, power = 0.4, k = 30, weights = NULL) {
+	smooth_vital(.data, {{ .var }}, smooth_mortality_x, b = b, power = power, k = k, weights = weights)
 }
 
-smooth_mortality_x <- function(data, var, age, b = 65, power = 0.4, weights = NULL) {
-  y <- data[[var]]
-  x <- data[[age]]
-
-  if(sum(!is.na(y)) < 3) {
-    out <- tibble(
-      age = x,
-      .smooth = y,
-      .smooth_se = 0
-    )
-  } else {
-  	x_trans <- x^power
-	  y_trans <- log(y+0.001)
-	  smooth.fit <- smooth.monotonic(x_trans, y_trans, b^power, w = weights)
-	  out <- tibble(
-	    age = x,
-	    .smooth = exp(smooth.fit$fit) * (1 + 0.5*smooth.fit$se.fit^2),
-	    .smooth_se = exp(smooth.fit$fit) * smooth.fit$se.fit
-	  )
-  }
-  colnames(out)[1] <- age
-  return(out[c(age, ".smooth", ".smooth_se")])
-}
-
-#' @rdname smooth_vital
-#' @export
-smooth_fertility <- function(x, y, b = 65, k = 30, lambda = 1e-10) {
-	y_trans <- y^0.4
-	if (is.null(weights)) {
-		weights <- rep(1, length(y))
+smooth_mortality_x <- function(data, var, age, b = 65, power = 0.4, k = 30, weights = NULL) {
+	y <- data[[var]]
+	x <- data[[age]]
+	if (sum(!is.na(y)) < 3) {
+		out <- tibble(
+			age = x,
+			.smooth = y,
+			.smooth_se = 0
+		)
+	} else {
+	  x_trans <- x^power
+		y_trans <- log(y + 0.0000001)
+		smooth.fit <- smooth.monotonic(x_trans, y_trans, b^power, w = weights, k = k)
+		out <- tibble(
+			age = x,
+			.smooth = exp(smooth.fit$fit) * (1 + 0.5 * smooth.fit$se.fit^2),
+			.smooth_se = exp(smooth.fit$fit) * smooth.fit$se.fit
+		)
 	}
-	smooth_y <- fert.curve(x, y_trans, weights)$fit
-	return(smooth_y^2.5)
+	colnames(out)[1] <- age
+	return(out[c(age, ".smooth", ".smooth_se")])
 }
 
 #' @rdname smooth_vital
 #' @export
-smooth_loess <- function(x, y, span = 0.2, weights = NULL) {
+smooth_fertility <- function(.data, .var, lambda = 1e-10) {
+	smooth_vital(.data, {{ .var }}, smooth_fertility_x, lambda = lambda)
+}
+
+smooth_fertility_x <- function(data, var, age, lambda = 1e-10) {
+	y <- data[[var]]
+	x <- data[[age]]
+	y_trans <- y^0.4
+	smooth_y <- fert.curve(x, y_trans, lambda)
+	out <- tibble(
+		age = x,
+		.smooth = smooth_y$fit^2.5,
+		.smooth_se = smooth_y$se
+	)
+	colnames(out)[1] <- age
+	return(out[c(age, ".smooth", ".smooth_se")])
+}
+
+#' @rdname smooth_vital
+#' @export
+smooth_loess <- function(.data, .var, span = 0.2, weights = NULL) {
+	smooth_vital(.data, {{ .var }}, smooth_loess_x, span = span)
+}
+
+smooth_loess_x <- function(data, var, age, span = 0.2, weights = NULL) {
+	x <- data[[age]]
+	y <- data[[var]]
 	fit <- loess(y ~ x, span = span, degree = 2, weights = weights, surface = "direct")
-	return(stats::predict(fit)$fit)
+	smooth_y <- predict(fit, se = TRUE)
+	out <- tibble(
+		age = x,
+		.smooth = smooth_y$fit,
+		.smooth_se = smooth_y$se.fit
+	)
+	colnames(out)[1] <- age
+	return(out[c(age, ".smooth", ".smooth_se")])
 }
 
 # Concave smoothing of fertility data
@@ -101,15 +124,22 @@ smooth_loess <- function(x, y, span = 0.2, weights = NULL) {
 fert.curve <- function(x, y, lambda = 1, ...) {
 	oldwarn <- options(warn = -1)
 	fred <- stats::predict(
-		cobs(x, y, constraint = "concave", lambda = lambda,
-		     print.warn = FALSE, print.mesg = FALSE, maxiter = 1e4 ),
+		cobs::cobs(
+			x,
+			y,
+			constraint = "concave",
+			lambda = lambda,
+			print.warn = FALSE,
+			print.mesg = FALSE,
+			maxiter = 1e4
+		),
 		interval = "conf",
 		nz = 200
 	)
 	options(warn = oldwarn$warn)
 
-	fit <- stats::approx(fred[,1], fred[,2], xout = x, rule = 1)$y
-	se <- stats::approx(fred[,1], (fred[,4] - fred[,3])/2/1.96, xout = x, rule = 1)$y
+	fit <- stats::approx(fred[, 1], fred[, 2], xout = x, rule = 1)$y
+	se <- stats::approx(fred[, 1], (fred[, 4] - fred[, 3]) / 2 / 1.96, xout = x, rule = 1)$y
 	return(list(fit = fit, se = se))
 }
 
@@ -118,7 +148,7 @@ fert.curve <- function(x, y, lambda = 1, ...) {
 # Based on code provided by Simon Wood
 # Last updated: 1 February 2014
 
-smooth.monotonic <- function(x, y, b, k = -1, w = NULL, newx = x ) {
+smooth.monotonic <- function(x, y, b, k = -1, w = NULL, newx = x) {
 	weight <- !is.null(w)
 	if (k < 3 & k != -1) {
 		stop("Inappropriate value of k")
@@ -180,27 +210,35 @@ smooth.monotonic <- function(x, y, b, k = -1, w = NULL, newx = x ) {
 }
 
 smooth_vital <- function(.data, .var, smooth_fn, ...) {
-  # Index variable
-  index <- tsibble::index_var(.data)
-  # Keys including age
-  keys <- tsibble::key_vars(.data)
-  attrx <- attributes(.data)
-  age <- attrx$agevar
-  if(is.null(age)) {
-    stop("No age variable found")
-  }
-  # Drop Age as a key and nest results
-  keys_noage <- keys[keys != age]
-  # Turn .var into character
-  resp <- names(eval_select(enquo(.var), data = .data))
-  nested_data <- tidyr::nest(.data, .by = tidyselect::all_of(c(index, keys_noage)))
-  smooth <- purrr::map(nested_data[["data"]], \(x) smooth_fn(x, var = resp, age = age, ...))
-  nested_data$sm <- smooth
-  nested_data$data <- NULL
-  out <- tibble::as_tibble(nested_data) |>
-    tidyr::unnest(cols = sm) |>
-    tsibble::as_tsibble(index = index, key = tidyselect::all_of(keys)) |>
-    as_vital(.age = age, .sex=attrx$sexvar, .population = attrx$populationvar,
-             .deaths = attrx$deathsvar, .births = attrx$birthsvar, reorder=TRUE)
-  .data |> left_join(out, by = c(index, keys))
+	# Index variable
+	index <- tsibble::index_var(.data)
+	# Keys including age
+	keys <- tsibble::key_vars(.data)
+	attrx <- attributes(.data)
+	age <- attrx$agevar
+	if (is.null(age)) {
+		stop("No age variable found")
+	}
+	# Drop Age as a key and nest results
+	keys_noage <- keys[keys != age]
+	# Turn .var into character
+	resp <- names(eval_select(enquo(.var), data = .data))
+	nested_data <- tidyr::nest(.data, .by = tidyselect::all_of(c(index, keys_noage)))
+	smooth <- purrr::map(nested_data[["data"]], \(x) smooth_fn(x, var = resp, age = age, ...))
+	nested_data$sm <- smooth
+	nested_data$data <- NULL
+	out <- tibble::as_tibble(nested_data) |>
+		tidyr::unnest(cols = sm)
+	.data |>
+		left_join(out, by = c(index, keys)) |>
+		as_vital(
+			index = index,
+			key = all_of(keys),
+			.age = age,
+			.sex = attrx$sexvar,
+			.population = attrx$populationvar,
+			.deaths = attrx$deathsvar,
+			.births = attrx$birthsvar,
+			reorder = TRUE
+		)
 }
