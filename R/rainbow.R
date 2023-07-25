@@ -38,7 +38,12 @@ rainbow_plot <- function(.data, .vars, age) {
     .vars <- mv[pos[1]]
   }
 
-  aes_spec <- list(x = rlang::sym(age), y = rlang::sym(.vars), color = rlang::sym(index), group = rlang::sym(index))
+  nyears <- length(unique(.data[[index]]))
+  aes_spec <- list(x = rlang::sym(age), y = rlang::sym(.vars))
+  if(nyears > 1) {
+    aes_spec$color <- rlang::sym(index)
+    aes_spec$group <- rlang::sym(index)
+  }
   p <- .data |>
     as_tsibble() |>
     ggplot2::ggplot(rlang::eval_tidy(rlang::expr(ggplot2::aes(!!!aes_spec)))) +
