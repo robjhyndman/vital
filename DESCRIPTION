@@ -14,6 +14,7 @@ Authors@R: c(
 Depends:
   R (>= 4.1.0)
 Imports:
+  cobs,
   distributional,
   dplyr,
   fable,
@@ -21,6 +22,7 @@ Imports:
   future.apply,
   ggplot2,
   HMDHFDplus (>= 2.0.3),
+  mgcv,
   patchwork,
   progressr,
   purrr,

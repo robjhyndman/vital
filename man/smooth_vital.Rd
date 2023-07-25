@@ -9,14 +9,16 @@
 \usage{
 smooth_spline(.data, .var, k = -1, weights = NULL)
 
-smooth_mortality(x, y, b = 65, power = 0.4, weights = NULL)
+smooth_mortality(.data, .var, b = 65, power = 0.4, k = 30, weights = NULL)
 
-smooth_fertility(x, y, b = 65, k = 30, lambda = 1e-10)
+smooth_fertility(.data, .var, lambda = 1e-10)
 
-smooth_loess(x, y, span = 0.2, weights = NULL)
+smooth_loess(.data, .var, span = 0.2, weights = NULL)
 }
 \arguments{
 \item{.data}{A vital object}
+
+\item{.var}{name of variable to smooth}
 
 \item{k}{Number of knots to use for penalized regression spline estimate.}
 
@@ -29,30 +31,30 @@ smooth_loess(x, y, span = 0.2, weights = NULL)
 \item{lambda}{Penalty for constrained regression spline.}
 
 \item{span}{Span for loess smooth.}
-
-\item{var}{name of variable to smooth}
 }
 \value{
 vital with added columns containing smoothed values and their standard errors
 }
 \description{
-`smooth_vital()` allows smoothing of a vital object. It effectively groups
-the data by keys other than age, and the index, and then applies the smoothing
-functions specified. So it is like a group_by() followed by a mutate(), where the
-grouping is determined by the attributes of the vital object.
+These smoothing functions allow smoothing of a variable in a vital object.
+The vital object is returned along with some additional columns containing
+information about the smoothed variable: usually `.smooth` containing the
+smoothed values, and `.smooth_se` containing the corresponding standard errors.
 }
 \details{
-`smooth_spline()` and `smooth_mortality()` use penalized regression splines, the latter with a
-monotonicity constraint above age `b`. The methodology is based on Wood (1994).
+`smooth_mortality()` use penalized regression splines applied to log mortality
+with a monotonicity constraint above age `b`. The methodology is based on Wood (1994).
 `smooth_fertility()` uses weighted regression B-splines with a concavity constraint,
-based on He and Ng (1999). Finally, `smooth_loess()` uses locally quadratic
-regression.
+based on He and Ng (1999). The function `smooth_loess()` uses locally quadratic
+regression, while `smooth_spline()` uses penalized regression splines.
 }
 \examples{
 library(dplyr)
 aus_mortality |>
-  filter(State == "Victoria", Sex == "female") |>
-  smooth_spline(Mortality)
+	filter(State == "Victoria", Sex == "female") |>
+	smooth_mortality(Mortality)
+aus_fertility |>
+	smooth_fertility(Fertility)
 }
 \author{
 Rob J Hyndman

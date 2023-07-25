@@ -1,17 +1,17 @@
 #' Functions to smooth demographic data
 #'
-#' `smooth_vital()` allows smoothing of a vital object. It effectively groups
-#' the data by keys other than age, and the index, and then applies the smoothing
-#' functions specified. So it is like a group_by() followed by a mutate(), where the
-#' grouping is determined by the attributes of the vital object.
+#' These smoothing functions allow smoothing of a variable in a vital object.
+#' The vital object is returned along with some additional columns containing
+#' information about the smoothed variable: usually `.smooth` containing the
+#' smoothed values, and `.smooth_se` containing the corresponding standard errors.
 #'
-#' `smooth_spline()` and `smooth_mortality()` use penalized regression splines, the latter with a
-#' monotonicity constraint above age `b`. The methodology is based on Wood (1994).
+#' `smooth_mortality()` use penalized regression splines applied to log mortality
+#' with a monotonicity constraint above age `b`. The methodology is based on Wood (1994).
 #' `smooth_fertility()` uses weighted regression B-splines with a concavity constraint,
-#' based on He and Ng (1999). Finally, `smooth_loess()` uses locally quadratic
-#' regression.
+#' based on He and Ng (1999). The function `smooth_loess()` uses locally quadratic
+#' regression, while `smooth_spline()` uses penalized regression splines.
 #' @param .data A vital object
-#' @param var name of variable to smooth
+#' @param .var name of variable to smooth
 #' @param power Power transformation for age variable before smoothing. Default is 0.4 for mortality data and 1 (no transformation) for fertility or migration data.
 #' @param b Lower age for monotonicity. Above this, the smooth curve is assumed to be monotonically increasing.
 #' @param k Number of knots to use for penalized regression spline estimate.
@@ -108,7 +108,7 @@ smooth_loess <- function(.data, .var, span = 0.2, weights = NULL) {
 smooth_loess_x <- function(data, var, age, span = 0.2, weights = NULL) {
 	x <- data[[age]]
 	y <- data[[var]]
-	fit <- loess(y ~ x, span = span, degree = 2, weights = weights, surface = "direct")
+	fit <- stats::loess(y ~ x, span = span, degree = 2, weights = weights, surface = "direct")
 	smooth_y <- predict(fit, se = TRUE)
 	out <- tibble(
 		age = x,
@@ -242,3 +242,5 @@ smooth_vital <- function(.data, .var, smooth_fn, ...) {
 			reorder = TRUE
 		)
 }
+
+utils::globalVariables("sm")
