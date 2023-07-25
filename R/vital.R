@@ -203,7 +203,7 @@ as_vital.tbl_ts <- function(x,
 #' @rdname as_vital
 #' @examples
 #' # create a vital with only age as a key
-#' tibble(
+#' tibble::tibble(
 #'   year = rep(2010:2015, 100),
 #'   age = rep(0:99, each = 6),
 #'   mx = runif(600, 0, 1)
@@ -230,7 +230,6 @@ utils::globalVariables(c("Deaths", "Births"))
 
 # Functions need for printing vital objects
 
-#' @importFrom tibble tbl_sum
 #' @export
 tbl_sum.vital <- function(x) {
   fnt_int <- format(tsibble::interval(x))

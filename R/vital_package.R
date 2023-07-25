@@ -1,9 +1,8 @@
-
 #' @keywords internal
 #' @import fabletools
-#' @importFrom crayon bold red green blue col_align col_nchar make_style style
 #' @importFrom dplyr mutate rename select arrange if_else full_join %>% transmute
 #' @importFrom dplyr ungroup group_by summarise left_join across group_data pull nest_by
+#' @importFrom dplyr group_by_drop_default
 #' @importFrom ggplot2 ggplot aes geom_line autoplot xlab
 #' @importFrom grDevices rainbow
 #' @importFrom purrr map map2 map_dfr map_chr map_lgl transpose possibly compose
@@ -14,9 +13,10 @@
 #' @importFrom rlang is_syntactic_literal is_symbol new_function set_names missing_arg
 #' @importFrom rlang call2 get_env new_formula expr_name new_environment enexpr set_env
 #' @importFrom rlang quo_get_expr quo_is_call caller_env as_string quo_name
-#' @importFrom rlang rep_along new_quosure expr call_name as_label is_false
-#' @importFrom stats na.omit ts residuals fitted var qnorm time
-#' @importFrom tibble as_tibble tibble
+#' @importFrom rlang rep_along new_quosure expr call_name as_label is_false call_args
+#' @importFrom stats na.omit ts residuals fitted var qnorm time predict sd
+#' @importFrom stats as.formula loess
+#' @importFrom tibble as_tibble tibble tbl_sum
 #' @importFrom tidyselect eval_select everything all_of
 #' @importFrom tidyr pivot_longer pivot_wider
 #' @importFrom tsibble as_tsibble group_by_key measured_vars n_keys tsibble
@@ -31,3 +31,18 @@ ggplot2::autoplot
 
 #' @export
 generics::forecast
+
+#' @export
+generics::generate
+
+#' @export
+fabletools::model
+
+#' @export
+fabletools::report
+
+
+.onAttach <- function(...) {
+  loadNamespace("fabletools")
+}
+

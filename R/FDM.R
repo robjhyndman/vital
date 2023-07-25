@@ -32,7 +32,6 @@ FDM <- function(formula, order = 6, ts_model_fn = fable::ARIMA, ...) {
     order = order, ts_model_fn = ts_model_fn, ...)
 }
 
-#' @importFrom stats sd
 train_fdm <- function(.data, specials, order, ts_model_fn, ...) {
   attrx <- attributes(.data)
   indexvar <- index_var(.data)

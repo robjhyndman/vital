@@ -23,7 +23,6 @@ FNAIVE <- function(formula, ...) {
   new_model_definition(fnaive_model, !!enquo(formula), ...)
 }
 
-#' @importFrom stats sd
 train_fnaive <- function(.data, ...) {
   attrx <- attributes(.data)
   indexvar <- index_var(.data)

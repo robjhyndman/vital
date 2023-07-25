@@ -23,7 +23,6 @@ FMEAN <- function(formula, ...) {
   new_model_definition(fmean_model, !!enquo(formula), ...)
 }
 
-#' @importFrom stats sd
 train_fmean <- function(.data, ...) {
   attrx <- attributes(.data)
   indexvar <- index_var(.data)

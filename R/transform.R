@@ -1,4 +1,3 @@
-#' @importFrom rlang call_args
 
 # Lookup table for function inverses
 inverse_table <- function() {

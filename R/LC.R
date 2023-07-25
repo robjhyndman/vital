@@ -55,7 +55,6 @@ LC <- function(formula, adjust = c("dt", "dxt", "e0", "none"),
                        jump_choice = jump_choice, scale = scale, ...)
 }
 
-#' @importFrom stats sd
 train_lc <- function(.data, sex = NULL, specials,  adjust,
                      jump_choice, scale = FALSE, ...) {
   # Variable names

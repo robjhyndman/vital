@@ -14,8 +14,6 @@ Authors@R: c(
 Depends:
   R (>= 4.1.0)
 Imports:
-  cli,
-  crayon,
   distributional,
   dplyr,
   fable,
@@ -27,7 +25,6 @@ Imports:
   progressr,
   purrr,
   rlang,
-  rstudioapi,
   tibble,
   tidyr,
   tidyselect,
