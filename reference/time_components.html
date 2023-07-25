@@ -77,7 +77,21 @@ that are indexed by time.</p>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">State</span> <span class="op">==</span> <span class="st">"Victoria"</span>, <span class="va">Sex</span> <span class="op">==</span> <span class="st">"female"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span>lee_carter <span class="op">=</span> <span class="fu"><a href="LC.html">LC</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">time_components</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is_attached("package:future"):</span> could not find function "is_attached"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tsibble: 103 x 5 [1Y]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Key:       Sex, State, Code [1]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Sex    State    Code   Year    kt</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> female Victoria VIC    <span style="text-decoration: underline;">1</span>901  94.9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> female Victoria VIC    <span style="text-decoration: underline;">1</span>902  95.4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> female Victoria VIC    <span style="text-decoration: underline;">1</span>903  93.4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> female Victoria VIC    <span style="text-decoration: underline;">1</span>904  84.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> female Victoria VIC    <span style="text-decoration: underline;">1</span>905  82.9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> female Victoria VIC    <span style="text-decoration: underline;">1</span>906  88.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> female Victoria VIC    <span style="text-decoration: underline;">1</span>907  81.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> female Victoria VIC    <span style="text-decoration: underline;">1</span>908  84.4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> female Victoria VIC    <span style="text-decoration: underline;">1</span>909  73.7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> female Victoria VIC    <span style="text-decoration: underline;">1</span>910  75.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 93 more rows</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
