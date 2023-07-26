@@ -76,25 +76,24 @@ the geometric mean rate for the relevant age.</p>
 
 
 <dt>adjust</dt>
-<dd><p>method to use for adjustment of coefficients $k_t$.
+<dd><p>method to use for adjustment of coefficients \(k_t\).
 Possibilities are
-“dt” (Lee-Carter method, the default),
-“dxt” (BMS method),
-“e0” (Lee-Miller method based on life expectancy) and
-“none”.
-y).</p></dd>
+<code>"dt"</code> (Lee-Carter method, the default),
+<code>"dxt"</code> (BMS method),
+<code>"e0"</code> (Lee-Miller method based on life expectancy) and
+<code>"none"</code>.</p></dd>
 
 
 <dt>jump_choice</dt>
 <dd><p>Method used for computation of jump-off point for forecasts.
-Possibilities: “actual” (use actual rates from final year) and
-“fit” (use fitted rates).
-The original Lee-Carter method used 'fit' (the default), but Lee and Miller (2001)
-and most other authors prefer 'actual'.</p></dd>
+Possibilities: <code>"actual"</code> (use actual rates from final year) and
+<code>"fit"</code> (use fitted rates).
+The original Lee-Carter method used <code>"fit"</code> (the default), but Lee and Miller (2001)
+and most other authors prefer <code>"actual"</code>.</p></dd>
 
 
 <dt>scale</dt>
-<dd><p>If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.</p></dd>
+<dd><p>If TRUE, <code>bx</code> and <code>kt</code> are rescaled so that <code>kt</code> has drift parameter = 1.</p></dd>
 
 
 <dt>...</dt>
