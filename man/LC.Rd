@@ -14,7 +14,8 @@ LC(
 )
 }
 \arguments{
-\item{formula}{Model specification.}
+\item{formula}{Model specification. It should include the log of the variable to be modelled.
+See the examples.}
 
 \item{adjust}{method to use for adjustment of coefficients \eqn{k_t}.
 Possibilities are

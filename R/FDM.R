@@ -8,7 +8,8 @@
 #'
 #' @param formula Model specification.
 #' @param order Number of principal components to fit.
-#' @param ts_model_fn Univariate time series modelling function for the coefficients.
+#' @param ts_model_fn Univariate time series modelling function for the coefficients. Any
+#' model that works with the fable package is ok. Default is [fable::ARIMA()].
 #' @param ... Not used.
 #'
 #' @references Hyndman, R.J., and Ullah, S. (2007) Robust forecasting of
@@ -22,7 +23,8 @@
 #' @examples
 #' hu <- aus_mortality |>
 #'   dplyr::filter(State == "Victoria", Sex == "female") |>
-#'   model(hyndman_ullah = FDM(log(Mortality)))
+#'   smooth_mortality(Mortality) |>
+#'   model(hyndman_ullah = FDM(log(.smooth)))
 #' report(hu)
 #' autoplot(hu)
 #' @export

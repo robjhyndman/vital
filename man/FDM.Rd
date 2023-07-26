@@ -12,7 +12,8 @@ FDM(formula, order = 6, ts_model_fn = fable::ARIMA, ...)
 
 \item{order}{Number of principal components to fit.}
 
-\item{ts_model_fn}{Univariate time series modelling function for the coefficients.}
+\item{ts_model_fn}{Univariate time series modelling function for the coefficients. Any
+model that works with the fable package is ok. Default is \code{\link[fable:ARIMA]{fable::ARIMA()}}.}
 
 \item{...}{Not used.}
 }
@@ -27,7 +28,8 @@ variable as a function of age.
 \examples{
 hu <- aus_mortality |>
   dplyr::filter(State == "Victoria", Sex == "female") |>
-  model(hyndman_ullah = FDM(log(Mortality)))
+  smooth_mortality(Mortality) |>
+  model(hyndman_ullah = FDM(log(.smooth)))
 report(hu)
 autoplot(hu)
 }
