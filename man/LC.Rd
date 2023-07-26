@@ -16,21 +16,20 @@ LC(
 \arguments{
 \item{formula}{Model specification.}
 
-\item{adjust}{method to use for adjustment of coefficients $k_t$.
+\item{adjust}{method to use for adjustment of coefficients \eqn{k_t}.
 Possibilities are
-\dQuote{dt} (Lee-Carter method, the default),
-\dQuote{dxt} (BMS method),
-\dQuote{e0} (Lee-Miller method based on life expectancy) and
-\dQuote{none}.
-y).}
+\code{"dt"} (Lee-Carter method, the default),
+\code{"dxt"} (BMS method),
+\code{"e0"} (Lee-Miller method based on life expectancy) and
+\code{"none"}.}
 
 \item{jump_choice}{Method used for computation of jump-off point for forecasts.
-Possibilities: \dQuote{actual} (use actual rates from final year) and
-\dQuote{fit} (use fitted rates).
-The original Lee-Carter method used 'fit' (the default), but Lee and Miller (2001)
-and most other authors prefer 'actual'.}
+Possibilities: \code{"actual"} (use actual rates from final year) and
+\code{"fit"} (use fitted rates).
+The original Lee-Carter method used \code{"fit"} (the default), but Lee and Miller (2001)
+and most other authors prefer \code{"actual"}.}
 
-\item{scale}{If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.}
+\item{scale}{If TRUE, \code{bx} and \code{kt} are rescaled so that \code{kt} has drift parameter = 1.}
 
 \item{...}{Not used.}
 }
