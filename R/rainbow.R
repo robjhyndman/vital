@@ -22,7 +22,7 @@ rainbow_plot <- function(.data, .vars, age) {
 
   # Drop Age as a key and nest results
   kv <- tsibble::key_vars(.data)
-  kv <- kv[kv != age]
+  kv <- kv[!(kv %in% c(age, "Age", "AgeGroup", "Age_Group"))]
   nk <- length(kv)
 
   # Variable to plot
@@ -50,7 +50,7 @@ rainbow_plot <- function(.data, .vars, age) {
     ggplot2::geom_line() +
     ggplot2::xlab(age) +
     ggplot2::scale_color_gradientn(colours = rainbow(10))
-  if (nk > 1) {
+  if (nk > 0) {
     p <- p + ggplot2::facet_wrap(kv)
   }
   return(p)
