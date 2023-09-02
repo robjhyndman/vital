@@ -100,11 +100,45 @@ mortality and fertility rates: a functional data approach.
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">State</span> <span class="op">==</span> <span class="st">"Victoria"</span>, <span class="va">Sex</span> <span class="op">==</span> <span class="st">"female"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="smooth_vital.html">smooth_mortality</a></span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span>hyndman_ullah <span class="op">=</span> <span class="fu">FDM</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">.smooth</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in smooth_vital(.data, {    {        .var    }}, smooth_mortality_x, b = b, power = power, k = k, weights = weights):</span> No age variable found</span>
 <span class="r-in"><span><span class="fu"><a href="https://fabletools.tidyverts.org/reference/report.html" class="external-link">report</a></span><span class="op">(</span><span class="va">hu</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'hu' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Series: .smooth </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Model: FDM </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Transformation: log(.smooth) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Basis functions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 101 × 8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Age  mean  phi1     phi2     phi3       phi4     phi5     phi6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     0 -<span style="color: #BB0000;">4.11</span> 0.136  0.008<span style="text-decoration: underline;">45</span>  0.065<span style="text-decoration: underline;">8</span>  -<span style="color: #BB0000;">0.000</span><span style="color: #BB0000; text-decoration: underline;">066</span><span style="color: #BB0000;">1</span>  0.017<span style="text-decoration: underline;">0</span>  -<span style="color: #BB0000;">0.033</span><span style="color: #BB0000; text-decoration: underline;">1</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     1 -<span style="color: #BB0000;">6.39</span> 0.185 -<span style="color: #BB0000;">0.049</span><span style="color: #BB0000; text-decoration: underline;">3</span>   0.063<span style="text-decoration: underline;">3</span>   0.022<span style="text-decoration: underline;">0</span>    -<span style="color: #BB0000;">0.002</span><span style="color: #BB0000; text-decoration: underline;">62</span> -<span style="color: #BB0000;">0.052</span><span style="color: #BB0000; text-decoration: underline;">7</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     2 -<span style="color: #BB0000;">7.10</span> 0.190  0.096<span style="text-decoration: underline;">3</span>   0.311    0.084<span style="text-decoration: underline;">8</span>     0.361   -<span style="color: #BB0000;">0.568</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     3 -<span style="color: #BB0000;">7.40</span> 0.179  0.194   -<span style="color: #BB0000;">0.398</span>    0.038<span style="text-decoration: underline;">7</span>     0.169   -<span style="color: #BB0000;">0.186</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     4 -<span style="color: #BB0000;">7.48</span> 0.156  0.001<span style="text-decoration: underline;">49</span>  0.007<span style="text-decoration: underline;">28</span> -<span style="color: #BB0000;">0.066</span><span style="color: #BB0000; text-decoration: underline;">9</span>     0.109   -<span style="color: #BB0000;">0.009</span><span style="color: #BB0000; text-decoration: underline;">06</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 96 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tsibble: 120 x 8 [1Y]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Year  mean beta1 beta2   beta3 beta4 beta5 beta6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">1</span>901     1  12.8 -<span style="color: #BB0000;">1.36</span>  0.234   1.57 0.931 0.879</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">1</span>902     1  12.6 -<span style="color: #BB0000;">1.38</span> -<span style="color: #BB0000;">0.047</span><span style="color: #BB0000; text-decoration: underline;">3</span>  1.19 0.891 0.517</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>  <span style="text-decoration: underline;">1</span>903     1  12.5 -<span style="color: #BB0000;">1.44</span> -<span style="color: #BB0000;">0.207</span>   1.30 1.29  0.604</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">1</span>904     1  12.0 -<span style="color: #BB0000;">1.22</span> -<span style="color: #BB0000;">0.176</span>   1.45 1.08  0.771</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>  <span style="text-decoration: underline;">1</span>905     1  11.5 -<span style="color: #BB0000;">1.49</span> -<span style="color: #BB0000;">0.024</span><span style="color: #BB0000; text-decoration: underline;">7</span>  1.35 1.09  0.478</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 115 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Time series models</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    beta1 : ARIMA(0,1,1) w/ drift </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    beta2 : ARIMA(0,1,1) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    beta3 : ARIMA(1,0,3) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    beta4 : ARIMA(1,0,0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    beta5 : ARIMA(0,0,0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    beta6 : ARIMA(2,0,2) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variance explained</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   90.97 + 2.37 + 1.51 + 0.98 + 0.94 + 0.86 = 97.61%</span>
 <span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">hu</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'hu' not found</span>
+<span class="r-plt img"><img src="FDM-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
