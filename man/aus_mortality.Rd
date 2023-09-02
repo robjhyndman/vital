@@ -26,6 +26,12 @@ State: \tab State of Australia\cr
 Code: \tab Short code for state\cr
 }
 The age group 100 also includes people who died aged older than 100.
+The data up to 1970 were taken from the Australian Demographic Data Bank
+(\url{https://pkg.robjhyndman.com/addb/}). From 1971, the data come from the
+Australian Human Mortality Database (\url{https://aushd.org}). There may be
+some discontinuities introduced due to different methods being used to prepare
+the data before and after 1971. Note that "ACTOT" includes both the ACT and overseas territories
+and is only available up to 2003. The data exclusively from the ACT begins in 1971.
 }
 \examples{
 library(ggplot2)
