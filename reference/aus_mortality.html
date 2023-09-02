@@ -68,33 +68,39 @@ Deaths:Number of deaths
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The data is disaggregated using four keys:</p><table class="table table"><tr><td>Age:</td><td>Age at death</td></tr><tr><td>Sex:</td><td>male or female</td></tr><tr><td>State:</td><td>State of Australia</td></tr><tr><td>Code:</td><td>Short code for state</td></tr></table><p>The age group 100 also includes people who died aged older than 100.</p>
+    <p>The data is disaggregated using four keys:</p><table class="table table"><tr><td>Age:</td><td>Age at death</td></tr><tr><td>Sex:</td><td>male or female</td></tr><tr><td>State:</td><td>State of Australia</td></tr><tr><td>Code:</td><td>Short code for state</td></tr></table><p>The age group 100 also includes people who died aged older than 100.
+The data up to 1970 were taken from the Australian Demographic Data Bank
+(<a href="https://pkg.robjhyndman.com/addb/" class="external-link">https://pkg.robjhyndman.com/addb/</a>). From 1971, the data come from the
+Australian Human Mortality Database (<a href="https://aushd.org" class="external-link">https://aushd.org</a>). There may be
+some discontinuities introduced due to different methods being used to prepare
+the data before and after 1971. Note that "ACTOT" includes both the ACT and overseas territories
+and is only available up to 2003. The data exclusively from the ACT begins in 1971.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">aus_mortality</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A vital: 280,881 x 8 [1Y]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A vital: 300,879 x 8 [1Y]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Key:     Age, Sex, State, Code [2,727]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Year   Age Sex    State     Code  Mortality Exposure Deaths</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">1</span>901     0 female Australia AUS     0.103      <span style="text-decoration: underline;">46</span>315   <span style="text-decoration: underline;">4</span>780</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">1</span>901     1 female Australia AUS     0.023<span style="text-decoration: underline;">1</span>     <span style="text-decoration: underline;">42</span>345    978</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">1</span>901     2 female Australia AUS     0.006<span style="text-decoration: underline;">94</span>    <span style="text-decoration: underline;">41</span>766    290</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">1</span>901     3 female Australia AUS     0.004<span style="text-decoration: underline;">53</span>    <span style="text-decoration: underline;">42</span>635    193</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">1</span>901     4 female Australia AUS     0.003<span style="text-decoration: underline;">76</span>    <span style="text-decoration: underline;">42</span>774    161</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">1</span>901     5 female Australia AUS     0.002<span style="text-decoration: underline;">99</span>    <span style="text-decoration: underline;">44</span>160    132</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">1</span>901     6 female Australia AUS     0.002<span style="text-decoration: underline;">59</span>    <span style="text-decoration: underline;">44</span>747    116</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">1</span>901     7 female Australia AUS     0.002<span style="text-decoration: underline;">18</span>    <span style="text-decoration: underline;">45</span>515     99</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">1</span>901     8 female Australia AUS     0.001<span style="text-decoration: underline;">85</span>    <span style="text-decoration: underline;">45</span>437     84</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">1</span>901     9 female Australia AUS     0.001<span style="text-decoration: underline;">44</span>    <span style="text-decoration: underline;">45</span>911     66</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 280,871 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Year   Age Sex    State                      Code  Mortality Exposure Deaths</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">1</span>901     0 female Australian Capital Territ… ACTOT         0        0      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">1</span>901     1 female Australian Capital Territ… ACTOT         0        0      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">1</span>901     2 female Australian Capital Territ… ACTOT         0        0      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">1</span>901     3 female Australian Capital Territ… ACTOT         0        0      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">1</span>901     4 female Australian Capital Territ… ACTOT         0        0      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">1</span>901     5 female Australian Capital Territ… ACTOT         0        0      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">1</span>901     6 female Australian Capital Territ… ACTOT         0        0      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">1</span>901     7 female Australian Capital Territ… ACTOT         0        0      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">1</span>901     8 female Australian Capital Territ… ACTOT         0        0      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">1</span>901     9 female Australian Capital Territ… ACTOT         0        0      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 300,869 more rows</span></span>
 <span class="r-in"><span><span class="va">aus_mortality</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">State</span><span class="op">==</span><span class="st">"Victoria"</span>, <span class="va">Sex</span> <span class="op">!=</span> <span class="st">"total"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">Exposure</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Population at 30 June (thousands)"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="aus_mortality-1.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rlang::sym(age):</span> Can't convert `NULL` to a symbol.</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
