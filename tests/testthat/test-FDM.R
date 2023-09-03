@@ -10,15 +10,15 @@ test_that("Functional data model", {
   expect_equal(dim(hu), c(3L, 4L))
   expect_equal(NROW(tidy(hu)), 0L)
   expect_equal(colnames(glance(hu)), c("Sex", "State", "Code", ".model", "nobs", "varprop"))
-  expect_equal(mean(augment(hu)$.resid), 0.001793355, tolerance = 1e-6)
+  expect_equal(mean(augment(hu)$.resid, na.rm=TRUE), 0.005416689, tolerance = 1e-6)
   expect_no_error(residuals(hu, type = "innov"))
   expect_no_error(residuals(hu, type = "response"))
   expect_no_error(fitted(hu))
   expect_equal(NROW(generate(hu, times = 2)), 1212L)
   expect_equal(NROW(fc), 606)
   expect_equal(fc |>
-    dplyr::filter(Sex == "female", State == "Victoria", Age == 0, Year == 2004) |>
-    dplyr::pull(.mean), 0.003821192, tolerance = 1e-7)
+    dplyr::filter(Sex == "female", State == "Victoria", Age == 0, Year == 2021) |>
+    dplyr::pull(.mean), 0.00245742, tolerance = 1e-7)
   expect_equal(forecast(hu, bootstrap = TRUE, times = 7) |>
                  head(1) |>
                  dplyr::pull(Mortality) |>

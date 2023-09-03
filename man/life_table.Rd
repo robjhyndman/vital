@@ -20,9 +20,9 @@ $qx = mx/(1 + ((1-ax) * mx))$ as per Chiang (1984).
 Warning: the code has only been tested for data based on single-year age groups.
 }
 \examples{
-# Compute Australia life table for females in 2003
+# Compute Victorian life table for females in 2003
 aus_mortality |>
-  dplyr::filter(Code == "AUS", Sex == "female", Year == 2003) |>
+  dplyr::filter(Code == "VIC", Sex == "female", Year == 2003) |>
   life_table()
 }
 \references{

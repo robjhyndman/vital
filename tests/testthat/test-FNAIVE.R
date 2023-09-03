@@ -9,15 +9,15 @@ test_that("Functional naive", {
   expect_equal(dim(fnaive), c(3L, 4L))
   expect_equal(dim(tidy(fnaive)), c(0L,5L))
   expect_equal(colnames(glance(fnaive)), c("Sex", "State", "Code", ".model", "sigma2"))
-  expect_equal(mean(augment(fnaive)$.resid, na.rm=TRUE), -0.001144556)
+  expect_equal(mean(augment(fnaive)$.resid, na.rm=TRUE), -0.0009874709)
   expect_no_error(residuals(fnaive, type = "innov"))
   expect_no_error(residuals(fnaive, type = "response"))
   expect_no_error(fitted(fnaive))
   expect_equal(NROW(generate(fnaive, times = 2)), 1212L)
   expect_equal(NROW(fc), 606)
   expect_equal(fc |>
-    dplyr::filter(Sex == "female", State == "Victoria", Age == 0, Year == 2004) |>
-      dplyr::pull(.mean), 0.004183383, tolerance = 1e-7)
+    dplyr::filter(Sex == "female", State == "Victoria", Age == 0, Year == 2021) |>
+      dplyr::pull(.mean), 0.002523116, tolerance = 1e-7)
   expect_equal(forecast(fnaive, bootstrap = TRUE, times = 7) |>
                  head(1) |>
                  dplyr::pull(Mortality) |>

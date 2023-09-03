@@ -16,9 +16,9 @@
 #' @references Preston, S.H., Heuveline, P., and Guillot, M. (2001) *Demography: measuring and modeling population processes*. Blackwell
 #'
 #' @examples
-#' # Compute Australia life table for females in 2003
+#' # Compute Victorian life table for females in 2003
 #' aus_mortality |>
-#'   dplyr::filter(Code == "AUS", Sex == "female", Year == 2003) |>
+#'   dplyr::filter(Code == "VIC", Sex == "female", Year == 2003) |>
 #'   life_table()
 #' @export
 

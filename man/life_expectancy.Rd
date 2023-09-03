@@ -20,9 +20,9 @@ A \code{vital} object with life expectancy in column \code{ex}.
 Returns remaining life expectancy at a given age (0 by default).
 }
 \examples{
-# Compute Australia life expectancy for females over time
+# Compute Victorian life expectancy for females over time
 aus_mortality |>
-  dplyr::filter(Code == "AUS", Sex == "female") |>
+  dplyr::filter(Code == "VIC", Sex == "female") |>
   life_expectancy()
 }
 \references{

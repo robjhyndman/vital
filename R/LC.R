@@ -193,13 +193,13 @@ model_sum.LC <- function(x) {
 }
 
 # @examples
-# # Compute Lee-Carter model for Australian females, males and total
+# # Compute Lee-Carter model for Victorian females, males and total
 # aus_lc <- aus_mortality |>
-#   dplyr::filter(Code == "AUS") |>
+#   dplyr::filter(Code == "VIC") |>
 #   lee_carter()
 # aus_lc
 # autoplot(aus_lc) +
-#   patchwork::plot_annotation("Lee Carter components for Australia")
+#   patchwork::plot_annotation("Lee Carter components for Victoria")
 # autoplot(aus_lc$time, kt)
 
 

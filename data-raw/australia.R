@@ -11,7 +11,6 @@ aus_fertility <- as_vital(addb::aus.fertility) |>
 usethis::use_data(aus_fertility, overwrite = TRUE)
 
 aus_mortality <- bind_rows(
-	as_vital(addb::australia) |> mutate(State = "Australia", Code = "AUS") |> as_tibble(),
 	as_vital(addb::nsw) |> mutate(State = "New South Wales", Code = "NSW") |> as_tibble(),
 	as_vital(addb::vic) |> mutate(State = "Victoria", Code = "VIC") |> as_tibble(),
 	as_vital(addb::qld) |> mutate(State = "Queensland", Code = "QLD") |> as_tibble(),

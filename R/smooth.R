@@ -251,4 +251,30 @@ smooth_vital <- function(.data, .var, smooth_fn, ...) {
 		)
 }
 
-utils::globalVariables("sm")
+
+use_weight_mortality <- function(data, type=c("mortality", "fertility")) {
+  type = match.arg(type)
+  attrx <- attributes(data)
+  if(is.null(attrx$populationvar)) {
+    warning("No population variable found, so weighting not used.")
+    return(data)
+  }
+  data[[attrx$populationvar]] <- data[[attrx$populationvar]]/ max(data[[attrx$populationvar]])
+  if(type=="fertility") {
+    data$.weights <- data[[attrx$populationvar]] * rate^(1-2*data$lambda)
+  }
+  data$.weights = data[[attrx$populationvar]]
+  if(mean(data$.weights, na.rm=TRUE) < 0)
+    stop("There's a problem. Do you have negative rates?")
+
+    #w[[i]][w[[i]] > 1e9] <- 0
+    #w[[i]][w[[i]] < 0] <- 0
+    #w[[i]][log(rate) > -1e-9] <- 0
+    #w[[i]] <- apply(w[[i]],2,standardize,sumx=rate.dim[1])
+    #w[[i]][is.na(w[[i]])] <- 0
+
+    return(data)
+}
+
+
+utils::globalVariables(c("sm","rate"))

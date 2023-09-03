@@ -13,7 +13,7 @@ test_that("Lee Carter", {
   expect_equal(dim(lc), c(3L, 5L))
   expect_equal(NROW(tidy(lc)), 0L)
   expect_equal(dim(glance(lc)), c(6L,7L))
-  expect_equal(mean(augment(lc)$.resid), 0.003457442, tolerance = 1e-7)
+  expect_equal(mean(augment(lc)$.resid, na.rm=TRUE), 0.0019666, tolerance = 1e-7)
   expect_no_error(residuals(lc, type = "innov"))
   expect_no_error(residuals(lc, type = "response"))
   expect_no_error(fitted(lc))
@@ -21,10 +21,10 @@ test_that("Lee Carter", {
   expect_equal(NROW(fc), 1212)
   expect_equal(
     dplyr::filter(fc,
-        Sex == "female", State == "Victoria", Age == 0, Year == 2004,
+        Sex == "female", State == "Victoria", Age == 0, Year == 2021,
         .model == "actual"
       ) |>
-      dplyr::pull(.mean), 0.004053926, tolerance = 1e-7)
+      dplyr::pull(.mean), 0.002446277, tolerance = 1e-7)
   expect_equal(forecast(lc, bootstrap = TRUE, times = 7) |>
                  head(1) |>
                  dplyr::pull(Mortality) |>

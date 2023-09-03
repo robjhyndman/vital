@@ -18,9 +18,9 @@
 #' *Demography: measuring and modeling population processes*. Blackwell
 #'
 #' @examples
-#' # Compute Australia life expectancy for females over time
+#' # Compute Victorian life expectancy for females over time
 #' aus_mortality |>
-#'   dplyr::filter(Code == "AUS", Sex == "female") |>
+#'   dplyr::filter(Code == "VIC", Sex == "female") |>
 #'   life_expectancy()
 #' @author Rob J Hyndman
 #' @export

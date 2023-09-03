@@ -16,9 +16,9 @@ test_that("smoothing functions", {
   expect_equal(NROW(sm), 3010L)
   # Check results are similar to demography
   library(demography)
-  sm1 <- smooth.demogdata(fr.mort)
+  sm1 <- smooth.demogdata(fr.mort |> extract.years(1945))
   expect_error(smooth_mortality(as_vital(fr.mort)))
-  sm2 <- smooth_mortality(as_vital(fr.mort) |> filter(Sex == "male"), Mortality)
+  sm2 <- smooth_mortality(as_vital(fr.mort |> extract.years(1945)) |> filter(Sex == "male"), Mortality)
   test1 <- extract.years(sm1, 1945)$rate$male
   test2 <- sm2 |>
     filter(Year == 1945) |>
