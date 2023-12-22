@@ -8,6 +8,7 @@
 \alias{generate}
 \alias{model}
 \alias{report}
+\alias{interpolate}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -15,7 +16,7 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{fabletools}{\code{\link[fabletools]{model}}, \code{\link[fabletools]{report}}}
+  \item{fabletools}{\code{\link[fabletools:reexports]{interpolate}}, \code{\link[fabletools]{model}}, \code{\link[fabletools]{report}}}
 
   \item{generics}{\code{\link[generics]{forecast}}, \code{\link[generics]{generate}}}
 

@@ -41,6 +41,8 @@ fabletools::model
 #' @export
 fabletools::report
 
+#' @export
+fabletools::interpolate
 
 .onAttach <- function(...) {
   loadNamespace("fabletools")
