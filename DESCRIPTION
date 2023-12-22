@@ -1,5 +1,5 @@
 Package: vital
-Version: 0.1.0
+Version: 1.0.0
 Type: Package
 Title: Tidy Analysis Tools for Mortality, Fertility, Migration and Population Data
 Description: Functions for analysing vital statistics based on tools
