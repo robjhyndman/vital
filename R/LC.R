@@ -296,7 +296,7 @@ lca <- function(data, sex, age, rates, pop, deaths,
 
     e0 <- apply(mx, 1, get.e0, agegroup = ages, sex = sex, startage = startage)
     FUN2 <- function(p, e0i, ax, bx, ages, sex, startage) {
-      e0i - estimate.e0(p, ax, bx, ages, sex, startage)
+      e0i - estimate_e0(p, ax, bx, ages, sex, startage)
     }
     for (i in seq(m)) {
       if(!is.na(e0[i])) {
@@ -368,7 +368,7 @@ lca <- function(data, sex, age, rates, pop, deaths,
   )
 }
 
-estimate.e0 <- function(kt, ax, bx, agegroup, sex, startage = 0) {
+estimate_e0 <- function(kt, ax, bx, agegroup, sex, startage = 0) {
   if (length(kt) > 1) {
     stop("Length of kt greater than 1")
   }
