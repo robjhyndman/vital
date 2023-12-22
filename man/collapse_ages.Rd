@@ -13,7 +13,7 @@ collapse_ages(.data, max_age = 100)
 \item{max_age}{Maximum age to include in the collapsed age group.}
 }
 \value{
-A vital object with the same variables as `.data`, but with the upper ages collapsed into a single age group.
+A vital object with the same variables as \code{.data}, but with the upper ages collapsed into a single age group.
 }
 \description{
 Collapse upper ages into a single age group. Counts are summed while

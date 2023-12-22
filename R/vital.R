@@ -6,8 +6,8 @@
 #' The object has an attribute that stores variables names needed for some functions,
 #' including age, sex, births, deaths and population.
 #' @param key Variable(s) that uniquely determine time indices. NULL for empty key,
-#' and \code{c()} for multiple variables. It works with tidy selector
-#' (e.g. \code{\link[dplyr]{starts_with}()}).
+#' and [c()] for multiple variables. It works with tidy selector
+#' (e.g. [tidyselect::starts_with()])
 #' @param ... A set of name-value pairs
 #' @param index A variable to specify the time index variable.
 #' @param .age Character string with name of age variable
@@ -15,9 +15,9 @@
 #' @param .deaths Character string with name of deaths variable
 #' @param .births Character string with name of births variable
 #' @param .population Character string with name of population variable
-#' @param regular	Regular time interval (TRUE) or irregular (FALSE). The interval
-#' is determined by the greatest common divisor of index column, if TRUE.
-#' @param .drop If TRUE, empty key groups are dropped.
+#' @param regular	Regular time interval (`TRUE`) or irregular (`FALSE`). The interval
+#' is determined by the greatest common divisor of index column, if `TRUE`.
+#' @param .drop If `TRUE`, empty key groups are dropped.
 #' @author Rob J Hyndman
 #' @return A tsibble with class \code{vital}.
 #' @examples
@@ -30,7 +30,7 @@
 #'   key = age,
 #'   .age = "age"
 #' )
-#' @seealso \code{\link[tsibble]{tsibble}()}
+#' @seealso [tsibble::tsibble()]
 #' @export
 vital <- function(
     ..., key = NULL, index,
@@ -45,17 +45,19 @@ vital <- function(
 
 #' Coerce to a vital object
 #'
-#' A vital object is a type of tsibble that contains vital statistics such as births, deaths, and population counts, and mortality and fertility rates.
+#' A vital object is a type of tsibble that contains vital statistics such as
+#' births, deaths, and population counts, and mortality and fertility rates.
 #' It is a tsibble with a special class that allows for special methods to be used.
-#' The object has an attribute that stores variables names needed for some functions, including age, sex, births, deaths and population.
+#' The object has an attribute that stores variables names needed for some
+#' functions, including age, sex, births, deaths and population.
 #'
 #' @param x Object to be coerced to a vital format.
-#' @param ... Other arguments passed on to \code{\link[tsibble]{as_tsibble}}
+#' @param ... Other arguments passed on to [tsibble::as_tsibble()].
 #'
 #' @return A tsibble with class \code{vital}.
 #' @author Rob J Hyndman
 #' @rdname as_vital
-#' @seealso \code{\link[tsibble]{tsibble}()}
+#' @seealso [tsibble::tsibble()]
 #'
 #' @examples
 #' # coerce demogdata object to vital
@@ -189,7 +191,9 @@ as_vital.tbl_ts <- function(x,
   if (reorder) {
     agevar <- attributes(x)$agevar
     keys <- key_vars(x)
-    keys_noage <- keys[keys != agevar]
+    agevars <- colnames(x)
+    agevars <- agevars[grep("age", agevars, ignore.case=TRUE)]
+    keys_noage <- keys[!(keys %in% c(agevar, agevars))]
     x <- select(x, all_of(c(index_var(x), attributes(x)$agevar)), everything()) |>
       arrange(across(all_of(c(index_var(x), keys_noage, agevar))))
   }
@@ -198,13 +202,13 @@ as_vital.tbl_ts <- function(x,
 
 #' @param index A variable to specify the time index variable.
 #' @param key Variable(s) that uniquely determine time indices. NULL for empty key,
-#' and \code{c()} for multiple variables. It works with tidy selector
-#' (e.g. \code{\link[dplyr]{starts_with}()}).
-#' @param ... Other arguments passed to \code{\link[tsibble]{as_tsibble}}
+#' and [c()] for multiple variables. It works with tidy selector
+#' (e.g. [tidyselect::starts_with()]).
+#' @param ... Other arguments passed to [tsibble::as_tsibble()]
 #' @rdname as_vital
 #' @examples
 #' # create a vital with only age as a key
-#' tibble(
+#' tibble::tibble(
 #'   year = rep(2010:2015, 100),
 #'   age = rep(0:99, each = 6),
 #'   mx = runif(600, 0, 1)
@@ -231,7 +235,6 @@ utils::globalVariables(c("Deaths", "Births"))
 
 # Functions need for printing vital objects
 
-#' @importFrom tibble tbl_sum
 #' @export
 tbl_sum.vital <- function(x) {
   fnt_int <- format(tsibble::interval(x))

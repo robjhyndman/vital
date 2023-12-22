@@ -5,19 +5,32 @@
 \alias{report.LC}
 \title{Lee-Carter model}
 \usage{
-LC(formula, adjust = c("dt", "dxt", "e0", "none"), scale = FALSE, ...)
+LC(
+  formula,
+  adjust = c("dt", "dxt", "e0", "none"),
+  jump_choice = c("fit", "actual"),
+  scale = FALSE,
+  ...
+)
 }
 \arguments{
-\item{formula}{Model specification.}
+\item{formula}{Model specification. It should include the log of the variable to be modelled.
+See the examples.}
 
-\item{adjust}{method to use for adjustment of coefficients \eqn{k_t kt}.
+\item{adjust}{method to use for adjustment of coefficients \eqn{k_t}.
 Possibilities are
-\dQuote{dt} (Lee-Carter method, the default),
-\dQuote{dxt} (BMS method),
-\dQuote{e0} (Lee-Miller method based on life expectancy) and
-\dQuote{none}.}
+\code{"dt"} (Lee-Carter method, the default),
+\code{"dxt"} (BMS method),
+\code{"e0"} (Lee-Miller method based on life expectancy) and
+\code{"none"}.}
 
-\item{scale}{If TRUE, bx and kt are rescaled so that kt has drift parameter = 1.}
+\item{jump_choice}{Method used for computation of jump-off point for forecasts.
+Possibilities: \code{"actual"} (use actual rates from final year) and
+\code{"fit"} (use fitted rates).
+The original Lee-Carter method used \code{"fit"} (the default), but Lee and Miller (2001)
+and most other authors prefer \code{"actual"}.}
+
+\item{scale}{If TRUE, \code{bx} and \code{kt} are rescaled so that \code{kt} has drift parameter = 1.}
 
 \item{...}{Not used.}
 }
@@ -34,24 +47,27 @@ the geometric mean rate for the relevant age.
 \examples{
 lc <- aus_mortality |>
   dplyr::filter(State == "Victoria", Sex == "female") |>
-  model(lee_carter = LC(Mortality))
+  model(lee_carter = LC(log(Mortality)))
 report(lc)
 autoplot(lc)
 }
 \references{
 Basellini, U, Camarda, C G, and Booth, H (2022) Thirty years on:
 A review of the Lee-Carter method for forecasting mortality.
-\emph{International Journal of Forecasting}, \bold{39}(3), 1033-1049.
+\emph{International Journal of Forecasting}, \strong{39}(3), 1033-1049.
+\url{https://doi.org/10.1016/j.ijforecast.2022.11.002}
 
 Booth, H., Maindonald, J., and Smith, L. (2002) Applying Lee-Carter
 under conditions of variable mortality decline. \emph{Population Studies},
-\bold{56}, 325-336.
+\strong{56}, 325-336. \url{https://doi.org/10.1080/00324720215935}
 
 Lee, R D, and Carter, L R (1992) Modeling and forecasting US mortality.
-\emph{Journal of the American Statistical Association}, \bold{87}, 659-671.
+\emph{Journal of the American Statistical Association}, \strong{87}, 659-671.
+\url{https://doi.org/10.1080/01621459.1992.10475265}
 
 Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
-  method for forecasting mortality. \emph{Demography}, \bold{38}(4), 537–549.
+method for forecasting mortality. \emph{Demography}, \strong{38}(4), 537–549.
+\url{https://doi.org/10.1353/dem.2001.0036}
 }
 \author{
 Rob J Hyndman

@@ -13,7 +13,7 @@
 same response variable.}
 
 \item{.safely}{If a model encounters an error, rather than aborting the process
-a [NULL model][null_model()] will be returned instead. This allows for an error
+a \link[=null_model]{NULL model} will be returned instead. This allows for an error
 to occur when computing many models, without losing the results of the successful models.}
 }
 \value{
@@ -21,8 +21,8 @@ A mable containing the fitted models.
 }
 \description{
 Trains specified model definition(s) on a dataset. This function will
-estimate the a set of model definitions (passed via `...`) to each series
-within `.data` (as identified by the key structure). The result will be a
+estimate the a set of model definitions (passed via \code{...}) to each series
+within \code{.data} (as identified by the key structure). The result will be a
 mable (a model table), which neatly stores the estimated models in a tabular
 structure. Rows of the data identify different series within the data, and
 each model column contains all models from that model definition. Each cell
@@ -32,8 +32,8 @@ in the mable identifies a single model.
 
 
 It is possible to estimate models in parallel using the
-[future](https://cran.r-project.org/package=future) package. By specifying a
-[`future::plan()`] before estimating the models, they will be computed
+\href{https://cran.r-project.org/package=future}{future} package. By specifying a
+\code{\link[future:plan]{future::plan()}} before estimating the models, they will be computed
 according to that plan.
 }
 
@@ -41,8 +41,8 @@ according to that plan.
 
 
 Progress on model estimation can be obtained by wrapping the code with
-`progressr::with_progress()`. Further customisation on how progress is
-reported can be controlled using the `progressr` package.
+\code{progressr::with_progress()}. Further customisation on how progress is
+reported can be controlled using the \code{progressr} package.
 }
 
 \examples{

@@ -89,7 +89,6 @@ dplyr_reconstruct.vital <- function(data, template) {
           .population = attr_data$populationvar)
 }
 
-#' @importFrom dplyr group_by_drop_default
 #' @export
 group_by.vital <- function(.data, ..., .add = FALSE,
                            .drop = group_by_drop_default(.data)) {

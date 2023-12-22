@@ -9,10 +9,10 @@ total_fertility_rate(.data, fertility)
 \arguments{
 \item{.data}{A vital object including an age variable and a variable containing fertility rates.}
 
-\item{fertility}{Variable in `.data` containing fertility rates. If omitted, the variable with name  `fx`, `Fertility` or `Rate` will be used (not case sensitive).}
+\item{fertility}{Variable in \code{.data} containing fertility rates. If omitted, the variable with name  \code{fx}, \code{Fertility} or \code{Rate} will be used (not case sensitive).}
 }
 \value{
-A vital object with total fertility in column `tfr`.
+A vital object with total fertility in column \code{tfr}.
 }
 \description{
 Total fertility rate is the expected number of babies per woman in a life-time

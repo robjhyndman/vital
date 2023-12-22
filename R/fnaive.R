@@ -1,6 +1,6 @@
 #' Functional naive model
 #'
-#' \code{FNAIVE()} returns an random walk functional model applied to the formula's response variable as a function of age.
+#' `FNAIVE()` returns an random walk functional model applied to the formula's response variable as a function of age.
 #'
 #' @aliases report.FNAIVE
 #'
@@ -23,7 +23,6 @@ FNAIVE <- function(formula, ...) {
   new_model_definition(fnaive_model, !!enquo(formula), ...)
 }
 
-#' @importFrom stats sd
 train_fnaive <- function(.data, ...) {
   attrx <- attributes(.data)
   indexvar <- index_var(.data)
@@ -40,7 +39,7 @@ train_fnaive <- function(.data, ...) {
     as_tibble() |>
     left_join(last_measure, by = c(indexvar, agevar)) |>
     mutate(
-      .resid = .data[[measures]] - .fitted,
+      .resid = .data[[measure]] - .fitted,
       .innov = .resid
     )
   model <- out |>

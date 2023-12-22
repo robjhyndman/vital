@@ -3,25 +3,60 @@
 test_that("Lee Carter", {
   lc <- aus_mortality |>
     dplyr::filter(State == "Victoria") |>
-    model(lc = LC(Mortality))
+    model(
+      fit = LC(log(Mortality)),
+      actual = LC(log(Mortality), jump = "actual", adjust = "dxt")
+    )
   fc <- forecast(lc)
+
   expect_no_error(autoplot(fc))
-  expect_equal(dim(lc), c(3L, 4L))
+  expect_equal(dim(lc), c(3L, 5L))
   expect_equal(NROW(tidy(lc)), 0L)
-  expect_equal(colnames(glance(lc)), c("Sex", "State", "Code", ".model", "sigma2"))
-  expect_equal(mean(augment(lc)$.resid), 0.02064662, tolerance = 1e-7)
+  expect_equal(dim(glance(lc)), c(6L,7L))
+  expect_equal(mean(augment(lc)$.resid, na.rm=TRUE), 0.0019666, tolerance = 1e-7)
   expect_no_error(residuals(lc, type = "innov"))
   expect_no_error(residuals(lc, type = "response"))
   expect_no_error(fitted(lc))
-  expect_equal(NROW(generate(lc, times = 2)), 1212L)
-  expect_equal(NROW(fc), 606)
-  expect_equal(fc |>
-    dplyr::filter(Sex == "female", State == "Victoria", Age == 0, Year == 2004) |>
-      dplyr::pull(.mean), 0.4554334, tolerance = 1e-7)
+  expect_equal(NROW(generate(lc, times = 2)), 2424L)
+  expect_equal(NROW(fc), 1212)
+  expect_equal(
+    dplyr::filter(fc,
+        Sex == "female", State == "Victoria", Age == 0, Year == 2021,
+        .model == "actual"
+      ) |>
+      dplyr::pull(.mean), 0.002446277, tolerance = 1e-7)
   expect_equal(forecast(lc, bootstrap = TRUE, times = 7) |>
                  head(1) |>
                  dplyr::pull(Mortality) |>
                  unlist() |>
                  length(), 7)
+  expect_equal(colnames(time_components(lc |> select(fit))), c("Sex", "State", "Code", "Year", "kt"))
+  expect_error(age_components(lc))
+
+  # Compare against demography
+  library(demography)
+  library(dplyr)
+  lc1 <- demography::lca(fr.mort, series = 'female')
+  lc2 <- as_vital(fr.mort) |>
+    filter(Sex == "female") |>
+    collapse_ages(max_age = 100) |>
+    model(LC(log(Mortality), jump="actual"))
+  expect_true(sum(abs(lc1$kt- time_components(lc2)$kt)) < 0.0018)
+  expect_true(sum(abs(lc1$ax - age_components(lc2)$ax)) < 1e-10)
+  expect_true(sum(abs(lc1$bx - age_components(lc2)$bx)) < 1e-10)
+  fc1 <- forecast(lc1, jump="actual", h=10)
+  fc2 <- forecast(lc2, point_forecast = list(.median=median), h=10)
+  expect_true(
+    sum(abs(
+      fc1$rate$female[,10] -
+      fc2 |> filter(Year == 2016, Sex == "female") |> pull(.median)
+    )) < 1e-7
+  )
+
+  # Test LC on fertility
+  expect_no_error(aus_fertility |>
+    model(LC(log(Fertility))) |>
+    autoplot())
 })
+
 

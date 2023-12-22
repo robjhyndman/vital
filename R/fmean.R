@@ -1,6 +1,6 @@
 #' Functional mean model
 #'
-#' \code{FMEAN()} returns an iid functional model applied to the formula's response variable as a function of age.
+#' `FMEAN()` returns an iid functional model applied to the formula's response variable as a function of age.
 #'
 #' @aliases report.FMEAN
 #'
@@ -23,7 +23,6 @@ FMEAN <- function(formula, ...) {
   new_model_definition(fmean_model, !!enquo(formula), ...)
 }
 
-#' @importFrom stats sd
 train_fmean <- function(.data, ...) {
   attrx <- attributes(.data)
   indexvar <- index_var(.data)

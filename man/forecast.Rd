@@ -30,8 +30,6 @@
   bootstrap = FALSE,
   times = 5000,
   seed = NULL,
-  se = c("innovdrift", "innovonly"),
-  jumpchoice = c("fit", "actual"),
   ...
 )
 
@@ -74,42 +72,36 @@
 \arguments{
 \item{object}{A mable containing one or more models.}
 
-\item{new_data}{A `tsibble` containing future information used to forecast.}
+\item{new_data}{A \code{tsibble} containing future information used to forecast.}
 
 \item{h}{Number of time steps ahead to forecast. This can be used instead of \code{new_data}
 when there are no covariates in the model. It is ignored if \code{new_data} is provided.}
 
 \item{point_forecast}{A list of functions used to compute point forecasts from the forecast distribution.}
 
-\item{simulate}{If  `TRUE`, then forecast distributions are computed using simulation from a parametric model.}
+\item{simulate}{If  \code{TRUE}, then forecast distributions are computed using simulation from a parametric model.}
 
-\item{bootstrap}{If `TRUE`, then forecast distributions are computed using simulation with resampling.}
+\item{bootstrap}{If \code{TRUE}, then forecast distributions are computed using simulation with resampling.}
 
-\item{times}{The number of sample paths to use in estimating the forecast distribution when `bootstrap = TRUE`.}
+\item{times}{The number of sample paths to use in estimating the forecast distribution when \code{bootstrap = TRUE}.}
 
 \item{seed}{The seed for the random generation from distributions.}
 
 \item{...}{Additional arguments passed to the specific model method.}
-
-\item{se}{Method used for computation of standard error.
-Possibilities: \dQuote{innovdrift} (innovations and drift) and \dQuote{innovonly} (innovations only).}
-
-\item{jumpchoice}{Method used for computation of jumpchoice.
-Possibilities: \dQuote{actual} (use actual rates from final year) and \dQuote{fit} (use fitted rates).
-The original Lee-Carter method used 'fit' (the default), but Lee and Miller (2001)
-and most other authors prefer 'actual' (the default).}
 }
 \value{
 A fable containing the following columns:
-- `.model`: The name of the model used to obtain the forecast. Taken from
-  the column names of models in the provided mable.
-- The forecast distribution. The name of this column will be the same as the
-  dependent variable in the model(s). If multiple dependent variables exist,
-  it will be named `.distribution`.
-- Point forecasts computed from the distribution using the functions in the
-  `point_forecast` argument.
-- All columns in `new_data`, excluding those whose names conflict with the
-  above.
+\itemize{
+\item \code{.model}: The name of the model used to obtain the forecast. Taken from
+the column names of models in the provided mable.
+\item The forecast distribution. The name of this column will be the same as the
+dependent variable in the model(s). If multiple dependent variables exist,
+it will be named \code{.distribution}.
+\item Point forecasts computed from the distribution using the functions in the
+\code{point_forecast} argument.
+\item All columns in \code{new_data}, excluding those whose names conflict with the
+above.
+}
 }
 \description{
 The forecast function allows you to produce future predictions of a vital

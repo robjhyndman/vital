@@ -6,8 +6,8 @@
 #'
 #' @param object A mable containing one or more models.
 #' @param new_data A `tsibble` containing future information used to forecast.
-#' @param h Number of time steps ahead to forecast. This can be used instead of \code{new_data}
-#' when there are no covariates in the model. It is ignored if \code{new_data} is provided.
+#' @param h Number of time steps ahead to forecast. This can be used instead of `new_data`
+#' when there are no covariates in the model. It is ignored if `new_data` is provided.
 #' @param point_forecast A list of functions used to compute point forecasts from the forecast distribution.
 #' @param simulate If  `TRUE`, then forecast distributions are computed using simulation from a parametric model.
 #' @param bootstrap If `TRUE`, then forecast distributions are computed using simulation with resampling.
@@ -205,7 +205,7 @@ make_future_data <- function (.data, h = NULL) {
   indexvar <- index_var(out)
   agevar <- attributes(.data)$agevar
   .ages <- .data[[agevar]] |> unique() |> sort()
-  out <- tidyr::expand_grid(out, .ages)
+  out <- tidyr::expand_grid(as_tibble(out), .ages)
   colnames(out)[colnames(out) == ".ages"] <- agevar
   as_tsibble(out, index = indexvar, key = agevar) |>
     as_vital(.age = agevar)

@@ -6,21 +6,21 @@
 #' @param from_age Age at which life expectancy to be calculated. Either a scalar or a vector of ages.
 #' @param mortality Variable in `.data` containing Mortality rates (mx). If omitted, the variable with name  `mx`, `Mortality` or `Rate` will be used (not case sensitive).
 #'
-#' @return A \code{vital} object with life expectancy in column `ex`.
+#' @return A `vital` object with life expectancy in column `ex`.
 #' @rdname life_expectancy
-#' @seealso \code{\link{life_table}()}
+#' @seealso [life_table()]
 #'
-#' @references Chiang CL. (1984) \emph{The life table and its applications}.
+#' @references Chiang CL. (1984) *The life table and its applications*.
 #' Robert E Krieger Publishing Company: Malabar.
-#' @references Keyfitz, N, and Caswell, H. (2005) \emph{Applied Mathematical Demography},
+#' @references Keyfitz, N, and Caswell, H. (2005) *Applied Mathematical Demography*,
 #' Springer-Verlag: New York.
 #' @references Preston, S.H., Heuveline, P., and Guillot, M. (2001)
-#' \emph{Demography: measuring and modeling population processes}. Blackwell
+#' *Demography: measuring and modeling population processes*. Blackwell
 #'
 #' @examples
-#' # Compute Australia life expectancy for females over time
+#' # Compute Victorian life expectancy for females over time
 #' aus_mortality |>
-#'   dplyr::filter(Code == "AUS", Sex == "female") |>
+#'   dplyr::filter(Code == "VIC", Sex == "female") |>
 #'   life_expectancy()
 #' @author Rob J Hyndman
 #' @export

@@ -4,23 +4,23 @@
 \alias{aus_fertility}
 \title{Australian fertility data}
 \format{
-Time series of class `vital`
+Time series of class \code{vital}
 }
 \source{
 Australian Human Mortality Database
 }
 \description{
-\code{aus_fertility} is an annual `vital` object covering the years 1921-2002 with three values:
+\code{aus_fertility} is an annual \code{vital} object covering the years 1921-2002 with three values:
 \tabular{ll}{
-    Fertility: \tab Fertility rate per woman \cr
-    Exposure:  \tab Population of women at 30 June each year\cr
-    Births:    \tab Number of births \cr
+Fertility: \tab Fertility rate per woman \cr
+Exposure:  \tab Population of women at 30 June each year\cr
+Births:    \tab Number of births \cr
 }
 }
 \details{
 The data is disaggregated using one key:
 \tabular{ll}{
-    Age: \tab Age of mother at time of birth\cr
+Age: \tab Age of mother at time of birth\cr
 }
 The extreme age groups (15 and 49) also include a few younger and older mothers respectively.
 }

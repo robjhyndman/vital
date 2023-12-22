@@ -34,7 +34,7 @@ read_hmd(
 \description{
 \code{read_hmd} reads 1x1 data from the Human Mortality Database (HMD
 \url{https://www.mortality.org}) and constructs a \code{vital} object suitable
-for use in other functions. This function uses \code{\link[HMDHFDplus]{readHMDweb}}
+for use in other functions. This function uses \code{\link[HMDHFDplus:readHMDweb]{HMDHFDplus::readHMDweb()}}
 to download the required data.
 }
 \details{

@@ -9,8 +9,8 @@
 #'
 #' @author Rob J Hyndman
 #' @references Hyndman, Rob J & Shang, Han Lin (2010) Rainbow plots, bagplots,
-#' and boxplots for functional data. \emph{Journal of Computational and Graphical Statistics},
-#' \bold{19}(1), 29-45. \url{https://robjhyndman.com/publications/rainbow-fda/}
+#' and boxplots for functional data. *Journal of Computational and Graphical Statistics*,
+#' **19**(1), 29-45. <https://robjhyndman.com/publications/rainbow-fda/>
 #'
 #' @return A ggplot2 object.
 #'
@@ -44,7 +44,16 @@ autoplot.vital <- function(object, .vars = NULL, ...) {
 #' @author Rob J Hyndman
 #' @export
 autoplot.fbl_vtl_ts <- function(object, ...) {
-  rainbow_plot(object, .vars = ".mean", age = attributes(object)$agevar)
+  # Find first variable to plot
+  keys <- key_vars(object)
+  index <- index_var(object)
+  dist <- attributes(object)$dist
+  to_plot <- colnames(object)
+  to_plot <- to_plot[!(to_plot %in% c(keys, index, dist))]
+  if(length(to_plot) > 1) {
+    warning(paste("Multiple variables to plot. Choosing", to_plot[1]))
+  }
+  rainbow_plot(object, .vars = to_plot[1], age = attributes(object)$agevar)
 }
 
 #' Plot output from a vital model

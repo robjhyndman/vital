@@ -1,24 +1,24 @@
 #' Compute period lifetables from age-specific mortality rates
 #'
 #' All available years and ages are included in the tables.
-#' qx = mx/(1 + ((1-ax) * mx)) as per Chiang (1984).
+#' $qx = mx/(1 + ((1-ax) * mx))$ as per Chiang (1984).
 #' Warning: the code has only been tested for data based on single-year age groups.
 #'
-#' @param .data A \code{vital} including an age variable and a variable containing mortality rates.
+#' @param .data A `vital` including an age variable and a variable containing mortality rates.
 #' @param mortality Variable in `.data` containing Mortality rates (mx). If omitted, the variable with name  `mx`, `Mortality` or `Rate` will be used (not case sensitive).
 #'
 #' @author Rob J Hyndman
 #' @return A vital object containing the index, keys, and the new life table variables `mx`, `qx`, `lx`, `dx`, `Lx`, `Tx` and `ex`.
 #' @rdname life_table
 #'
-#' @references Chiang CL. (1984) \emph{The life table and its applications}. Robert E Krieger Publishing Company: Malabar.
-#' @references Keyfitz, N, and Caswell, H. (2005) \emph{Applied mathematical demography}, Springer-Verlag: New York.
-#' @references Preston, S.H., Heuveline, P., and Guillot, M. (2001) \emph{Demography: measuring and modeling population processes}. Blackwell
+#' @references Chiang CL. (1984) *The life table and its applications*. Robert E Krieger Publishing Company: Malabar.
+#' @references Keyfitz, N, and Caswell, H. (2005) *Applied mathematical demography*, Springer-Verlag: New York.
+#' @references Preston, S.H., Heuveline, P., and Guillot, M. (2001) *Demography: measuring and modeling population processes*. Blackwell
 #'
 #' @examples
-#' # Compute Australia life table for females in 2003
+#' # Compute Victorian life table for females in 2003
 #' aus_mortality |>
-#'   dplyr::filter(Code == "AUS", Sex == "female", Year == 2003) |>
+#'   dplyr::filter(Code == "VIC", Sex == "female", Year == 2003) |>
 #'   life_table()
 #' @export
 
