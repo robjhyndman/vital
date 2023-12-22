@@ -40,24 +40,24 @@ library(ggplot2)
 vic_female <- aus_mortality |>
   filter(State == "Victoria", Sex == "female")
 
-# Lifetable in 2020
+# Lifetable in 2000
 vic_female |> 
-  filter(Year == 2020) |>
+  filter(Year == 2000) |>
   life_table()
 #> # A vital: 101 x 12 [?]
 #> # Key:     Age, Sex, State, Code [101]
 #>     Year Sex   State Code       mx      qx    lx      dx    Lx    Tx    ex   Age
 #>    <int> <chr> <chr> <chr>   <dbl>   <dbl> <dbl>   <dbl> <dbl> <dbl> <dbl> <int>
-#>  1  2020 fema… Vict… VIC   2.52e-3 2.52e-3 1     2.52e-3 0.998  85.9  85.9     0
-#>  2  2020 fema… Vict… VIC   2.14e-4 2.14e-4 0.997 2.14e-4 0.997  84.9  85.2     1
-#>  3  2020 fema… Vict… VIC   5.27e-5 5.27e-5 0.997 5.26e-5 0.997  84.0  84.2     2
-#>  4  2020 fema… Vict… VIC   1.04e-4 1.04e-4 0.997 1.04e-4 0.997  83.0  83.2     3
-#>  5  2020 fema… Vict… VIC   5.06e-5 5.06e-5 0.997 5.04e-5 0.997  82.0  82.2     4
-#>  6  2020 fema… Vict… VIC   0       0       0.997 0       0.997  81.0  81.2     5
-#>  7  2020 fema… Vict… VIC   1.01e-4 1.01e-4 0.997 1.00e-4 0.997  80.0  80.2     6
-#>  8  2020 fema… Vict… VIC   7.50e-5 7.50e-5 0.997 7.48e-5 0.997  79.0  79.2     7
-#>  9  2020 fema… Vict… VIC   1.25e-4 1.25e-4 0.997 1.25e-4 0.997  78.0  78.2     8
-#> 10  2020 fema… Vict… VIC   0       0       0.997 0       0.997  77.0  77.2     9
+#>  1  2000 fema… Vict… VIC   4.02e-3 4.01e-3 1     4.01e-3 0.996  82.6  82.6     0
+#>  2  2000 fema… Vict… VIC   2.70e-4 2.70e-4 0.996 2.69e-4 0.996  81.6  82.0     1
+#>  3  2000 fema… Vict… VIC   3.38e-5 3.38e-5 0.996 3.37e-5 0.996  80.6  81.0     2
+#>  4  2000 fema… Vict… VIC   3.32e-5 3.32e-5 0.996 3.30e-5 0.996  79.6  80.0     3
+#>  5  2000 fema… Vict… VIC   9.83e-5 9.83e-5 0.996 9.79e-5 0.996  78.7  79.0     4
+#>  6  2000 fema… Vict… VIC   9.65e-5 9.65e-5 0.996 9.61e-5 0.996  77.7  78.0     5
+#>  7  2000 fema… Vict… VIC   2.22e-4 2.22e-4 0.995 2.21e-4 0.995  76.7  77.0     6
+#>  8  2000 fema… Vict… VIC   6.32e-5 6.32e-5 0.995 6.29e-5 0.995  75.7  76.0     7
+#>  9  2000 fema… Vict… VIC   3.16e-5 3.16e-5 0.995 3.14e-5 0.995  74.7  75.0     8
+#> 10  2000 fema… Vict… VIC   1.25e-4 1.25e-4 0.995 1.25e-4 0.995  73.7  74.0     9
 #> # ℹ 91 more rows
 
 # Life expectancy
@@ -73,7 +73,7 @@ vic_female |>
 
 # Smoothed data
 vic_female |> 
-  filter(Year == 2010) |> 
+  filter(Year == 2000) |> 
   smooth_mortality(Mortality) |>
   autoplot(Mortality) +
   geom_line(aes(y = .smooth), col = "blue") +
