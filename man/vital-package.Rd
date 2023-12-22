@@ -11,7 +11,7 @@ Functions for analysing vital statistics based on tools consistent with the tidy
 Useful links:
 \itemize{
   \item \url{https://pkg.robjhyndman.com/vital/}
-  \item \url{https://github.com/robjhyndman/vital/}
+  \item \url{https://github.com/robjhyndman/vital}
   \item Report bugs at \url{https://github.com/robjhyndman/vital/issues}
 }
 

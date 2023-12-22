@@ -26,16 +26,13 @@
 #' @references Basellini, U, Camarda, C G, and Booth, H (2022) Thirty years on:
 #' A review of the Lee-Carter method for forecasting mortality.
 #' *International Journal of Forecasting*, **39**(3), 1033-1049.
-#' <https://doi.org/10.1016/j.ijforecast.2022.11.002>
 #' @references Booth, H., Maindonald, J., and Smith, L. (2002) Applying Lee-Carter
 #' under conditions of variable mortality decline. *Population Studies*,
-#' **56**, 325-336. <https://doi.org/10.1080/00324720215935>
+#' **56**, 325-336.
 #' @references Lee, R D, and Carter, L R (1992) Modeling and forecasting US mortality.
 #' *Journal of the American Statistical Association*, **87**, 659-671.
-#' <https://doi.org/10.1080/01621459.1992.10475265>
 #' @references Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
 #' method for forecasting mortality. *Demography*, **38**(4), 537–549.
-#' <https://doi.org/10.1353/dem.2001.0036>
 #' @author Rob J Hyndman
 #' @return A model specification.
 #'
