@@ -19,6 +19,7 @@
 #' is determined by the greatest common divisor of index column, if TRUE.
 #' @param .drop If TRUE, empty key groups are dropped.
 #' @author Rob J Hyndman
+#' @return A tsibble with class \code{vital}.
 #' @examples
 #' # create a vital with only age as a key
 #' vital(
@@ -51,7 +52,7 @@ vital <- function(
 #' @param x Object to be coerced to a vital format.
 #' @param ... Other arguments passed on to \code{\link[tsibble]{as_tsibble}}
 #'
-#' @return A vital object.
+#' @return A tsibble with class \code{vital}.
 #' @author Rob J Hyndman
 #' @rdname as_vital
 #' @seealso \code{\link[tsibble]{tsibble}()}

@@ -5,7 +5,7 @@
 \alias{vital-package}
 \title{vital: Tidy Analysis Tools for Mortality, Fertility, Migration and Population Data}
 \description{
-Functions for analysing vital statistics based on tools consistent with the tidyverse. Tools are provided for data visualization, lifetable calculations, computing net migration numbers, Lee-Carter modelling; functional data modelling and stochastic population forecasting.
+Functions for analysing vital statistics based on tools consistent with the tidyverse. Tools are provided for data visualization, lifetable calculations, computing net migration numbers, Lee-Carter modelling; functional data modelling and forecasting.
 }
 \seealso{
 Useful links:
@@ -18,9 +18,9 @@ Useful links:
 \author{
 \strong{Maintainer}: Rob Hyndman \email{Rob.Hyndman@monash.edu} (\href{https://orcid.org/0000-0002-2140-5352}{ORCID}) [copyright holder]
 
-Authors:
+Other contributors:
 \itemize{
-  \item Mitchell O'Hara-Wild (\href{https://orcid.org/0000-0001-6729-7695}{ORCID})
+  \item Mitchell O'Hara-Wild (\href{https://orcid.org/0000-0001-6729-7695}{ORCID}) [contributor]
 }
 
 }

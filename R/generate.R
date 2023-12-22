@@ -15,6 +15,7 @@
 #' @param seed The seed for the random generation from distributions.
 #' @param ... Additional arguments
 #' @author Rob J Hyndman and Mitchell O'Hara-Wild
+#' @return A vital object with simulated values.
 #' @rdname generate
 #' @examples
 #' aus_mortality |>

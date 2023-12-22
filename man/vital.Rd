@@ -41,6 +41,9 @@ is determined by the greatest common divisor of index column, if TRUE.}
 
 \item{.drop}{If TRUE, empty key groups are dropped.}
 }
+\value{
+A tsibble with class \code{vital}.
+}
 \description{
 A vital object is a type of tsibble that contains vital statistics such as
 births, deaths, and population counts, and mortality and fertility rates.

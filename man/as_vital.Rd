@@ -60,7 +60,7 @@ and \code{c()} for multiple variables. It works with tidy selector
 \item{index}{A variable to specify the time index variable.}
 }
 \value{
-A vital object.
+A tsibble with class \code{vital}.
 }
 \description{
 A vital object is a type of tsibble that contains vital statistics such as births, deaths, and population counts, and mortality and fertility rates.

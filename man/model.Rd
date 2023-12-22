@@ -16,6 +16,9 @@ same response variable.}
 a [NULL model][null_model()] will be returned instead. This allows for an error
 to occur when computing many models, without losing the results of the successful models.}
 }
+\value{
+A mable containing the fitted models.
+}
 \description{
 Trains specified model definition(s) on a dataset. This function will
 estimate the a set of model definitions (passed via `...`) to each series
@@ -42,6 +45,14 @@ Progress on model estimation can be obtained by wrapping the code with
 reported can be controlled using the `progressr` package.
 }
 
+\examples{
+aus_mortality |>
+  dplyr::filter(State == "Victoria", Sex == "female") |>
+  model(
+    naive = FNAIVE(Mortality),
+    mean = FMEAN(Mortality)
+  )
+}
 \author{
 Rob J Hyndman and Mitchell O'Hara-Wild
 }

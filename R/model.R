@@ -31,7 +31,14 @@
 #' Progress on model estimation can be obtained by wrapping the code with
 #' `progressr::with_progress()`. Further customisation on how progress is
 #' reported can be controlled using the `progressr` package.
-#'
+#' @return A mable containing the fitted models.
+#' @examples
+#' aus_mortality |>
+#'   dplyr::filter(State == "Victoria", Sex == "female") |>
+#'   model(
+#'     naive = FNAIVE(Mortality),
+#'     mean = FMEAN(Mortality)
+#'   )
 #' @export
 model.vital <- function(.data, ..., .safely = TRUE) {
   nm <- purrr::map(rlang::enexprs(...), rlang::expr_text)

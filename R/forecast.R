@@ -27,6 +27,11 @@
 #'   `point_forecast` argument.
 #' - All columns in `new_data`, excluding those whose names conflict with the
 #'   above.
+#' @examples
+#' aus_mortality |>
+#'  dplyr::filter(State == "Victoria", Sex == "female") |>
+#'  model(naive = FNAIVE(Mortality)) |>
+#'  forecast(h = 10)
 #'
 #' @rdname forecast
 #' @export

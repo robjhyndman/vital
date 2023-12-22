@@ -29,6 +29,9 @@
 
 \item{...}{Additional arguments}
 }
+\value{
+A vital object with simulated values.
+}
 \description{
 Use a fitted model to simulate future data with similar
 behaviour to the response.
