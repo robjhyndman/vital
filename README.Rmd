@@ -34,8 +34,45 @@ devtools::install_github("robjhyndman/vital")
 
 ```{r example}
 library(vital)
+library(dplyr)
+library(ggplot2)
+
+# Examples using Victorian females
+vic_female <- aus_mortality |>
+  filter(State == "Victoria", Sex == "female")
+
+# Lifetable in 2000
+vic_female |> 
+  filter(Year == 2000) |>
+  life_table()
+
+# Life expectancy
+vic_female |> 
+  life_expectancy() |> 
+  ggplot(aes(x = Year, y = ex)) +
+  geom_line()
+
+# Smoothed data
+vic_female |> 
+  filter(Year == 2000) |> 
+  smooth_mortality(Mortality) |>
+  autoplot(Mortality) +
+  geom_line(aes(y = .smooth), col = "blue") +
+  ylab("Mortality rate") +
+  scale_y_log10()
+
+# Lee-Carter model
+lc <- vic_female |>
+  model(lee_carter = LC(log(Mortality)))
+report(lc)
+
+autoplot(lc)
+
+# Forecasts from Lee-Carter model
+lc |>
+  forecast(h = 20) |>
+  autoplot(Mortality) +
+  ylab("Mortality rate") +
+  scale_y_log10()
 ```
 
-```{r fr.mort, message=FALSE}
-demography::fr.mort |> as_vital()
-```
