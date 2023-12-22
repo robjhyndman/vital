@@ -6,7 +6,13 @@
 #' @param object A mable containing a single model column.
 #' @param new_data A dataset with the same structure as the data used to fit the model.
 #' @param ... Other arguments passed to interpolate methods.
-#'
+#' @return A vital object with missing values interpolated.
+#' @examples
+#' act_female <- aus_mortality |>
+#'  dplyr::filter(Code == "ACTOT", Sex == "female")
+#' act_female |>
+#'  model(mean = FMEAN(Mortality)) |>
+#'  interpolate(act_female)
 #' @rdname interpolate
 #' @author Rob J Hyndman
 #' @export
