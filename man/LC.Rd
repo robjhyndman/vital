@@ -42,19 +42,16 @@ autoplot(lc)
 Basellini, U, Camarda, C G, and Booth, H (2022) Thirty years on:
 A review of the Lee-Carter method for forecasting mortality.
 \emph{International Journal of Forecasting}, \bold{39}(3), 1033-1049.
-\url{https://doi.org/10.1016/j.ijforecast.2022.11.002}
 
 Booth, H., Maindonald, J., and Smith, L. (2002) Applying Lee-Carter
 under conditions of variable mortality decline. \emph{Population Studies},
-\bold{56}, 325-336. \url{https://doi.org/10.1080/00324720215935}
+\bold{56}, 325-336.
 
 Lee, R D, and Carter, L R (1992) Modeling and forecasting US mortality.
 \emph{Journal of the American Statistical Association}, \bold{87}, 659-671.
-\url{https://doi.org/10.1080/01621459.1992.10475265}
 
 Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
   method for forecasting mortality. \emph{Demography}, \bold{38}(4), 537–549.
-\url{https://doi.org/10.1353/dem.2001.0036}
 }
 \author{
 Rob J Hyndman
