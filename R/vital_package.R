@@ -44,6 +44,15 @@ fabletools::report
 #' @export
 fabletools::interpolate
 
+#' @export
+fabletools::tidy
+
+#' @export
+fabletools::augment
+
+#' @export
+fabletools::glance
+
 .onAttach <- function(...) {
   loadNamespace("fabletools")
 }
