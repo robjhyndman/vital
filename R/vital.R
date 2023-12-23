@@ -59,7 +59,7 @@ vital <- function(
 #' @rdname as_vital
 #' @seealso [tsibble::tsibble()]
 #'
-#' @examples
+#' @examplesIf requireNamespace("demography", quietly = TRUE)
 #' # coerce demogdata object to vital
 #' as_vital(demography::fr.mort)
 #' @export

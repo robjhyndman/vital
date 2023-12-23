@@ -34,24 +34,25 @@ test_that("Lee Carter", {
   expect_error(age_components(lc))
 
   # Compare against demography
-  library(demography)
-  library(dplyr)
-  lc1 <- demography::lca(fr.mort, series = 'female')
-  lc2 <- as_vital(fr.mort) |>
-    filter(Sex == "female") |>
-    collapse_ages(max_age = 100) |>
-    model(LC(log(Mortality), jump="actual"))
-  expect_true(sum(abs(lc1$kt- time_components(lc2)$kt)) < 0.0018)
-  expect_true(sum(abs(lc1$ax - age_components(lc2)$ax)) < 1e-10)
-  expect_true(sum(abs(lc1$bx - age_components(lc2)$bx)) < 1e-10)
-  fc1 <- forecast(lc1, jump="actual", h=10)
-  fc2 <- forecast(lc2, point_forecast = list(.median=median), h=10)
-  expect_true(
-    sum(abs(
-      fc1$rate$female[,10] -
-      fc2 |> filter(Year == 2016, Sex == "female") |> pull(.median)
-    )) < 1e-7
-  )
+  if(requireNamespace("demography", quietly = TRUE)) {
+    library(dplyr)
+    lc1 <- demography::lca(demography::fr.mort, series = 'female')
+    lc2 <- as_vital(demography::fr.mort) |>
+      filter(Sex == "female") |>
+      collapse_ages(max_age = 100) |>
+      model(LC(log(Mortality), jump="actual"))
+    expect_true(sum(abs(lc1$kt- time_components(lc2)$kt)) < 0.0018)
+    expect_true(sum(abs(lc1$ax - age_components(lc2)$ax)) < 1e-10)
+    expect_true(sum(abs(lc1$bx - age_components(lc2)$bx)) < 1e-10)
+    fc1 <- forecast(lc1, jump="actual", h=10)
+    fc2 <- forecast(lc2, point_forecast = list(.median=median), h=10)
+    expect_true(
+      sum(abs(
+        fc1$rate$female[,10] -
+        fc2 |> filter(Year == 2016, Sex == "female") |> pull(.median)
+      )) < 1e-7
+    )
+  }
 
   # Test LC on fertility
   expect_no_error(aus_fertility |>

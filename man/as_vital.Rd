@@ -70,8 +70,10 @@ The object has an attribute that stores variables names needed for some
 functions, including age, sex, births, deaths and population.
 }
 \examples{
+\dontshow{if (requireNamespace("demography", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # coerce demogdata object to vital
 as_vital(demography::fr.mort)
+\dontshow{\}) # examplesIf}
 # create a vital with only age as a key
 tibble::tibble(
   year = rep(2010:2015, 100),
