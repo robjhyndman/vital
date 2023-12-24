@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# vital
+# vital  <img src="man/figures/vital-hex.png" align="right" width = 150 />
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/robjhyndman/vital/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/robjhyndman/vital/actions/workflows/R-CMD-check.yaml)

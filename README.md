@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# vital
+# vital <img src="man/figures/vital-hex.png" align="right" width = 150 />
 
 <!-- badges: start -->
 

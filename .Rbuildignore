@@ -1,9 +1,10 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^README\.Rmd$
 ^data-raw$
+^cran-comments\.md$
+^README\.Rmd$
 ^\.github$
 ^docs$
 _pkgdown.yml
 ^pkgdown$
-^cran-comments\.md$
+^CRAN-SUBMISSION$
