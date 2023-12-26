@@ -60,13 +60,13 @@ smoothed values, and <code>.smooth_se</code> containing the corresponding standa
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">smooth_spline</span><span class="op">(</span><span class="va">.data</span>, <span class="va">.var</span>, k <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, weights <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">smooth_spline</span><span class="op">(</span><span class="va">.data</span>, <span class="va">.var</span>, age_spacing <span class="op">=</span> <span class="fl">1</span>, k <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">smooth_mortality</span><span class="op">(</span><span class="va">.data</span>, <span class="va">.var</span>, b <span class="op">=</span> <span class="fl">65</span>, power <span class="op">=</span> <span class="fl">0.4</span>, k <span class="op">=</span> <span class="fl">30</span>, weights <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="fu">smooth_mortality</span><span class="op">(</span><span class="va">.data</span>, <span class="va">.var</span>, age_spacing <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="fl">65</span>, power <span class="op">=</span> <span class="fl">0.4</span>, k <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">smooth_fertility</span><span class="op">(</span><span class="va">.data</span>, <span class="va">.var</span>, lambda <span class="op">=</span> <span class="fl">1e-10</span><span class="op">)</span></span>
+<span><span class="fu">smooth_fertility</span><span class="op">(</span><span class="va">.data</span>, <span class="va">.var</span>, age_spacing <span class="op">=</span> <span class="fl">1</span>, lambda <span class="op">=</span> <span class="fl">1e-10</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">smooth_loess</span><span class="op">(</span><span class="va">.data</span>, <span class="va">.var</span>, span <span class="op">=</span> <span class="fl">0.2</span>, weights <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">smooth_loess</span><span class="op">(</span><span class="va">.data</span>, <span class="va">.var</span>, age_spacing <span class="op">=</span> <span class="fl">1</span>, span <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -79,12 +79,12 @@ smoothed values, and <code>.smooth_se</code> containing the corresponding standa
 <dd><p>name of variable to smooth</p></dd>
 
 
+<dt>age_spacing</dt>
+<dd><p>Spacing between ages for smoothed vital. Default is 1.</p></dd>
+
+
 <dt>k</dt>
 <dd><p>Number of knots to use for penalized regression spline estimate.</p></dd>
-
-
-<dt>weights</dt>
-<dd><p>Vector of weights.</p></dd>
 
 
 <dt>b</dt>
@@ -146,7 +146,7 @@ mortality and fertility rates: a functional data approach.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A vital: 12,120 x 10 [1Y]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Key:     Age, Sex, State, Code [101]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Year   Age Sex    State   Code  Mortality Exposure Deaths .smooth .smooth_se</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl[1&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl[1d]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl[1&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl[1d]&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">1</span>901     0 female Victor… VIC     0.100      <span style="text-decoration: underline;">13</span>993   <span style="text-decoration: underline;">1</span>405 0.100     0.002<span style="text-decoration: underline;">58</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">1</span>901     1 female Victor… VIC     0.023<span style="text-decoration: underline;">5</span>     <span style="text-decoration: underline;">13</span>079    308 0.023<span style="text-decoration: underline;">3</span>    0.001<span style="text-decoration: underline;">26</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">1</span>901     2 female Victor… VIC     0.008<span style="text-decoration: underline;">06</span>    <span style="text-decoration: underline;">12</span>409    100 0.008<span style="text-decoration: underline;">30</span>   0.000<span style="text-decoration: underline;">683</span></span>
@@ -163,7 +163,7 @@ mortality and fertility rates: a functional data approach.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A vital: 3,010 x 7 [1Y]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Key:     Age [35]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Year   Age Fertility Exposure Births .smooth .smooth_se</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">1</span>921    15   0.001<span style="text-decoration: underline;">75</span>    <span style="text-decoration: underline;">49</span>228   86.1 0.001<span style="text-decoration: underline;">14</span>      0.387</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">1</span>921    16   0.006<span style="text-decoration: underline;">85</span>    <span style="text-decoration: underline;">47</span>779  327.  0.006<span style="text-decoration: underline;">85</span>      0.345</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">1</span>921    17   0.018<span style="text-decoration: underline;">3</span>     <span style="text-decoration: underline;">45</span>894  839.  0.019<span style="text-decoration: underline;">3</span>       0.307</span>
