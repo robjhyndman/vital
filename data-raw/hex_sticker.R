@@ -12,17 +12,16 @@ library(vital)
 fr_sm <- as_vital(demography::fr.mort) |>
   smooth_mortality(Mortality) |>
   dplyr::filter(Sex == "male") |>
-  collapse_ages(max_age = 95) |>
   dplyr::select(-Sex)
 
 fr_sm |>
-  dplyr::filter(Age < 95) |>
+  collapse_ages(max_age = 80) |>
   ggplot(aes(x = Age, y = .smooth, col = Year, group = Year)) +
   geom_line(linewidth = 1) +
   scale_color_gradientn(colours = rainbow(10)) +
   guides(col = "none") +
   theme_void() +
-  xlim(-10, 100) +
+  xlim(-3, 80) +
   scale_y_log10(limits = c(exp(-13),1))
 
 hex_scatter <- tempfile(fileext = ".png")
@@ -30,8 +29,8 @@ ggsave(hex_scatter, height = 6, width = 6)
 
 img_cropped <- hex_crop(
   images = hex_scatter,
-  bg_fill = "#234460",
-  border_colour = "#57abef",
+  bg_fill = "#666",
+  border_colour = "#555",
   border_size = 72
 )
 
