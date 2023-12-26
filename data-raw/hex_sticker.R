@@ -16,6 +16,7 @@ fr_sm <- as_vital(demography::fr.mort) |>
   dplyr::select(-Sex)
 
 fr_sm |>
+  dplyr::filter(Age < 95) |>
   ggplot(aes(x = Age, y = .smooth, col = Year, group = Year)) +
   geom_line(linewidth = 1) +
   scale_color_gradientn(colours = rainbow(10)) +
