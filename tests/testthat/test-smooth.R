@@ -4,7 +4,7 @@ test_that("smoothing functions", {
     smooth_fertility(Fertility)
   expect_equal(colnames(sm), c("Year","Age","Fertility","Exposure","Births",".smooth",".smooth_se"))
   sm <- aus_mortality |>
-    filter(Code == "NSW", Year <= 1910, Sex == "male") |>
+    dplyr::filter(Code == "NSW", Year <= 1910, Sex == "male") |>
     smooth_mortality(Mortality)
   expect_equal(dim(sm), c(1010L, 10L))
   expect_no_error(autoplot(sm, .smooth) + ggplot2::scale_y_log10())
@@ -30,6 +30,11 @@ test_that("smoothing functions", {
       dplyr::filter(Year == 1945) |>
       pull(.smooth)
     expect_true(sum(abs(c(test1)-test2)) < 1e-4)
+    sm2 <- smooth_fertility(
+      as_vital(aus.fert) |> dplyr::filter(Year == 1960),
+      Fertility
+    )
+    expect_equal(NROW(sm2), 31L)
   }
 })
 

@@ -7,18 +7,20 @@
 \alias{smooth_loess}
 \title{Functions to smooth demographic data}
 \usage{
-smooth_spline(.data, .var, k = -1)
+smooth_spline(.data, .var, age_spacing = 1, k = -1)
 
-smooth_mortality(.data, .var, b = 65, power = 0.4, k = 30)
+smooth_mortality(.data, .var, age_spacing = 1, b = 65, power = 0.4, k = 30)
 
-smooth_fertility(.data, .var, lambda = 1e-10)
+smooth_fertility(.data, .var, age_spacing = 1, lambda = 1e-10)
 
-smooth_loess(.data, .var, span = 0.2)
+smooth_loess(.data, .var, age_spacing = 1, span = 0.2)
 }
 \arguments{
 \item{.data}{A vital object}
 
 \item{.var}{name of variable to smooth}
+
+\item{age_spacing}{Spacing between ages for smoothed vital. Default is 1.}
 
 \item{k}{Number of knots to use for penalized regression spline estimate.}
 
