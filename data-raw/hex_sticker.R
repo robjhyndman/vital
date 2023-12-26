@@ -22,7 +22,7 @@ fr_sm |>
   guides(col = "none") +
   theme_void() +
   xlim(-3, 80) +
-  scale_y_log10(limits = c(exp(-13),1))
+  scale_y_log10(limits = c(exp(-13),4))
 
 hex_scatter <- tempfile(fileext = ".png")
 ggsave(hex_scatter, height = 6, width = 6)
