@@ -14,14 +14,15 @@ fr_sm <- as_vital(demography::fr.mort) |>
   dplyr::filter(Sex == "male") |>
   collapse_ages(max_age = 95) |>
   dplyr::select(-Sex)
+
 fr_sm |>
-  ggplot(aes(x = Age, y = Mortality, group = Year)) +
-  geom_line(linewidth = 2) +
+  ggplot(aes(x = Age, y = .smooth, col = Year, group = Year)) +
+  geom_line(linewidth = 1) +
+  scale_color_gradientn(colours = rainbow(10)) +
   guides(col = "none") +
   theme_void() +
   xlim(-10, 100) +
   scale_y_log10(limits = c(exp(-13),1))
-
 
 hex_scatter <- tempfile(fileext = ".png")
 ggsave(hex_scatter, height = 6, width = 6)
