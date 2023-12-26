@@ -228,17 +228,18 @@ smooth_vital <- function(.data, .var, smooth_fn, ...) {
 		stop("No age variable found")
 	}
 	# Drop Age as a key and nest results
-	keys_noage <- keys[keys != age]
+	keys_noage <- keys[!(keys %in% c(age, "AgeGroup", "Age_Group"))]
 	# Turn .var into character
 	resp <- names(eval_select(enquo(.var), data = .data))
-	nested_data <- tidyr::nest(.data, .by = tidyselect::all_of(c(index, keys_noage)))
+	nested_data <- tidyr::nest(as_tibble(.data), .by = tidyr::all_of(c(index, keys_noage)))
 	smooth <- purrr::map(nested_data[["data"]], \(x) smooth_fn(x, var = resp, age = age, ...))
 	nested_data$sm <- smooth
 	nested_data$data <- NULL
 	out <- tibble::as_tibble(nested_data) |>
 		tidyr::unnest(cols = sm)
-	.data |>
-		left_join(out, by = c(index, keys)) |>
+	as_tibble(.data) |>
+		left_join(out, by = c(index, keys_noage, age)) |>
+	  as_tsibble(index = index, key = all_of(keys)) |>
 		as_vital(
 			index = index,
 			key = all_of(keys),
