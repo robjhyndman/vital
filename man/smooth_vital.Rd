@@ -7,13 +7,13 @@
 \alias{smooth_loess}
 \title{Functions to smooth demographic data}
 \usage{
-smooth_spline(.data, .var, k = -1, weights = NULL)
+smooth_spline(.data, .var, k = -1)
 
-smooth_mortality(.data, .var, b = 65, power = 0.4, k = 30, weights = NULL)
+smooth_mortality(.data, .var, b = 65, power = 0.4, k = 30)
 
 smooth_fertility(.data, .var, lambda = 1e-10)
 
-smooth_loess(.data, .var, span = 0.2, weights = NULL)
+smooth_loess(.data, .var, span = 0.2)
 }
 \arguments{
 \item{.data}{A vital object}
@@ -21,8 +21,6 @@ smooth_loess(.data, .var, span = 0.2, weights = NULL)
 \item{.var}{name of variable to smooth}
 
 \item{k}{Number of knots to use for penalized regression spline estimate.}
-
-\item{weights}{Vector of weights.}
 
 \item{b}{Lower age for monotonicity. Above this, the smooth curve is assumed to be monotonically increasing.}
 
