@@ -20,12 +20,16 @@ test_that("smoothing functions", {
     library(demography)
     sm1 <- smooth.demogdata(fr.mort |> extract.years(1945))
     expect_error(smooth_mortality(as_vital(fr.mort)))
-    sm2 <- smooth_mortality(as_vital(fr.mort |> extract.years(1945)) |> filter(Sex == "male"), Mortality)
+    sm2 <- smooth_mortality(
+      as_vital(fr.mort) |> dplyr::filter(Year == 1945, Sex == "male"),
+      Mortality
+    ) |>
+      dplyr::select(.smooth)
     test1 <- extract.years(sm1, 1945)$rate$male
     test2 <- sm2 |>
-      filter(Year == 1945) |>
+      dplyr::filter(Year == 1945) |>
       pull(.smooth)
-    #expect_true(sum(abs(test1-test2)) < 1e-3)
+    expect_true(sum(abs(c(test1)-test2)) < 1e-4)
   }
 })
 

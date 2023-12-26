@@ -17,7 +17,6 @@
 #' @param k Number of knots to use for penalized regression spline estimate.
 #' @param span Span for loess smooth.
 #' @param lambda Penalty for constrained regression spline.
-#' @param weights Vector of weights.
 #' @return vital with added columns containing smoothed values and their standard errors
 #' @references Hyndman, R.J., and Ullah, S. (2007) Robust forecasting of
 #' mortality and fertility rates: a functional data approach.
@@ -35,12 +34,13 @@
 #' aus_fertility |>
 #' 	smooth_fertility(Fertility)
 #' @export
-smooth_spline <- function(.data, .var, k = -1, weights = NULL) {
-	smooth_vital(.data, {{ .var }}, smooth_spline_x, k = k, weights = weights)
+smooth_spline <- function(.data, .var, k = -1) {
+	smooth_vital(.data, {{ .var }}, smooth_spline_x, k = k)
 }
 
-smooth_spline_x <- function(data, var, age, k = -1, weights = NULL) {
+smooth_spline_x <- function(data, var, age, popvar, k = -1) {
 	# smoothing with penalized spline
+  weights <- smooth_weights(data, var, popvar, 1)
 	form <- as.formula(paste(var, "~ s(", age, ",k =", k, ")"))
 	fit <- mgcv::gam(form, weights = weights, data = data)
 	out <- as_tibble(mgcv::predict.gam(fit, se.fit = TRUE))
@@ -57,11 +57,11 @@ smooth_spline_x <- function(data, var, age, k = -1, weights = NULL) {
 
 #' @rdname smooth_vital
 #' @export
-smooth_mortality <- function(.data, .var, b = 65, power = 0.4, k = 30, weights = NULL) {
-	smooth_vital(.data, {{ .var }}, smooth_mortality_x, b = b, power = power, k = k, weights = weights)
+smooth_mortality <- function(.data, .var, b = 65, power = 0.4, k = 30) {
+	smooth_vital(.data, {{ .var }}, smooth_mortality_x, b = b, power = power, k = k)
 }
 
-smooth_mortality_x <- function(data, var, age, b = 65, power = 0.4, k = 30, weights = NULL) {
+smooth_mortality_x <- function(data, var, age, popvar, b = 65, power = 0.4, k = 30) {
 	y <- data[[var]]
 	x <- data[[age]]
 	if (sum(!is.na(y)) < 3) {
@@ -73,10 +73,11 @@ smooth_mortality_x <- function(data, var, age, b = 65, power = 0.4, k = 30, weig
 	} else {
 	  x_trans <- x^power
 		y_trans <- log(y + 0.0000001)
+		weights <- smooth_weights(data, var, popvar, lambda = 0)
 		smooth.fit <- smooth.monotonic(x_trans, y_trans, b^power, w = weights, k = k)
 		out <- tibble(
 			age = x,
-			.smooth = exp(smooth.fit$fit) * (1 + 0.5 * smooth.fit$se.fit^2),
+			.smooth = exp(smooth.fit$fit), #* (1 + 0.5 * smooth.fit$se.fit^2),
 			.smooth_se = exp(smooth.fit$fit) * smooth.fit$se.fit
 		)
 	}
@@ -90,11 +91,12 @@ smooth_fertility <- function(.data, .var, lambda = 1e-10) {
 	smooth_vital(.data, {{ .var }}, smooth_fertility_x, lambda = lambda)
 }
 
-smooth_fertility_x <- function(data, var, age, lambda = 1e-10) {
+smooth_fertility_x <- function(data, var, age, popvar, lambda = 1e-10) {
 	y <- data[[var]]
 	x <- data[[age]]
 	y_trans <- y^0.4
-	smooth_y <- fert.curve(x, y_trans, lambda)
+	weights <- smooth_weights(data, var, popvar, lambda = 0.4)
+	smooth_y <- fert.curve(x, y_trans, weights, lambda)
 	out <- tibble(
 		age = x,
 		.smooth = smooth_y$fit^2.5,
@@ -106,13 +108,14 @@ smooth_fertility_x <- function(data, var, age, lambda = 1e-10) {
 
 #' @rdname smooth_vital
 #' @export
-smooth_loess <- function(.data, .var, span = 0.2, weights = NULL) {
+smooth_loess <- function(.data, .var, span = 0.2) {
 	smooth_vital(.data, {{ .var }}, smooth_loess_x, span = span)
 }
 
-smooth_loess_x <- function(data, var, age, span = 0.2, weights = NULL) {
+smooth_loess_x <- function(data, var, age, popvar, span = 0.2) {
 	x <- data[[age]]
 	y <- data[[var]]
+	weights <- smooth_weights(data, var, popvar, lambda = 0)
 	fit <- stats::loess(y ~ x, span = span, degree = 2, weights = weights, surface = "direct")
 	smooth_y <- predict(fit, se = TRUE)
 	out <- tibble(
@@ -126,12 +129,14 @@ smooth_loess_x <- function(data, var, age, span = 0.2, weights = NULL) {
 
 # Concave smoothing of fertility data
 
-fert.curve <- function(x, y, lambda = 1, ...) {
+fert.curve <- function(x, y, w, lambda = 1, ...) {
+  w <- w / sum(w)
 	oldwarn <- options(warn = -1)
 	fred <- stats::predict(
 		cobs::cobs(
 			x,
 			y,
+			w = w,
 			constraint = "concave",
 			lambda = lambda,
 			print.warn = FALSE,
@@ -227,12 +232,13 @@ smooth_vital <- function(.data, .var, smooth_fn, ...) {
 	if (is.null(age)) {
 		stop("No age variable found")
 	}
+	pop <- attrx$populationvar
 	# Drop Age as a key and nest results
 	keys_noage <- keys[!(keys %in% c(age, "AgeGroup", "Age_Group"))]
 	# Turn .var into character
 	resp <- names(eval_select(enquo(.var), data = .data))
 	nested_data <- tidyr::nest(as_tibble(.data), .by = tidyr::all_of(c(index, keys_noage)))
-	smooth <- purrr::map(nested_data[["data"]], \(x) smooth_fn(x, var = resp, age = age, ...))
+	smooth <- purrr::map(nested_data[["data"]], \(x) smooth_fn(x, var = resp, age = age, pop = pop, ...))
 	nested_data$sm <- smooth
 	nested_data$data <- NULL
 	out <- tibble::as_tibble(nested_data) |>
@@ -253,29 +259,15 @@ smooth_vital <- function(.data, .var, smooth_fn, ...) {
 }
 
 
-use_weight_mortality <- function(data, type=c("mortality", "fertility")) {
-  type = match.arg(type)
-  attrx <- attributes(data)
-  if(is.null(attrx$populationvar)) {
-    warning("No population variable found, so weighting not used.")
-    return(data)
-  }
-  data[[attrx$populationvar]] <- data[[attrx$populationvar]]/ max(data[[attrx$populationvar]])
-  if(type=="fertility") {
-    data$.weights <- data[[attrx$populationvar]] * rate^(1-2*data$lambda)
-  }
-  data$.weights = data[[attrx$populationvar]]
-  if(mean(data$.weights, na.rm=TRUE) < 0)
+smooth_weights <- function(data, var, popvar, lambda) {
+  rate <- data[[var]]
+  pop <- data[[popvar]]
+  pop <- pop/max(pop, na.rm = TRUE)
+  weight <- pop * rate^(1 - 2*lambda)
+  if (mean(weight, na.rm = TRUE) < 0)
     stop("There's a problem. Do you have negative rates?")
-
-    #w[[i]][w[[i]] > 1e9] <- 0
-    #w[[i]][w[[i]] < 0] <- 0
-    #w[[i]][log(rate) > -1e-9] <- 0
-    #w[[i]] <- apply(w[[i]],2,standardize,sumx=rate.dim[1])
-    #w[[i]][is.na(w[[i]])] <- 0
-
-    return(data)
+  weight[weight < 0 | is.na(weight) | abs(weight) > 1e50] <- 0
+  return(weight / sum(weight, na.rm = TRUE))
 }
-
 
 utils::globalVariables(c("sm","rate"))
