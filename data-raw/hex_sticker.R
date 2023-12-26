@@ -9,12 +9,14 @@ font_add_google("Fira Sans", "firasans")
 showtext_auto()
 
 library(vital)
-as_vital(demography::fr.mort) |>
-  dplyr::filter(Year %in% c(1916, 2000), Sex == "male") |>
+fr_sm <- as_vital(demography::fr.mort) |>
+  smooth_mortality(Mortality) |>
+  dplyr::filter(Sex == "male") |>
   collapse_ages(max_age = 95) |>
-  dplyr::select(-Sex) |>
+  dplyr::select(-Sex)
+fr_sm |>
   ggplot(aes(x = Age, y = Mortality, group = Year)) +
-  geom_line(size = 2, col = "white") +
+  geom_line(linewidth = 2) +
   guides(col = "none") +
   theme_void() +
   xlim(-10, 100) +
