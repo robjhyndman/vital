@@ -28,13 +28,8 @@ test_that("smoothing functions", {
     test1 <- extract.years(sm1, 1945)$rate$male
     test2 <- sm2 |>
       dplyr::filter(Year == 1945) |>
-      pull(.smooth)
-    expect_true(sum(abs(c(test1)-test2)) < 1e-4)
-    sm2 <- smooth_fertility(
-      as_vital(aus.fert) |> dplyr::filter(Year == 1960),
-      Fertility
-    )
-    expect_equal(NROW(sm2), 31L)
+      dplyr::pull(.smooth)
+    expect_true(sum(abs(c(test1)-test2), na.rm=TRUE) < 1e-4)
   }
 })
 

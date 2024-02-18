@@ -80,7 +80,7 @@ smooth_mortality_x <- function(data, var, age_spacing, age, popvar, b = 65, powe
 	out <- tibble(
 		age = age_grid,
 		.smooth = exp(smooth.fit$fit), #* (1 + 0.5 * smooth.fit$se.fit^2),
-		.smooth_se = exp(smooth.fit$fit) * smooth.fit$se.fit
+		.smooth_se = .smooth * smooth.fit$se.fit
 	)
 	colnames(out)[1] <- age
 	return(out)
@@ -95,14 +95,14 @@ smooth_fertility <- function(.data, .var, age_spacing = 1, lambda = 1e-10) {
 smooth_fertility_x <- function(data, var, age_spacing, age, popvar, lambda = 1e-10) {
 	y <- data[[var]]
 	x <- data[[age]]
-	y_trans <- y^0.4
+	y_trans <- log(y + 0.0000001)
 	age_grid <- seq(min(data[[age]]), max(data[[age]]), by = age_spacing)
-  weights <- smooth_weights(data, var, popvar, lambda = 0.4)
+  weights <- smooth_weights(data, var, popvar, lambda = 0)
 	smooth_y <- fert.curve(x, y_trans, weights, lambda, age_grid)
 	out <- tibble(
 		age = age_grid,
-		.smooth = smooth_y$fit^2.5,
-		.smooth_se = smooth_y$se
+		.smooth = exp(smooth_y$fit),
+		.smooth_se = .smooth * smooth_y$se
 	)
 	colnames(out)[1] <- age
 	return(out[c(age, ".smooth", ".smooth_se")])
@@ -117,7 +117,7 @@ smooth_loess <- function(.data, .var, age_spacing = 1, span = 0.2) {
 smooth_loess_x <- function(data, var, age_spacing, age, popvar, span = 0.2) {
 	x <- data[[age]]
 	y <- data[[var]]
-	weights <- smooth_weights(data, var, popvar, lambda = 0)
+	weights <- smooth_weights(data, var, popvar, lambda = 1)
 	fit <- stats::loess(y ~ x, span = span, degree = 2, weights = weights, surface = "direct")
 	age_grid <- seq(min(data[[age]]), max(data[[age]]), by = age_spacing)
 	smooth_y <- predict(fit, se = TRUE, newdata = data.frame(x = age_grid))
