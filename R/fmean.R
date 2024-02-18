@@ -167,6 +167,7 @@ autoplot.FMEAN <- function(object, age = "Age",...) {
   p
 }
 
+#' @export
 interpolate.FMEAN <- function (object, new_data, specials, ...) {
   attrx <- attributes(new_data)
   keyvar <- key_vars(new_data)

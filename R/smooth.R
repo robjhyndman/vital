@@ -281,4 +281,4 @@ smooth_weights <- function(data, var, popvar, lambda) {
   return(weight / sum(weight, na.rm = TRUE))
 }
 
-utils::globalVariables(c("sm","rate"))
+utils::globalVariables(c("sm","rate", ".smooth"))

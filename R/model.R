@@ -203,6 +203,7 @@ list_of_models <- function(x = list()) {
   vctrs::new_vctr(x, class = "lst_mdl")
 }
 
+#' @export
 estimate.vital <- function(.data, .model, sex, ...) {
   if (!inherits(.model, "mdl_defn")) {
     abort("Model definition incorrectly created. Check that specified model(s) are model definitions.")

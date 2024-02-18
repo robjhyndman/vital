@@ -11,6 +11,7 @@
 \alias{interpolate}
 \alias{tidy}
 \alias{augment}
+\alias{estimate}
 \alias{glance}
 \title{Objects exported from other packages}
 \keyword{internal}
@@ -19,7 +20,7 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{fabletools}{\code{\link[fabletools:reexports]{augment}}, \code{\link[fabletools:reexports]{glance}}, \code{\link[fabletools:reexports]{interpolate}}, \code{\link[fabletools]{model}}, \code{\link[fabletools]{report}}, \code{\link[fabletools:reexports]{tidy}}}
+  \item{fabletools}{\code{\link[fabletools:reexports]{augment}}, \code{\link[fabletools]{estimate}}, \code{\link[fabletools:reexports]{glance}}, \code{\link[fabletools:reexports]{interpolate}}, \code{\link[fabletools]{model}}, \code{\link[fabletools]{report}}, \code{\link[fabletools:reexports]{tidy}}}
 
   \item{generics}{\code{\link[generics]{forecast}}, \code{\link[generics]{generate}}}
 

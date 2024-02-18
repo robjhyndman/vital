@@ -19,6 +19,7 @@ Imports:
   fable,
   fabletools (>= 0.3.3),
   future.apply,
+  generics,
   ggplot2,
   HMDHFDplus (>= 2.0.3),
   mgcv,
@@ -39,6 +40,6 @@ License: GPL-3
 URL: https://pkg.robjhyndman.com/vital/, https://github.com/robjhyndman/vital
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Roxygen: list(markdown = TRUE)
 BugReports: https://github.com/robjhyndman/vital/issues

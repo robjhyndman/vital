@@ -51,6 +51,9 @@ fabletools::tidy
 fabletools::augment
 
 #' @export
+fabletools::estimate
+
+#' @export
 fabletools::glance
 
 .onAttach <- function(...) {
