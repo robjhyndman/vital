@@ -290,10 +290,10 @@ lca <- function(data, sex, age, rates, pop, deaths,
     }
   } else if (adjust == "e0") {
     # Fit to life expectancy
-    stop("Not yet working")
+    #stop("Not yet working")
     startage <- min(data[[age]])
     agegroup <- ages[4] - ages[3]
-
+    mx <- exp(logrates)
     e0 <- apply(mx, 1, get.e0, agegroup = ages, sex = sex, startage = startage)
     FUN2 <- function(p, e0i, ax, bx, ages, sex, startage) {
       e0i - estimate_e0(p, ax, bx, ages, sex, startage)

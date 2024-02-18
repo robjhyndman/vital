@@ -37,8 +37,9 @@ test_that("Lee Carter", {
   if(requireNamespace("demography", quietly = TRUE)) {
     library(dplyr)
     lc1 <- demography::lca(demography::fr.mort, series = 'female')
+    # with jump = actual
     lc2 <- as_vital(demography::fr.mort) |>
-      filter(Sex == "female") |>
+      dplyr::filter(Sex == "female") |>
       collapse_ages(max_age = 100) |>
       model(LC(log(Mortality), jump="actual"))
     expect_true(sum(abs(lc1$kt- time_components(lc2)$kt)) < 0.0018)
@@ -49,9 +50,51 @@ test_that("Lee Carter", {
     expect_true(
       sum(abs(
         fc1$rate$female[,10] -
-        fc2 |> filter(Year == 2016, Sex == "female") |> pull(.median)
+        fc2 |> dplyr::filter(Year == 2016, Sex == "female") |> dplyr::pull(.median)
       )) < 1e-7
     )
+    # with jump = fit
+    lc3 <- as_vital(demography::fr.mort) |>
+      dplyr::filter(Sex == "female") |>
+      collapse_ages(max_age = 100) |>
+      model(LC(log(Mortality), jump="fit"))
+    expect_identical(time_components(lc3), time_components(lc2))
+    expect_identical(age_components(lc2), age_components(lc3))
+    fc1 <- forecast(lc1, jump="fit", h=10)
+    fc3 <- forecast(lc3, point_forecast = list(.median=median), h=10)
+    expect_true(
+      sum(abs(
+        fc1$rate$female[,10] -
+          fc3 |> dplyr::filter(Year == 2016, Sex == "female") |> dplyr::pull(.median)
+      )) < 1e-7
+    )
+    # with adjust = dxt
+    lc1 <- demography::lca(demography::fr.mort, series = "female", adjust = "dxt")
+    lc2 <- as_vital(demography::fr.mort) |>
+      dplyr::filter(Sex == "female") |>
+      collapse_ages(max_age = 100) |>
+      model(LC(log(Mortality), adjust = "dxt"))
+    expect_identical(age_components(lc2), age_components(lc3))
+    expect_false(identical(time_components(lc2), time_components(lc3)))
+    expect_true(sum(abs(lc1$kt- time_components(lc2)$kt)) < 1e-10)
+    # with adjust = e0
+    lc1 <- demography::lca(demography::fr.mort, series = "female", adjust = "e0")
+    lc2 <- as_vital(demography::fr.mort) |>
+      dplyr::filter(Sex == "female") |>
+      collapse_ages(max_age = 100) |>
+      model(LC(log(Mortality), adjust = "e0"))
+    expect_identical(age_components(lc2), age_components(lc3))
+    expect_false(identical(time_components(lc2), time_components(lc3)))
+    expect_true(sum(abs(lc1$kt- time_components(lc2)$kt)) < 0.61)
+    # with adjust = none
+    lc1 <- demography::lca(demography::fr.mort, series = "female", adjust = "none")
+    lc2 <- as_vital(demography::fr.mort) |>
+      dplyr::filter(Sex == "female") |>
+      collapse_ages(max_age = 100) |>
+      model(LC(log(Mortality), adjust = "none"))
+    expect_identical(age_components(lc2), age_components(lc3))
+    expect_false(identical(time_components(lc2), time_components(lc3)))
+    expect_true(sum(abs(lc1$kt- time_components(lc2)$kt)) < 1e-10)
   }
 
   # Test LC on fertility
