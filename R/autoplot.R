@@ -5,6 +5,7 @@
 #'
 #' @param object A vital including an age variable and the variable you wish to plot.
 #' @param .vars The name of the variable you wish to plot.
+#' @param age The name of the age variable. If not supplied, the function will attempt to find it.
 #' @param ... Further arguments not used.
 #'
 #' @author Rob J Hyndman
@@ -17,11 +18,75 @@
 #' @examples
 #' autoplot(aus_fertility, Fertility)
 #' @export
-autoplot.vital <- function(object, .vars = NULL, ...) {
-  if(!quo_is_null(enquo(.vars))) {
-    .vars <- as_name(enquo(.vars))
+autoplot.vital <- function(object, .vars = NULL, age = attributes(object)$agevar,...) {
+  quo_vars <- enquo(.vars)
+
+  # Index variable
+  index <- tsibble::index_var(object)
+
+  # Age variable
+  if(!is.null(age)) {
+    if(inherits(object, "vital")) {
+      age <- attributes(object)$agevar
+      if(is.null(age)) {
+        stop("No age variable found")
+      }
+    } else if(inherits(object, "tbl_ts")) {
+      # Need to find the age variable
+      age <- find_key(object, c("age", "age_group"))
+    } else {
+      stop("Not sure how to handle this class")
+    }
   }
-  rainbow_plot(object, .vars = .vars, age = attributes(object)$agevar)
+
+  # Drop Age as a key and nest results
+  kv <- tsibble::key_vars(object)
+  kv <- kv[!(kv %in% c(age, "Age", "AgeGroup", "Age_Group"))]
+  nk <- length(kv)
+
+  # Variable to plot
+  if(quo_is_null(quo_vars)){
+    mv <- tsibble::measured_vars(object)
+    pos <- which(vapply(object[mv], is.numeric, logical(1L)))
+    if(is_empty(pos)) {
+      abort("Could not automatically identify an appropriate plot variable, please specify the variable to plot.")
+    }
+    inform(sprintf(
+      "Plot variable not specified, automatically selected `.vars = %s`",
+      mv[pos[1]]
+    ))
+    y <- sym(mv[pos[1]])
+    .vars <- as_quosures(list(y), env = empty_env())
+  }
+  else if(possibly(compose(is_quosures, eval_tidy), FALSE)(.vars)){
+    .vars <- eval_tidy(.vars)
+    object <- tidyr::gather(
+      mutate(object, !!!.vars),
+      ".response", "value", !!!map(.vars, quo_name), factor_key = TRUE
+    )
+    y <- sym("value")
+  }
+  else{
+    y <- quo_vars
+    .vars <- list(y)
+  }
+
+  nyears <- length(unique(object[[index]]))
+  aes_spec <- list(x = rlang::sym(age), y = y)
+  if(nyears > 1) {
+    aes_spec$color <- rlang::sym(index)
+    aes_spec$group <- rlang::sym(index)
+  }
+  p <- object |>
+    as_tsibble() |>
+    ggplot2::ggplot(rlang::eval_tidy(rlang::expr(ggplot2::aes(!!!aes_spec)))) +
+    ggplot2::geom_line() +
+    ggplot2::xlab(age) +
+    ggplot2::scale_color_gradientn(colours = rainbow(10))
+  if (nk > 0) {
+    p <- p + ggplot2::facet_wrap(kv)
+  }
+  return(p)
 }
 
 #' Plot forecasts from a vital model
@@ -53,7 +118,7 @@ autoplot.fbl_vtl_ts <- function(object, ...) {
   if(length(to_plot) > 1) {
     warning(paste("Multiple variables to plot. Choosing", to_plot[1]))
   }
-  rainbow_plot(object, .vars = to_plot[1], age = attributes(object)$agevar)
+  autoplot.vital(object, .vars = !!sym(to_plot[1]), ...)
 }
 
 #' Plot output from a vital model
