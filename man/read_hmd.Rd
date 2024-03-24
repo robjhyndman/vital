@@ -18,7 +18,9 @@ read_hmd(
 
 \item{password}{HMD password (case-sensitive)}
 
-\item{variables}{List of variables to download from the HMD.}
+\item{variables}{List of variables to download from the HMD. If this includes
+some variables that are age-specific and some that are not (e.g., Births),
+then the non-age-specific data will be repeated for each age.}
 }
 \value{
 \code{read_hmd} returns a \code{vital} object with the following variables:
@@ -45,7 +47,7 @@ HMD website (\url{https://www.mortality.org}), and obtain a valid username and p
 \dontrun{
 norway <- read_hmd(
   country = "NOR",
-  username = "Nora.Nilsen@mymail.com",
+  username = "Nora.Weigh@mymail.com",
   password = "FF!5xeEFa6"
 )
 }

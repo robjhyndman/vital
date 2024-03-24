@@ -11,7 +11,9 @@
 #' @param country Directory abbreviation from the HMD. For instance, Australia = "AUS".
 #' @param username HMD username (case-sensitive)
 #' @param password HMD password (case-sensitive)
-#' @param variables List of variables to download from the HMD.
+#' @param variables List of variables to download from the HMD. If this includes
+#' some variables that are age-specific and some that are not (e.g., Births),
+#' then the non-age-specific data will be repeated for each age.
 #'
 #' @return `read_hmd` returns a `vital` object with the following variables:
 #' \item{Year}{Numerical vector containing year of observation}
@@ -28,7 +30,7 @@
 #' \dontrun{
 #' norway <- read_hmd(
 #'   country = "NOR",
-#'   username = "Nora.Nilsen@mymail.com",
+#'   username = "Nora.Weigh@mymail.com",
 #'   password = "FF!5xeEFa6"
 #' )
 #' }
@@ -56,7 +58,7 @@ read_hmd <- function(country, username, password,
   }
 
   # Combine data into a single tsibble
-  deaths <- pop <- NULL
+  deaths <- population <- NULL
   if("Deaths" %in% variables) {
     deaths <- "Deaths"
   }
@@ -66,11 +68,32 @@ read_hmd <- function(country, username, password,
     population <- "Population"
   }
 
-  purrr::reduce(data, dplyr::left_join, by = c("Year", "Age", "Sex", "OpenInterval")) |>
-    tsibble::as_tsibble(index = Year, key = c(Age, Sex)) |>
-    dplyr::arrange(Sex, Year, Age) |>
-    dplyr::rename(Mortality = Mx) |>
-    as_vital(.age = "Age", .sex = "Sex", .deaths = deaths, .population = population)
+  # Combine age-specific data and age-non-specific data into separate tsibbles
+  data1 <- data2 <- NULL
+  age_included <- unlist(lapply(data, function(x) {"Age" %in% colnames(x)}))
+  if(any(age_included)) {
+    data1 <- purrr::reduce(data[age_included], dplyr::left_join,
+                           by = c("Year", "Age", "Sex", "OpenInterval")) |>
+      tsibble::as_tsibble(index = Year, key = c(Age, Sex)) |>
+      dplyr::arrange(Sex, Year, Age) |>
+      dplyr::rename(Mortality = Mx) |>
+      as_vital(.age = "Age", .sex = "Sex", .deaths = deaths, .population = population)
+  }
+  if(any(!age_included)) {
+    data2 <- purrr::reduce(data[!age_included], dplyr::left_join,
+                           by = c("Year", "Sex")) |>
+      tsibble::as_tsibble(index = Year, key = c(Sex)) |>
+      dplyr::arrange(Sex, Year) |>
+      as_vital(.sex = "Sex", .deaths = deaths, .population = population)
+  }
+  if(!is.null(data1) & !is.null(data2)) {
+    # Join age-specific and age-non-specific data by Year and Sex
+    return(left_join(data1, data2, by = c("Year", "Sex")))
+  } else if(!is.null(data1)) {
+    return(data1)
+  } else {
+    return(data2)
+  }
 }
 
 #' Read data from files downloaded from HMD and construct a `vital` object for use in other functions
