@@ -13,7 +13,7 @@
 #' @param .data A vital object
 #' @param .var name of variable to smooth
 #' @param age_spacing Spacing between ages for smoothed vital. Default is 1.
-#' @param power Power transformation for age variable before smoothing. Default is 0.4 for mortality data and 1 (no transformation) for fertility or migration data.
+#' @param power Power transformation for age variable before smoothing. Default is 0.4 (for mortality data).
 #' @param b Lower age for monotonicity. Above this, the smooth curve is assumed to be monotonically increasing.
 #' @param k Number of knots to use for penalized regression spline estimate.
 #' @param span Span for loess smooth.

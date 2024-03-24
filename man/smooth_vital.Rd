@@ -26,7 +26,7 @@ smooth_loess(.data, .var, age_spacing = 1, span = 0.2)
 
 \item{b}{Lower age for monotonicity. Above this, the smooth curve is assumed to be monotonically increasing.}
 
-\item{power}{Power transformation for age variable before smoothing. Default is 0.4 for mortality data and 1 (no transformation) for fertility or migration data.}
+\item{power}{Power transformation for age variable before smoothing. Default is 0.4 (for mortality data).}
 
 \item{lambda}{Penalty for constrained regression spline.}
 
