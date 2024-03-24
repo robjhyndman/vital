@@ -57,7 +57,7 @@ life_table <- function(.data, mortality) {
   tibble::as_tibble(.data) |>
     tidyr::unnest(cols = lt) |>
     tsibble::as_tsibble(index = index, key = tidyselect::all_of(keys)) |>
-    as_vital(.age = age, .sex=sex)
+    as_vital(.age = age, .sex=sex, reorder = TRUE)
 }
 
 # This is a revised version of the demography::lt function.
@@ -127,33 +127,33 @@ lt <- function(dt, sex, age, mortality) {
   qx[nn] <- 1
   # Find lx and dx
   if (nn > 1) {
-    lx <- c(1, cumprod(1 - qx[1:(nn - 1)]))
+    lx <- pmax(0, c(1, cumprod(1 - qx[1:(nn - 1)])))
     dx <- -diff(c(lx, 0))
   } else {
     lx <- dx <- 1
   }
   # Now Lx, Tx and ex
   Lx <- nx * lx - dx * (nx - ax)
-  Lx[nn] <- lx[nn] / mx[nn]
+  Lx[nn] <- if_else(mx[nn] == 0, 0, lx[nn]/mx[nn])
   Tx <- rev(cumsum(rev(Lx)))
   ex <- Tx / lx
   # Finally compute rx
-  # if (nn > 2) {
-  #   rx <- c(Lx[1] / lx[1], Lx[2:(nn - 1)] / Lx[1:(nn - 2)], Tx[nn] / Tx[nn - 1])
-  # } else if (nn == 2) {
-  #   rx <- c(Lx[1] / lx[1], Tx[nn] / Tx[nn - 1])
-  # } else {
-  #   rx <- c(Lx[1] / lx[1])
-  # }
-  # if (agegroup == 5L) {
-  #   rx <- c(
-  #     0, (Lx[1] + Lx[2]) / 5 * lx[1], Lx[3] / (Lx[1] + Lx[2]),
-  #     Lx[4:(nn - 1)] / Lx[3:(nn - 2)], Tx[nn] / Tx[nn - 1]
-  #   )
-  # }
+  if (nn > 2) {
+    rx <- c(Lx[1] / lx[1], Lx[2:(nn - 1)] / Lx[1:(nn - 2)], Tx[nn] / Tx[nn - 1])
+  } else if (nn == 2) {
+    rx <- c(Lx[1] / lx[1], Tx[nn] / Tx[nn - 1])
+  } else {
+    rx <- c(Lx[1] / lx[1])
+  }
+  if (agegroup == 5L) {
+    rx <- c(
+      0, (Lx[1] + Lx[2]) / 5 * lx[1], Lx[3] / (Lx[1] + Lx[2]),
+      Lx[4:(nn - 1)] / Lx[3:(nn - 2)], Tx[nn] / Tx[nn - 1]
+    )
+  }
   # Return the results in a tibble
-  result <- tibble::tibble(mx = mx, qx = qx, lx = lx, dx = dx, Lx = Lx, Tx = Tx, ex = ex) |>
-    # Omitting  rx = rx, nx = nx, ax = ax, Do we need them?
+  result <- tibble::tibble(mx = mx, qx = qx, lx = lx, dx = dx, Lx = Lx, Tx = Tx,
+    ex = ex, rx = rx, nx = nx, ax = ax) |>
     mutate(Age = dt[[age]])
 
   return(result)
