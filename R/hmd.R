@@ -75,8 +75,12 @@ read_hmd <- function(country, username, password,
     data1 <- purrr::reduce(data[age_included], dplyr::left_join,
                            by = c("Year", "Age", "Sex", "OpenInterval")) |>
       tsibble::as_tsibble(index = Year, key = c(Age, Sex)) |>
-      dplyr::arrange(Sex, Year, Age) |>
-      dplyr::rename(Mortality = Mx) |>
+      dplyr::arrange(Sex, Year, Age)
+    if("Mx" %in% variables) {
+      data1 <- data1 |>
+        dplyr::rename(Mortality = Mx)
+    }
+    data1 <- data1 |>
       as_vital(.age = "Age", .sex = "Sex", .deaths = deaths, .population = population)
   }
   if(any(!age_included)) {
