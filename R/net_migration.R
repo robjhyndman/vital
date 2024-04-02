@@ -47,7 +47,7 @@ net_migration <- function(deaths, births) {
   # Convert births to population at age -1 so they are 0 on 1 January following year
   births <- births |>
     mutate(Age = -1) |>
-    filter(Year >= min(deaths$Year) & Year <= max(deaths$Year))
+    dplyr::filter(Year >= min(deaths$Year) & Year <= max(deaths$Year))
   if("Births" %in% colnames(births)) {
     births[[popvar]] <- births[["Births"]]
   } else if(popvar != colnames(births)) {
@@ -69,10 +69,10 @@ net_migration <- function(deaths, births) {
 
   attr_deaths <- attributes(deaths)
   deaths <- deaths |>
-    bind_rows(births) |>
-    left_join(lt) |>
-    left_join(nextlx) |>
-    left_join(prevtx) |>
+    dplyr::bind_rows(births) |>
+    dplyr::left_join(lt) |>
+    dplyr::left_join(nextlx) |>
+    dplyr::left_join(prevtx) |>
     suppressMessages()
 
   deaths <- deaths |>
@@ -82,7 +82,7 @@ net_migration <- function(deaths, births) {
       Lx = if_else(Age == max(Age), Txminus1, Lx),
       Deaths = pmax(0, Population * (1 - Lxplus1/Lx)),
     ) |>
-    select(-Lx, -Lxplus1, -Tx, -Txminus1)
+    dplyr::select(-Lx, -Lxplus1, -Tx, -Txminus1)
 
   nextpop <- deaths |> select(all_of(popvar))
   nextpop[[agevar]] <- nextpop[[agevar]] - 1
@@ -90,10 +90,10 @@ net_migration <- function(deaths, births) {
   nextpop$nextpop <- nextpop[[popvar]]
   nextpop[[popvar]] <- NULL
   nextpop <- nextpop |>
-    group_by_key() |>
-    mutate(diff = tsibble::difference(nextpop)) |>
-    ungroup() |>
-    mutate(nextpop = if_else(Age == max(Age), diff, nextpop))
+    tsibble::group_by_key() |>
+    dplyr::mutate(diff = tsibble::difference(nextpop)) |>
+    dplyr::ungroup() |>
+    dplyr::mutate(nextpop = if_else(Age == max(Age), diff, nextpop))
   nextpop$diff <- NULL
 
   mig <- deaths |> left_join(nextpop) |> suppressMessages()
@@ -108,7 +108,7 @@ net_migration <- function(deaths, births) {
 
   # Only return population, estimated (not actual) deaths, net migrants
   mig |>
-    select(all_of(c(death_idx,death_keys,popvar, "Deaths", "NetMigration"))) |>
+    dplyr::select(dplyr::all_of(c(death_idx,death_keys,popvar, "Deaths", "NetMigration"))) |>
     as_vital(
       .index = death_idx,
       .keys = death_keys,
@@ -118,3 +118,5 @@ net_migration <- function(deaths, births) {
       reorder = TRUE
   )
 }
+
+utils::globalVariables(c("Lxplus1","Population","Txminus1","population"))
