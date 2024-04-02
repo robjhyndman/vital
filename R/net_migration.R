@@ -1,9 +1,27 @@
 #' Calculate net migration from a vital object
 #'
-#' @param deaths A vital object containing at least the columns Year, Population and Deaths
-#' @param births A vital object containing at least the columns Year and Births
-#' @return A vital object containing the same columns as deaths plus Net Migration computed
-#' using the formula Net Migration = Population - lag(Population) - Deaths + Births
+#' @param deaths A vital object containing at least a time index, age,
+#' population at 1 January, and death rates.
+#' @param births A vital object containing at least a time index and number of births per time period.
+#' It is assumed that
+#' the population variable is the same as in the deaths object, and that the same keys other than age
+#' are present in both objects.
+#' @return A vital object containing population, estimated deaths (not actual deaths) and net migration,
+#' using the formula Net Migration = Population - lag(Population cohort) - Deaths + Births.
+#' Births are returned as Population at Age -1, and deaths are estimated from the life table
+#' @references
+#' Hyndman and Booth (2008) Stochastic population forecasts using functional data
+#' models for mortality, fertility and migration. *International Journal of Forecasting*, 24(3), 323-342.
+#' @examples
+#' \dontrun{
+#' # Files downloaded from the [Human Mortality Database](https://mortality.org)
+#' deaths <- read_hmd_files(
+#'   Population = "Population.txt",
+#'   Mx = "Mx_1x1.txt",
+#' )
+#' births <- read_hmd_births_file("Births.txt")
+#' mig <- net_migration(deaths, births)
+#' }
 #' @export
 net_migration <- function(deaths, births) {
   # Check if not vital objects
@@ -14,10 +32,11 @@ net_migration <- function(deaths, births) {
   death_idx <- index_var(deaths)
   birth_keys <- key_vars(births)
   birth_idx <- index_var(births)
-  # Grab age, deaths and population variables
+
+  # Grab age and population variables
   agevar <- attributes(deaths)$agevar
-  deathsvar <- attributes(deaths)$deathsvar
-  popvar <- attributes(births)$populationvar
+  popvar <- attributes(deaths)$populationvar
+
   # Check indexes are the same
   if(!identical(death_idx, birth_idx)) {
     stop("Index variables are different in deaths and births objects")
@@ -27,31 +46,78 @@ net_migration <- function(deaths, births) {
   if(!identical(sort(death_keys), sort(birth_keys))) {
     stop("Keys are different in deaths and births objects")
   }
-  # Check populations and deaths included
-  if(!all(c(popvar, deathsvar) %in% colnames(deaths))) {
-    stop("Population and Deaths variables not found in deaths object")
-  }
-  if(!all(c(popvar) %in% colnames(births))) {
-    stop("Population variable not found in births object")
-  }
 
-  # What was population last year?
-  pop_last_year <- deaths |>
-    select(popvar) |>
-    # Add births with age at birth = -1, so they are 0 at the first occurrence of 1 January
-    bind_rows(births |> mutate(Age = -1) |> select(all_of(unique(c(birth_idx, birth_keys, agevar, popvar)))))
-  # Age population by one year
-  pop_last_year[[agevar]] <- pop_last_year[[agevar]] + 1
-  pop_last_year[[death_idx]] <- pop_last_year[[death_idx]] + 1
-  pop_last_year$lagpop <- pop_last_year[[popvar]]
-  pop_last_year[[popvar]] <- NULL
+  # Convert births to population at age -1 so they are 0 on 1 January following year
+  births <- births |>
+    mutate(Age = -1) |>
+    filter(Year >= min(deaths$Year) & Year <= max(deaths$Year))
+  if("Births" %in% colnames(births)) {
+    births[[popvar]] <- births[["Births"]]
+  } else if(popvar != colnames(births)) {
+    stop("Births or Population variable not found in births object")
+  }
+  births <- births |>
+    select(all_of(unique(c(birth_idx, birth_keys, agevar, popvar))))
 
-  # Join deaths with last year's population
-  mig <- deaths |>
-    left_join(pop_last_year) |>
+  # Compute Lx and Tx
+  prevtx <- nextlx <- lt <- life_table(deaths) |> select(Lx, Tx)
+  # Next age Lx
+  nextlx[[agevar]] <- nextlx[[agevar]] - 1
+  nextlx$Lxplus1 <- nextlx$Lx
+  nextlx$Tx <- nextlx$Lx <- NULL
+  # Previous age Tx
+  prevtx[[agevar]] <- prevtx[[agevar]] + 1
+  prevtx$Txminus1 <- prevtx$Tx
+  prevtx$Tx <- prevtx$Lx <- NULL
+
+  attr_deaths <- attributes(deaths)
+  deaths <- deaths |>
+    bind_rows(births) |>
+    left_join(lt) |>
+    left_join(nextlx) |>
+    left_join(prevtx) |>
     suppressMessages()
-  mig$NetMigration <- mig[[popvar]] - mig$lagpop - mig[[deathsvar]]
-  mig$lagpop <- NULL
+
+  deaths <- deaths |>
+    mutate(
+      Lx = if_else(Age == -1, 1, Lx),
+      Lxplus1 = if_else(Age == max(Age), Tx, Lxplus1),
+      Lx = if_else(Age == max(Age), Txminus1, Lx),
+      Deaths = pmax(0, Population * (1 - Lxplus1/Lx)),
+    ) |>
+    select(-Lx, -Lxplus1, -Tx, -Txminus1)
+
+  nextpop <- deaths |> select(all_of(popvar))
+  nextpop[[agevar]] <- nextpop[[agevar]] - 1
+  nextpop[[death_idx]] <- nextpop[[death_idx]] - 1
+  nextpop$nextpop <- nextpop[[popvar]]
+  nextpop[[popvar]] <- NULL
+  nextpop <- nextpop |>
+    group_by_key() |>
+    mutate(diff = tsibble::difference(nextpop)) |>
+    ungroup() |>
+    mutate(nextpop = if_else(Age == max(Age), diff, nextpop))
+  nextpop$diff <- NULL
+
+  mig <- deaths |> left_join(nextpop) |> suppressMessages()
+
+  # Net migrants is difference between population and lagpop plus
+  # average of deaths over this year and next
+  mig$NetMigration <- mig$nextpop - mig[[popvar]] + mig[["Deaths"]]
+
+  # Zap nextpop and nextdeaths
+  mig$nextpop <- mig$nextdeaths <- NULL
   mig <- mig[!is.na(mig$NetMigration),]
-  return(mig)
+
+  # Only return population, estimated (not actual) deaths, net migrants
+  mig |>
+    select(all_of(c(death_idx,death_keys,popvar, "Deaths", "NetMigration"))) |>
+    as_vital(
+      .index = death_idx,
+      .keys = death_keys,
+      .age = agevar,
+      .deaths = "Deaths",
+      .population = popvar,
+      reorder = TRUE
+  )
 }

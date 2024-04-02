@@ -7,14 +7,35 @@
 net_migration(deaths, births)
 }
 \arguments{
-\item{deaths}{A vital object containing at least the columns Year, Population and Deaths}
+\item{deaths}{A vital object containing at least a time index, age,
+population at 1 January, and death rates.}
 
-\item{births}{A vital object containing at least the columns Year and Births}
+\item{births}{A vital object containing at least a time index and number of births per time period.
+It is assumed that
+the population variable is the same as in the deaths object, and that the same keys other than age
+are present in both objects.}
 }
 \value{
-A vital object containing the same columns as deaths plus Net Migration computed
-using the formula Net Migration = Population - lag(Population) - Deaths + Births
+A vital object containing population, estimated deaths (not actual deaths) and net migration,
+using the formula Net Migration = Population - lag(Population cohort) - Deaths + Births.
+Births are returned as Population at Age -1, and deaths are estimated from the life table
 }
 \description{
 Calculate net migration from a vital object
+}
+\examples{
+# Files downloaded from the [Human Mortality Database](https://mortality.org)
+library(dplyr)
+library(tidyr)
+deaths <- read_hmd_files(
+  Population = "~/Downloads/Population.txt",
+  Mx = "~/Downloads/Mx_1x1.txt",
+)
+births <- read_hmd_births)file("~/Downloads/Births.txt")
+mig <- net_migration(deaths, births)
+autoplot(mig, NetMigration)
+}
+\references{
+Hyndman and Booth (2008) Stochastic population forecasts using functional data
+models for mortality, fertility and migration. \emph{International Journal of Forecasting}, 24(3), 323-342.
 }
