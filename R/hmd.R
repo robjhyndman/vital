@@ -71,7 +71,8 @@ read_hmd <- function(country, username, password,
 #' @examples
 #' \dontrun{
 #' mortality <- read_hmd_files(
-#'   files = c("Deaths_1x1.txt", "Exposures_1x1.txt", "Population.txt", "Mx_1x1.txt")
+#'   c("Deaths_1x1.txt", "Exposures_1x1.txt", "Population.txt", "Mx_1x1.txt")
+#' )
 #' births <- read_hmd_files("Births.txt")
 #' }
 #' @keywords manip
