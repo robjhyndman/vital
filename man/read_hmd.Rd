@@ -18,8 +18,8 @@ read_hmd(
 
 \item{password}{HMD password (case-sensitive)}
 
-\item{variables}{List of variables to download from the HMD. If this includes
-some variables that are age-specific and some that are not (e.g., Births),
+\item{variables}{List of variables to download from the HMD. It is assumed that
+all variables are age-specific. If the data contains non-age-specific variables,
 then the non-age-specific data will be repeated for each age.}
 }
 \value{
@@ -28,7 +28,7 @@ then the non-age-specific data will be repeated for each age.}
 \item{Age}{Numerical vector containing age group}
 \item{OpenInterval}{Logical vector indicating if the age interval is open}
 \item{Sex}{Character vector taking values "Female", "Male", "Total"}
-\item{Deaths}{Total deaths}
+\item{Deaths}{Total deaths of peopled aged \code{Age} at the time of death.}
 \item{Exposure}{Numerical vector of exposure-to-risk, equal to population size on 30 June}
 \item{Population}{Numerical vector containing population size on 1 January}
 \item{Mortality}{Numerical vector of mortality rate, equal to Deaths/Exposure}
@@ -37,7 +37,9 @@ then the non-age-specific data will be repeated for each age.}
 \code{read_hmd} reads 1x1 data from the Human Mortality Database (HMD
 \url{https://www.mortality.org}) and constructs a \code{vital} object suitable
 for use in other functions. This function uses \code{\link[HMDHFDplus:readHMDweb]{HMDHFDplus::readHMDweb()}}
-to download the required data.
+to download the required data. It is designed to handle Deaths, Population, Exposure,
+and Death Rates. To read single year Births data, use either \code{read_hmd_births()} or
+\code{read_hmd_births_file()}.
 }
 \details{
 In order to read the data, users are required to create an account with the

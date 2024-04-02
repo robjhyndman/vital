@@ -3,7 +3,9 @@
 #' `read_hmd` reads 1x1 data from the Human Mortality Database (HMD
 #' <https://www.mortality.org>) and constructs a `vital` object suitable
 #' for use in other functions. This function uses [HMDHFDplus::readHMDweb()]
-#' to download the required data.
+#' to download the required data. It is designed to handle Deaths, Population, Exposure,
+#' and Death Rates. To read single year Births data, use either `read_hmd_births()` or
+#' `read_hmd_births_file()`.
 #'
 #' In order to read the data, users are required to create an account with the
 #' HMD website (<https://www.mortality.org>), and obtain a valid username and password.
@@ -11,8 +13,8 @@
 #' @param country Directory abbreviation from the HMD. For instance, Australia = "AUS".
 #' @param username HMD username (case-sensitive)
 #' @param password HMD password (case-sensitive)
-#' @param variables List of variables to download from the HMD. If this includes
-#' some variables that are age-specific and some that are not (e.g., Births),
+#' @param variables List of variables to download from the HMD. It is assumed that
+#' all variables are age-specific. If the data contains non-age-specific variables,
 #' then the non-age-specific data will be repeated for each age.
 #'
 #' @return `read_hmd` returns a `vital` object with the following variables:
@@ -20,7 +22,7 @@
 #' \item{Age}{Numerical vector containing age group}
 #' \item{OpenInterval}{Logical vector indicating if the age interval is open}
 #' \item{Sex}{Character vector taking values "Female", "Male", "Total"}
-#' \item{Deaths}{Total deaths}
+#' \item{Deaths}{Total deaths of peopled aged `Age` at the time of death.}
 #' \item{Exposure}{Numerical vector of exposure-to-risk, equal to population size on 30 June}
 #' \item{Population}{Numerical vector containing population size on 1 January}
 #' \item{Mortality}{Numerical vector of mortality rate, equal to Deaths/Exposure}
@@ -138,7 +140,7 @@ read_hmd <- function(country, username, password,
 read_hmd_files <- function(Deaths = NULL, Exposures = NULL, Population = NULL, Mx = NULL) {
   files <- c(Deaths, Exposures, Population, Mx)
   present <- c(!is.null(Deaths), !is.null(Exposures), !is.null(Population), !is.null(Mx))
-  variables <- c("Deaths", "Exposures", "Population", "Mx")
+  variables <- c("Deaths", "Exposures", "Population", "Mx")[present]
   if(length(files) == 0L)
     stop("At least one file is required")
   data <- list()
