@@ -4,42 +4,30 @@
 \alias{read_hmd_files}
 \title{Read data from files downloaded from HMD and construct a \code{vital} object for use in other functions}
 \usage{
-read_hmd_files(Deaths = NULL, Exposures = NULL, Population = NULL, Mx = NULL)
+read_hmd_files(files)
 }
 \arguments{
-\item{Deaths}{File containing deaths data}
-
-\item{Exposures}{File containing exposures data}
-
-\item{Population}{File containing population data}
-
-\item{Mx}{File containing mortality data}
+\item{files}{Vector of file names containing data downloaded from the HMD.
+The file names are used to determine what they contain. If the file names are
+as per the HMD, then the function will automatically determine the contents.
+If it is unclear what a file contains, the columns will be named according to the filename.
+If the data contains a mixture of age-specific and non-age-specific variables,
+then the non-age-specific data will be repeated for each age.}
 }
 \value{
-\code{read_hmd_files} returns a \code{vital} object with the following variables:
-\item{Year}{Numerical vector containing year of observation}
-\item{Age}{Numerical vector containing age group}
-\item{OpenInterval}{Logical vector indicating if the age interval is open}
-\item{Sex}{Character vector taking values "Female", "Male", "Total"}
-\item{Deaths}{Total deaths}
-\item{Exposure}{Numerical vector of exposure-to-risk, equal to population size on 30 June}
-\item{Population}{Numerical vector containing population size on 1 January}
-\item{Mortality}{Numerical vector of mortality rate, equal to Deaths/Exposure}
+\code{read_hmd_files} returns a \code{vital} object combining the downloaded data.
 }
 \description{
-\code{read_hmd_files} reads 1x1 data from files downloaded from the Human Mortality
+\code{read_hmd_files} reads single-year and single-age data from files downloaded from the Human Mortality
 Database (HMD \url{https://www.mortality.org}) and constructs a \code{vital} object suitable
 for use in other functions. This function uses \code{\link[HMDHFDplus:readHMD]{HMDHFDplus::readHMD()}}
-to parse the files. At least one file is required. If any file is missing, the corresponding
-variable will be missing from the output.
+to parse the files.
 }
 \examples{
 \dontrun{
-read_hmd_files(
-  Deaths = "Deaths_1x1.txt",
-  Exposures = "Exposures_1x1.txt",
-  Population = "Population.txt",
-  Mx = "Mx_1x1.txt")
+mortality <- read_hmd_files(
+  files = c("Deaths_1x1.txt", "Exposures_1x1.txt", "Population.txt", "Mx_1x1.txt")
+births <- read_hmd_files("Births.txt")
 }
 }
 \author{

@@ -15,11 +15,8 @@
 #' @examples
 #' \dontrun{
 #' # Files downloaded from the [Human Mortality Database](https://mortality.org)
-#' deaths <- read_hmd_files(
-#'   Population = "Population.txt",
-#'   Mx = "Mx_1x1.txt",
-#' )
-#' births <- read_hmd_births_file("Births.txt")
+#' deaths <- read_hmd_files(c("Population.txt", "Mx_1x1.txt"))
+#' births <- read_hmd_file("Births.txt")
 #' mig <- net_migration(deaths, births)
 #' }
 #' @export
