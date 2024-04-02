@@ -84,7 +84,13 @@ models for mortality, fertility and migration. <em>International Journal of Fore
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># Files downloaded from the [Human Mortality Database](https://mortality.org)</span></span></span>
+<span class="r-in"><span><span class="va">deaths</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_hmd_files.html">read_hmd_files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Population.txt"</span>, <span class="st">"Mx_1x1.txt"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">births</span> <span class="op">&lt;-</span> <span class="fu">read_hmd_file</span><span class="op">(</span><span class="st">"Births.txt"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mig</span> <span class="op">&lt;-</span> <span class="fu">net_migration</span><span class="op">(</span><span class="va">deaths</span>, <span class="va">births</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
