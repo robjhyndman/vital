@@ -24,16 +24,15 @@ Births are returned as Population at Age -1, and deaths are estimated from the l
 Calculate net migration from a vital object
 }
 \examples{
+\dontrun{
 # Files downloaded from the [Human Mortality Database](https://mortality.org)
-library(dplyr)
-library(tidyr)
 deaths <- read_hmd_files(
-  Population = "~/Downloads/Population.txt",
-  Mx = "~/Downloads/Mx_1x1.txt",
+  Population = "Population.txt",
+  Mx = "Mx_1x1.txt",
 )
-births <- read_hmd_births)file("~/Downloads/Births.txt")
+births <- read_hmd_births_file("Births.txt")
 mig <- net_migration(deaths, births)
-autoplot(mig, NetMigration)
+}
 }
 \references{
 Hyndman and Booth (2008) Stochastic population forecasts using functional data
