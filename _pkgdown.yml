@@ -27,6 +27,9 @@ reference:
       - as_vital
       - read_hmd
       - read_hmd_files
+      - read_hmd_births
+      - read_hmd_births_file
+      - net_migration
   - title: Data
     desc: Data sets included in the package
     contents:
