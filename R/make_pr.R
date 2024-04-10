@@ -14,7 +14,7 @@
 #' models. *Demography*, 50(1), 261-283.
 #' @examples
 #' aus_mortality |>
-#'   dplyr::filter(Year > 2015) |>
+#'   dplyr::filter(Year > 2015, Sex != "total") |>
 #'   make_pr(Mortality)
 #' @export
 

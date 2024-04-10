@@ -23,7 +23,7 @@ are equal to the male/female and female/male ratios of mortality rates.
 }
 \examples{
 aus_mortality |>
-  dplyr::filter(Year > 2015) |>
+  dplyr::filter(Year > 2015, Sex != "total") |>
   make_pr(Mortality)
 }
 \references{
