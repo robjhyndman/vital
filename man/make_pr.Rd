@@ -19,7 +19,7 @@ A vital object
 The most common use case of this function is for mortality rates by sex.
 That is, we want to compute the geometric mean of mortality rates, along
 with the ratio of mortality to the geometric mean for each sex. The latter
-are proportional to the male/female and female/male ratios of mortality rates.
+are equal to the male/female and female/male ratios of mortality rates.
 }
 \examples{
 aus_mortality |>
