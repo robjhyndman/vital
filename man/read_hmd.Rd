@@ -18,26 +18,21 @@ read_hmd(
 
 \item{password}{HMD password (case-sensitive)}
 
-\item{variables}{List of variables to download from the HMD. If this includes
-some variables that are age-specific and some that are not (e.g., Births),
-then the non-age-specific data will be repeated for each age.}
+\item{variables}{List of variables to download from the HMD. If the data
+contains a mixture of age-specific and non-age-specific variables, then
+the non-age-specific data will be repeated for each age.}
 }
 \value{
-\code{read_hmd} returns a \code{vital} object with the following variables:
-\item{Year}{Numerical vector containing year of observation}
-\item{Age}{Numerical vector containing age group}
-\item{OpenInterval}{Logical vector indicating if the age interval is open}
-\item{Sex}{Character vector taking values "Female", "Male", "Total"}
-\item{Deaths}{Total deaths}
-\item{Exposure}{Numerical vector of exposure-to-risk, equal to population size on 30 June}
-\item{Population}{Numerical vector containing population size on 1 January}
-\item{Mortality}{Numerical vector of mortality rate, equal to Deaths/Exposure}
+\code{read_hmd} returns a \code{vital} object combining the downloaded data.
 }
 \description{
-\code{read_hmd} reads 1x1 data from the Human Mortality Database (HMD
+\code{read_hmd} reads single-year and single-age data from the Human Mortality Database (HMD
 \url{https://www.mortality.org}) and constructs a \code{vital} object suitable
 for use in other functions. This function uses \code{\link[HMDHFDplus:readHMDweb]{HMDHFDplus::readHMDweb()}}
-to download the required data.
+to download the required data. It is designed to handle Deaths, Population,
+Exposure, Death Rates and Births. By default, Deaths, Population, Exposure
+and Death Rates are downloaded. It is better to handle Births separately as
+they are not age-specific.
 }
 \details{
 In order to read the data, users are required to create an account with the
@@ -49,6 +44,12 @@ norway <- read_hmd(
   country = "NOR",
   username = "Nora.Weigh@mymail.com",
   password = "FF!5xeEFa6"
+)
+norway_births <- read_hmd(
+  country = "NOR",
+  username = "Nora.Weigh@mymail.com",
+  password = "FF!5xeEFa6",
+  variables = "Births"
 )
 }
 }
