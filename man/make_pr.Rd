@@ -2,9 +2,10 @@
 % Please edit documentation in R/make_pr.R
 \name{make_pr}
 \alias{make_pr}
-\title{Make a new vital containing products and ratios from a key variable}
+\title{Make a new vital containing products and ratios of a measured variable by a
+key variable.}
 \usage{
-make_pr(.data, key = "Sex")
+make_pr(.data, .var, key = Sex)
 }
 \arguments{
 \item{.data}{A vital object}
@@ -15,5 +16,18 @@ make_pr(.data, key = "Sex")
 A vital object
 }
 \description{
-Make a new vital containing products and ratios from a key variable
+The most common use case of this function is for mortality rates by sex.
+That is, we want to compute the geometric mean of mortality rates, along
+with the ratio of mortality to the geometric mean for each sex. The latter
+are proportional to the male/female and female/male ratios of mortality rates.
+}
+\examples{
+aus_mortality |>
+  dplyr::filter(Year > 2015) |>
+  make_pr(Mortality)
+}
+\references{
+Hyndman, R.J., Booth, H., & Yasmeen, F. (2013). Coherent
+mortality forecasting: the product-ratio method with functional time series
+models. \emph{Demography}, 50(1), 261-283.
 }
