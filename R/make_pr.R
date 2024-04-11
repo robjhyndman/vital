@@ -29,7 +29,8 @@ make_pr <- function(.data, .var, key = Sex) {
   index <- tsibble::index_var(.data)
   # Key variables
   keys <- tsibble::key_vars(.data)
-  age <- attributes(.data)$agevar
+  attr_data <- attributes(.data)
+  age <- attr_data$agevar
   keys_noage <- keys[!(keys %in% c(age, "Age", "AgeGroup", "Age_Group"))]
   if(key %in% c(age, "Age", "AgeGroup", "Age_Group")) {
     stop("key cannot be an age variable")
@@ -41,7 +42,10 @@ make_pr <- function(.data, .var, key = Sex) {
   }
 
   # Compute geometric means
-  gm <- .data |>
+  # Avoid zeros by replacing them with 1e-5
+  gm <- .data
+  gm[[varname]] <- pmax(gm[[varname]], 1e-5)
+  gm <- gm |>
     as_tibble() |>
     dplyr::group_by_at(dplyr::vars(c(index, keys_nokey))) |>
     summarise(.gm = exp(mean(log({{ .var }})))) |>
@@ -57,5 +61,8 @@ make_pr <- function(.data, .var, key = Sex) {
   gm$.gm <- NULL
   .data <- dplyr::bind_rows(.data, gm)
 
-  return(.data)
+  as_vital(.data, index = index, keys = keys,
+           .age = age, .population = attr_data$populationvar,
+           .sex = attr_data$sexvar, .deaths = attr_data$deathsvar,
+           .births = attr_data$birthsvar)
 }
