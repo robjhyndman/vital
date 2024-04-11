@@ -31,6 +31,11 @@
 #'   model(hyndman_ullah = FDM(log(.smooth)))
 #' report(hu)
 #' autoplot(hu)
+#' # Coherent model
+#' z <- aus_mortality |>
+#'   dplyr::filter(Year > 2010, Sex != "total", Code == "NSW") |>
+#'   make_pr(Mortality) |>
+#'   model(hby = FDM(log(Mortality), coherent = TRUE))
 #' @export
 FDM <- function(formula, order = 6, ts_model_fn = fable::ARIMA,
                 coherent = FALSE, ...) {
