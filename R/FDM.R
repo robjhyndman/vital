@@ -10,6 +10,10 @@
 #' @param order Number of principal components to fit.
 #' @param ts_model_fn Univariate time series modelling function for the coefficients. Any
 #' model that works with the fable package is ok. Default is [fable::ARIMA()].
+#' @param coherent If TRUE, fitted models are stationary, other than for the case of
+#' a key variable taking the value `geometric_mean`. This is designed to work with
+#' vitals produced using \code{\link{make_pr}()}. Default is FALSE. It only works
+#' when `ts_model_fn` is \code{\link[fable]{ARIMA}()}.
 #' @param ... Not used.
 #'
 #' @references Hyndman, R.J., and Ullah, S. (2007) Robust forecasting of
@@ -28,20 +32,24 @@
 #' report(hu)
 #' autoplot(hu)
 #' @export
-FDM <- function(formula, order = 6, ts_model_fn = fable::ARIMA, ...) {
+FDM <- function(formula, order = 6, ts_model_fn = fable::ARIMA,
+                coherent = FALSE, ...) {
+  if(coherent & !identical(ts_model_fn, fable::ARIMA)) {
+    stop("coherent = TRUE only works with ts_model_fn = fable::ARIMA")
+  }
   fd_model <- new_model_class("fdm", train = train_fdm)
   new_model_definition(fd_model, !!enquo(formula),
-    order = order, ts_model_fn = ts_model_fn, ...)
+    order = order, ts_model_fn = ts_model_fn, coherent = coherent, ...)
 }
 
-train_fdm <- function(.data, specials, order, ts_model_fn, ...) {
+train_fdm <- function(.data, specials, order, ts_model_fn, coherent, ...) {
   attrx <- attributes(.data)
   indexvar <- index_var(.data)
   agevar <- attrx$agevar
   measures <- measured_vars(.data)
   measures <- measures[!(measures %in% c(agevar, attrx$populationvar))]
   measures <- measures[1]
-  out <- fdm(.data, order = order, ts_model_fn = ts_model_fn)
+  out <- fdm(.data, order = order, ts_model_fn = ts_model_fn, coherent = coherent)
 
   fitted <- out$data |>
     mutate(
@@ -232,7 +240,7 @@ autoplot.FDM <- function(object, show_order = 2, ...) {
 # Function based on demography::fdm() and ftsa::ftsm()
 # But assumes transformation already done
 
-fdm <- function(data, order = 6, ts_model_fn = fable::ARIMA) {
+fdm <- function(data, order = 6, ts_model_fn = fable::ARIMA, coherent = FALSE) {
   # Grab variable names
   attrx <- attributes(data)
   indexvar <- index_var(data)

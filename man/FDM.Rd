@@ -5,7 +5,7 @@
 \alias{report.FDM}
 \title{Functional data model}
 \usage{
-FDM(formula, order = 6, ts_model_fn = fable::ARIMA, ...)
+FDM(formula, order = 6, ts_model_fn = fable::ARIMA, coherent = FALSE, ...)
 }
 \arguments{
 \item{formula}{Model specification.}
@@ -14,6 +14,11 @@ FDM(formula, order = 6, ts_model_fn = fable::ARIMA, ...)
 
 \item{ts_model_fn}{Univariate time series modelling function for the coefficients. Any
 model that works with the fable package is ok. Default is \code{\link[fable:ARIMA]{fable::ARIMA()}}.}
+
+\item{coherent}{If TRUE, fitted models are stationary, other than for the case of
+a key variable taking the value \code{geometric_mean}. This is designed to work with
+vitals produced using \code{\link{make_pr}()}. Default is FALSE. It only works
+when \code{ts_model_fn} is \verb{[fable::ARIMA()]}.}
 
 \item{...}{Not used.}
 }
