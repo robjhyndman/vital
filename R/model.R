@@ -58,6 +58,13 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   sexvar <- attributes(.data)$sexvar
   # Drop Age as a key
   kv <- keys[!(keys %in% c(agevar, "Age", "AgeGroup"))]
+  # Make sure Sex is first key (so it can be identified inside estimate_progress)
+  if(!is.null(sexvar)) {
+    if(!(sexvar %in% kv)) {
+      stop("Sex should be one of the keys")
+    }
+    kv <- c(sexvar, kv[kv != sexvar])
+  }
   n_ages <- length(unique(.data[[agevar]]))
   num_key <- n_keys(.data) / n_ages
   num_mdl <- length(models)
@@ -78,7 +85,16 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
     }
   }
 
-  estimate_progress <- function(dt, sex=NULL, mdl) {
+  estimate_progress <- function(dt, keys, mdl) {
+    if(!is.null(sexvar)) {
+      sex <- keys[1]
+    } else {
+      sex <- NULL
+    }
+    if("geometric_mean" %in% keys & mdl$extra$coherent) {
+      # No need to make the model stationary
+      mdl$extra$coherent <- FALSE
+    }
     out <- estimate(dt, mdl, sex)
     p()
     out
@@ -87,7 +103,7 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   if (is_attached("package:future")) {
     require_package("future.apply")
     stop("Not implemented")
-    eval_models <- function(models, lst_data, sex) {
+    eval_models <- function(models, lst_data, keyvars) {
       out <- future.apply::future_mapply(
         rep(lst_data, length(models)),
         rep(sex, length(models)),
@@ -99,24 +115,15 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
       unname(split(out, rep(seq_len(num_mdl), each = num_key)))
     }
   } else {
-    eval_models <- function(models, lst_data, sex) {
-      if(is.null(sex)) {
-        purrr::map(models, function(model) {
-          purrr::map(lst_data, estimate_progress, model, sex = NULL)
-        })
-      } else {
-        purrr::map(models, function(model) {
-          purrr::map2(lst_data, sex, estimate_progress, model)
-        })
-      }
+    eval_models <- function(models, lst_data, keyvars) {
+      vars <- colnames(keyvars)
+      keyvars <- keyvars |> t() |> as_tibble()
+      purrr::map(models, function(model) {
+        purrr::map2(lst_data, keyvars, estimate_progress, model)
+      })
     }
   }
-  if(is.null(sexvar)) {
-    sex <- NULL
-  } else {
-    sex <- as.list(.data[[sexvar]])
-  }
-  fits <- eval_models(models, .data[["lst_data"]], sex)
+  fits <- eval_models(models, .data[["lst_data"]], .data[,kv])
   names(fits) <- ifelse(nchar(names(models)), names(models), nm)
 
   # Report errors if estimated safely

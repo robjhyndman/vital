@@ -292,10 +292,9 @@ fdm <- function(data, order = 6, ts_model_fn = fable::ARIMA, coherent = FALSE) {
     mod <- by_t |>
       fabletools::model(fit = ts_model_fn(!!sym(x)))
     if(coherent) {
-      browser()
       # Modify order constraint to ensure a stationary model
-      mod$fit[[1]]$model$extra$order_constraint <-
-        enexpr(p + q + P + Q <= 6 & (constant + d + D <= 2) & (d + D == 0))
+      #mod$fit[[1]]$model$extra$order_constraint <-
+      #  enexpr(p + q + P + Q <= 6 & (constant + d + D <= 2) & (d + D == 0))
     }
     return(mod)
   })
