@@ -289,8 +289,15 @@ fdm <- function(data, order = 6, ts_model_fn = fable::ARIMA, coherent = FALSE) {
   ts_coefs <- names(by_t)
   ts_coefs <- ts_coefs[grepl("beta", ts_coefs)]
   fits <- purrr::map(ts_coefs, function(x) {
-    by_t |>
+    mod <- by_t |>
       fabletools::model(fit = ts_model_fn(!!sym(x)))
+    if(coherent) {
+      browser()
+      # Modify order constraint to ensure a stationary model
+      mod$fit[[1]]$model$extra$order_constraint <-
+        enexpr(p + q + P + Q <= 6 & (constant + d + D <= 2) & (d + D == 0))
+    }
+    return(mod)
   })
   names(fits) <- ts_coefs
 
