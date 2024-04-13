@@ -7,7 +7,8 @@
 #' are equal to the male/female and female/male ratios of mortality rates.
 #'
 #' @param .data A vital object
-#' @param key A character string specifying the key variable
+#' @param .var A bare variable name of the measured variable to use.
+#' @param key A bar variable name specifying the key variable to use.
 #' @return A vital object
 #' @references Hyndman, R.J., Booth, H., & Yasmeen, F. (2013). Coherent
 #' mortality forecasting: the product-ratio method with functional time series

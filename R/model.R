@@ -91,9 +91,11 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
     } else {
       sex <- NULL
     }
-    if("geometric_mean" %in% keys & mdl$extra$coherent) {
-      # No need to make the model stationary
-      mdl$extra$coherent <- FALSE
+    if(!is.null(mdl$extra$coherent)) {
+      if("geometric_mean" %in% keys & mdl$extra$coherent) {
+        # No need to make the model stationary
+        mdl$extra$coherent <- FALSE
+      }
     }
     out <- estimate(dt, mdl, sex)
     p()
@@ -117,7 +119,7 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   } else {
     eval_models <- function(models, lst_data, keyvars) {
       vars <- colnames(keyvars)
-      keyvars <- keyvars |> t() |> as_tibble()
+      keyvars <- keyvars |> t() |> as.data.frame() |> as_tibble()
       purrr::map(models, function(model) {
         purrr::map2(lst_data, keyvars, estimate_progress, model)
       })
@@ -264,4 +266,4 @@ new_model <- function(fit = NULL, model, data, response, transformation) {
   ), class = c("mdl_vtl_ts", "mdl_ts"))
 }
 
-globalVariables(c(".rows", "data", "calc"))
+globalVariables(c(".rows", "data", "calc", "sex"))

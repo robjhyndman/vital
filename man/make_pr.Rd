@@ -10,7 +10,9 @@ make_pr(.data, .var, key = Sex)
 \arguments{
 \item{.data}{A vital object}
 
-\item{key}{A character string specifying the key variable}
+\item{.var}{A bare variable name of the measured variable to use.}
+
+\item{key}{A bar variable name specifying the key variable to use.}
 }
 \value{
 A vital object
