@@ -180,6 +180,22 @@ as_vital.tbl_ts <- function(x,
                             .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
                             reorder = FALSE, ...) {
   # Add attributes to x to identify the various variables
+  vnames <- colnames(x)
+  if(!is.null(.age)) {
+    if(!(.age %in% vnames)) { .age <- NULL }
+  }
+  if(!is.null(.sex)) {
+    if(!(.sex %in% vnames)) { .sex <- NULL }
+  }
+  if(!is.null(.births)) {
+    if(!(.births %in% vnames)) { .births <- NULL }
+  }
+  if(!is.null(.deaths)) {
+    if(!(.deaths %in% vnames)) { .deaths <- NULL }
+  }
+  if(!is.null(.population)) {
+    if(!(.population %in% vnames)) { .population <- NULL }
+  }
   attr(x, "agevar") <- .age
   attr(x, "sexvar") <- .sex
   attr(x, "birthsvar") <- .births
