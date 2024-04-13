@@ -18,7 +18,7 @@ model that works with the fable package is ok. Default is \code{\link[fable:ARIM
 \item{coherent}{If TRUE, fitted models are stationary, other than for the case of
 a key variable taking the value \code{geometric_mean}. This is designed to work with
 vitals produced using \code{\link{make_pr}()}. Default is FALSE. It only works
-when \code{ts_model_fn} is \verb{[fable::ARIMA()]}.}
+when \code{ts_model_fn} is \code{\link[fable]{ARIMA}()}.}
 
 \item{...}{Not used.}
 }
@@ -37,6 +37,11 @@ hu <- aus_mortality |>
   model(hyndman_ullah = FDM(log(.smooth)))
 report(hu)
 autoplot(hu)
+# Coherent model
+z <- aus_mortality |>
+  dplyr::filter(Year > 2010, Sex != "total", Code == "NSW") |>
+  make_pr(Mortality) |>
+  model(hby = FDM(log(Mortality), coherent = TRUE))
 }
 \references{
 Hyndman, R.J., and Ullah, S. (2007) Robust forecasting of
