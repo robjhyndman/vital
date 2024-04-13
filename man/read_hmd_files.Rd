@@ -12,7 +12,9 @@ The file names are used to determine what they contain. If the file names are
 as per the HMD, then the function will automatically determine the contents.
 If it is unclear what a file contains, the columns will be named according to the filename.
 If the data contains a mixture of age-specific and non-age-specific variables,
-then the non-age-specific data will be repeated for each age.}
+then the non-age-specific data will be repeated for each age. If you have HMD files
+for many countries, all with the same names, then you should put them in separate
+folders to avoid confusion, and to save changing all the filenames.}
 }
 \value{
 \code{read_hmd_files} returns a \code{vital} object combining the downloaded data.
