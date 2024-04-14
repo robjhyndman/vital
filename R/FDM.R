@@ -260,7 +260,7 @@ fdm <- function(data, order = 6, ts_model_fn = fable::ARIMA, coherent = FALSE) {
   mx <- data |>
     as_tibble() |>
     dplyr::select(all_of(c(indexvar, agevar, measures))) |>
-    tidyr::pivot_wider(values_from = measures, names_from = agevar)
+    tidyr::pivot_wider(values_from = all_of(measures), names_from = all_of(agevar))
   mx[[indexvar]] <- NULL
   mx <- as.matrix(mx)
   mx[mx == -Inf] <- NA

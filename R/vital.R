@@ -38,8 +38,8 @@ vital <- function(
     regular = TRUE, .drop = TRUE) {
   tsibble(..., key = !!enquo(key), index = !!enquo(index), regular = regular, .drop = .drop) |>
     as_vital(
-      .age = enquo(.age), .sex = enquo(.sex), .deaths = enquo(.deaths),
-      .births = enquo(.births), .population = enquo(.population)
+      .age = .age, .sex = .sex, .deaths = .deaths,
+      .births = .births, .population = .population
     )
 }
 

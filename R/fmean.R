@@ -183,7 +183,7 @@ interpolate.FMEAN <- function (object, new_data, specials, ...) {
   output[[measure]][missing] <- output$.fitted[missing]
   output$.fitted <- NULL
   return(vital(output, key = unique(c(keyvar, agevar)),
-               index = timevar))
+               index = timevar, .age = agevar))
 }
 
 globalVariables(c(".resid", "sigma", "std.error", "stat", ".innov"))

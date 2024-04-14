@@ -64,8 +64,7 @@ forecast.mdl_vtl_df <- function(
   }
   agevar <- attributes(object[[mdls[1]]][[1]]$data)$agevar
   kv <- c(key_vars(object), ".model")
-  object <- dplyr::mutate_at(as_tibble(object), vars(!!!mdls),
-    forecast,
+  object <- dplyr::mutate_at(as_tibble(object), mdls, forecast,
     new_data = object[["new_data"]], h = h, point_forecast = point_forecast,
     simulate = simulate, bootstrap = bootstrap, times = times, seed = seed,
     ..., key_data = key_data(object)

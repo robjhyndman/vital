@@ -53,6 +53,7 @@ interpolate.mdl_vtl_ts <- function (object, new_data, ...)
   age <- new_data[[agevar]]
   new_data <- transmute(new_data, !!!resp)
   new_data[[agevar]] <- age
+  attr(new_data, "agevar") <- agevar
   new_data <- interpolate(object[["fit"]], new_data = new_data,
                           specials = specials, ...)
   new_data[names(resp)] <- map2(new_data[names(resp)], object$transformation,
