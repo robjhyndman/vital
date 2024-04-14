@@ -42,6 +42,9 @@ FDM <- function(formula, order = 6, ts_model_fn = fable::ARIMA,
   if(coherent & !identical(ts_model_fn, fable::ARIMA)) {
     stop("coherent = TRUE only works with ts_model_fn = fable::ARIMA")
   }
+  if(!coherent) {
+    coherent <- NULL
+  }
   fd_model <- new_model_class("fdm", train = train_fdm)
   new_model_definition(fd_model, !!enquo(formula),
     order = order, ts_model_fn = ts_model_fn, coherent = coherent, ...)
@@ -245,7 +248,10 @@ autoplot.FDM <- function(object, show_order = 2, ...) {
 # Function based on demography::fdm() and ftsa::ftsm()
 # But assumes transformation already done
 
-fdm <- function(data, order = 6, ts_model_fn = fable::ARIMA, coherent = FALSE) {
+fdm <- function(data, order = 6, ts_model_fn = fable::ARIMA, coherent = NULL) {
+  if(is.null(coherent)) {
+    coherent <- FALSE
+  }
   # Grab variable names
   attrx <- attributes(data)
   indexvar <- index_var(data)
@@ -294,12 +300,14 @@ fdm <- function(data, order = 6, ts_model_fn = fable::ARIMA, coherent = FALSE) {
   ts_coefs <- names(by_t)
   ts_coefs <- ts_coefs[grepl("beta", ts_coefs)]
   fits <- purrr::map(ts_coefs, function(x) {
-    mod <- by_t |>
-      fabletools::model(fit = ts_model_fn(!!sym(x)))
     if(coherent) {
-      # Modify order constraint to ensure a stationary model
-      #mod$fit[[1]]$model$extra$order_constraint <-
-      #  enexpr(p + q + P + Q <= 6 & (constant + d + D <= 2) & (d + D == 0))
+      mod <- by_t |>
+        fabletools::model(fit = ts_model_fn(!!sym(x),
+          order_constraint = p + q + P + Q <= 6 & (constant + d + D <= 2) & (d + D == 0))
+        )
+    } else {
+      mod <- by_t |>
+        fabletools::model(fit = ts_model_fn(!!sym(x)))
     }
     return(mod)
   })

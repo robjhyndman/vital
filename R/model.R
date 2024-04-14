@@ -95,6 +95,9 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
       if("geometric_mean" %in% keys & mdl$extra$coherent) {
         # No need to make the model stationary
         mdl$extra$coherent <- FALSE
+      } else {
+        # Make model stationary
+        mdl$extra$coherent <- TRUE
       }
     }
     out <- estimate(dt, mdl, sex)
