@@ -1,14 +1,16 @@
-#' Make a new vital containing products and ratios of a measured variable by a
-#' key variable.
+#' Do a product/ratio transformation
 #'
-#' The most common use case of this function is for mortality rates by sex.
+#' Make a new vital containing products and ratios of a measured variable by a
+#' key variable. The most common use case of this function is for mortality rates by sex.
 #' That is, we want to compute the geometric mean of mortality rates, along
 #' with the ratio of mortality to the geometric mean for each sex. The latter
 #' are equal to the male/female and female/male ratios of mortality rates.
+#' @details When a measured variable takes value 0, it is set to 10^-6 to avoid
+#' infinite values in the ratio.
 #'
 #' @param .data A vital object
 #' @param .var A bare variable name of the measured variable to use.
-#' @param key A bar variable name specifying the key variable to use.
+#' @param key A bare variable name specifying the key variable to use.
 #' @return A vital object
 #' @references Hyndman, R.J., Booth, H., & Yasmeen, F. (2013). Coherent
 #' mortality forecasting: the product-ratio method with functional time series
@@ -65,5 +67,5 @@ make_pr <- function(.data, .var, key = Sex) {
   as_vital(.data, index = index, keys = keys,
            .age = age, .population = attr_data$populationvar,
            .sex = attr_data$sexvar, .deaths = attr_data$deathsvar,
-           .births = attr_data$birthsvar)
+           .births = attr_data$birthsvar, reorder = TRUE)
 }

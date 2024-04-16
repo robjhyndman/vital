@@ -2,8 +2,7 @@
 % Please edit documentation in R/make_pr.R
 \name{make_pr}
 \alias{make_pr}
-\title{Make a new vital containing products and ratios of a measured variable by a
-key variable.}
+\title{Do a product/ratio transformation}
 \usage{
 make_pr(.data, .var, key = Sex)
 }
@@ -12,16 +11,21 @@ make_pr(.data, .var, key = Sex)
 
 \item{.var}{A bare variable name of the measured variable to use.}
 
-\item{key}{A bar variable name specifying the key variable to use.}
+\item{key}{A bare variable name specifying the key variable to use.}
 }
 \value{
 A vital object
 }
 \description{
-The most common use case of this function is for mortality rates by sex.
+Make a new vital containing products and ratios of a measured variable by a
+key variable. The most common use case of this function is for mortality rates by sex.
 That is, we want to compute the geometric mean of mortality rates, along
 with the ratio of mortality to the geometric mean for each sex. The latter
 are equal to the male/female and female/male ratios of mortality rates.
+}
+\details{
+When a measured variable takes value 0, it is set to 10^-6 to avoid
+infinite values in the ratio.
 }
 \examples{
 aus_mortality |>
