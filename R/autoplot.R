@@ -11,7 +11,7 @@
 #' @author Rob J Hyndman
 #' @references Hyndman, Rob J & Shang, Han Lin (2010) Rainbow plots, bagplots,
 #' and boxplots for functional data. *Journal of Computational and Graphical Statistics*,
-#' **19**(1), 29-45. <https://robjhyndman.com/publications/rainbow-fda/>
+#' 19(1), 29-45. <https://robjhyndman.com/publications/rainbow-fda/>
 #'
 #' @return A ggplot2 object.
 #'

@@ -28,7 +28,7 @@ autoplot(aus_fertility, Fertility)
 \references{
 Hyndman, Rob J & Shang, Han Lin (2010) Rainbow plots, bagplots,
 and boxplots for functional data. \emph{Journal of Computational and Graphical Statistics},
-\strong{19}(1), 29-45. \url{https://robjhyndman.com/publications/rainbow-fda/}
+19(1), 29-45. \url{https://robjhyndman.com/publications/rainbow-fda/}
 }
 \author{
 Rob J Hyndman

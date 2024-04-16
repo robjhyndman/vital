@@ -44,10 +44,14 @@ z <- aus_mortality |>
   model(hby = FDM(log(Mortality), coherent = TRUE))
 }
 \references{
-Hyndman, R.J., and Ullah, S. (2007) Robust forecasting of
+Hyndman, R. J., and Ullah, S. (2007) Robust forecasting of
 mortality and fertility rates: a functional data approach.
-\emph{Computational Statistics & Data Analysis}, \strong{51}, 4942-4956.
+\emph{Computational Statistics & Data Analysis}, 5, 4942-4956.
 \url{https://robjhyndman.com/publications/funcfor/}
+Hyndman, R. J., Booth, H., & Yasmeen, F. (2013). Coherent mortality
+forecasting: the product-ratio method with functional time series models.
+\emph{Demography}, 50(1), 261-283.
+\url{https://robjhyndman.com/publications/coherentfdm/}
 }
 \author{
 Rob J Hyndman
