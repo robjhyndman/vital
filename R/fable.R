@@ -21,7 +21,8 @@ build_vital_fable <- function(x, response, distribution,
     if(!(.population %in% vnames)) { .population <- NULL }
   }
   #
-  final <- build_fable(x, response = response, distribution =  distribution)
+  final <- build_fable(x, response = response, distribution =  distribution) |>
+    suppressWarnings()
   attr(final, "agevar") <- .age
   attr(final, "sexvar") <- .sex
   attr(final, "birthsvar") <- .births

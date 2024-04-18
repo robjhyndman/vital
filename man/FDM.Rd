@@ -38,10 +38,14 @@ hu <- aus_mortality |>
 report(hu)
 autoplot(hu)
 # Coherent model
-aus_mortality |>
+fit <- aus_mortality |>
   dplyr::filter(Year > 2010, Sex != "total", Code == "NSW") |>
   make_pr(Mortality) |>
   model(hby = FDM(log(Mortality), coherent = TRUE))
+fc <- fit |>
+  forecast(h = 20)
+fc |>
+  undo_pr(Mortality)
 }
 \references{
 Hyndman, R. J., and Ullah, S. (2007) Robust forecasting of

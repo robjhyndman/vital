@@ -237,12 +237,14 @@ as_vital.tbl_ts <- function(x,
 #' @export
 as_vital.data.frame <- function(x, key = NULL, index,
                                 .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
+                                reorder = TRUE,
                                 ...) {
   as_tsibble(x, key = !!enquo(key), index = !!enquo(index), ...) |>
     as_vital(
       .age = .age, .sex = .sex,
       .deaths = .deaths, .births = .births,
-      .population = .population
+      .population = .population,
+      reorder = reorder
     )
 }
 

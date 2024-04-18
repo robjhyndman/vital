@@ -24,6 +24,8 @@ test_that("Coherent functional data model", {
     model(hu = FDM(log(Mortality), coherent = FALSE))
   stationary <- purrr::map_lgl(pr2$hu, all_stationary)
   expect_true(all(!stationary))
-}
+})
+
+
 
 

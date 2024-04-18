@@ -35,10 +35,14 @@
 #' report(hu)
 #' autoplot(hu)
 #' # Coherent model
-#' aus_mortality |>
+#' fit <- aus_mortality |>
 #'   dplyr::filter(Year > 2010, Sex != "total", Code == "NSW") |>
 #'   make_pr(Mortality) |>
 #'   model(hby = FDM(log(Mortality), coherent = TRUE))
+#' fc <- fit |>
+#'   forecast(h = 20)
+#' fc |>
+#'   undo_pr(Mortality)
 #' @export
 FDM <- function(formula, order = 6, ts_model_fn = fable::ARIMA,
                 coherent = FALSE, ...) {
@@ -306,7 +310,7 @@ fdm <- function(data, order = 6, ts_model_fn = fable::ARIMA, coherent = NULL) {
     if(coherent) {
       mod <- by_t |>
         fabletools::model(fit = ts_model_fn(!!sym(x),
-          order_constraint = p + q + P + Q <= 6 & (constant + d + D <= 2) & (d + D == 0))
+          order_constraint = (p + q + P + Q <= 6) & (d + D == 0))
         )
     } else {
       mod <- by_t |>
@@ -408,3 +412,4 @@ fdpca <- function(X, order = 2, ngrid = 500) {
 
 
 utils::globalVariables(c(".model", "out", "object", ".fitted", ".rep"))
+utils::globalVariables(c("p", "P", "d", "D", "q", "Q", "constant"))

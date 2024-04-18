@@ -31,6 +31,7 @@ as_vital(x, ...)
   .deaths = NULL,
   .births = NULL,
   .population = NULL,
+  reorder = TRUE,
   ...
 )
 }

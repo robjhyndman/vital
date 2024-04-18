@@ -12,6 +12,8 @@
 #' @param .var A bare variable name of the measured variable to use.
 #' @param key A bare variable name specifying the key variable to use. This key
 #' variable must include the value `geometric_mean`.
+#' @param times When the variable is a distribution, the product must be computed
+#' by simulation. This argument specifies the number of simulations to use.
 #' @return A vital object
 #' @references Hyndman, R.J., Booth, H., & Yasmeen, F. (2013). Coherent
 #' mortality forecasting: the product-ratio method with functional time series
@@ -28,10 +30,12 @@
 #' pr |> undo_pr(Mortality)
 #' @export
 
-undo_pr <- function(.data, .var, key = Sex) {
-  if(!inherits(.data, "vital")) {
-    stop(".data needs to be a vital object")
+undo_pr <- function(.data, .var, key = Sex, times = 2000) {
+  if(!inherits(.data, "vital") & !inherits(.data, "fbl_vtl_ts")) {
+    stop(".data needs to be a vital or fbl_vtl_ts object")
   }
+  # Are we working with a vital fable or regular fable?
+  fable <- inherits(.data, "fbl_vtl_ts")
   # Character strings for variable and key
   varname <- names(eval_select(enquo(.var), data = .data))
   key <- names(eval_select(enquo(key), data = .data))
@@ -59,12 +63,25 @@ undo_pr <- function(.data, .var, key = Sex) {
   gm[[key]] <- NULL
   # Multiply by ratios
   .data <- .data[.data[[key]] != "geometric_mean",] |>
+    as_tibble() |>
     left_join(gm, by = c(index, keys_nokey))
-  .data[[varname]] <- .data[[varname]]*.data$.gm
+  # Convert distributions to samples
+  if(distributional::is_distribution(.data[[varname]])) {
+    .data$.gm <- distributional::dist_sample(distributional::generate(.data$.gm, times))
+    .data[[varname]] <- distributional::dist_sample(distributional::generate(.data[[varname]], times))
+  }
+  .data[[varname]] <- .data[[varname]] * .data$.gm
   .data$.gm <- NULL
-
-  as_vital(.data, index = index, keys = keys,
+  .data$.mean <- mean(.data[[varname]], na.rm = TRUE)
+  output <- as_vital(.data, index = index, key = keys,
            .age = age, .population = attr_data$populationvar,
            .sex = attr_data$sexvar, .deaths = attr_data$deathsvar,
            .births = attr_data$birthsvar, reorder = TRUE)
+  if(fable) {
+    output <- build_vital_fable(output, response = varname, distribution = varname,
+                        .age = age, .population = attr_data$populationvar,
+                        .sex = attr_data$sexvar, .deaths = attr_data$deathsvar,
+                        .births = attr_data$birthsvar, reorder = TRUE)
+  }
+  return(output)
 }

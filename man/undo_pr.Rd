@@ -4,7 +4,7 @@
 \alias{undo_pr}
 \title{Undo a product/ratio transformation}
 \usage{
-undo_pr(.data, .var, key = Sex)
+undo_pr(.data, .var, key = Sex, times = 2000)
 }
 \arguments{
 \item{.data}{A vital object}
@@ -13,6 +13,9 @@ undo_pr(.data, .var, key = Sex)
 
 \item{key}{A bare variable name specifying the key variable to use. This key
 variable must include the value \code{geometric_mean}.}
+
+\item{times}{When the variable is a distribution, the product must be computed
+by simulation. This argument specifies the number of simulations to use.}
 }
 \value{
 A vital object
