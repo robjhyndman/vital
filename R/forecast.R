@@ -77,10 +77,8 @@ forecast.mdl_vtl_df <- function(
   out <- suppressWarnings(
     unnest_tsbl(as_tibble(object)[c(kv, ".fc")], ".fc", parent_key = kv)
   )
-  final <- build_fable(out, response = fbl_attr$response, distribution = fbl_attr$dist)
-  class(final) <- c("fbl_vtl_ts", class(final))
-  attr(final, "agevar") <- agevar
-  return(final)
+  build_vital_fable(out, response = fbl_attr$response, distribution = fbl_attr$dist,
+    .age = agevar)
 }
 
 #' @export
@@ -103,13 +101,14 @@ forecast.mdl_vtl_ts <- function(
   } else {
     resp_vars
   }
+  attrs <- attributes(new_data)
+  agevar <- attrs$agevar
   if (NROW(new_data) == 0) {
     new_data[[dist_col]] <- distributional::new_dist(dimnames = resp_vars)
-    fbl <- build_fable(new_data, response = resp_vars, distribution = !!sym(dist_col))
-    return(fbl)
+    return(build_vital_fable(new_data, response = resp_vars, distribution = !!sym(dist_col),
+                  .age = agevar))
   }
   if (simulate || bootstrap) {
-    agevar <- attributes(new_data)$agevar
     fc <- generate(object, new_data, bootstrap = bootstrap, times = times, ...)
     fc_split <- paste(fc[[index_var(fc)]], fc[[agevar]])
     fc <- unname(split(object$transformation[[1]](fc[[".sim"]]), fc_split))
@@ -179,17 +178,13 @@ Does your model require extra variables to produce forecasts?",
   point_fc <- compute_point_forecasts(fc, point_forecast)
   new_data[names(point_fc)] <- point_fc
   cn <- c(dist_col, names(point_fc))
-  attrs <- attributes(new_data)
-  agevar <- attrs$agevar
   fbl <- tsibble::build_tsibble_meta(
     as_tibble(new_data)[unique(c(idx, agevar, cn, mv))],
     key_data(new_data), index = idx, index2 = idx,
     ordered = is_ordered(new_data), interval = tsibble::interval(new_data)
   )
-  final <- build_fable(fbl, response = resp_vars, distribution = !!sym(dist_col))
-  class(final) <- c("fbl_vtl_ts", class(final))
-  attr(final, "agevar") <- agevar
-  return(final)
+  build_vital_fable(fbl, response = resp_vars, distribution = dist_col,
+                .age = agevar)
 }
 
 make_future_data <- function (.data, h = NULL) {
