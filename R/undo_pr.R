@@ -21,12 +21,13 @@
 #' @examples
 #' # Make products and ratios
 #' orig_data <- aus_mortality |>
-#'   dplyr::filter(Year > 2015, Sex != "total")
+#'   dplyr::filter(Year > 2015, Sex != "total", Code == "NSW")
 #' pr <- orig_data |>
 #'   make_pr(Mortality)
-#' # Undo products and ratios
+#' Compare original data with product/ratio version
 #' orig_data
 #' pr
+#' # Undo products and ratios
 #' pr |> undo_pr(Mortality)
 #' @export
 
@@ -72,7 +73,6 @@ undo_pr <- function(.data, .var, key = Sex, times = 2000) {
   }
   .data[[varname]] <- .data[[varname]] * .data$.gm
   .data$.gm <- NULL
-  .data$.mean <- mean(.data[[varname]], na.rm = TRUE)
   output <- as_vital(.data, index = index, key = keys,
            .age = age, .population = attr_data$populationvar,
            .sex = attr_data$sexvar, .deaths = attr_data$deathsvar,

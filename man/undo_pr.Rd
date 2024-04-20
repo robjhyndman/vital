@@ -34,12 +34,13 @@ in the case that the original data was 0.
 \examples{
 # Make products and ratios
 orig_data <- aus_mortality |>
-  dplyr::filter(Year > 2015, Sex != "total")
+  dplyr::filter(Year > 2015, Sex != "total", Code == "NSW")
 pr <- orig_data |>
   make_pr(Mortality)
-# Undo products and ratios
+Compare original data with product/ratio version
 orig_data
 pr
+# Undo products and ratios
 pr |> undo_pr(Mortality)
 }
 \references{

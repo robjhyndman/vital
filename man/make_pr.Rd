@@ -28,9 +28,13 @@ When a measured variable takes value 0, it is set to 10^-6 to avoid
 infinite values in the ratio.
 }
 \examples{
-aus_mortality |>
+pr <- aus_mortality |>
   dplyr::filter(Year > 2015, Sex != "total") |>
   make_pr(Mortality)
+pr |>
+  dplyr::filter(Sex == "geometric_mean", Code == "VIC") |>
+  autoplot(Mortality) +
+  ggplot2::scale_y_log10()
 }
 \references{
 Hyndman, R.J., Booth, H., & Yasmeen, F. (2013). Coherent
