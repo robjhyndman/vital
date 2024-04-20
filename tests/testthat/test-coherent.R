@@ -1,3 +1,10 @@
+test_that("Coherent calculatons", {
+  orig_data <- aus_mortality |>
+   dplyr::filter(Year > 2015, Sex != "total", Code == "NSW")
+  pr <- orig_data |> make_pr(Mortality) |> undo_pr(Mortality)
+  expect_equal(orig_data, pr)
+})
+
 # Function to determine if ARIMA model is stationary
 is_stationary <- function(x) {
   order <- x$fit[[1]]$fit$spec
