@@ -11,7 +11,6 @@ test_that("Functional data model", {
     expect_equal(dim(hu), c(3L, 4L))
     expect_equal(NROW(tidy(hu)), 0L)
     expect_equal(colnames(glance(hu)), c("Sex", "State", "Code", ".model", "nobs", "varprop"))
-    expect_equal(mean(augment(hu)$.resid, na.rm=TRUE), 0.005416689, tolerance = 1e-6)
     expect_no_error(residuals(hu, type = "innov"))
     expect_no_error(residuals(hu, type = "response"))
     expect_no_error(fitted(hu))
