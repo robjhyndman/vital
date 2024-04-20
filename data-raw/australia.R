@@ -7,7 +7,7 @@ aus_fertility <- as_vital(addb::aus.fertility) |>
 	select(-AgeGroup, -Sex) |>
 	mutate(Fertility = Fertility / 1000) |>
 	as_tsibble(index = Year, key = Age) |>
-	as_vital(.births = "Births", .age = "Age", .population = "Exposure")
+	as_vital(.births = "Births", .age = "Age", .population = "Exposure", reorder = TRUE)
 usethis::use_data(aus_fertility, overwrite = TRUE)
 
 aus_mortality <- bind_rows(
@@ -92,7 +92,8 @@ aus_mortality <- aus_mortality |>
     .age = "Age",
     .sex = "Sex",
     .deaths = "Deaths",
-    .population = "Exposure"
+    .population = "Exposure",
+    reorder = TRUE
   ) |>
   collapse_ages()
 
