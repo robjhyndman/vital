@@ -24,7 +24,7 @@
 #'   dplyr::filter(Year > 2015, Sex != "total", Code == "NSW")
 #' pr <- orig_data |>
 #'   make_pr(Mortality)
-#' Compare original data with product/ratio version
+#' # Compare original data with product/ratio version
 #' orig_data
 #' pr
 #' # Undo products and ratios
