@@ -42,6 +42,9 @@ net_migration <- function(deaths, births) {
 
   # Grab age and population variables
   deathsvar <- attributes(deaths)$deathsvar
+  if(is.null(deathsvar)) {
+    deathsvar <- "Deaths"
+  }
   agevar <- attributes(deaths)$agevar
   popvar <- attributes(deaths)$populationvar
   birthsvar <- attributes(births)$birthsvar
