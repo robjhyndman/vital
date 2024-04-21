@@ -24,6 +24,16 @@ Births are returned as Population at Age -1, and deaths are estimated from the l
 Calculate net migration from a vital object
 }
 \examples{
+deaths <- aus_mortality |>
+  dplyr::group_by(Age) |>
+  dplyr::summarise(
+  Exposure = sum(Exposure, na.rm=TRUE),
+  Deaths = sum(Deaths, na.rm=TRUE)
+ ) |>
+ dplyr::mutate(Mortality = Deaths/Exposure)
+births <- aus_fertility |>
+  dplyr::summarise(Births = sum(Births))
+mig <- net_migration(deaths, births)
 \dontrun{
 # Files downloaded from the [Human Mortality Database](https://mortality.org)
 deaths <- read_hmd_files(c("Population.txt", "Mx_1x1.txt"))
