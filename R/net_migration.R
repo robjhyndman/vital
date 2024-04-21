@@ -120,13 +120,13 @@ net_migration <- function(deaths, births) {
     dplyr::select(dplyr::all_of(c(death_idx,death_keys,popvar, deathsvar,
                                   "NetMigration"))) |>
     as_vital(
-      .index = death_idx,
-      .keys = death_keys,
+      index = death_idx,
+      keys = death_keys,
       .age = agevar,
       .deaths = deathsvar,
       .population = popvar,
       reorder = TRUE
-  )
+    )
 }
 
 utils::globalVariables(c("Population","population"))
