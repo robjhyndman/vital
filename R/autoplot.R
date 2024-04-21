@@ -25,11 +25,13 @@ autoplot.vital <- function(object, .vars = NULL, age = attributes(object)$agevar
   index <- tsibble::index_var(object)
 
   # Age variable
-  if(!is.null(age)) {
+  if(is.null(age)) {
     if(inherits(object, "vital")) {
       age <- attributes(object)$agevar
       if(is.null(age)) {
-        stop("No age variable found")
+        # A vital without age, so try a tsibble autoplot
+        object <- as_tsibble(object)
+        return(autoplot(object, .vars={{ .vars }}, ...))
       }
     } else if(inherits(object, "tbl_ts")) {
       # Need to find the age variable
