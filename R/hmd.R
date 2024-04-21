@@ -111,7 +111,7 @@ hmd_to_vital <- function(object) {
   }
 
   # Find which variables are present to be added as attributes
-  deaths <- population <- NULL
+  deaths <- population <- births <- NULL
   if("Deaths" %in% variables) {
     deaths <- "Deaths"
   }
@@ -119,6 +119,9 @@ hmd_to_vital <- function(object) {
     population <- "Exposures"
   } else if ("Population" %in% variables) {
     population <- "Population"
+  }
+  if("Births" %in% variables) {
+    births <- "Births"
   }
 
   # Combine age-specific data and age-non-specific data into separate tsibbles
@@ -141,7 +144,8 @@ hmd_to_vital <- function(object) {
                            by = c("Year", "Sex")) |>
       tsibble::as_tsibble(index = Year, key = c(Sex)) |>
       dplyr::arrange(Sex, Year) |>
-      as_vital(.sex = "Sex", .deaths = deaths, .population = population)
+      as_vital(.sex = "Sex", .deaths = deaths, .population = population,
+               .births = births)
   }
   if(!is.null(data1) & !is.null(data2)) {
     # Join age-specific and age-non-specific data by Year and Sex
