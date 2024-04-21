@@ -25,6 +25,11 @@ Database (HFD \url{https://www.humanfertility.org}) and constructs a \code{vital
 for use in other functions. This function uses \code{\link[HMDHFDplus:readHFD]{HMDHFDplus::readHFD()}}
 to parse the files.
 }
+\examples{
+\dontrun{
+fertility <- read_hfd_files("NORasfrRR.txt")
+}
+}
 \author{
 Rob J Hyndman
 }

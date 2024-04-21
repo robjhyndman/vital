@@ -97,7 +97,7 @@ read_hmd_files <- function(files) {
 # Convert hmd files into a vital object
 hmd_to_vital <- function(object) {
   variables <- names(object)
-  sex_included <- "Female" %in% colnames(object[[1]])
+  sex_included <- any(grepl("female", colnames(object[[1]]), ignore.case = TRUE))
   if(sex_included) {
     sex <- "Sex"
   } else {

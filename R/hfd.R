@@ -57,7 +57,7 @@ read_hfd <- function(country, username, password, variables = "asfrRR") {
 #' @author Rob J Hyndman
 #' @examples
 #' \dontrun{
-#' fertility <- read_hfd_files("NORasfrRR.txt)
+#' fertility <- read_hfd_files("NORasfrRR.txt")
 #' }
 #' @keywords manip
 #' @export
