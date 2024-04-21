@@ -1,8 +1,14 @@
 test_that("Coherent calculatons", {
+  # Product/ratio
   orig_data <- aus_mortality |>
    dplyr::filter(Year > 2015, Sex != "total", Code == "NSW")
   pr <- orig_data |> make_pr(Mortality) |> undo_pr(Mortality)
   expect_equal(orig_data, pr)
+  # Mean/difference
+  mig <- net_migration(norway_mortality, norway_births) |>
+     dplyr::filter(Sex != "Total")
+  sd <- mig |> make_sd(NetMigration) |> undo_sd(NetMigration)
+  expect_equal(mig, sd)
 })
 
 # Function to determine if ARIMA model is stationary

@@ -19,7 +19,7 @@ A vital object
 \description{
 Make a new vital containing products and ratios of a measured variable by a
 key variable. The most common use case of this function is for mortality rates by sex.
-That is, we want to compute the geometric mean of mortality rates, along
+That is, we want to compute the geometric mean of age-specific mortality rates, along
 with the ratio of mortality to the geometric mean for each sex. The latter
 are equal to the male/female and female/male ratios of mortality rates.
 }
