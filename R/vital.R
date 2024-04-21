@@ -43,6 +43,14 @@ vital <- function(
     )
 }
 
+# This rebuilds a vital, usually just to reattach vital attributes
+#' @export
+as_vital.vital <- function(x, index, keys, ...) {
+  as_tibble(x) |>
+    as_tsibble(index= !!enquo(index), key = !!enquo(keys)) |>
+    as_vital(...)
+}
+
 #' Coerce to a vital object
 #'
 #' A vital object is a type of tsibble that contains vital statistics such as
