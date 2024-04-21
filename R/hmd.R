@@ -97,16 +97,21 @@ read_hmd_files <- function(files) {
 # Convert hmd files into a vital object
 hmd_to_vital <- function(object) {
   variables <- names(object)
+  sex_included <- "Female" %in% colnames(object[[1]])
+  if(sex_included) {
+    sex <- "Sex"
+  } else {
+    sex <- NULL
+  }
   for(i in seq_along(object)) {
-    if("Total2" %in% colnames(object[[i]])) {
-      # Just grab 1 Jan population
+    # Remove columns ending with "2"
+    object[[i]] <- object[[i]] |>
+      dplyr::select(-ends_with("2")) |>
+      dplyr::rename_with(~ gsub("1$", "", .x), dplyr::ends_with("1"))
+    if(sex_included) {
+      # Turn Sex into a variable
       object[[i]] <- object[[i]] |>
-        dplyr::select(Year:Total1) |>
-        dplyr::rename_with(~ gsub("1$", "", .x), dplyr::ends_with("1")) |>
-        tidyr::pivot_longer(Female:Total, names_to = "Sex", values_to = variables[i])
-    } else {
-      object[[i]] <- object[[i]] |>
-        tidyr::pivot_longer(Female:Total, names_to = "Sex", values_to = variables[i])
+        tidyr::pivot_longer(Female:Total, names_to = sex, values_to = variables[i])
     }
   }
 
@@ -128,29 +133,30 @@ hmd_to_vital <- function(object) {
   data1 <- data2 <- NULL
   age_included <- unlist(lapply(object, function(x) {"Age" %in% colnames(x)}))
   if(any(age_included)) {
-    data1 <- purrr::reduce(object[age_included], dplyr::left_join,
-                           by = c("Year", "Age", "Sex", "OpenInterval")) |>
-      tsibble::as_tsibble(index = Year, key = c(Age, Sex)) |>
-      dplyr::arrange(Sex, Year, Age)
-    if("Mx" %in% variables) {
+    data1 <- purrr::reduce(object[age_included], dplyr::left_join) |>
+        suppressMessages() |>
+        mutate(Age = as.integer(Age)) |>
+        tsibble::as_tsibble(index = Year, key = all_of(c("Age",sex)))
+
+    if("Mx" %in% colnames(data1)) {
       data1 <- data1 |>
         dplyr::rename(Mortality = Mx)
     }
     data1 <- data1 |>
-      as_vital(.age = "Age", .sex = "Sex", .deaths = deaths, .population = population)
+      as_vital(.age = "Age", .sex = sex, .deaths = deaths,
+             .population = population, reorder = TRUE)
   }
   if(any(!age_included)) {
-    data2 <- purrr::reduce(object[!age_included], dplyr::left_join,
-                           by = c("Year", "Sex")) |>
-      tsibble::as_tsibble(index = Year, key = c(Sex)) |>
-      dplyr::arrange(Sex, Year) |>
-      as_vital(.sex = "Sex", .deaths = deaths, .population = population,
-               .births = births)
+    data2 <- purrr::reduce(object[!age_included], dplyr::left_join) |>
+        suppressMessages() |>
+        tsibble::as_tsibble(index = Year, key = sex) |>
+        as_vital(.sex = sex, .deaths = deaths, .population = population,
+                 .births = births, reorder = TRUE)
   }
   if(!is.null(data1) & !is.null(data2)) {
     # Join age-specific and age-non-specific data by Year and Sex
     warning("Duplicating non-age-specific data for each age group")
-    return(left_join(data1, data2, by = c("Year", "Sex")))
+    return(left_join(data1, data2, by = c("Year", sex)))
   } else if(!is.null(data1)) {
     return(data1)
   } else {
