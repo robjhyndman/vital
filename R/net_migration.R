@@ -13,16 +13,7 @@
 #' Hyndman and Booth (2008) Stochastic population forecasts using functional data
 #' models for mortality, fertility and migration. *International Journal of Forecasting*, 24(3), 323-342.
 #' @examples
-#' deaths <- aus_mortality |>
-#'   dplyr::group_by(Age) |>
-#'   dplyr::summarise(
-#'   Exposure = sum(Exposure, na.rm=TRUE),
-#'   Deaths = sum(Deaths, na.rm=TRUE)
-#'  ) |>
-#'  dplyr::mutate(Mortality = Deaths/Exposure)
-#' births <- aus_fertility |>
-#'   dplyr::summarise(Births = sum(Births))
-#' mig <- net_migration(deaths, births)
+#' net_migration(norway_mortality, norway_births)
 #' \dontrun{
 #' # Files downloaded from the [Human Mortality Database](https://mortality.org)
 #' deaths <- read_hmd_files(c("Population.txt", "Mx_1x1.txt"))
