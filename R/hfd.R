@@ -12,6 +12,8 @@
 #' @param country Directory abbreviation from the HMD. For instance, Norway = "NOR".
 #' @param username HFD username (case-sensitive)
 #' @param password HFD password (case-sensitive)
+#' @param variables List of variables to download from the HFD. By default, the
+#' age-specific fertility rate (asfrRR) is downloaded.
 #'
 #' @return `read_hfd` returns a `vital` object combining the downloaded data.
 #'

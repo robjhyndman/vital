@@ -106,7 +106,7 @@ hmd_to_vital <- function(object) {
   for(i in seq_along(object)) {
     # Remove columns ending with "2"
     object[[i]] <- object[[i]] |>
-      dplyr::select(-ends_with("2")) |>
+      dplyr::select(-dplyr::ends_with("2")) |>
       dplyr::rename_with(~ gsub("1$", "", .x), dplyr::ends_with("1"))
     if(sex_included) {
       # Turn Sex into a variable
