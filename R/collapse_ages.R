@@ -1,12 +1,17 @@
 # Function to collapse upper ages into a single age group
 
 #' Collapse upper ages into a single age group. Counts are summed while
-#' rates are recomputed.
+#' rates are recomputed where possible. e.g., if the object includes deaths,
+#' population and mortality rates, then deaths and population are summed and
+#' mortality rates are recomputed as deaths/population. But if the object contains
+#' mortality rates but not deaths and population, then the last rate remains
+#' unchanged (and a warning is generated).
 #'
 #' @param .data A vital object including an age variable
 #' @param max_age Maximum age to include in the collapsed age group.
 #'
-#' @return A vital object with the same variables as `.data`, but with the upper ages collapsed into a single age group.
+#' @return A vital object with the same variables as `.data`, but with the upper
+#' ages collapsed into a single age group.
 #' @author Rob J Hyndman
 #' @examples
 #' aus_mortality |>
@@ -34,8 +39,23 @@ collapse_ages <- function(.data, max_age = 100) {
   sex <- attr_data$sexvar
   rates <- find_measures(.data, c("mx", "mortality", "fx", "fertility", "rate"))
 
-  # Collapse data by summing above max_age
-  orig_data <- .data
+  # Store values for max age in case they are needed
+  max_age_values <- .data[.data[[age]] == max_age,]
+
+  # Compute death and birth counts if they are missing
+  for(i in rates) {
+    if(!is.null(pop)) {
+      if(tolower(i) %in% c("mx", "mortality") && is.null(deaths)) {
+        .data[[".Deaths"]] <- .data[[i]] * .data[[pop]]
+        deaths <- ".Deaths"
+      } else if(tolower(i) %in% c("fx", "fertility") && is.null(births)) {
+        .data[[".Births"]] <- .data[[i]] * .data[[pop]]
+        births <- ".Births"
+      }
+    }
+  }
+
+  # Collapse data by summing for max_age and above
   ages <- sort(unique(.data[[age]]))
   collapsed <- .data |>
     as_tibble() |>
@@ -43,28 +63,31 @@ collapse_ages <- function(.data, max_age = 100) {
     dplyr::reframe(dplyr::across(everything(),
       function(x) { collapse_age_vector(x, ages, max_age) } )) |>
     as_tsibble(index = index, key = all_of(c(keys_noage, age)))
+  upper_ages <- collapsed[[age]] == max_age
 
-  # Recompute rates
+  # Recompute rates where possible
   for(i in rates) {
     if(tolower(i) %in% c("mx", "mortality")) {
-      if(length(deaths) == 0L | length(pop) == 0L) {
-        collapsed[[i]] <- orig_data[[i]][seq(nrow(collapsed))]
-        warning(paste(i, "not recomputed"))
-      } else {
-        collapsed[[i]] <- collapsed[[deaths]] / collapsed[[pop]]
-      }
+      counts <- deaths
     } else if(tolower(i) %in% c("fx", "fertility")) {
-      if(length(births) == 0L | length(pop) == 0L) {
-        collapsed[[i]] <- orig_data[[i]][seq(nrow(collapsed))]
-        warning(paste(i, "not recomputed"))
-      } else {
-        collapsed[[i]] <- collapsed[[births]] / collapsed[[pop]]
-      }
+      counts <- births
+    } else
+      counts <- NULL
+    if(!is.null(pop) & !is.null(counts)) {
+        collapsed[[i]][upper_ages] <- collapsed[[counts]][upper_ages] / collapsed[[pop]][upper_ages]
+    } else {
+      warning("Cannot recompute rates for ", i, ". Using upper age value.")
+      tmp <- max_age_values |>
+        select(index, keys_noage, age, i)
+      colnames(tmp)[colnames(tmp) == i] <- ".new_rate"
+      collapsed <- collapsed |>
+        left_join(tmp, by = c(index, keys_noage, age))
+      collapsed[[i]] <- if_else(upper_ages, collapsed[[".new_rate"]], collapsed[[i]])
+      collapsed[[".new_rate"]] <- NULL
     }
   }
 
   # Return result
-  colnames <- colnames[colnames %in% colnames(collapsed)]
   return(as_vital(collapsed, .age = age, .sex = sex,
     .deaths = deaths, .births = births, .population = pop,
     reorder = TRUE)[,colnames]
