@@ -38,7 +38,7 @@ norway_mortality |>
 # Fertility
 norway_fertility
 norway_fertility |>
-  autoplot(ASFR)
+  autoplot(Fertility)
 
 }
 \keyword{datasets}

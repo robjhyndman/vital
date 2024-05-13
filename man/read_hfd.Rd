@@ -12,6 +12,9 @@ read_hfd(country, username, password, variables = "asfrRR")
 \item{username}{HFD username (case-sensitive)}
 
 \item{password}{HFD password (case-sensitive)}
+
+\item{variables}{List of variables to download from the HFD. By default, the
+age-specific fertility rate (asfrRR) is downloaded.}
 }
 \value{
 \code{read_hfd} returns a \code{vital} object combining the downloaded data.

@@ -30,9 +30,10 @@
 #' @examples
 #' library(dplyr)
 #' aus_mortality |>
-#' 	filter(State == "Victoria", Sex == "female") |>
+#' 	filter(State == "Victoria", Sex == "female", Year > 2000) |>
 #' 	smooth_mortality(Mortality)
 #' aus_fertility |>
+#'  filter(Year > 2000) |>
 #' 	smooth_fertility(Fertility)
 #' @export
 smooth_spline <- function(.data, .var, age_spacing = 1, k = -1) {

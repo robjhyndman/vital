@@ -31,20 +31,19 @@ Functional data model of mortality or fertility rates as a function of age.
 variable as a function of age.
 }
 \examples{
-hu <- aus_mortality |>
-  dplyr::filter(State == "Victoria", Sex == "female") |>
+hu <- norway_mortality |>
+  dplyr::filter(Sex == "Female", Year > 2010) |>
   smooth_mortality(Mortality) |>
   model(hyndman_ullah = FDM(log(.smooth)))
 report(hu)
 autoplot(hu)
 # Coherent model
-fit <- aus_mortality |>
-  dplyr::filter(Year > 2010, Sex != "total", Code == "NSW") |>
+fit <- norway_mortality |>
+  dplyr::filter(Year > 2010, Sex != "Total") |>
   make_pr(Mortality) |>
   model(hby = FDM(log(Mortality), coherent = TRUE))
 fc <- fit |>
-  forecast(h = 20)
-fc |>
+  forecast(h = 10) |>
   undo_pr(Mortality)
 }
 \references{

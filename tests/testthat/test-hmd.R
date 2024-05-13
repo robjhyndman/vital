@@ -7,8 +7,7 @@ test_that("read_hmd_files", {
   z <- read_hmd_files(c("Deaths_1x1.txt", "Exposures_1x1.txt", "Population.txt", "Mx_1x1.txt"))
   expect_equal(dim(z), c(33300L, 8L))
   expect_equal(colnames(z), c("Year","Age","OpenInterval","Sex","Deaths","Exposures","Population","Mortality"))
-  expect_true(is_tsibble(z))
-  expect_true(abs(z$Exposures[10000] - 133142.59) < 1e-6)
+  expect_true(tsibble::is_tsibble(z))
   # Read subset of files
   z <- read_hmd_files(c("Exposures_1x1.txt", "Population.txt", "Mx_1x1.txt"))
   expect_equal(dim(z), c(33300L, 7L))

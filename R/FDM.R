@@ -28,20 +28,19 @@
 #' @return A model specification.
 #'
 #' @examples
-#' hu <- aus_mortality |>
-#'   dplyr::filter(State == "Victoria", Sex == "female") |>
+#' hu <- norway_mortality |>
+#'   dplyr::filter(Sex == "Female", Year > 2010) |>
 #'   smooth_mortality(Mortality) |>
 #'   model(hyndman_ullah = FDM(log(.smooth)))
 #' report(hu)
 #' autoplot(hu)
 #' # Coherent model
-#' fit <- aus_mortality |>
-#'   dplyr::filter(Year > 2010, Sex != "total", Code == "NSW") |>
+#' fit <- norway_mortality |>
+#'   dplyr::filter(Year > 2010, Sex != "Total") |>
 #'   make_pr(Mortality) |>
 #'   model(hby = FDM(log(Mortality), coherent = TRUE))
 #' fc <- fit |>
-#'   forecast(h = 20)
-#' fc |>
+#'   forecast(h = 10) |>
 #'   undo_pr(Mortality)
 #' @export
 FDM <- function(formula, order = 6, ts_model_fn = fable::ARIMA,

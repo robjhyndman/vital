@@ -23,7 +23,7 @@
 #' # Fertility
 #' norway_fertility
 #' norway_fertility |>
-#'   autoplot(ASFR)
+#'   autoplot(Fertility)
 #'
 NULL
 
