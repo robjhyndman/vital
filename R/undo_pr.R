@@ -35,6 +35,9 @@ undo_pr <- function(.data, .var, key = Sex, times = 2000) {
   if(!inherits(.data, "vital") & !inherits(.data, "fbl_vtl_ts")) {
     stop(".data needs to be a vital or fbl_vtl_ts object")
   }
+  if(missing(.var)) {
+    stop("Missing .var. Please specify which variable to use.")
+  }
   # Are we working with a vital fable or regular fable?
   fable <- inherits(.data, "fbl_vtl_ts")
   # Character strings for variable and key
@@ -118,6 +121,9 @@ undo_pr <- function(.data, .var, key = Sex, times = 2000) {
 undo_sd <- function(.data, .var, key = Sex, times = 2000) {
   if(!inherits(.data, "vital") & !inherits(.data, "fbl_vtl_ts")) {
     stop(".data needs to be a vital or fbl_vtl_ts object")
+  }
+  if(missing(.var)) {
+    stop("Missing .var. Please specify which variable to use.")
   }
   # Are we working with a vital fable or regular fable?
   fable <- inherits(.data, "fbl_vtl_ts")

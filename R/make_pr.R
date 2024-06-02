@@ -29,7 +29,10 @@ make_pr <- function(.data, .var, key = Sex) {
   if(!inherits(.data, "vital")) {
     stop(".data needs to be a vital object")
   }
-  # Character strings for variable and key
+  if(missing(.var)) {
+    stop("Missing .var. Please specify which variable to use.")
+  }
+    # Character strings for variable and key
   varname <- names(eval_select(enquo(.var), data = .data))
   key <- names(eval_select(enquo(key), data = .data))
   # Index variable
@@ -101,6 +104,9 @@ make_pr <- function(.data, .var, key = Sex) {
 make_sd <- function(.data, .var, key = Sex) {
   if(!inherits(.data, "vital")) {
     stop(".data needs to be a vital object")
+  }
+  if(missing(.var)) {
+    stop("Missing .var. Please specify which variable to use.")
   }
   # Character strings for variable and key
   varname <- names(eval_select(enquo(.var), data = .data))
