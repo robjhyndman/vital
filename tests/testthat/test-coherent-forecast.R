@@ -1,31 +1,32 @@
-library(vital)
-library(dplyr)
-library(ggplot2)
-
-# Regular forecasts
+# Prepare data
 nor <- norway_mortality |>
   filter(Sex != "Total") |>
-  collapse_ages()
+  collapse_ages() |>
+  smooth_mortality(Mortality)
+
+# Regular forecasts
 fit1 <- nor |>
-  model(fdm = FDM(log(Mortality)))
-autoplot(fit1)
+  model(fdm = FDM(log(.smooth)))
 fc1 <- fit1 |>
   forecast(h=20)
-fc1 |>
-  autoplot() + scale_y_log10()
 
 # Product ratio forecasts
-pr <- nor |>
-  make_pr(Mortality)
-nor |> autoplot() + scale_y_log10()
-pr |> autoplot(Mortality) + scale_y_log10()
+fit2 <- nor |>
+  make_pr(.smooth) |>
+  model(fdm = FDM(log(.smooth), coherent = TRUE))
+fc2 <- fit2 |>
+  forecast(h=20) |>
+  undo_pr(.smooth) |>
+  as_tibble() |>
+  mutate(prmean = .mean) |>
+  select(Sex, .model, Year, Age, prmean)
 
-fit2 <- pr |>
-  model(fdm = FDM(log(Mortality), coherent = TRUE))
-autoplot(fit2)
-fc_pr <- fit2 |>
-  forecast(h=20)
-fc_pr |> autoplot() + scale_y_log10()
-fc2 <- fc_pr |> undo_pr(Mortality)
-fc2 |>
-  autoplot() + scale_y_log10()
+test_that("Coherent forecasts", {
+  # Check they are similar order of magnitude
+  fc1 <- fc1 |>
+    as_tibble() |>
+    select(-.smooth) |>
+    left_join(fc2, by = c("Sex",".model","Year","Age")) |>
+    mutate(diff = abs(.mean - prmean))
+  expect_lt(mean(fc1$diff), 0.002)
+})

@@ -1,7 +1,3 @@
-
-library(vital)
-library(dplyr)
-
 # Small data set for testing purposes
 aus_mortality <- aus_mortality  |>
   filter(Year <= 1903,

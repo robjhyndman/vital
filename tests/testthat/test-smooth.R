@@ -1,5 +1,4 @@
 test_that("smoothing functions", {
-  library(dplyr)
   sm <- aus_fertility |>
     smooth_fertility(Fertility)
   expect_equal(colnames(sm), c("Year","Age","Fertility","Exposure","Births",".smooth",".smooth_se"))

@@ -34,7 +34,6 @@ test_that("Lee Carter", {
 
   # Compare against demography
   if(requireNamespace("demography", quietly = TRUE)) {
-    library(dplyr)
     lc1 <- demography::lca(demography::fr.mort, series = 'female')
     # with jump = actual
     lc2 <- as_vital(demography::fr.mort) |>

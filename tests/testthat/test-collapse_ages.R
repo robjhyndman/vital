@@ -3,7 +3,6 @@
 test_that("collapse_ages", {
   # Compare against demography
   if(requireNamespace("demography", quietly = TRUE)) {
-    library(dplyr)
     library(demography)
     up1 <- set.upperage(fr.mort, max.age = 100)$rate$female[101,]
     up2 <- as_vital(fr.mort) |>
