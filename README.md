@@ -50,7 +50,7 @@ vic_female <- aus_mortality |>
   filter(State == "Victoria", Sex == "female")
 
 # Lifetable in 2000
-vic_female |> 
+vic_female |>
   filter(Year == 2000) |>
   life_table()
 #> # A vital: 100 x 14 [?]
@@ -74,8 +74,8 @@ vic_female |>
 ``` r
 
 # Life expectancy
-vic_female |> 
-  life_expectancy() |> 
+vic_female |>
+  life_expectancy() |>
   ggplot(aes(x = Year, y = ex)) +
   geom_line()
 ```
@@ -85,8 +85,8 @@ vic_female |>
 ``` r
 
 # Smoothed data
-vic_female |> 
-  filter(Year == 2000) |> 
+vic_female |>
+  filter(Year == 2000) |>
   smooth_mortality(Mortality) |>
   autoplot(Mortality) +
   geom_line(aes(y = .smooth), col = "blue") +
@@ -155,3 +155,29 @@ lc |>
 ```
 
 <img src="man/figures/README-example-4.png" width="100%" />
+
+``` r
+
+# Coherent forecasts from FDM model
+nor <- norway_mortality |>
+  dplyr::filter(Sex != "Total") |>
+  collapse_ages() 
+fit <- nor |> 
+  smooth_mortality(Mortality) |> 
+  make_pr(.smooth) |>
+  model(hby = FDM(log(.smooth), coherent = TRUE))
+fc <- fit |>
+  forecast(h = 20) |>
+  undo_pr(.smooth)
+nor |> 
+  filter(Year > 1950) |> 
+  ggplot(aes(x = Age, y = Mortality, group = Year)) +
+  facet_grid(. ~ Sex) +
+  geom_line(color = "grey") +
+  scale_y_log10() +
+  geom_line(data = fc, aes(y = .mean, color = Year)) +
+  scale_color_gradientn(colors = rainbow(25))
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
+```
+
+<img src="man/figures/README-example-5.png" width="100%" />
