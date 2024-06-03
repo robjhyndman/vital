@@ -1,5 +1,5 @@
-# vital 0.1.0
+# vital 1.0.0
 
-* Still under development
-* A CRAN version is planned before June 2024
+* First CRAN submission
+
 
