@@ -29,6 +29,8 @@ pak::pak("robjhyndman/vital")
 
 ## Example
 
+First load the necessary packages.
+
 ``` r
 library(vital)
 library(dplyr)
@@ -44,11 +46,58 @@ library(dplyr)
 
 ``` r
 library(ggplot2)
+```
 
+### vital objects
+
+The basic data object is a `vital`.
+
+``` r
 # Examples using Victorian females
 vic_female <- aus_mortality |>
   filter(State == "Victoria", Sex == "female")
+vic_female
+#> # A vital: 12,000 x 8 [1Y]
+#> # Key:     Age, Sex, Code [100]
+#>     Year   Age Sex    State    Code  Mortality Exposure Deaths
+#>    <int> <int> <chr>  <chr>    <chr>     <dbl>    <dbl>  <dbl>
+#>  1  1901     0 female Victoria VIC     0.100      13993   1405
+#>  2  1901     1 female Victoria VIC     0.0235     13079    308
+#>  3  1901     2 female Victoria VIC     0.00806    12409    100
+#>  4  1901     3 female Victoria VIC     0.00472    12931     61
+#>  5  1901     4 female Victoria VIC     0.00370    12986     48
+#>  6  1901     5 female Victoria VIC     0.00324    13589     44
+#>  7  1901     6 female Victoria VIC     0.00310    13872     43
+#>  8  1901     7 female Victoria VIC     0.00284    14077     40
+#>  9  1901     8 female Victoria VIC     0.00261    14198     37
+#> 10  1901     9 female Victoria VIC     0.00225    14694     33
+#> # ℹ 11,990 more rows
+```
 
+This example contains just Victorian females from 1901 to 2020. It must
+have a time index variable (here `Year`), an age variable (here `Age`)
+and optionally other categorical variables that uniquely define each
+time series (here `Sex`, `State` and `Code`). These categorical
+varaibles, along with the age variable, are “key” variables. Other
+columns contain variables of interest: `Mortality`, `Exposure`,
+`Deaths`.
+
+There are `autoplot()` functions for plotting `vital` objects.
+
+``` r
+vic_female |> 
+  autoplot(Exposure)
+```
+
+<img src="man/figures/README-autoplot-1.png" width="100%" />
+
+### Life tables and life expectancy
+
+Lifetables can be produced using the `life_table()` function. It will
+produce lifetables for each unique combination of the index and key
+variables other than age.
+
+``` r
 # Lifetable in 2000
 vic_female |>
   filter(Year == 2000) |>
@@ -71,8 +120,10 @@ vic_female |>
 #> # ℹ 2 more variables: nx <dbl>, ax <dbl>
 ```
 
-``` r
+Life expectancy ($e_x$ with $x=0$ by default) is computed using
+`life_expectancy()`:
 
+``` r
 # Life expectancy
 vic_female |>
   life_expectancy() |>
@@ -80,10 +131,15 @@ vic_female |>
   geom_line()
 ```
 
-<img src="man/figures/README-example-1.png" width="100%" />
+<img src="man/figures/README-e0-1.png" width="100%" />
+
+### Smoothing
+
+Several smoothing functions are provided: `smooth_spline()`,
+`smooth_mortality()`, `smooth_fertility()`, and `smooth_loess()`, each
+smoothing across the age variable for each year.
 
 ``` r
-
 # Smoothed data
 vic_female |>
   filter(Year == 2000) |>
@@ -94,10 +150,14 @@ vic_female |>
   scale_y_log10()
 ```
 
-<img src="man/figures/README-example-2.png" width="100%" />
+<img src="man/figures/README-smoothing-1.png" width="100%" />
+
+### Lee-Carter models
+
+Lee-Carter models (Lee & Carter, JASA, 1992) are estimated using the
+`LC` function which must be called within a `model` function:
 
 ``` r
-
 # Lee-Carter model
 lc <- vic_female |>
   model(lee_carter = LC(log(Mortality)))
@@ -138,14 +198,12 @@ report(lc)
 ```
 
 ``` r
-
 autoplot(lc)
 ```
 
-<img src="man/figures/README-example-3.png" width="100%" />
+<img src="man/figures/README-lc2-1.png" width="100%" />
 
 ``` r
-
 # Forecasts from Lee-Carter model
 lc |>
   forecast(h = 20) |>
@@ -154,10 +212,16 @@ lc |>
   scale_y_log10()
 ```
 
-<img src="man/figures/README-example-4.png" width="100%" />
+<img src="man/figures/README-lc3-1.png" width="100%" />
+
+### Coherent functional data models
+
+Functional data models (Hyndman & Ullah, CSDA, 2007) can be estimated in
+the same way as Lee-Carter models, with `LC` replaced by `FDM`. A
+coherent functional data model (Hyndman, Booth & Yasmeen, Demography,
+2013), can be used as follows.
 
 ``` r
-
 # Coherent forecasts from FDM model
 nor <- norway_mortality |>
   dplyr::filter(Sex != "Total") |>
@@ -180,4 +244,7 @@ nor |>
 #> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
-<img src="man/figures/README-example-5.png" width="100%" />
+<img src="man/figures/README-coherent-1.png" width="100%" />
+
+Here, `make_pr()` makes the product-ratios, while `undo_pr()` undoes
+them.

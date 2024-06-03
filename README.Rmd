@@ -39,27 +39,60 @@ pak::pak("robjhyndman/vital")
 
 ## Example
 
+First load the necessary packages.
 
-```{r example}
+```{r packages}
 library(vital)
 library(dplyr)
 library(ggplot2)
+```
 
+### vital objects
+
+The basic data object is a `vital`.
+
+```{r example}
 # Examples using Victorian females
 vic_female <- aus_mortality |>
   filter(State == "Victoria", Sex == "female")
+vic_female
+```
 
+This example contains just Victorian females from `r min(vic_female$Year)` to `r max(vic_female$Year)`. It must have a time index variable (here `Year`), an age variable (here `Age`) and optionally other categorical variables that uniquely define each time series (here `Sex`, `State` and `Code`). These categorical varaibles, along with the age variable, are "key" variables. Other columns contain variables of interest: `Mortality`, `Exposure`, `Deaths`. 
+
+There are `autoplot()` functions for plotting `vital` objects.
+
+```{r autoplot}
+vic_female |> 
+  autoplot(Exposure)
+```
+
+### Life tables and life expectancy
+
+Lifetables can be produced using the `life_table()` function. It will produce lifetables for each unique combination of the index and key variables other than age.
+
+```{r lifetable}
 # Lifetable in 2000
 vic_female |>
   filter(Year == 2000) |>
   life_table()
+```
 
+Life expectancy ($e_x$ with $x=0$ by default) is computed using `life_expectancy()`:
+
+```{r e0}
 # Life expectancy
 vic_female |>
   life_expectancy() |>
   ggplot(aes(x = Year, y = ex)) +
   geom_line()
+```
 
+### Smoothing 
+
+Several smoothing functions are provided: `smooth_spline()`, `smooth_mortality()`, `smooth_fertility()`, and `smooth_loess()`, each smoothing across the age variable for each year.
+
+```{r smoothing}
 # Smoothed data
 vic_female |>
   filter(Year == 2000) |>
@@ -68,21 +101,37 @@ vic_female |>
   geom_line(aes(y = .smooth), col = "blue") +
   ylab("Mortality rate") +
   scale_y_log10()
+```
 
+### Lee-Carter models
+
+Lee-Carter models (Lee & Carter, JASA, 1992) are estimated using the `LC` function which must be called within a `model` function:
+
+```{r lc}
 # Lee-Carter model
 lc <- vic_female |>
   model(lee_carter = LC(log(Mortality)))
 report(lc)
+```
 
+```{r lc2}
 autoplot(lc)
+```
 
+```{r lc3}
 # Forecasts from Lee-Carter model
 lc |>
   forecast(h = 20) |>
   autoplot() +
   ylab("Mortality rate") +
   scale_y_log10()
+```
 
+### Coherent functional data models
+
+Functional data models (Hyndman & Ullah, CSDA, 2007) can be estimated in the same way as Lee-Carter models, with `LC` replaced by `FDM`. A coherent functional data model (Hyndman, Booth & Yasmeen, Demography, 2013), can be used as follows.
+
+```{r coherent}
 # Coherent forecasts from FDM model
 nor <- norway_mortality |>
   dplyr::filter(Sex != "Total") |>
@@ -103,3 +152,5 @@ nor |>
   geom_line(data = fc, aes(y = .mean, color = Year)) +
   scale_color_gradientn(colors = rainbow(25))
 ```
+
+Here, `make_pr()` makes the product-ratios, while `undo_pr()` undoes them.
