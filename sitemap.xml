@@ -67,10 +67,25 @@
     <loc>https://pkg.robjhyndman.com/vital/reference/life_table.html</loc>
   </url>
   <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/make_pr.html</loc>
+  </url>
+  <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/make_sd.html</loc>
+  </url>
+  <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/model.html</loc>
   </url>
   <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/net_migration.html</loc>
+  </url>
+  <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/norway_births.html</loc>
+  </url>
+  <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/read_hfd.html</loc>
+  </url>
+  <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/read_hfd_files.html</loc>
   </url>
   <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/read_hmd.html</loc>
@@ -89,6 +104,12 @@
   </url>
   <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/total_fertility_rate.html</loc>
+  </url>
+  <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/undo_pr.html</loc>
+  </url>
+  <url>
+    <loc>https://pkg.robjhyndman.com/vital/reference/undo_sd.html</loc>
   </url>
   <url>
     <loc>https://pkg.robjhyndman.com/vital/reference/vital-package.html</loc>
