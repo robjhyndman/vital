@@ -7,7 +7,7 @@
 Time series of class \code{vital}
 }
 \source{
-Australian Human Mortality Database
+Australian Human Mortality Database. \url{https://aushd.org}
 }
 \description{
 \code{aus_fertility} is an annual \code{vital} object covering the years 1921-2002 with three values:

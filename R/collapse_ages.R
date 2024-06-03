@@ -1,7 +1,8 @@
 # Function to collapse upper ages into a single age group
 
 #' Collapse upper ages into a single age group. Counts are summed while
-#' rates are recomputed where possible. e.g., if the object includes deaths,
+#' rates are recomputed where possible.
+#' @details If the object includes deaths,
 #' population and mortality rates, then deaths and population are summed and
 #' mortality rates are recomputed as deaths/population. But if the object contains
 #' mortality rates but not deaths and population, then the last rate remains
