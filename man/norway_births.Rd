@@ -17,7 +17,7 @@ Human Fertility Database \url{https://www.humanfertility.org}
 \code{norway_births} is an annual \code{vital} object covering the years 1846-2022, as provided
 by the Human Mortality Database on 21 April 2024.
 
-\code{norway_fertality} is an annual \code{vital} covering the years 1846-2022, as provided
+\code{norway_fertality} is an annual \code{vital} covering the years 1967-2022, as provided
 by the Human Fertility Database on 21 April 2024.
 
 \code{norway_mortality} is an annual \code{vital} covering the years 1846-2022, as provided

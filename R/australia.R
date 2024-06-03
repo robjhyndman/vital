@@ -14,7 +14,7 @@
 #' The extreme age groups (15 and 49) also include a few younger and older mothers respectively.
 #'
 #' @source
-#' Australian Human Mortality Database
+#' Australian Human Mortality Database. <https://aushd.org>
 #'
 #' @name aus_fertility
 #' @format Time series of class `vital`

@@ -29,7 +29,7 @@ NULL
 
 #' Norwegian fertility data
 #'
-#' `norway_fertality` is an annual `vital` covering the years 1846-2022, as provided
+#' `norway_fertality` is an annual `vital` covering the years 1967-2022, as provided
 #' by the Human Fertility Database on 21 April 2024.
 #' @source Human Fertility Database <https://www.humanfertility.org>
 #'
