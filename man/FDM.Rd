@@ -37,14 +37,6 @@ hu <- norway_mortality |>
   model(hyndman_ullah = FDM(log(.smooth)))
 report(hu)
 autoplot(hu)
-# Coherent model
-fit <- norway_mortality |>
-  dplyr::filter(Year > 2010, Sex != "Total") |>
-  make_pr(Mortality) |>
-  model(hby = FDM(log(Mortality), coherent = TRUE))
-fc <- fit |>
-  forecast(h = 10) |>
-  undo_pr(Mortality)
 }
 \references{
 Hyndman, R. J., and Ullah, S. (2007) Robust forecasting of
