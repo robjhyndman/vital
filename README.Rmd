@@ -23,12 +23,20 @@ The goal of vital is to allow analysis of demographic data using tidy tools.
 
 ## Installation
 
-You can install the development version of vital from [GitHub](https://github.com/) with:
+You can install the **stable** version from
+[CRAN](https://cran.r-project.org/package=vital):
+
+```r
+pak::pak("vital")
+```
+
+You can install the **development** version from
+[Github](https://github.com/robjhyndman/vital):
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("robjhyndman/vital")
+pak::pak("robjhyndman/vital")
 ```
+
 ## Example
 
 
@@ -71,7 +79,7 @@ autoplot(lc)
 # Forecasts from Lee-Carter model
 lc |>
   forecast(h = 20) |>
-  autoplot(Mortality) +
+  autoplot() +
   ylab("Mortality rate") +
   scale_y_log10()
 ```
