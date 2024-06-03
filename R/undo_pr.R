@@ -162,6 +162,9 @@ undo_sd <- function(.data, .var, key = Sex, times = 2000) {
     .data[[varname]] <- distributional::dist_sample(distributional::generate(.data[[varname]], times))
   }
   .data[[varname]] <- .data[[varname]] + .data$.gm
+  if(distributional::is_distribution(.data[[varname]])) {
+    .data$.mean <- mean(.data[[varname]])
+  }
   .data$.gm <- NULL
   output <- as_vital(.data, index = index, key = keys,
                      .age = age, .population = attr_data$populationvar,
@@ -175,4 +178,3 @@ undo_sd <- function(.data, .var, key = Sex, times = 2000) {
   }
   return(output)
 }
-
