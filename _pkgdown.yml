@@ -27,12 +27,15 @@ reference:
       - as_vital
       - read_hmd
       - read_hmd_files
+      - read_hfd
+      - read_hfd_files
       - net_migration
   - title: Data
     desc: Data sets included in the package
     contents:
       - aus_mortality
       - aus_fertility
+      - norway_births
   - title: Computing with vitals
     desc: Functions for computing on vital objects
     contents:
@@ -55,6 +58,13 @@ reference:
       - FMEAN
       - FNAIVE
       - LC
+  - title: Coherent models
+    desc: Functions for handling coherent models
+    contents:
+      - make_pr
+      - make_sd
+      - undo_pr
+      - undo_sd
   - title: Methods for vital models
     desc: Functions that work with vital mables
     contents:
