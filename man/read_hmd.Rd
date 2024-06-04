@@ -39,7 +39,7 @@ In order to read the data, users are required to create an account with the
 HMD website (\url{https://www.mortality.org}), and obtain a valid username and password.
 }
 \examples{
-\donttest{
+\dontrun{
 norway <- read_hmd(
   country = "NOR",
   username = "Nora.Weigh@mymail.com",

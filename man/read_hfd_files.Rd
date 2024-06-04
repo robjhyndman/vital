@@ -26,7 +26,7 @@ for use in other functions. This function uses \code{\link[HMDHFDplus:readHFD]{H
 to parse the files.
 }
 \examples{
-\donttest{
+\dontrun{
 # File downloaded from the [Human Fertility Database](https://www.humanfertility.org)
 fertility <- read_hfd_files("NORasfrRR.txt")
 }
