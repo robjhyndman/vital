@@ -133,7 +133,7 @@ forecast.LC <- function(object, new_data = NULL, h = NULL, point_forecast = list
 
 #' @export
 generate.LC <- function(x, new_data = NULL, h = NULL,
-  bootstrap = FALSE, times = 1, ..) {
+  bootstrap = FALSE, times = 1, ...) {
   agevar <- attributes(new_data)$agevar
   indexvar <- index_var(new_data)
   if(times != length(unique(new_data$.rep)))
