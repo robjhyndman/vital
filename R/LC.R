@@ -258,17 +258,17 @@ lca <- function(data, sex, age, rates, pop, deaths,
 
   if (adjust == "dxt") {
     # Fit to age-specific deaths.
-    options(warn = -1) # Prevent warnings if population is non-integer
     # Offset
     z <- log(t(pop)) + ax
     for (i in seq(m)) {
       y <- as.numeric(deaths[i, ])
       zi <- as.numeric(z[, i])
       weight <- as.numeric(zi > -1e-8) # Avoid -infinity due to zero population
-      yearglm <- stats::glm(y ~ offset(zi) - 1 + bx, family = stats::poisson, weights = weight)
+      # Prevent warnings if population is non-integer
+      yearglm <- stats::glm(y ~ offset(zi) - 1 + bx, family = stats::poisson, weights = weight) |>
+        suppressWarnings()
       ktadj[i] <- yearglm$coef[1]
     }
-    options(warn = 0)
   } else if (adjust == "dt") {
     # Fit to total deaths
     FUN <- function(p, Dt, bx, ax, popi) {

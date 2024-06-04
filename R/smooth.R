@@ -135,7 +135,6 @@ smooth_loess_x <- function(data, var, age_spacing, age, popvar, span = 0.2) {
 
 fert.curve <- function(x, y, w, lambda = 1, newx = x, ...) {
   w <- w / sum(w)
-	oldwarn <- options(warn = -1)
 	fred <- stats::predict(
 		cobs::cobs(
 			x,
@@ -149,8 +148,8 @@ fert.curve <- function(x, y, w, lambda = 1, newx = x, ...) {
 		),
 		interval = "conf",
 		nz = 200
-	)
-	options(warn = oldwarn$warn)
+	) |>
+	  suppressWarnings()
 
 	fit <- stats::approx(fred[, 1], fred[, 2], xout = newx, rule = 1)$y
 	se <- stats::approx(fred[, 1], (fred[, 4] - fred[, 3]) / 2 / 1.96, xout = newx, rule = 1)$y
