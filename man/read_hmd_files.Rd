@@ -26,7 +26,8 @@ for use in other functions. This function uses \code{\link[HMDHFDplus:readHMD]{H
 to parse the files.
 }
 \examples{
-\dontrun{
+\donttest{
+# Files downloaded from the [Human Mortality Database](https://mortality.org)
 mortality <- read_hmd_files(
   c("Deaths_1x1.txt", "Exposures_1x1.txt", "Population.txt", "Mx_1x1.txt")
 )

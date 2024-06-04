@@ -31,7 +31,7 @@ In order to read the data, users are required to create an account with the
 HFD website (\url{https://www.humanfertility.org}), and obtain a valid username and password.
 }
 \examples{
-\dontrun{
+\donttest{
 norway <- read_hfd(
   country = "NOR",
   username = "Nora.Weigh@mymail.com",

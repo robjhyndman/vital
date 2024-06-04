@@ -25,7 +25,7 @@ Calculate net migration from a vital object
 }
 \examples{
 net_migration(norway_mortality, norway_births)
-\dontrun{
+\donttest{
 # Files downloaded from the [Human Mortality Database](https://mortality.org)
 deaths <- read_hmd_files(c("Population.txt", "Mx_1x1.txt"))
 births <- read_hmd_file("Births.txt")

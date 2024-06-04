@@ -22,7 +22,7 @@
 #'
 #' @author Rob J Hyndman
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' norway <- read_hmd(
 #'   country = "NOR",
 #'   username = "Nora.Weigh@mymail.com",
@@ -71,7 +71,8 @@ read_hmd <- function(country, username, password,
 #'
 #' @author Rob J Hyndman
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' # Files downloaded from the [Human Mortality Database](https://mortality.org)
 #' mortality <- read_hmd_files(
 #'   c("Deaths_1x1.txt", "Exposures_1x1.txt", "Population.txt", "Mx_1x1.txt")
 #' )

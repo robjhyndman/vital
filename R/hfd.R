@@ -19,7 +19,7 @@
 #'
 #' @author Rob J Hyndman
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' norway <- read_hfd(
 #'   country = "NOR",
 #'   username = "Nora.Weigh@mymail.com",
@@ -58,7 +58,8 @@ read_hfd <- function(country, username, password, variables = "asfrRR") {
 #'
 #' @author Rob J Hyndman
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' # File downloaded from the [Human Fertility Database](https://www.humanfertility.org)
 #' fertility <- read_hfd_files("NORasfrRR.txt")
 #' }
 #' @keywords manip
