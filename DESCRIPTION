@@ -2,7 +2,7 @@ Package: vital
 Version: 1.0.0
 Type: Package
 Title: Tidy Analysis Tools for Mortality, Fertility, Migration and Population Data
-Description: Functions for analysing vital statistics based on tools
+Description: Analysing vital statistics based on tools
     consistent with the tidyverse. Tools are provided for data visualization,
     lifetable calculations, computing net migration numbers, Lee-Carter
     modelling; functional data modelling and forecasting.
