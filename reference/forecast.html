@@ -66,7 +66,6 @@ The forecasts returned contain both point forecasts and their distribution.</p>
 <span>  simulate <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  bootstrap <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">5000</span>,</span>
-<span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -79,7 +78,6 @@ The forecasts returned contain both point forecasts and their distribution.</p>
 <span>  simulate <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  bootstrap <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">5000</span>,</span>
-<span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -92,7 +90,6 @@ The forecasts returned contain both point forecasts and their distribution.</p>
 <span>  simulate <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  bootstrap <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">5000</span>,</span>
-<span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -105,7 +102,6 @@ The forecasts returned contain both point forecasts and their distribution.</p>
 <span>  simulate <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  bootstrap <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">5000</span>,</span>
-<span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -118,7 +114,6 @@ The forecasts returned contain both point forecasts and their distribution.</p>
 <span>  simulate <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  bootstrap <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">5000</span>,</span>
-<span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -152,10 +147,6 @@ when there are no covariates in the model. It is ignored if <code>new_data</code
 
 <dt>times</dt>
 <dd><p>The number of sample paths to use in estimating the forecast distribution when <code>bootstrap = TRUE</code>.</p></dd>
-
-
-<dt>seed</dt>
-<dd><p>The seed for the random generation from distributions.</p></dd>
 
 
 <dt>...</dt>
