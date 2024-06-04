@@ -12,7 +12,6 @@
 #' @param h The simulation horizon (can be used instead of `new_data` for regular time series with no exogenous regressors).
 #' @param bootstrap If `TRUE`, then forecast distributions are computed using simulation with resampled errors.
 #' @param times The number of replications.
-#' @param seed The seed for the random generation from distributions.
 #' @param ... Additional arguments
 #' @author Rob J Hyndman and Mitchell O'Hara-Wild
 #' @return A vital object with simulated values.
@@ -25,21 +24,8 @@
 #'
 #' @export
 generate.mdl_vtl_df <- function(x, new_data = NULL, h = NULL,
-  bootstrap = FALSE, times = 1, seed = NULL, ...){
-  # Set seed here, even though seed is passed on to ensure it appears in docs
-  # for specific methods
-  if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
-    stats::runif(1)
-  if (is.null(seed))
-    RNGstate <- get(".Random.seed", envir = .GlobalEnv)
-  else {
-    R.seed <- get(".Random.seed", envir = .GlobalEnv)
-    set.seed(seed)
-    RNGstate <- structure(seed, kind = as.list(RNGkind()))
-    on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
-  }
-
-  mdls <- mable_vars(x)
+  bootstrap = FALSE, times = 1, ...){
+   mdls <- mable_vars(x)
   if(!is.null(new_data)){
     x <- bind_new_data(x, new_data)
   }
@@ -50,7 +36,7 @@ generate.mdl_vtl_df <- function(x, new_data = NULL, h = NULL,
   # Evaluate simulations
   x[[".sim"]] <- map2(x[[".sim"]],
                  x[["new_data"]] %||% rep(list(NULL), length.out = NROW(x)),
-                 generate, h = h, bootstrap = bootstrap, times = times, seed = seed, ...)
+                 generate, h = h, bootstrap = bootstrap, times = times, ...)
   x[["new_data"]] <- NULL
   agevar <- attributes(x$.sim[[1]])$agevar
   index <- index_var(x$.sim[[1]])
@@ -62,7 +48,7 @@ generate.mdl_vtl_df <- function(x, new_data = NULL, h = NULL,
 
 #' @export
 generate.mdl_vtl_ts <- function(x, new_data = NULL, h = NULL,
-    bootstrap = FALSE, times = 1, seed = NULL, ...){
+    bootstrap = FALSE, times = 1, ...){
   if(is.null(new_data)){
     new_data <- make_future_data(x$data, h)
   }
@@ -96,7 +82,7 @@ Does your model require extra variables to produce simulations?", e$message))
   x$model$stage <- NULL
   if(length(x$response) > 1) abort("Generating paths from multivariate models is not yet supported.")
   .sim <- generate(x[["fit"]], new_data = new_data, specials = specials,
-                   bootstrap = bootstrap, times = times, seed = seed, ...)[[".sim"]]
+                   bootstrap = bootstrap, times = times, ...)[[".sim"]]
 
   # Back-transform forecast distributions
   bt <- map(x$transformation, function(x){

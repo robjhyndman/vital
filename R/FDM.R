@@ -81,8 +81,7 @@ train_fdm <- function(.data, specials, order, ts_model_fn, coherent, ...) {
 #' @export
 
 forecast.FDM <- function(object, new_data = NULL, h = NULL, point_forecast = list(.mean = mean),
-  simulate = FALSE, bootstrap = FALSE, times = 5000, seed = NULL,
-     ...) {
+  simulate = FALSE, bootstrap = FALSE, times = 5000, ...) {
 
 # simulation/bootstrap not actually used here as forecast.mdl_vtl_ts
 # handles this using generate() and forecast.FDM is never called.
@@ -114,14 +113,12 @@ forecast.FDM <- function(object, new_data = NULL, h = NULL, point_forecast = lis
 
 #' @export
 generate.FDM <- function(x, new_data = NULL, h = NULL,
-  bootstrap = FALSE, times = 1, seed = NULL,
+  bootstrap = FALSE, times = 1,
   forecast_fn, ...) {
   agevar <- attributes(new_data)$agevar
   indexvar <- index_var(new_data)
   if(times != length(unique(new_data$.rep)))
     stop("We have a problem")
-  # Note that seed has already been set in generate.mdl_vtl_df
-  # So it is not re-set here
 
   # Simulate all beta series using stored models
   h <- length(unique(new_data[[index_var(new_data)]]))

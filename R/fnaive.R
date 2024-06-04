@@ -65,7 +65,7 @@ train_fnaive <- function(.data, ...) {
 forecast.FNAIVE <- function(
     object, new_data = NULL, h = NULL,
     point_forecast = list(.mean = mean),
-    simulate = FALSE, bootstrap = FALSE, times = 5000, seed = NULL, ...) {
+    simulate = FALSE, bootstrap = FALSE, times = 5000, ...) {
   # simulation/bootstrap not actually used here as forecast.mdl_vtl_ts
   # handles this using generate() and forecast.LC is never called.
   # The arguments are included so they show in the docs
@@ -99,9 +99,7 @@ forecast.FNAIVE <- function(
 #' @export
 generate.FNAIVE <- function(
     x, new_data = NULL, h = NULL,
-    bootstrap = FALSE, times = 1, seed = NULL, ...) {
-  # Note that seed has already been set in generate.mdl_vtl_df
-  # So it is not re-set here
+    bootstrap = FALSE, times = 1, ...) {
   agevar <- attributes(new_data)$agevar
   indexvar <- index_var(x$fitted)
   h <- length(unique(new_data[[indexvar]]))

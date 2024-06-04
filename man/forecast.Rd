@@ -17,7 +17,6 @@
   simulate = FALSE,
   bootstrap = FALSE,
   times = 5000,
-  seed = NULL,
   ...
 )
 
@@ -29,7 +28,6 @@
   simulate = FALSE,
   bootstrap = FALSE,
   times = 5000,
-  seed = NULL,
   ...
 )
 
@@ -41,7 +39,6 @@
   simulate = FALSE,
   bootstrap = FALSE,
   times = 5000,
-  seed = NULL,
   ...
 )
 
@@ -53,7 +50,6 @@
   simulate = FALSE,
   bootstrap = FALSE,
   times = 5000,
-  seed = NULL,
   ...
 )
 
@@ -65,7 +61,6 @@
   simulate = FALSE,
   bootstrap = FALSE,
   times = 5000,
-  seed = NULL,
   ...
 )
 }
@@ -84,8 +79,6 @@ when there are no covariates in the model. It is ignored if \code{new_data} is p
 \item{bootstrap}{If \code{TRUE}, then forecast distributions are computed using simulation with resampling.}
 
 \item{times}{The number of sample paths to use in estimating the forecast distribution when \code{bootstrap = TRUE}.}
-
-\item{seed}{The seed for the random generation from distributions.}
 
 \item{...}{Additional arguments passed to the specific model method.}
 }

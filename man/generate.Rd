@@ -4,15 +4,7 @@
 \alias{generate.mdl_vtl_df}
 \title{Generate responses from a mable}
 \usage{
-\method{generate}{mdl_vtl_df}(
-  x,
-  new_data = NULL,
-  h = NULL,
-  bootstrap = FALSE,
-  times = 1,
-  seed = NULL,
-  ...
-)
+\method{generate}{mdl_vtl_df}(x, new_data = NULL, h = NULL, bootstrap = FALSE, times = 1, ...)
 }
 \arguments{
 \item{x}{A mable.}
@@ -24,8 +16,6 @@
 \item{bootstrap}{If \code{TRUE}, then forecast distributions are computed using simulation with resampled errors.}
 
 \item{times}{The number of replications.}
-
-\item{seed}{The seed for the random generation from distributions.}
 
 \item{...}{Additional arguments}
 }

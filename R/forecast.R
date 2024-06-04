@@ -12,7 +12,6 @@
 #' @param simulate If  `TRUE`, then forecast distributions are computed using simulation from a parametric model.
 #' @param bootstrap If `TRUE`, then forecast distributions are computed using simulation with resampling.
 #' @param times The number of sample paths to use in estimating the forecast distribution when `bootstrap = TRUE`.
-#' @param seed The seed for the random generation from distributions.
 #' @param ... Additional arguments passed to the specific model method.
 #' @author Rob J Hyndman and Mitchell O'Hara-Wild
 #'
@@ -37,23 +36,8 @@
 #' @export
 forecast.mdl_vtl_df <- function(
     object, new_data = NULL, h = NULL, point_forecast = list(.mean = mean),
-    simulate = FALSE, bootstrap = FALSE, times = 5000, seed = NULL, ...
+    simulate = FALSE, bootstrap = FALSE, times = 5000, ...
   ) {
-  # Set seed here if necessary, even though seed is passed on to ensure
-  # it appears in docs for specific methods
-  if(simulate || bootstrap) {
-    if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
-      stats::runif(1)
-    if (is.null(seed))
-      RNGstate <- get(".Random.seed", envir = .GlobalEnv)
-    else {
-      R.seed <- get(".Random.seed", envir = .GlobalEnv)
-      set.seed(seed)
-      RNGstate <- structure(seed, kind = as.list(RNGkind()))
-      on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
-    }
-  }
-
   mdls <- mable_vars(object)
   if (!is.null(h) && !is.null(new_data)) {
     warn("Input forecast horizon `h` will be ignored as `new_data` has been provided.")
@@ -66,7 +50,7 @@ forecast.mdl_vtl_df <- function(
   kv <- c(key_vars(object), ".model")
   object <- dplyr::mutate_at(as_tibble(object), mdls, forecast,
     new_data = object[["new_data"]], h = h, point_forecast = point_forecast,
-    simulate = simulate, bootstrap = bootstrap, times = times, seed = seed,
+    simulate = simulate, bootstrap = bootstrap, times = times,
     ..., key_data = key_data(object)
   )
   object <- tidyr::pivot_longer(object, !!mdls,
@@ -213,6 +197,3 @@ calc <- function (f, ...) {
 }
 
 globalVariables(c("agedf", "timedf", ".mean", "Year", "Mortality", "fc"))
-
-
-
