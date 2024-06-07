@@ -38,7 +38,7 @@ generate.mdl_vtl_df <- function(x, new_data = NULL, h = NULL,
                  x[["new_data"]] %||% rep(list(NULL), length.out = NROW(x)),
                  generate, h = h, bootstrap = bootstrap, times = times, ...)
   x[["new_data"]] <- NULL
-  agevar <- attributes(x$.sim[[1]])$agevar
+  agevar <- age_var(x$.sim[[1]])
   index <- index_var(x$.sim[[1]])
 
   unnest_tsbl(x, ".sim", parent_key = kv) |>
@@ -56,7 +56,7 @@ generate.mdl_vtl_ts <- function(x, new_data = NULL, h = NULL,
     kv <- c(".rep", key_vars(new_data))
     idx <- index_var(new_data)
     intvl <- tsibble::interval(new_data)
-    agevar <- attributes(new_data)$agevar
+    agevar <- age_var(new_data)
     new_data <- vctrs::vec_rbind(
       !!!set_names(rep(list(as_tibble(new_data)), times), seq_len(times)),
       .names_to = ".rep"

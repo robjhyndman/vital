@@ -46,7 +46,7 @@ forecast.mdl_vtl_df <- function(
   if (!is.null(new_data)) {
     object <- bind_new_data(object, new_data)
   }
-  agevar <- attributes(object[[mdls[1]]][[1]]$data)$agevar
+  agevar <- age_var(object[[mdls[1]]][[1]]$data)
   kv <- c(key_vars(object), ".model")
   object <- dplyr::mutate_at(as_tibble(object), mdls, forecast,
     new_data = object[["new_data"]], h = h, point_forecast = point_forecast,
@@ -62,7 +62,7 @@ forecast.mdl_vtl_df <- function(
     unnest_tsbl(as_tibble(object)[c(kv, ".fc")], ".fc", parent_key = kv)
   )
   build_vital_fable(out, response = fbl_attr$response, distribution = fbl_attr$dist,
-    .age = agevar)
+    age = agevar)
 }
 
 #' @export
@@ -86,11 +86,11 @@ forecast.mdl_vtl_ts <- function(
     resp_vars
   }
   attrs <- attributes(new_data)
-  agevar <- attrs$agevar
+  agevar <- age_var(new_data)
   if (NROW(new_data) == 0) {
     new_data[[dist_col]] <- distributional::new_dist(dimnames = resp_vars)
-    return(build_vital_fable(new_data, response = resp_vars, distribution = !!sym(dist_col),
-                  .age = agevar))
+    return(build_vital_fable(new_data, response = resp_vars,
+      distribution = !!sym(dist_col), age = agevar))
   }
   if (simulate || bootstrap) {
     fc <- generate(object, new_data, bootstrap = bootstrap, times = times, ...)
@@ -168,7 +168,7 @@ Does your model require extra variables to produce forecasts?",
     ordered = is_ordered(new_data), interval = tsibble::interval(new_data)
   )
   build_vital_fable(fbl, response = resp_vars, distribution = dist_col,
-                .age = agevar)
+                age = agevar)
 }
 
 make_future_data <- function (.data, h = NULL) {
@@ -181,10 +181,10 @@ make_future_data <- function (.data, h = NULL) {
     n <- n * 2
   out <- tsibble::new_data(.data, round(n))
   indexvar <- index_var(out)
-  agevar <- attributes(.data)$agevar
-  .ages <- .data[[agevar]] |> unique() |> sort()
-  out <- tidyr::expand_grid(as_tibble(out), .ages)
-  colnames(out)[colnames(out) == ".ages"] <- agevar
+  agevar <- age_var(.data)
+  ages <- .data[[agevar]] |> unique() |> sort()
+  out <- tidyr::expand_grid(as_tibble(out), ages)
+  colnames(out)[colnames(out) == "ages"] <- agevar
   as_tsibble(out, index = indexvar, key = agevar) |>
     as_vital(.age = agevar)
 }

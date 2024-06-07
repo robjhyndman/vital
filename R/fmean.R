@@ -24,11 +24,11 @@ FMEAN <- function(formula, ...) {
 }
 
 train_fmean <- function(.data, ...) {
-  attrx <- attributes(.data)
   indexvar <- index_var(.data)
-  agevar <- attrx$agevar
+  vvar <- vital_var_list(.data)
+  agevar <- vvar$age
   measures <- measured_vars(.data)
-  measures <- measures[!(measures %in% c(agevar, attrx$populationvar))]
+  measures <- measures[!(measures %in% c(agevar, vvar$population))]
   measure <- measures[1]
   ave_measure <- .data |>
     as_tibble() |>
@@ -71,7 +71,7 @@ forecast.FMEAN <- function(object, new_data = NULL, h = NULL,
   # handles this using generate() and forecast.LC is never called.
   # The arguments are included so they show in the docs
   # Similarly for h and point_forecast
-  agevar <- attributes(new_data)$agevar
+  agevar <- age_var(new_data)
   new_data |>
     left_join(object$model, by = agevar) |>
     transmute(fc = distributional::dist_normal(mean, sigma))  |>
@@ -81,7 +81,7 @@ forecast.FMEAN <- function(object, new_data = NULL, h = NULL,
 #' @export
 generate.FMEAN <- function(x, new_data = NULL, h = NULL,
     bootstrap = FALSE, times = 1,  ...) {
-  agevar <- attributes(new_data)$agevar
+  agevar <- age_var(new_data)
   new_data <- new_data |>
     dplyr::left_join(x$model, by = agevar)
   if(times != length(unique(new_data$.rep)))
@@ -169,10 +169,11 @@ autoplot.FMEAN <- function(object, age = "Age",...) {
 interpolate.FMEAN <- function (object, new_data, specials, ...) {
   attrx <- attributes(new_data)
   keyvar <- key_vars(new_data)
-  agevar <- attrx$agevar
+  vvar <- vital_var_list(new_data)
+  agevar <- vvar$age
   timevar <- attrx$index
   measures <- measured_vars(new_data)
-  measures <- measures[!(measures %in% c(agevar, attrx$populationvar))]
+  measures <- measures[!(measures %in% c(agevar,  vvar$population))]
   measure <- measures[1]
   fits <- fitted(object) |> select(.fitted)
   output <- as_tibble(new_data) |>

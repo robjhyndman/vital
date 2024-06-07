@@ -32,14 +32,16 @@ net_migration <- function(deaths, births) {
   birth_idx <- index_var(births)
 
   # Grab age and population variables
-  deathsvar <- attributes(deaths)$deathsvar
+  dvvar <- vital_var_list(deaths)
+  bvvar <- vital_var_list(births)
+  deathsvar <- dvvar$deaths
   if(is.null(deathsvar)) {
     deathsvar <- "Deaths"
   }
-  agevar <- attributes(deaths)$agevar
-  popvar <- attributes(deaths)$populationvar
-  birthsvar <- attributes(births)$birthsvar
-  bpopvar <- attributes(births)$populationvar
+  agevar <- dvvar$age
+  popvar <- dvvar$population
+  birthsvar <- bvvar$births
+  bpopvar <- bvvar$population
 
   # Check indexes are the same
   if(!identical(death_idx, birth_idx)) {

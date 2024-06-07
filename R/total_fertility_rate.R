@@ -21,11 +21,11 @@ total_fertility_rate <- function(.data,  fertility) {
   # Keys including age
   keys <- tsibble::key_vars(.data)
   # vital_names
-  vital_names <- attributes(.data)
+  vital_names <- vital_var_list(.data)
   col_names <- colnames(.data)
 
   # Find age and fertility columns
-  age <- vital_names$agevar
+  age <- vital_names$age
   if(is.null(age)) {
     stop("No age variable identified")
   }
@@ -47,8 +47,8 @@ total_fertility_rate <- function(.data,  fertility) {
   out <- out[col_names]
   out |>
     as_tsibble(index = index, key = all_of(keys_noage)) |>
-    as_vital(.sex=vital_names$sexvar, .births=vital_names$births,
-             .population = vital_names$populationvar)
+    as_vital(.sex=vital_names$sex, .births=vital_names$births,
+             .population = vital_names$population)
 }
 
 tfr <- function(dt, fertility) {

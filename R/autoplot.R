@@ -18,7 +18,7 @@
 #' @examples
 #' autoplot(aus_fertility, Fertility)
 #' @export
-autoplot.vital <- function(object, .vars = NULL, age = attributes(object)$agevar,...) {
+autoplot.vital <- function(object, .vars = NULL, age = age_var(object),...) {
   quo_vars <- enquo(.vars)
 
   # Index variable
@@ -27,7 +27,7 @@ autoplot.vital <- function(object, .vars = NULL, age = attributes(object)$agevar
   # Age variable
   if(is.null(age)) {
     if(inherits(object, "vital")) {
-      age <- attributes(object)$agevar
+      age <- age_var(object)
       if(is.null(age)) {
         # A vital without age, so try a tsibble autoplot
         object <- as_tsibble(object)
@@ -148,7 +148,7 @@ autoplot.mdl_vtl_df <- function (object, ...) {
   } else {
     model <- mable_vars(object)
     class(object) <- c(class(object[[model]][[1]]$fit), class(object))
-    agevar <- attributes(object[[model]][[1]]$fit$fitted)$agevar
+    agevar <- age_var(object[[model]][[1]]$fit$fitted)
     p <- autoplot(object, age = agevar, ...)
   }
   p

@@ -39,8 +39,8 @@ make_pr <- function(.data, .var, key = Sex) {
   index <- tsibble::index_var(.data)
   # Key variables
   keys <- tsibble::key_vars(.data)
-  attr_data <- attributes(.data)
-  age <- attr_data$agevar
+  attr_data <- vital_var_list(.data)
+  age <- attr_data$age
   keys_noage <- keys[!(keys %in% c(age, "Age", "AgeGroup", "Age_Group"))]
   if(key %in% c(age, "Age", "AgeGroup", "Age_Group")) {
     stop("key cannot be an age variable")
@@ -72,9 +72,11 @@ make_pr <- function(.data, .var, key = Sex) {
   .data <- dplyr::bind_rows(.data, gm)
 
   as_vital(.data, index = index, keys = keys,
-           .age = age, .population = attr_data$populationvar,
-           .sex = attr_data$sexvar, .deaths = attr_data$deathsvar,
-           .births = attr_data$birthsvar, reorder = TRUE)
+           .age = age,
+           .population = attr_data$population,
+           .sex = attr_data$sex,
+           .deaths = attr_data$deaths,
+           .births = attr_data$births, reorder = TRUE)
 }
 
 #' Do a sum/difference transformation
@@ -115,8 +117,8 @@ make_sd <- function(.data, .var, key = Sex) {
   index <- tsibble::index_var(.data)
   # Key variables
   keys <- tsibble::key_vars(.data)
-  attr_data <- attributes(.data)
-  age <- attr_data$agevar
+  attr_data <- vital_var_list(.data)
+  age <- attr_data$age
   keys_noage <- keys[!(keys %in% c(age, "Age", "AgeGroup", "Age_Group"))]
   if(key %in% c(age, "Age", "AgeGroup", "Age_Group")) {
     stop("key cannot be an age variable")
@@ -145,7 +147,9 @@ make_sd <- function(.data, .var, key = Sex) {
   .data <- dplyr::bind_rows(.data, gm)
 
   as_vital(.data, index = index, keys = keys,
-           .age = age, .population = attr_data$populationvar,
-           .sex = attr_data$sexvar, .deaths = attr_data$deathsvar,
-           .births = attr_data$birthsvar, reorder = TRUE)
+           .age = age,
+           .population = attr_data$population,
+           .sex = attr_data$sex,
+           .deaths = attr_data$deaths,
+           .births = attr_data$births, reorder = TRUE)
 }

@@ -113,7 +113,7 @@ bind_new_data <- function (object, new_data) {
             deparse(new_data)))
     }
     keys <- key_vars(new_data)
-    agevar <- attributes(new_data)$agevar
+    agevar <- age_var(new_data)
     keys_noage <- keys[keys != agevar]
     if (!identical(key_vars(object), keys_noage)) {
         abort("Provided data contains a different key structure to the models.")

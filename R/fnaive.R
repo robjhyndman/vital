@@ -24,11 +24,11 @@ FNAIVE <- function(formula, ...) {
 }
 
 train_fnaive <- function(.data, ...) {
-  attrx <- attributes(.data)
   indexvar <- index_var(.data)
-  agevar <- attrx$agevar
+  vvar <- vital_var_list(.data)
+  agevar <- vvar$age
   measures <- measured_vars(.data)
-  measures <- measures[!(measures %in% c(agevar, attrx$populationvar))]
+  measures <- measures[!(measures %in% c(agevar, vvar$population))]
   measure <- measures[1]
   last_measure <- .data |>
     tibble::as_tibble() |>
@@ -70,7 +70,7 @@ forecast.FNAIVE <- function(
   # handles this using generate() and forecast.LC is never called.
   # The arguments are included so they show in the docs
   # Similarly for h and point_forecast
-  agevar <- attributes(new_data)$agevar
+  agevar <- age_var(new_data)
   indexvar <- index_var(object$fitted)
   h <- length(unique(new_data[[indexvar]]))
   fc <- object$fitted |>
@@ -100,7 +100,7 @@ forecast.FNAIVE <- function(
 generate.FNAIVE <- function(
     x, new_data = NULL, h = NULL,
     bootstrap = FALSE, times = 1, ...) {
-  agevar <- attributes(new_data)$agevar
+  agevar <- age_var(new_data)
   indexvar <- index_var(x$fitted)
   h <- length(unique(new_data[[indexvar]]))
   reps <- length(unique(new_data[[".rep"]]))

@@ -231,12 +231,12 @@ smooth_vital <- function(.data, .var, age_spacing, smooth_fn, ...) {
 	index <- tsibble::index_var(.data)
 	# Keys including age
 	keys <- tsibble::key_vars(.data)
-	attrx <- attributes(.data)
-	age <- attrx$agevar
+	attrx <- vital_var_list(.data)
+	age <- attrx$age
 	if (is.null(age)) {
 		stop("No age variable found")
 	}
-	pop <- attrx$populationvar
+	pop <- attrx$population
 	# Drop Age as a key and nest results
 	keys_noage <- keys[!(keys %in% c(age, "AgeGroup", "Age_Group"))]
 	# Turn .var into character
@@ -257,10 +257,10 @@ smooth_vital <- function(.data, .var, age_spacing, smooth_fn, ...) {
 			index = index,
 			key = all_of(keys),
 			.age = age,
-			.sex = attrx$sexvar,
-			.population = attrx$populationvar,
-			.deaths = attrx$deathsvar,
-			.births = attrx$birthsvar,
+			.sex = attrx$sex,
+			.population = attrx$population,
+			.deaths = attrx$deaths,
+			.births = attrx$births,
 			reorder = TRUE
 		)
 }

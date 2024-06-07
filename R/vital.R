@@ -39,7 +39,7 @@ vital <- function(
   tsibble(..., key = !!enquo(key), index = !!enquo(index), regular = regular, .drop = .drop) |>
     as_vital(
       .age = .age, .sex = .sex, .deaths = .deaths,
-      .births = .births, .population = .population
+      births = .births, population = .population
     )
 }
 
@@ -185,8 +185,8 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
 #' @rdname as_vital
 #' @export
 as_vital.tbl_ts <- function(x,
-                            .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
-                            reorder = FALSE, ...) {
+    .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
+    reorder = FALSE, ...) {
   # Add attributes to x to identify the various variables
   vnames <- colnames(x)
   if(!is.null(.age)) {
@@ -204,21 +204,18 @@ as_vital.tbl_ts <- function(x,
   if(!is.null(.population)) {
     if(!(.population %in% vnames)) { .population <- NULL }
   }
-  attr(x, "agevar") <- .age
-  attr(x, "sexvar") <- .sex
-  attr(x, "birthsvar") <- .births
-  attr(x, "deathsvar") <- .deaths
-  attr(x, "populationvar") <- .population
+  attr(x, "vital")  <- c(age = .age, sex = .sex,
+    deaths = .deaths, births = .births, population = .population)
   # Add additional class
   class(x) <- c("vital", class(x))
   # Sort variables
   if (reorder) {
-    agevar <- attributes(x)$agevar
+    agevar <- age_var(x)
     keys <- key_vars(x)
     agevars <- colnames(x)
     agevars <- agevars[grep("age", agevars, ignore.case=TRUE)]
     keys_noage <- keys[!(keys %in% c(agevar, agevars))]
-    x <- select(x, all_of(c(index_var(x), attributes(x)$agevar)), everything()) |>
+    x <- select(x, all_of(c(index_var(x), agevar)), everything()) |>
       arrange(across(all_of(c(index_var(x), keys_noage, agevar))))
   }
   return(x)
@@ -244,9 +241,9 @@ as_vital.tbl_ts <- function(x,
 #'   )
 #' @export
 as_vital.data.frame <- function(x, key = NULL, index,
-                                .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
-                                reorder = TRUE,
-                                ...) {
+    .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
+    reorder = TRUE,
+    ...) {
   as_tsibble(x, key = !!enquo(key), index = !!enquo(index), ...) |>
     as_vital(
       .age = .age, .sex = .sex,
