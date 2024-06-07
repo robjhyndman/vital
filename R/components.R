@@ -40,30 +40,22 @@ time_components <- function(object, ...) {
   UseMethod("time_components")
 }
 
-
 #' @export
 time_components.mdl_vtl_df <- function(object, ...) {
   if (length(mable_vars(object)) > 1) {
-    stop("Extracting components is only supported for individual models. Please use `select()` to choose one model column.")
-  } else {
-    model <- mable_vars(object)
-    class(object) <- c(class(object[[model]][[1]]$fit), class(object))
-    out <- time_components(object, ...)
-    out[[model]] <- NULL
+    stop("Extracting components is only supported for individual models. Please use `dplyr::select()` to choose one model column.")
   }
-  return(out)
+  model <- mable_vars(object)
+  class(object) <- c(class(object[[model]][[1]]$fit), class(object)[-1])
+  time_components(object, ...)
 }
-
 
 #' @export
 age_components.mdl_vtl_df <- function(object, ...) {
   if (length(mable_vars(object)) > 1) {
-    stop("Extracting components is only supported for individual models. Please use `select()` to choose one model column.")
-  } else {
-    model <- mable_vars(object)
-    class(object) <- c(class(object[[model]][[1]]$fit), class(object))
-    out <- age_components(object, ...)
-    out[[model]] <- NULL
+    stop("Extracting components is only supported for individual models. Please use `dplyr::select()` to choose one model column.")
   }
-  return(out)
+  model <- mable_vars(object)
+  class(object) <- c(class(object[[model]][[1]]$fit), class(object))
+  age_components(object, ...)
 }

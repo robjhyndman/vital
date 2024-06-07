@@ -491,10 +491,8 @@ time_components.LC <- function(object, ...) {
   object[[modelname]] <- NULL
   index <- index_var(object$out[[1]]$by_t)
   keys <- head(colnames(object), -1)
-  # Construct time and age data frames
-  obj_time <- object
-  obj_time$out <- lapply(obj_time$out, function(x) as_tibble(x$by_t))
-  obj_time <- obj_time |>
+  object$out <- lapply(object$out, function(x) as_tibble(x$by_t))
+  object |>
     tidyr::unnest("out") |>
     as_tsibble(index = index, key=all_of(keys))
 }
@@ -505,12 +503,9 @@ age_components.LC <- function(object, ...) {
   object <- object |>
     mutate(out = purrr::map(object[[modelname]], function(x){x$fit$model})) |>
     as_tibble()
-  # Construct time and age data frames
-  obj_x <- object
-  obj_x$out  <- lapply(obj_x$out, function(x) as_tibble(x$by_x))
-  obj_x <- obj_x |> tidyr::unnest("out")
-  obj_x[[modelname]] <- NULL
-  return(obj_x)
+  object[[modelname]] <- NULL
+  object$out  <- lapply(object$out, function(x) as_tibble(x$by_x))
+  object |> tidyr::unnest("out")
 }
 
 #' @export

@@ -184,4 +184,18 @@ interpolate.FMEAN <- function (object, new_data, specials, ...) {
                index = timevar, .age = agevar))
 }
 
+#' @export
+age_components.FMEAN <- function(object, ...) {
+  modelname <- attributes(object)$model
+  object <- object |>
+    mutate(out = purrr::map(object[[modelname]], function(x){x$fit$model})) |>
+    as_tibble()
+  object[[modelname]] <- NULL
+  object |> tidyr::unnest("out")
+}
+
+#' @export
+time_components.FMEAN <- function(object, ...) {
+  stop("FMEAN objects have no time components")
+}
 globalVariables(c(".resid", "sigma", "std.error", "stat", ".innov"))
