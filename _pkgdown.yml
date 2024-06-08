@@ -25,6 +25,7 @@ reference:
     contents:
       - vital
       - as_vital
+      - vital_vars
       - read_hmd
       - read_hmd_files
       - read_hfd
