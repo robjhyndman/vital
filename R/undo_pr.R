@@ -47,8 +47,8 @@ undo_pr <- function(.data, .var, key = Sex, times = 2000) {
   index <- tsibble::index_var(.data)
   # Key variables
   keys <- tsibble::key_vars(.data)
-  attr_data <- attributes(.data)
-  age <- attr_data$agevar
+  attr_data <- vital_var_list(.data)
+  age <- attr_data$age
   keys_noage <- keys[!(keys %in% c(age, "Age", "AgeGroup", "Age_Group"))]
   if(key %in% c(age, "Age", "AgeGroup", "Age_Group")) {
     stop("key cannot be an age variable")
@@ -80,14 +80,16 @@ undo_pr <- function(.data, .var, key = Sex, times = 2000) {
   }
   .data$.gm <- NULL
   output <- as_vital(.data, index = index, key = keys,
-           .age = age, .population = attr_data$populationvar,
-           .sex = attr_data$sexvar, .deaths = attr_data$deathsvar,
-           .births = attr_data$birthsvar, reorder = TRUE)
+           .age = age,
+           .population = attr_data$population,
+           .sex = attr_data$sex,
+           .deaths = attr_data$deaths,
+           .births = attr_data$births, reorder = TRUE)
   if(fable) {
     output <- build_vital_fable(output, response = varname, distribution = varname,
-                        .age = age, .population = attr_data$populationvar,
-                        .sex = attr_data$sexvar, .deaths = attr_data$deathsvar,
-                        .births = attr_data$birthsvar, reorder = TRUE)
+                        age = age, population = attr_data$population,
+                        sex = attr_data$sex, deaths = attr_data$deaths,
+                        births = attr_data$births, reorder = TRUE)
   }
   return(output)
 }
@@ -134,8 +136,8 @@ undo_sd <- function(.data, .var, key = Sex, times = 2000) {
   index <- tsibble::index_var(.data)
   # Key variables
   keys <- tsibble::key_vars(.data)
-  attr_data <- attributes(.data)
-  age <- attr_data$agevar
+  attr_data <- vital_var_list(.data)
+  age <- attr_data$age
   keys_noage <- keys[!(keys %in% c(age, "Age", "AgeGroup", "Age_Group"))]
   if(key %in% c(age, "Age", "AgeGroup", "Age_Group")) {
     stop("key cannot be an age variable")
@@ -167,14 +169,16 @@ undo_sd <- function(.data, .var, key = Sex, times = 2000) {
   }
   .data$.gm <- NULL
   output <- as_vital(.data, index = index, key = keys,
-                     .age = age, .population = attr_data$populationvar,
-                     .sex = attr_data$sexvar, .deaths = attr_data$deathsvar,
-                     .births = attr_data$birthsvar, reorder = TRUE)
+                     .age = age,
+                     .population = attr_data$population,
+                     .sex = attr_data$sex,
+                     .deaths = attr_data$deaths,
+                     .births = attr_data$births, reorder = TRUE)
   if(fable) {
     output <- build_vital_fable(output, response = varname, distribution = varname,
-                                .age = age, .population = attr_data$populationvar,
-                                .sex = attr_data$sexvar, .deaths = attr_data$deathsvar,
-                                .births = attr_data$birthsvar, reorder = TRUE)
+                                age = age, population = attr_data$population,
+                                sex = attr_data$sex, deaths = attr_data$deaths,
+                                births = attr_data$births, reorder = TRUE)
   }
   return(output)
 }

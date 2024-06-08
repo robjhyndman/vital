@@ -4,7 +4,7 @@
 \alias{autoplot.vital}
 \title{Rainbow plot of demographic data against age}
 \usage{
-\method{autoplot}{vital}(object, .vars = NULL, age = attributes(object)$agevar, ...)
+\method{autoplot}{vital}(object, .vars = NULL, age = age_var(object), ...)
 }
 \arguments{
 \item{object}{A vital including an age variable and the variable you wish to plot.}

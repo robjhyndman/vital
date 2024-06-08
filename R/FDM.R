@@ -49,11 +49,11 @@ FDM <- function(formula, order = 6, ts_model_fn = fable::ARIMA,
 }
 
 train_fdm <- function(.data, specials, order, ts_model_fn, coherent, ...) {
-  attrx <- attributes(.data)
   indexvar <- index_var(.data)
-  agevar <- attrx$agevar
+  vvar <- vital_var_list(.data)
+  agevar <- vvar$age
   measures <- measured_vars(.data)
-  measures <- measures[!(measures %in% c(agevar, attrx$populationvar))]
+  measures <- measures[!(measures %in% c(agevar, vvar$population))]
   measures <- measures[1]
   out <- fdm(.data, order = order, ts_model_fn = ts_model_fn, coherent = coherent)
 
@@ -115,7 +115,7 @@ forecast.FDM <- function(object, new_data = NULL, h = NULL, point_forecast = lis
 generate.FDM <- function(x, new_data = NULL, h = NULL,
   bootstrap = FALSE, times = 1,
   forecast_fn, ...) {
-  agevar <- attributes(new_data)$agevar
+  agevar <- age_var(new_data)
   indexvar <- index_var(new_data)
   if(times != length(unique(new_data$.rep)))
     stop("We have a problem")
@@ -243,11 +243,11 @@ fdm <- function(data, order = 6, ts_model_fn = fable::ARIMA, coherent = NULL) {
     coherent <- FALSE
   }
   # Grab variable names
-  attrx <- attributes(data)
   indexvar <- index_var(data)
-  agevar <- attrx$agevar
+  vvar <- vital_var_list(data)
+  agevar <- vvar$age
   measures <- measured_vars(data)
-  measures <- measures[!(measures %in% c(agevar, attrx$populationvar))]
+  measures <- measures[!(measures %in% c(agevar, vvar$population))]
   measures <- measures[1]
 
   # Create rates matrix

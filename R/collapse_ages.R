@@ -25,19 +25,19 @@ collapse_ages <- function(.data, max_age = 100) {
     stop(".data needs to be a vital object")
   }
   colnames <- colnames(.data)
-  attr_data <- attributes(.data)
+  attr_data <- vital_var_list(.data)
   # Index variable
   index <- tsibble::index_var(.data)
   # Keys including age
   keys <- tsibble::key_vars(.data)
-  age <- attr_data$agevar
+  age <- attr_data$age
   keys_noage <- keys[!(keys %in% c(age, "Age", "AgeGroup", "Age_Group"))]
 
   # Identify other columns
-  pop <- attr_data$populationvar
-  deaths <- attr_data$deathsvar
-  births <- attr_data$birthsvar
-  sex <- attr_data$sexvar
+  pop <- attr_data$population
+  deaths <- attr_data$deaths
+  births <- attr_data$births
+  sex <- attr_data$sex
   rates <- find_measures(.data, c("mx", "mortality", "fx", "fertility", "rate"))
 
   # Store values for max age in case they are needed

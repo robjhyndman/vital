@@ -21,7 +21,7 @@ interpolate.mdl_vtl_df <- function (object, new_data, ...) {
     abort("Interpolation can only be done using one model. \nPlease use select() to choose the model to interpolate with.")
   }
   keys <- key_vars(new_data)
-  agevar <- attributes(new_data)$agevar
+  agevar <- age_var(new_data)
   keys_noage <- keys[keys != agevar]
   index <- index_var(new_data)
   object <- bind_new_data(object, new_data)
@@ -49,11 +49,12 @@ interpolate.mdl_vtl_ts <- function (object, new_data, ...)
                function(i, resp) {
                  expr(object$transformation[[!!i]](!!resp))
                }) %>% set_names(map_chr(object$response, as_string))
-  agevar <- attributes(new_data)$agevar
+  vvar <- vital_vars(new_data)
+  agevar <- vvar["age"]
   age <- new_data[[agevar]]
   new_data <- transmute(new_data, !!!resp)
   new_data[[agevar]] <- age
-  attr(new_data, "agevar") <- agevar
+  attr(new_data, "vital") <- vvar
   new_data <- interpolate(object[["fit"]], new_data = new_data,
                           specials = specials, ...)
   new_data[names(resp)] <- map2(new_data[names(resp)], object$transformation,

@@ -2,7 +2,7 @@
 augment.mdl_vtl_df <- function(x, ...) {
   mbl_vars <- mable_vars(x)
   kv <- key_vars(x)
-  agevar <- attributes(x[[mbl_vars[1]]][[1]]$data)$agevar
+  agevar <- age_var(x[[mbl_vars[1]]][[1]]$data)
   index <- index(x[[mbl_vars[1]]][[1]]$data)
   x <- mutate(
     as_tibble(x),
@@ -51,13 +51,13 @@ residuals.mdl_vtl_df <- function(object, type = c("innovation", "response"), ...
 #' @export
 response.mdl_vtl_ts <- function(object, ...) {
   mv <- measured_vars(object$data)
-  attr_x <- attributes(object$data)
-  protected <- c(attr_x$agevar, attr_x$populationvar, attr_x$deathsvar, attr_x$birthsvar)
+  vvar <- vital_var_list(object$data)
+  protected <- c(vvar$age, vvar$population, vvar$deaths, vvar$births)
   mv <- mv[!(mv %in% protected)]
   resp <- as.list(object$data)[mv]
   bt <- map(object$transformation, invert_transformation)
   resp <- map2(bt, resp, function(bt, fit) bt(fit))
-  out <- object$data[c(index_var(object$data), attr_x$agevar)]
+  out <- object$data[c(index_var(object$data), vvar$age)]
   out[if (length(resp) == 1)
     ".response"
     else mv] <- resp

@@ -28,11 +28,11 @@ life_table <- function(.data, mortality) {
   # Keys including age
   keys <- tsibble::key_vars(.data)
 
-  age <- attributes(.data)$agevar
+  age <- age_var(.data)
   if(is.null(age)) {
     stop("No age variable found")
   }
-  sex <- attributes(.data)$sexvar
+  sex <- sex_var(.data)
   if(is.null(sex)) {
     sex <- "None"
   }

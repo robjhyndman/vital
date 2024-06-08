@@ -1,8 +1,8 @@
 # Internal function to make a vital fable object
 
 build_vital_fable <- function(x, response, distribution,
-                          .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
-                          reorder = FALSE, ...) {
+    .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
+    reorder = FALSE, ...) {
   # Add attributes to x to identify the various variables
   vnames <- colnames(x)
   if(!is.null(.age)) {
@@ -23,11 +23,8 @@ build_vital_fable <- function(x, response, distribution,
   #
   final <- build_fable(x, response = response, distribution =  distribution) |>
     suppressWarnings()
-  attr(final, "agevar") <- .age
-  attr(final, "sexvar") <- .sex
-  attr(final, "birthsvar") <- .births
-  attr(final, "deathsvar") <- .deaths
-  attr(final, "populationvar") <- .population
+  attr(final, "vital")  <- c(age = .age, sex = .sex,
+                    deaths = .deaths, births = .births, population = .population)
   class(final) <- c("fbl_vtl_ts", class(final))
   return(final)
 }

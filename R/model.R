@@ -54,8 +54,8 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
 
   # Keys including age
   keys <- tsibble::key_vars(.data)
-  agevar <- attributes(.data)$agevar
-  sexvar <- attributes(.data)$sexvar
+  agevar <- age_var(.data)
+  sexvar <- sex_var(.data)
   # Drop Age as a key
   kv <- keys[!(keys %in% c(agevar, "Age", "AgeGroup"))]
   # Make sure Sex is first key (so it can be identified inside estimate_progress)
@@ -172,7 +172,7 @@ require_package <- function(pkg) {
 nest_keys <- function(.data, nm = "data") {
   # Keys including age
   keys <- tsibble::key_vars(.data)
-  agevar <- attributes(.data)$agevar
+  agevar <- age_var(.data)
   # Drop Age as a key
   keys_noage <- keys[!(keys %in% c(agevar, "Age", "AgeGroup"))]
 
@@ -195,7 +195,7 @@ nest_keys <- function(.data, nm = "data") {
   idx2 <- tsibble::index2_var(.data)
   ordered <- is_ordered(.data)
   regular <- is_regular(.data)
-  attr_data <- attributes(.data)
+  attr_data <- vital_var_list(.data)
   out[[nm]] <- purrr::map(row_indices, function(x, i, j) {
     out <- if (is.null(j)) x[i, ] else x[i, j]
     tsibble::build_tsibble_meta(
@@ -204,9 +204,11 @@ nest_keys <- function(.data, nm = "data") {
       index = idx, index2 = idx2, ordered = ordered,
       interval = if (length(i) > 1 && regular) tsibble::interval_pull(out[[idx]]) else tsibble::interval(.data)
     ) |>
-      as_vital(.age = attr_data$agevar, .sex = attr_data$sexvar,
-               .births = attr_data$birthsvar, .deaths = attr_data$deathsvar,
-               .population = attr_data$populationvar)
+      as_vital(.age = attr_data$age,
+               .sex = attr_data$sex,
+               .births = attr_data$births,
+               .deaths = attr_data$deaths,
+               .population = attr_data$population)
   }, x = tibble::as_tibble(.data), j = col_nest)
   tibble::as_tibble(out)
 }
@@ -225,10 +227,11 @@ estimate.vital <- function(.data, .model, sex, ...) {
   validate_formula(.model, .data)
   parsed <- parse_model(.model)
   .dt_attr <- attributes(.data)
-  agevar <- .dt_attr$agevar
-  popvar <- .dt_attr$populationvar
-  deathsvar <- .dt_attr$deathsvar
-  birthsvar <- .dt_attr$birthsvar
+  vvar <- vital_var_list(.data)
+  agevar <- vvar$age
+  popvar <- vvar$population
+  deathsvar <- vvar$deaths
+  birthsvar <- vvar$births
   age <- .data[[agevar]]
   if(!is.null(popvar))
     pop <- .data[[popvar]]

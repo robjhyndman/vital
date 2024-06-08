@@ -56,16 +56,15 @@ LC <- function(formula, adjust = c("dt", "dxt", "e0", "none"),
 train_lc <- function(.data, sex = NULL, specials,  adjust,
                      jump_choice, scale = FALSE, ...) {
   # Variable names
-  attrx <- attributes(.data)
   indexvar <- index_var(.data)
-  agevar <- attrx$agevar
+  vvar <- vital_var_list(.data)
   measures <- measured_vars(.data)
-  measures <- measures[!(measures %in% c(agevar, attrx$populationvar))]
+  measures <- measures[!(measures %in% c(vvar$age, vvar$population))]
   measures <- measures[1]
 
   # Compute Lee-Carter model
-  out <- lca(.data, sex=sex, age=attrx$agevar, pop = attrx$populationvar,
-             deaths = attrx$deathsvar,
+  out <- lca(.data, sex=sex, age = vvar$age, pop = vvar$population,
+             deaths = vvar$deaths,
              rates = colnames(.data)[2],
              adjust = adjust, jump_choice = jump_choice, scale = scale)
 
@@ -75,13 +74,13 @@ train_lc <- function(.data, sex = NULL, specials,  adjust,
   # Compute fitted values and residuals
   fits <- as_tibble(.data) |>
     left_join(out$by_t, by = indexvar) |>
-    left_join(out$by_x, by = agevar) |>
+    left_join(out$by_x, by = vvar$age) |>
     mutate(
       .fitted = ax + kt*bx,
       .innov = .data[[measures]] - .fitted,
       .innov = if_else(.innov < -1e20, NA, .innov),
     ) |>
-    select(all_of(c(indexvar, agevar, ".fitted", ".innov")))
+    select(all_of(c(indexvar, vvar$age, ".fitted", ".innov")))
 
   structure(
     list(
@@ -134,7 +133,7 @@ forecast.LC <- function(object, new_data = NULL, h = NULL, point_forecast = list
 #' @export
 generate.LC <- function(x, new_data = NULL, h = NULL,
   bootstrap = FALSE, times = 1, ...) {
-  agevar <- attributes(new_data)$agevar
+  agevar <- age_var(new_data)
   indexvar <- index_var(new_data)
   if(times != length(unique(new_data$.rep)))
     stop("We have a problem")
