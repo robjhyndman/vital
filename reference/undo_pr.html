@@ -110,7 +110,7 @@ models. <em>Demography</em>, 50(1), 261-283.</p>
 <span class="r-in"><span><span class="co"># Compare original data with product/ratio version</span></span></span>
 <span class="r-in"><span><span class="va">orig_data</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A vital: 1,010 x 8 [1Y]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Key:     Age, Sex, Code [202]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Key:     Age x (Sex, Code) [101 x 2]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Year   Age Sex    State           Code  Mortality Exposure Deaths</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">2</span>016     0 female New South Wales NSW   0.002<span style="text-decoration: underline;">52</span>     <span style="text-decoration: underline;">48</span>454.    122</span>
@@ -126,7 +126,7 @@ models. <em>Demography</em>, 50(1), 261-283.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,000 more rows</span></span>
 <span class="r-in"><span><span class="va">pr</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A vital: 1,515 x 8 [1Y]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Key:     Age, Sex, Code [303]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Key:     Age x (Sex, Code) [101 x 3]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Year   Age Sex    State           Code  Mortality Exposure Deaths</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">2</span>016     0 female New South Wales NSW       0.966   <span style="text-decoration: underline;">48</span>454.    122</span>
@@ -143,7 +143,7 @@ models. <em>Demography</em>, 50(1), 261-283.</p>
 <span class="r-in"><span><span class="co"># Undo products and ratios</span></span></span>
 <span class="r-in"><span><span class="va">pr</span> <span class="op">|&gt;</span> <span class="fu">undo_pr</span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A vital: 1,010 x 8 [1Y]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Key:     Age, Sex, Code [202]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Key:     Age x (Sex, Code) [101 x 2]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Year   Age Sex    State           Code  Mortality Exposure Deaths</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">2</span>016     0 female New South Wales NSW   0.002<span style="text-decoration: underline;">52</span>     <span style="text-decoration: underline;">48</span>454.    122</span>
