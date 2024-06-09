@@ -265,11 +265,22 @@ tbl_sum.vital <- function(x) {
   format_dim <- purrr::map_chr(dim_x, big_mark)
   dim_x <- paste(format_dim, collapse = " x ")
   first <- c(`A vital` = paste(dim_x, brackets(fnt_int)))
+  keys <- tsibble::key_vars(x)
+  n_keys <- tsibble::n_keys(x)
   if (is_empty(tsibble::key(x))) {
     first
   } else {
-    n_keys <- big_mark(tsibble::n_keys(x))
-    key_sum <- c(Key = paste(comma(tsibble::key_vars(x)), brackets(n_keys)))
+    age_key <- vital_var_list(x)$age
+    if(!is.null(age_key)) {
+      keys_noage <- keys[!(keys %in% age_key)]
+      keys <- paste0(age_key, " x (", comma(keys_noage),")")
+      nages <- length(unique(x[[age_key]]))
+      nkeys_noage <- n_keys/nages
+      n_keys <- paste(big_mark(nages),"x",big_mark(nkeys_noage))
+    } else {
+      n_keys <- big_mark(n_keys)
+    }
+    key_sum <- c(Key = paste(keys, brackets(n_keys)))
     c(first, key_sum)
   }
 }
