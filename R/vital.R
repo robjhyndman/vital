@@ -273,7 +273,11 @@ tbl_sum.vital <- function(x) {
     age_key <- vital_var_list(x)$age
     if(!is.null(age_key)) {
       keys_noage <- keys[!(keys %in% age_key)]
-      keys <- paste0(age_key, " x (", comma(keys_noage),")")
+      if(length(keys_noage) > 1) {
+        keys <- paste0(age_key, " x (", comma(keys_noage),")")
+      } else {
+        keys <- paste0(age_key, " x ", comma(keys_noage))
+      }
       nages <- length(unique(x[[age_key]]))
       nkeys_noage <- n_keys/nages
       n_keys <- paste(big_mark(nages),"x",big_mark(nkeys_noage))
