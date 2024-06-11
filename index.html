@@ -84,7 +84,14 @@
 <p>First load the necessary packages.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pkg.robjhyndman.com/vital/">vital</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tsibble.tidyverts.org" class="external-link">tsibble</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'tsibble'</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     intersect, setdiff, union</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
 <span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
@@ -93,70 +100,95 @@
 <span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="vital-objects">vital objects<a class="anchor" aria-label="anchor" href="#vital-objects"></a>
 </h3>
-<p>The basic data object is a <code>vital</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Examples using Victorian females</span></span>
-<span><span class="va">vic_female</span> <span class="op">&lt;-</span> <span class="va">aus_mortality</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">State</span> <span class="op">==</span> <span class="st">"Victoria"</span>, <span class="va">Sex</span> <span class="op">==</span> <span class="st">"female"</span><span class="op">)</span></span>
-<span><span class="va">vic_female</span></span>
-<span><span class="co">#&gt; # A vital: 12,000 x 8 [1Y]</span></span>
-<span><span class="co">#&gt; # Key:     Age, Sex, Code [100]</span></span>
-<span><span class="co">#&gt;     Year   Age Sex    State    Code  Mortality Exposure Deaths</span></span>
-<span><span class="co">#&gt;    &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt;     &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1  1901     0 female Victoria VIC     0.100      13993   1405</span></span>
-<span><span class="co">#&gt;  2  1901     1 female Victoria VIC     0.0235     13079    308</span></span>
-<span><span class="co">#&gt;  3  1901     2 female Victoria VIC     0.00806    12409    100</span></span>
-<span><span class="co">#&gt;  4  1901     3 female Victoria VIC     0.00472    12931     61</span></span>
-<span><span class="co">#&gt;  5  1901     4 female Victoria VIC     0.00370    12986     48</span></span>
-<span><span class="co">#&gt;  6  1901     5 female Victoria VIC     0.00324    13589     44</span></span>
-<span><span class="co">#&gt;  7  1901     6 female Victoria VIC     0.00310    13872     43</span></span>
-<span><span class="co">#&gt;  8  1901     7 female Victoria VIC     0.00284    14077     40</span></span>
-<span><span class="co">#&gt;  9  1901     8 female Victoria VIC     0.00261    14198     37</span></span>
-<span><span class="co">#&gt; 10  1901     9 female Victoria VIC     0.00225    14694     33</span></span>
-<span><span class="co">#&gt; # ℹ 11,990 more rows</span></span></code></pre></div>
-<p>This example contains just Victorian females from 1901 to 2020. It must have a time index variable (here <code>Year</code>), an age variable (here <code>Age</code>) and optionally other categorical variables that uniquely define each time series (here <code>Sex</code>, <code>State</code> and <code>Code</code>). These categorical varaibles, along with the age variable, are “key” variables. Other columns contain variables of interest: <code>Mortality</code>, <code>Exposure</code>, <code>Deaths</code>.</p>
-<p>There are <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> functions for plotting <code>vital</code> objects.</p>
+<p>The basic data object is a <code>vital</code>, which is time-indexed tibble that contains vital statistics such as births, deaths, population counts, and mortality and fertility rates.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">vic_female</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">Exposure</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Examples using Norwegian data</span></span>
+<span><span class="va">nor</span> <span class="op">&lt;-</span> <span class="va">norway_mortality</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sex</span> <span class="op">!=</span> <span class="st">"Total"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="reference/collapse_ages.html">collapse_ages</a></span><span class="op">(</span>max_age <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> </span>
+<span><span class="va">nor</span></span>
+<span><span class="co">#&gt; # A vital: 35,754 x 6 [1Y]</span></span>
+<span><span class="co">#&gt; # Key:     Age x Sex [101 x 2]</span></span>
+<span><span class="co">#&gt;     Year   Age OpenInterval Sex    Population Mortality</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;int&gt; &lt;lgl&gt;        &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1  1846     0 FALSE        Female      17990   0.109  </span></span>
+<span><span class="co">#&gt;  2  1846     1 FALSE        Female      16132   0.0498 </span></span>
+<span><span class="co">#&gt;  3  1846     2 FALSE        Female      16404   0.0279 </span></span>
+<span><span class="co">#&gt;  4  1846     3 FALSE        Female      17564   0.0205 </span></span>
+<span><span class="co">#&gt;  5  1846     4 FALSE        Female      16352   0.0140 </span></span>
+<span><span class="co">#&gt;  6  1846     5 FALSE        Female      14538   0.00995</span></span>
+<span><span class="co">#&gt;  7  1846     6 FALSE        Female      13426   0.00861</span></span>
+<span><span class="co">#&gt;  8  1846     7 FALSE        Female      13531   0.00735</span></span>
+<span><span class="co">#&gt;  9  1846     8 FALSE        Female      13664   0.00628</span></span>
+<span><span class="co">#&gt; 10  1846     9 FALSE        Female      13746   0.00457</span></span>
+<span><span class="co">#&gt; # ℹ 35,744 more rows</span></span></code></pre></div>
+<p>The upper ages have been collapsed into a final age group of 100+.</p>
+<p>This example contains data from 1846 to 2022. It must have a time index variable (here <code>Year</code>), and optionally other categorical variables known as “key” variables. Each row must have a unique combination of the index and key variables. Some columns are “vital” variables, such as “Age” and “Sex”.</p>
+<p>We can use functions to see which variables are index, key or vital:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://tsibble.tidyverts.org/reference/index-rd.html" class="external-link">index_var</a></span><span class="op">(</span><span class="va">nor</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Year"</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://tsibble.tidyverts.org/reference/key.html" class="external-link">key_vars</a></span><span class="op">(</span><span class="va">nor</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Age" "Sex"</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/vital_vars.html">vital_vars</a></span><span class="op">(</span><span class="va">nor</span><span class="op">)</span></span>
+<span><span class="co">#&gt;          age          sex   population </span></span>
+<span><span class="co">#&gt;        "Age"        "Sex" "Population"</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="plots">Plots<a class="anchor" aria-label="anchor" href="#plots"></a>
+</h3>
+<p>There are <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> functions for plotting <code>vital</code> objects. These produce rainbow plots where each line represents data for one year, and the variable is plotted against age.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nor</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">Population</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-autoplot-1.png" width="100%"></p>
+<p>We can use standard ggplot functions to modify the plot as desired. For example, here are population pyramids for all years.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nor</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Population <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">Sex</span> <span class="op">==</span> <span class="st">"Female"</span>, <span class="op">-</span><span class="va">Population</span>, <span class="va">Population</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">Population</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span> <span class="va">.</span> <span class="op">~</span> <span class="va">Sex</span>, scales <span class="op">=</span> <span class="st">"free_x"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-pyramid-1.png" width="100%"></p>
 </div>
 <div class="section level3">
 <h3 id="life-tables-and-life-expectancy">Life tables and life expectancy<a class="anchor" aria-label="anchor" href="#life-tables-and-life-expectancy"></a>
 </h3>
 <p>Lifetables can be produced using the <code><a href="reference/life_table.html">life_table()</a></code> function. It will produce lifetables for each unique combination of the index and key variables other than age.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Lifetable in 2000</span></span>
-<span><span class="va">vic_female</span> <span class="op">|&gt;</span></span>
+<span><span class="va">nor</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Year</span> <span class="op">==</span> <span class="fl">2000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="reference/life_table.html">life_table</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A vital: 100 x 14 [?]</span></span>
-<span><span class="co">#&gt; # Key:     Age, Sex, Code [100]</span></span>
-<span><span class="co">#&gt;     Year   Age Sex   Code       mx      qx    lx      dx    Lx    Tx    ex    rx</span></span>
-<span><span class="co">#&gt;    &lt;int&gt; &lt;int&gt; &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1  2000     0 fema… VIC   4.02e-3 4.01e-3 1     4.01e-3 0.996  82.7  82.7 0.996</span></span>
-<span><span class="co">#&gt;  2  2000     1 fema… VIC   2.70e-4 2.70e-4 0.996 2.69e-4 0.996  81.7  82.0 1.00 </span></span>
-<span><span class="co">#&gt;  3  2000     2 fema… VIC   3.38e-5 3.38e-5 0.996 3.37e-5 0.996  80.7  81.0 1.00 </span></span>
-<span><span class="co">#&gt;  4  2000     3 fema… VIC   3.32e-5 3.32e-5 0.996 3.30e-5 0.996  79.7  80.0 1.00 </span></span>
-<span><span class="co">#&gt;  5  2000     4 fema… VIC   9.83e-5 9.83e-5 0.996 9.79e-5 0.996  78.7  79.0 1.00 </span></span>
-<span><span class="co">#&gt;  6  2000     5 fema… VIC   9.65e-5 9.65e-5 0.996 9.61e-5 0.996  77.7  78.0 1.00 </span></span>
-<span><span class="co">#&gt;  7  2000     6 fema… VIC   2.22e-4 2.22e-4 0.995 2.21e-4 0.995  76.7  77.0 1.00 </span></span>
-<span><span class="co">#&gt;  8  2000     7 fema… VIC   6.32e-5 6.32e-5 0.995 6.29e-5 0.995  75.7  76.0 1.00 </span></span>
-<span><span class="co">#&gt;  9  2000     8 fema… VIC   3.16e-5 3.16e-5 0.995 3.14e-5 0.995  74.7  75.1 1.00 </span></span>
-<span><span class="co">#&gt; 10  2000     9 fema… VIC   1.25e-4 1.25e-4 0.995 1.25e-4 0.995  73.7  74.1 1.00 </span></span>
-<span><span class="co">#&gt; # ℹ 90 more rows</span></span>
-<span><span class="co">#&gt; # ℹ 2 more variables: nx &lt;dbl&gt;, ax &lt;dbl&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; # A vital: 202 x 13 [?]</span></span>
+<span><span class="co">#&gt; # Key:     Age x Sex [101 x 2]</span></span>
+<span><span class="co">#&gt;     Year   Age Sex        mx      qx    lx      dx    Lx    Tx    ex    rx    nx</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;int&gt; &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1  2000     0 Fema… 3.28e-3 3.27e-3 1     3.27e-3 0.997  81.4  81.4 0.997     1</span></span>
+<span><span class="co">#&gt;  2  2000     1 Fema… 2.77e-4 2.77e-4 0.997 2.76e-4 0.997  80.4  80.6 1.00      1</span></span>
+<span><span class="co">#&gt;  3  2000     2 Fema… 3.09e-4 3.09e-4 0.996 3.08e-4 0.996  79.4  79.7 1.00      1</span></span>
+<span><span class="co">#&gt;  4  2000     3 Fema… 1.33e-4 1.33e-4 0.996 1.32e-4 0.996  78.4  78.7 1.00      1</span></span>
+<span><span class="co">#&gt;  5  2000     4 Fema… 1.68e-4 1.68e-4 0.996 1.67e-4 0.996  77.4  77.7 1.00      1</span></span>
+<span><span class="co">#&gt;  6  2000     5 Fema… 3.30e-5 3.30e-5 0.996 3.29e-5 0.996  76.4  76.7 1.00      1</span></span>
+<span><span class="co">#&gt;  7  2000     6 Fema… 1.35e-4 1.35e-4 0.996 1.34e-4 0.996  75.4  75.7 1.00      1</span></span>
+<span><span class="co">#&gt;  8  2000     7 Fema… 1.68e-4 1.68e-4 0.996 1.67e-4 0.996  74.4  74.7 1.00      1</span></span>
+<span><span class="co">#&gt;  9  2000     8 Fema… 6.70e-5 6.70e-5 0.996 6.67e-5 0.995  73.4  73.7 1.00      1</span></span>
+<span><span class="co">#&gt; 10  2000     9 Fema… 1.97e-4 1.97e-4 0.995 1.96e-4 0.995  72.4  72.7 1.00      1</span></span>
+<span><span class="co">#&gt; # ℹ 192 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 1 more variable: ax &lt;dbl&gt;</span></span></code></pre></div>
 <p>Life expectancy (<span class="math inline"><em>e</em><sub><em>x</em></sub></span> with <span class="math inline"><em>x</em> = 0</span> by default) is computed using <code><a href="reference/life_expectancy.html">life_expectancy()</a></code>:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Life expectancy</span></span>
-<span><span class="va">vic_female</span> <span class="op">|&gt;</span></span>
+<span><span class="va">nor</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="reference/life_expectancy.html">life_expectancy</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Year</span>, y <span class="op">=</span> <span class="va">ex</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Year</span>, y <span class="op">=</span> <span class="va">ex</span>, color <span class="op">=</span> <span class="va">Sex</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-e0-1.png" width="100%"></p>
 </div>
@@ -164,10 +196,10 @@
 <h3 id="smoothing">Smoothing<a class="anchor" aria-label="anchor" href="#smoothing"></a>
 </h3>
 <p>Several smoothing functions are provided: <code><a href="reference/smooth_vital.html">smooth_spline()</a></code>, <code><a href="reference/smooth_vital.html">smooth_mortality()</a></code>, <code><a href="reference/smooth_vital.html">smooth_fertility()</a></code>, and <code><a href="reference/smooth_vital.html">smooth_loess()</a></code>, each smoothing across the age variable for each year.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Smoothed data</span></span>
-<span><span class="va">vic_female</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Year</span> <span class="op">==</span> <span class="fl">2000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="va">nor</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Year</span> <span class="op">==</span> <span class="fl">1967</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="reference/smooth_vital.html">smooth_mortality</a></span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">.smooth</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -178,12 +210,23 @@
 <div class="section level3">
 <h3 id="lee-carter-models">Lee-Carter models<a class="anchor" aria-label="anchor" href="#lee-carter-models"></a>
 </h3>
-<p>Lee-Carter models (Lee &amp; Carter, JASA, 1992) are estimated using the <code>LC</code> function which must be called within a <code>model</code> function:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<p>Lee-Carter models (Lee &amp; Carter, JASA, 1992) are estimated using the <code><a href="reference/LC.html">LC()</a></code> function which must be called within a <code><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model()</a></code> function:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Lee-Carter model</span></span>
-<span><span class="va">lc</span> <span class="op">&lt;-</span> <span class="va">vic_female</span> <span class="op">|&gt;</span></span>
+<span><span class="va">lc</span> <span class="op">&lt;-</span> <span class="va">nor</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span>lee_carter <span class="op">=</span> <span class="fu"><a href="reference/LC.html">LC</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://fabletools.tidyverts.org/reference/report.html" class="external-link">report</a></span><span class="op">(</span><span class="va">lc</span><span class="op">)</span></span>
+<span><span class="va">lc</span></span>
+<span><span class="co">#&gt; # A mable: 2 x 2</span></span>
+<span><span class="co">#&gt; # Key:     Sex [2]</span></span>
+<span><span class="co">#&gt;   Sex    lee_carter</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;     &lt;model&gt;</span></span>
+<span><span class="co">#&gt; 1 Female       &lt;LC&gt;</span></span>
+<span><span class="co">#&gt; 2 Male         &lt;LC&gt;</span></span></code></pre></div>
+<p>Models are fitted for all combinations of key variables excluding age. To see the details for a specific model, use the <code><a href="https://fabletools.tidyverts.org/reference/report.html" class="external-link">report()</a></code> function.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">lc</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sex</span> <span class="op">==</span> <span class="st">"Female"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/report.html" class="external-link">report</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Series: Mortality </span></span>
 <span><span class="co">#&gt; Model: LC </span></span>
 <span><span class="co">#&gt; Transformation: log(Mortality) </span></span>
@@ -193,69 +236,119 @@
 <span><span class="co">#&gt;   Jump choice: fit</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Age functions</span></span>
-<span><span class="co">#&gt; # A tibble: 100 × 3</span></span>
+<span><span class="co">#&gt; # A tibble: 101 × 3</span></span>
 <span><span class="co">#&gt;     Age    ax     bx</span></span>
 <span><span class="co">#&gt;   &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1     0 -4.15 0.0158</span></span>
-<span><span class="co">#&gt; 2     1 -6.40 0.0219</span></span>
-<span><span class="co">#&gt; 3     2 -7.01 0.0196</span></span>
-<span><span class="co">#&gt; 4     3 -7.32 0.0181</span></span>
-<span><span class="co">#&gt; 5     4 -7.36 0.0160</span></span>
-<span><span class="co">#&gt; # ℹ 95 more rows</span></span>
+<span><span class="co">#&gt; 1     0 -3.73 0.0156</span></span>
+<span><span class="co">#&gt; 2     1 -5.25 0.0232</span></span>
+<span><span class="co">#&gt; 3     2 -5.86 0.0216</span></span>
+<span><span class="co">#&gt; 4     3 -6.22 0.0214</span></span>
+<span><span class="co">#&gt; 5     4 -6.33 0.0193</span></span>
+<span><span class="co">#&gt; # ℹ 96 more rows</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Time coefficients</span></span>
-<span><span class="co">#&gt; # A tsibble: 120 x 2 [1Y]</span></span>
+<span><span class="co">#&gt; # A tsibble: 177 x 2 [1Y]</span></span>
 <span><span class="co">#&gt;    Year    kt</span></span>
 <span><span class="co">#&gt;   &lt;int&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1  1901 110. </span></span>
-<span><span class="co">#&gt; 2  1902 111. </span></span>
-<span><span class="co">#&gt; 3  1903 109. </span></span>
-<span><span class="co">#&gt; 4  1904 100. </span></span>
-<span><span class="co">#&gt; 5  1905  98.4</span></span>
-<span><span class="co">#&gt; # ℹ 115 more rows</span></span>
+<span><span class="co">#&gt; 1  1846  83.2</span></span>
+<span><span class="co">#&gt; 2  1847  95.7</span></span>
+<span><span class="co">#&gt; 3  1848  93.8</span></span>
+<span><span class="co">#&gt; 4  1849  88.5</span></span>
+<span><span class="co">#&gt; 5  1850  86.1</span></span>
+<span><span class="co">#&gt; # ℹ 172 more rows</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Time series model: RW w/ drift </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Variance explained: 73%</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt; Variance explained: 78.83%</span></span></code></pre></div>
+<p>The results can be plotted.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">lc</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-lc2-1.png" width="100%"></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<p><img src="reference/figures/README-lc3-1.png" width="100%"></p>
+<p>The components can be extracted.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/age_components.html">age_components</a></span><span class="op">(</span><span class="va">lc</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 202 × 4</span></span>
+<span><span class="co">#&gt;    Sex      Age    ax     bx</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;  &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 Female     0 -3.73 0.0156</span></span>
+<span><span class="co">#&gt;  2 Female     1 -5.25 0.0232</span></span>
+<span><span class="co">#&gt;  3 Female     2 -5.86 0.0216</span></span>
+<span><span class="co">#&gt;  4 Female     3 -6.22 0.0214</span></span>
+<span><span class="co">#&gt;  5 Female     4 -6.33 0.0193</span></span>
+<span><span class="co">#&gt;  6 Female     5 -6.58 0.0197</span></span>
+<span><span class="co">#&gt;  7 Female     6 -6.66 0.0186</span></span>
+<span><span class="co">#&gt;  8 Female     7 -6.72 0.0176</span></span>
+<span><span class="co">#&gt;  9 Female     8 -6.69 0.0152</span></span>
+<span><span class="co">#&gt; 10 Female     9 -6.74 0.0147</span></span>
+<span><span class="co">#&gt; # ℹ 192 more rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/time_components.html">time_components</a></span><span class="op">(</span><span class="va">lc</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tsibble: 354 x 3 [1Y]</span></span>
+<span><span class="co">#&gt; # Key:       Sex [2]</span></span>
+<span><span class="co">#&gt;    Sex     Year    kt</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;  &lt;int&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 Female  1846  83.2</span></span>
+<span><span class="co">#&gt;  2 Female  1847  95.7</span></span>
+<span><span class="co">#&gt;  3 Female  1848  93.8</span></span>
+<span><span class="co">#&gt;  4 Female  1849  88.5</span></span>
+<span><span class="co">#&gt;  5 Female  1850  86.1</span></span>
+<span><span class="co">#&gt;  6 Female  1851  85.3</span></span>
+<span><span class="co">#&gt;  7 Female  1852  87.2</span></span>
+<span><span class="co">#&gt;  8 Female  1853  94.0</span></span>
+<span><span class="co">#&gt;  9 Female  1854  79.3</span></span>
+<span><span class="co">#&gt; 10 Female  1855  80.8</span></span>
+<span><span class="co">#&gt; # ℹ 344 more rows</span></span></code></pre></div>
+<p>Forecasts are obtained using the <code><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast()</a></code> function</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Forecasts from Lee-Carter model</span></span>
 <span><span class="va">lc</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">20</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Mortality rate"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">20</span><span class="op">)</span> </span>
+<span><span class="co">#&gt; # A vital fable: 4,040 x 6 [1Y]</span></span>
+<span><span class="co">#&gt; # Key:           Age x (Sex, .model) [101 x 2]</span></span>
+<span><span class="co">#&gt;    Sex    .model      Year   Age        Mortality   .mean</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;  &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;           &lt;dist&gt;   &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 Female lee_carter  2023     0 t(N(-5.1, 0.03)) 0.00614</span></span>
+<span><span class="co">#&gt;  2 Female lee_carter  2024     0 t(N(-5.1, 0.06)) 0.00613</span></span>
+<span><span class="co">#&gt;  3 Female lee_carter  2025     0 t(N(-5.1, 0.09)) 0.00613</span></span>
+<span><span class="co">#&gt;  4 Female lee_carter  2026     0 t(N(-5.2, 0.12)) 0.00613</span></span>
+<span><span class="co">#&gt;  5 Female lee_carter  2027     0 t(N(-5.2, 0.15)) 0.00612</span></span>
+<span><span class="co">#&gt;  6 Female lee_carter  2028     0 t(N(-5.2, 0.18)) 0.00612</span></span>
+<span><span class="co">#&gt;  7 Female lee_carter  2029     0 t(N(-5.2, 0.21)) 0.00612</span></span>
+<span><span class="co">#&gt;  8 Female lee_carter  2030     0 t(N(-5.2, 0.25)) 0.00611</span></span>
+<span><span class="co">#&gt;  9 Female lee_carter  2031     0 t(N(-5.2, 0.28)) 0.00611</span></span>
+<span><span class="co">#&gt; 10 Female lee_carter  2032     0 t(N(-5.2, 0.31)) 0.00610</span></span>
+<span><span class="co">#&gt; # ℹ 4,030 more rows</span></span></code></pre></div>
+<p>The forecasts are returned as a distribution column (here transformed normal because of the log transformation used in the model). The <code>.mean</code> column gives the point forecasts equal to the mean of the distribution column.</p>
+</div>
+<div class="section level3">
+<h3 id="functional-data-models">Functional data models<a class="anchor" aria-label="anchor" href="#functional-data-models"></a>
+</h3>
+<p>Functional data models (Hyndman &amp; Ullah, CSDA, 2007) can be estimated in a similar way to Lee-Carter models, but with an additional smoothing step, then modelling with <code>LC</code> replaced by <code>FDM</code>.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># FDM model</span></span>
+<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="va">nor</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="reference/smooth_vital.html">smooth_mortality</a></span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span>hu <span class="op">=</span> <span class="fu"><a href="reference/FDM.html">FDM</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">.smooth</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">fc</span> <span class="op">&lt;-</span> <span class="va">fit</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">20</span><span class="op">)</span> </span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">fc</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-lc3-1.png" width="100%"></p>
+<p><img src="reference/figures/README-coherent-1.png" width="100%"></p>
 </div>
 <div class="section level3">
 <h3 id="coherent-functional-data-models">Coherent functional data models<a class="anchor" aria-label="anchor" href="#coherent-functional-data-models"></a>
 </h3>
-<p>Functional data models (Hyndman &amp; Ullah, CSDA, 2007) can be estimated in the same way as Lee-Carter models, with <code>LC</code> replaced by <code>FDM</code>. A coherent functional data model (Hyndman, Booth &amp; Yasmeen, Demography, 2013), can be used as follows.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Coherent forecasts from FDM model</span></span>
-<span><span class="va">nor</span> <span class="op">&lt;-</span> <span class="va">norway_mortality</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sex</span> <span class="op">!=</span> <span class="st">"Total"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="reference/collapse_ages.html">collapse_ages</a></span><span class="op">(</span><span class="op">)</span> </span>
-<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="va">nor</span> <span class="op">|&gt;</span> </span>
+<p>A coherent functional data model (Hyndman, Booth &amp; Yasmeen, Demography, 2013), is obtained by first computing the sex-products and sex-ratios of the smoothed mortality data. Then a functional data model is fitted to the smoothed data, forecasts are obtained, and the product/ratio transformation is reversed. The following code shows the steps.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="va">nor</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="reference/smooth_vital.html">smooth_mortality</a></span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="reference/make_pr.html">make_pr</a></span><span class="op">(</span><span class="va">.smooth</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span>hby <span class="op">=</span> <span class="fu"><a href="reference/FDM.html">FDM</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">.smooth</span><span class="op">)</span>, coherent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">fc</span> <span class="op">&lt;-</span> <span class="va">fit</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">20</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="reference/undo_pr.html">undo_pr</a></span><span class="op">(</span><span class="va">.smooth</span><span class="op">)</span></span>
-<span><span class="va">nor</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Year</span> <span class="op">&gt;</span> <span class="fl">1950</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Age</span>, y <span class="op">=</span> <span class="va">Mortality</span>, group <span class="op">=</span> <span class="va">Year</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">Sex</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">fc</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">.mean</span>, color <span class="op">=</span> <span class="va">Year</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_color_gradientn</a></span><span class="op">(</span>colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">25</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in scale_y_log10(): log-10 transformation introduced infinite values.</span></span></code></pre></div>
-<p><img src="reference/figures/README-coherent-1.png" width="100%"></p>
+<span>  <span class="fu"><a href="reference/undo_pr.html">undo_pr</a></span><span class="op">(</span><span class="va">.smooth</span><span class="op">)</span></span></code></pre></div>
 <p>Here, <code><a href="reference/make_pr.html">make_pr()</a></code> makes the product-ratios, while <code><a href="reference/undo_pr.html">undo_pr()</a></code> undoes them.</p>
+<p>The argument <code>coherent = TRUE</code> in <code><a href="reference/FDM.html">FDM()</a></code> ensures that the ARIMA models fitted to the coefficients are stationary when applied to the sex-ratios.</p>
 </div>
 </div>
 </div>
