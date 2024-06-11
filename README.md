@@ -103,9 +103,6 @@ the variable is plotted against age.
 ``` r
 nor |> 
   autoplot(Mortality) + scale_y_log10()
-#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
-#> Warning: Removed 4 rows containing missing values or values outside the scale range
-#> (`geom_line()`).
 ```
 
 <img src="man/figures/README-autoplot-1.png" width="100%" />

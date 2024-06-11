@@ -76,7 +76,7 @@ vital_vars(nor)
 There are `autoplot()` functions for plotting `vital` objects. These produce rainbow plots where each line represents data for one year, and the variable is plotted against age.
 
 
-```{r autoplot}
+```{r autoplot, warning = FALSE}
 nor |> 
   autoplot(Mortality) + scale_y_log10()
 ```
