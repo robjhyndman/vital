@@ -43,11 +43,11 @@ forecast.mdl_vtl_df <- function(
     warn("Input forecast horizon `h` will be ignored as `new_data` has been provided.")
     h <- NULL
   }
+  vvars <- vital_vars(object[[mdls[1]]][[1]]$data)
+  kv <- c(key_vars(object), ".model")
   if (!is.null(new_data)) {
     object <- bind_new_data(object, new_data)
   }
-  agevar <- age_var(object[[mdls[1]]][[1]]$data)
-  kv <- c(key_vars(object), ".model")
   object <- dplyr::mutate_at(as_tibble(object), mdls, forecast,
     new_data = object[["new_data"]], h = h, point_forecast = point_forecast,
     simulate = simulate, bootstrap = bootstrap, times = times,
@@ -62,7 +62,7 @@ forecast.mdl_vtl_df <- function(
     unnest_tsbl(as_tibble(object)[c(kv, ".fc")], ".fc", parent_key = kv)
   )
   build_vital_fable(out, response = fbl_attr$response, distribution = fbl_attr$dist,
-    age = agevar)
+    vitals = vvars)
 }
 
 #' @export
@@ -90,7 +90,7 @@ forecast.mdl_vtl_ts <- function(
   if (NROW(new_data) == 0) {
     new_data[[dist_col]] <- distributional::new_dist(dimnames = resp_vars)
     return(build_vital_fable(new_data, response = resp_vars,
-      distribution = !!sym(dist_col), age = agevar))
+      distribution = !!sym(dist_col), vitals = vital_vars(object$data)))
   }
   if (simulate || bootstrap) {
     fc <- generate(object, new_data, bootstrap = bootstrap, times = times, ...)
@@ -168,7 +168,7 @@ Does your model require extra variables to produce forecasts?",
     ordered = is_ordered(new_data), interval = tsibble::interval(new_data)
   )
   build_vital_fable(fbl, response = resp_vars, distribution = dist_col,
-                age = agevar)
+                vitals = vital_vars(object$data))
 }
 
 make_future_data <- function (.data, h = NULL) {

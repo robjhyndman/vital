@@ -199,11 +199,7 @@ dplyr_reconstruct.grouped_vital <- function(data, template) {
     build_vital_fable(res,
       response = attr_data$response,
       distribution = attr_data$dist,
-      .age = vvar$age,
-      .sex = vvar$sex,
-      .deaths = vvar$deaths,
-      .births = vvar$births,
-      .population = vvar$population
+      vitals = vvar
     )
   } else {
     res
