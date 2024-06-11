@@ -1,7 +1,7 @@
 # Internal function to make a vital fable object
 
 build_vital_fable <- function(x, response, distribution,
-    vitals = NULL, reorder = FALSE, ...) {
+    vitals = NULL, reorder = FALSE) {
   final <- build_fable(x, response = response, distribution =  distribution) |>
     suppressWarnings()
   attr(final, "vital")  <- vitals[vitals %in% colnames(x)]

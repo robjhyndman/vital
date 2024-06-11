@@ -9,11 +9,7 @@ arrange.fbl_vtl_ts <- function(.data, ...) {
   build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
+    vitals = vvar
   )
 }
 
@@ -24,11 +20,7 @@ select.fbl_vtl_ts <- function(.data, ...) {
   build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
+    vitals = vvar
   )
 }
 
@@ -39,11 +31,7 @@ transmute.fbl_vtl_ts <- function(.data, ...) {
   build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
+    vitals = vvar
   )
 }
 
@@ -54,11 +42,7 @@ relocate.fbl_vtl_ts <- function(.data, ...) {
   build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
+    vitals = vvar
   )
 }
 
@@ -69,11 +53,7 @@ summarise.fbl_vtl_ts <- function(.data, ..., .groups = NULL) {
   build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
+    vitals = vvar
   )
 }
 
@@ -84,11 +64,7 @@ dplyr_row_slice.fbl_vtl_ts <- function(data, i, ..., preserve = FALSE) {
   build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
+    vitals = vvar
   )
 }
 
@@ -99,11 +75,7 @@ dplyr_col_modify.fbl_vtl_ts <- function(data, cols) {
   build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
+    vitals = vvar
   )
 }
 
@@ -114,11 +86,7 @@ dplyr_reconstruct.fbl_vtl_ts <- function(data, template) {
   build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
+    vitals = vvar
   )
 }
 
@@ -130,11 +98,7 @@ group_by.fbl_vtl_ts <- function(.data, ..., .add = FALSE,
   tmp <- build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
+    vitals = vvar
   )
   tmp_class <- class(tmp)
   grouped_classes <- grepl("grouped", tmp_class)
@@ -149,11 +113,7 @@ ungroup.grouped_vital <- function(x, ...) {
   build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
+    vitals = vvar
   )
 }
 
@@ -182,11 +142,7 @@ dplyr_reconstruct.grouped_vital <- function(data, template) {
   build_vital_fable(NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
+    vitals = vvar
   )
 }
 
