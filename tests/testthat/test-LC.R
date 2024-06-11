@@ -10,14 +10,14 @@ test_that("Lee Carter", {
   fc <- forecast(lc)
 
   expect_no_error(autoplot(fc))
-  expect_equal(dim(lc), c(3L, 4L))
+  expect_equal(dim(lc), c(3L, 5L))
   expect_equal(NROW(tidy(lc)), 0L)
-  expect_equal(dim(glance(lc)), c(6L, 6L))
+  expect_equal(dim(glance(lc)), c(6L, 7L))
   expect_no_error(residuals(lc, type = "innov"))
   expect_no_error(residuals(lc, type = "response"))
   expect_no_error(fitted(lc))
-  expect_equal(NROW(generate(lc, times = 2)), 2400L)
-  expect_equal(NROW(fc), 1200)
+  expect_equal(NROW(generate(lc, times = 2)), 2424L)
+  expect_equal(NROW(fc), 1212)
   expect_equal(
     dplyr::filter(fc,
         Sex == "female", Age == 0, Year == 2021,
@@ -29,7 +29,7 @@ test_that("Lee Carter", {
                  dplyr::pull(Mortality) |>
                  unlist() |>
                  length(), 7)
-  expect_equal(colnames(time_components(lc |> select(fit))), c("Sex", "Code", "Year", "kt"))
+  expect_equal(colnames(time_components(lc |> select(fit))), c("Sex", "State", "Code", "Year", "kt"))
   expect_error(age_components(lc))
 
   # Compare against demography

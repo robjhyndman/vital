@@ -88,7 +88,7 @@ aus_mortality <- aus_mortality |>
 	mutate(Mortality = if_else(Deaths == 0 & Exposure == 0, 0, Mortality)) |>
   as_vital(
     index = Year,
-    key = c(Age, Sex, Code),
+    key = c(Age, Sex, Code, State),
     .age = "Age",
     .sex = "Sex",
     .deaths = "Deaths",
