@@ -27,33 +27,14 @@ You can install the **development** version from
 pak::pak("robjhyndman/vital")
 ```
 
-## Example
+## Examples
 
 First load the necessary packages.
 
 ``` r
 library(vital)
 library(tsibble)
-#> 
-#> Attaching package: 'tsibble'
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, union
-```
-
-``` r
 library(dplyr)
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
-```
-
-``` r
 library(ggplot2)
 ```
 
@@ -63,8 +44,11 @@ The basic data object is a `vital`, which is time-indexed tibble that
 contains vital statistics such as births, deaths, population counts, and
 mortality and fertility rates.
 
+We will use Norwegian data in the following examples. First, let’s
+remove the “Total” Sex category and collapse the upper ages into a final
+age group of 100+.
+
 ``` r
-# Examples using Norwegian data
 nor <- norway_mortality |>
   filter(Sex != "Total") |>
   collapse_ages(max_age = 100) 
@@ -86,11 +70,9 @@ nor
 #> # ℹ 35,744 more rows
 ```
 
-The upper ages have been collapsed into a final age group of 100+.
-
-This example contains data from 1846 to 2022. It must have a time index
-variable (here `Year`), and optionally other categorical variables known
-as “key” variables. Each row must have a unique combination of the index
+This example contains data from 1846 to 2022. It must have a time
+“index” variable, and optionally other categorical variables known as
+“key” variables. Each row must have a unique combination of the index
 and key variables. Some columns are “vital” variables, such as “Age” and
 “Sex”.
 
@@ -120,7 +102,10 @@ the variable is plotted against age.
 
 ``` r
 nor |> 
-  autoplot(Population)
+  autoplot(Mortality) + scale_y_log10()
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
+#> Warning: Removed 4 rows containing missing values or values outside the scale range
+#> (`geom_line()`).
 ```
 
 <img src="man/figures/README-autoplot-1.png" width="100%" />

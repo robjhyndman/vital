@@ -37,11 +37,11 @@ You can install the **development** version from
 pak::pak("robjhyndman/vital")
 ```
 
-## Example
+## Examples
 
 First load the necessary packages.
 
-```{r packages}
+```{r packages, message=FALSE}
 library(vital)
 library(tsibble)
 library(dplyr)
@@ -52,17 +52,16 @@ library(ggplot2)
 
 The basic data object is a `vital`, which is time-indexed tibble that contains vital statistics such as births, deaths, population counts, and mortality and fertility rates. 
 
+We will use Norwegian data in the following examples. First, let's remove the "Total" Sex category and collapse the upper ages into a final age group of 100+.
+
 ```{r example}
-# Examples using Norwegian data
 nor <- norway_mortality |>
   filter(Sex != "Total") |>
   collapse_ages(max_age = 100) 
 nor
 ```
 
-The upper ages have been collapsed into a final age group of 100+.
-
-This example contains data from `r min(nor$Year)` to `r max(nor$Year)`. It must have a time index variable (here `Year`), and optionally other categorical variables known as "key" variables. Each row must have a unique combination of the index and key variables. Some columns are "vital" variables, such as "Age" and "Sex".
+This example contains data from `r min(nor$Year)` to `r max(nor$Year)`. It must have a time "index" variable, and optionally other categorical variables known as "key" variables. Each row must have a unique combination of the index and key variables. Some columns are "vital" variables, such as "Age" and "Sex".
 
 We can use functions to see which variables are index, key or vital:
 
@@ -79,7 +78,7 @@ There are `autoplot()` functions for plotting `vital` objects. These produce rai
 
 ```{r autoplot}
 nor |> 
-  autoplot(Population)
+  autoplot(Mortality) + scale_y_log10()
 ```
 
 We can use standard ggplot functions to modify the plot as desired. For example, here are population pyramids for all years.
