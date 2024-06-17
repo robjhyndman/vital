@@ -35,6 +35,7 @@ Imports:
 Suggests:
   demography,
   feasts,
+  future,
   testthat (>= 3.0.0)
 License: GPL-3
 URL: https://pkg.robjhyndman.com/vital/, https://github.com/robjhyndman/vital
