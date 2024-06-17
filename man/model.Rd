@@ -13,7 +13,7 @@
 same response variable.}
 
 \item{.safely}{If a model encounters an error, rather than aborting the process
-a \link[=null_model]{NULL model} will be returned instead. This allows for an error
+a \link[fabletools:null_model]{NULL model} will be returned instead. This allows for an error
 to occur when computing many models, without losing the results of the successful models.}
 }
 \value{
