@@ -1,3 +1,5 @@
+Fixed issues identified in previous submission
+
 ## Test environments
 
 * KDE neon 6.0 based on ubuntu 22.04 (local): R 4.4.0
