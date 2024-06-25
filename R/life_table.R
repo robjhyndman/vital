@@ -1,4 +1,4 @@
-#' Compute period lifetables from age-specific mortality rates
+#' Compute period life tables from age-specific mortality rates
 #'
 #' All available years and ages are included in the tables.
 #' $qx = mx/(1 + ((1-ax) * mx))$ as per Chiang (1984).

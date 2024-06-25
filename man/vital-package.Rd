@@ -5,7 +5,7 @@
 \alias{vital-package}
 \title{vital: Tidy Analysis Tools for Mortality, Fertility, Migration and Population Data}
 \description{
-Analysing vital statistics based on tools consistent with the tidyverse. Tools are provided for data visualization, lifetable calculations, computing net migration numbers, Lee-Carter modelling; functional data modelling and forecasting.
+Analysing vital statistics based on tools consistent with the tidyverse. Tools are provided for data visualization, life table calculations, computing net migration numbers, Lee-Carter modelling; functional data modelling and forecasting.
 }
 \seealso{
 Useful links:

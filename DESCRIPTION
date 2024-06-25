@@ -4,7 +4,7 @@ Type: Package
 Title: Tidy Analysis Tools for Mortality, Fertility, Migration and Population Data
 Description: Analysing vital statistics based on tools
     consistent with the tidyverse. Tools are provided for data visualization,
-    lifetable calculations, computing net migration numbers, Lee-Carter
+    life table calculations, computing net migration numbers, Lee-Carter
     modelling; functional data modelling and forecasting.
 Authors@R: c(
   person("Rob", "Hyndman", email="Rob.Hyndman@monash.edu", role=c("aut", "cre", "cph"), comment = c(ORCID = "0000-0002-2140-5352")),
@@ -33,10 +33,12 @@ Imports:
   tsibble,
   vctrs
 Suggests:
-  demography,
-  feasts,
-  future,
-  testthat (>= 3.0.0)
+    demography,
+    feasts,
+    future,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
 License: GPL-3
 URL: https://pkg.robjhyndman.com/vital/, https://github.com/robjhyndman/vital
 Encoding: UTF-8
@@ -44,3 +46,4 @@ LazyData: true
 RoxygenNote: 7.3.1
 Roxygen: list(markdown = TRUE)
 BugReports: https://github.com/robjhyndman/vital/issues
+VignetteBuilder: knitr

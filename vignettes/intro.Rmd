@@ -1,0 +1,213 @@
+---
+title: "Introduction to the vital package"
+author:
+  - name: Rob J Hyndman
+    affiliation: Monash University
+    address: >
+      Department of Econometrics \& Business Statistics
+      Monash University
+      Clayton VIC 3800, Australia
+    email: Rob.Hyndman@monash.edu
+    url: https://robjhyndman.com
+bibliography: refs.bib
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to the vital package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 8,
+  fig.height = 5,
+  out.width = "100%"
+)
+```
+
+```{r packages, message = FALSE}
+library(vital)
+library(tsibble)
+library(dplyr)
+library(ggplot2)
+```
+
+The goal of vital is to allow analysis of demographic data using tidy tools. It works with other tidyverse package such as [dplyr](https://dplyr.tidyverse.org) and [ggplot2](https://ggplot2.tidyverse.org). It also works with the [tidyverts](https://tidyverts.org) packages, [tsibble](https://tsibble.tidyverts.org) and [fable](https://fable.tidyverts.org).
+
+## vital objects
+
+The basic data object is a `vital`, which is time-indexed tibble that contains vital statistics such as births, deaths, population counts, and mortality and fertility rates. 
+
+We will use Norwegian data in the following examples. First, let's remove the "Total" Sex category and collapse the upper ages into a final age group of 100+.
+
+```{r example}
+nor <- norway_mortality |>
+  filter(Sex != "Total") |>
+  collapse_ages(max_age = 100) 
+nor
+```
+
+This example contains data from `r min(nor$Year)` to `r max(nor$Year)`. There are 101 age groups and 2 Sex categories. 
+A vital must have a time "index" variable, and optionally other categorical variables known as "key" variables. Each row must have a unique combination of the index and key variables. Some columns are "vital" variables, such as "Age" and "Sex".
+
+We can use functions to see which variables are index, key or vital:
+
+```{r vars}
+index_var(nor)
+key_vars(nor)
+vital_vars(nor)
+```
+
+## Plots
+
+There are `autoplot()` functions for plotting `vital` objects. These produce rainbow plots [@rainbow] where each line represents data for one year, and the variable is plotted against age.
+
+```{r autoplot, warning = FALSE}
+nor |> 
+  autoplot(Mortality) + 
+  scale_y_log10()
+```
+
+We can use standard ggplot functions to modify the plot as desired. For example, here are population pyramids for all years.
+
+```{r pyramid}
+nor |> 
+  mutate(Population = if_else(Sex == "Female", -Population, Population)) |>
+  autoplot(Population) +
+  coord_flip() +
+  facet_grid( . ~ Sex, scales = "free_x")
+```
+
+## Life tables and life expectancy
+
+Life tables [@chiang] can be produced using the `life_table()` function. It will produce life tables for each unique combination of the index and key variables other than age.
+
+```{r lifetable}
+# Life tables for males and females in Norway in 2000
+nor |>
+  filter(Year == 2000) |>
+  life_table()
+```
+
+Life expectancy ($e_x$ with $x=0$ by default) is computed using `life_expectancy()`:
+
+```{r e0}
+# Life expectancy for males and females in Norway
+nor |>
+  life_expectancy() |>
+  ggplot(aes(x = Year, y = ex, color = Sex)) +
+  geom_line()
+```
+
+## Smoothing 
+
+Several smoothing functions are provided: `smooth_spline()`, `smooth_mortality()`, `smooth_fertility()`, and `smooth_loess()`, each smoothing across the age variable for each year. The methods used in `smooth_mortality()` and `smooth_fertility()` are described in @hu.
+
+```{r smoothing}
+# Smoothed data
+nor |>
+  filter(Year == 1967) |>
+  smooth_mortality(Mortality) |>
+  autoplot(Mortality) +
+  geom_line(aes(y = .smooth), col = "blue") +
+  ylab("Mortality rate") +
+  scale_y_log10()
+```
+
+## Lee-Carter models
+
+Lee-Carter models [@lc] are estimated using the `LC()` function which must be called within a `model()` function:
+
+```{r lc}
+# Lee-Carter model
+lc <- nor |>
+  model(lee_carter = LC(log(Mortality)))
+lc
+```
+
+Models are fitted for all combinations of key variables excluding age. To see the details for a specific model, use the `report()` function.
+
+```{r lc2}
+lc |> 
+  filter(Sex == "Female") |> 
+  report()
+```
+
+The results can be plotted.
+
+```{r lc3}
+autoplot(lc)
+```
+
+The components can be extracted.
+
+```{r}
+age_components(lc)
+time_components(lc)
+```
+
+Forecasts are obtained using the `forecast()` function
+
+```{r lc5}
+# Forecasts from Lee-Carter model
+lc |>
+  forecast(h = 20) 
+```
+
+The forecasts are returned as a distribution column (here transformed normal because of the log transformation used in the model). The `.mean` column gives the point forecasts equal to the mean of the distribution column.
+
+
+## Functional data models
+
+Functional data models [@hu] can be estimated in a similar way to Lee-Carter models, but with an additional smoothing step, then modelling with `LC` replaced by `FDM`. 
+
+```{r fdm}
+# FDM model
+fdm <- nor |> 
+  smooth_mortality(Mortality) |> 
+  model(hu = FDM(log(.smooth)))
+fc_fdm <- fdm |>
+  forecast(h = 20) 
+autoplot(fc_fdm) +
+  scale_y_log10()
+```
+
+Functional data models have multiple principal components, rather than the single factor used in Lee-Carter models. 
+
+```{r}
+fdm |>
+  autoplot(show_order = 3)
+```
+
+By default, six factors are estimated using `FDM()`. Here we have chosen to plot only the first three. 
+
+The components can be extracted.
+
+```{r fdmcomponents}
+age_components(fdm)
+time_components(fdm)
+```
+
+
+## Coherent functional data models
+
+A coherent functional data model [@hby], is obtained by first computing the sex-products and sex-ratios of the smoothed mortality data. Then a functional data model is fitted to the smoothed data, forecasts are obtained, and the product/ratio transformation is reversed. The following code shows the steps.
+
+```{r coherent}
+fdm_coherent <- nor |> 
+  smooth_mortality(Mortality) |> 
+  make_pr(.smooth) |>
+  model(hby = FDM(log(.smooth), coherent = TRUE))
+fc_coherent <- fdm_coherent |>
+  forecast(h = 20) |>
+  undo_pr(.smooth)
+fc_coherent
+```
+
+Here, `make_pr()` makes the product-ratios, while `undo_pr()` undoes them.
+
+The argument `coherent = TRUE` in `FDM()` ensures that the ARIMA models fitted to the coefficients are stationary when applied to the sex-ratios. 
+
+## References

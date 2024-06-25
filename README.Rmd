@@ -52,61 +52,41 @@ library(ggplot2)
 
 The basic data object is a `vital`, which is time-indexed tibble that contains vital statistics such as births, deaths, population counts, and mortality and fertility rates. 
 
-We will use Norwegian data in the following examples. First, let's remove the "Total" Sex category and collapse the upper ages into a final age group of 100+.
+Here is an example of a `vital` object containing mortality data for Australia.
 
-```{r example}
-nor <- norway_mortality |>
-  filter(Sex != "Total") |>
-  collapse_ages(max_age = 100) 
-nor
+```{r aus}
+aus_mortality
 ```
-
-This example contains data from `r min(nor$Year)` to `r max(nor$Year)`. It must have a time "index" variable, and optionally other categorical variables known as "key" variables. Each row must have a unique combination of the index and key variables. Some columns are "vital" variables, such as "Age" and "Sex".
 
 We can use functions to see which variables are index, key or vital:
 
 ```{r vars}
-index_var(nor)
-key_vars(nor)
-vital_vars(nor)
+index_var(aus_mortality)
+key_vars(aus_mortality)
+vital_vars(aus_mortality)
 ```
 
 ### Plots
 
-There are `autoplot()` functions for plotting `vital` objects. These produce rainbow plots where each line represents data for one year, and the variable is plotted against age.
-
-
 ```{r autoplot, warning = FALSE}
-nor |> 
+aus_mortality |> 
+  filter(State == "Victoria", Sex != "total", Year < 1980, Age < 90) |>
   autoplot(Mortality) + scale_y_log10()
-```
-
-We can use standard ggplot functions to modify the plot as desired. For example, here are population pyramids for all years.
-
-```{r pyramid}
-nor |> 
-  mutate(Population = if_else(Sex == "Female", -Population, Population)) |>
-  autoplot(Population) +
-  coord_flip() +
-  facet_grid( . ~ Sex, scales = "free_x")
 ```
 
 ### Life tables and life expectancy
 
-Lifetables can be produced using the `life_table()` function. It will produce lifetables for each unique combination of the index and key variables other than age.
-
 ```{r lifetable}
-# Lifetable in 2000
-nor |>
-  filter(Year == 2000) |>
+# Life table for Victorian males in 2000
+aus_mortality |>
+  filter(State == "Victoria", Sex == "male", Year == 2000) |>
   life_table()
 ```
 
-Life expectancy ($e_x$ with $x=0$ by default) is computed using `life_expectancy()`:
-
 ```{r e0}
 # Life expectancy
-nor |>
+aus_mortality |>
+  filter(State == "Victoria", Sex != "total") |>
   life_expectancy() |>
   ggplot(aes(x = Year, y = ex, color = Sex)) +
   geom_line()
@@ -118,8 +98,8 @@ Several smoothing functions are provided: `smooth_spline()`, `smooth_mortality()
 
 ```{r smoothing}
 # Smoothed data
-nor |>
-  filter(Year == 1967) |>
+aus_mortality |>
+  filter(State == "Victoria", Sex != "total", Year == 1967) |>
   smooth_mortality(Mortality) |>
   autoplot(Mortality) +
   geom_line(aes(y = .smooth), col = "blue") +
@@ -127,79 +107,42 @@ nor |>
   scale_y_log10()
 ```
 
-### Lee-Carter models
+### Mortality models
 
-Lee-Carter models (Lee & Carter, JASA, 1992) are estimated using the `LC()` function which must be called within a `model()` function:
+Several mortality models are available including variations on Lee-Carter models (Lee & Carter, JASA, 1992), and functional data models (Hyndman & Ullah, CSDA, 2007).  
 
 ```{r lc}
-# Lee-Carter model
-lc <- nor |>
-  model(lee_carter = LC(log(Mortality)))
-lc
+fit <- aus_mortality |>
+  filter(State == "Victoria", Sex != "total") |>
+  model(
+    lee_carter = LC(log(Mortality)),
+    fdm = FDM(log(Mortality))
+  )
+fit
 ```
 
-Models are fitted for all combinations of key variables excluding age. To see the details for a specific model, use the `report()` function.
+Models are fitted for all combinations of key variables excluding age. 
 
 ```{r lc2}
-lc |> 
-  filter(Sex == "Female") |> 
+fit |> 
+  select(lee_carter) |>
+  filter(Sex == "female") |> 
   report()
 ```
 
-The results can be plotted.
 
 ```{r lc3}
-autoplot(lc)
+fit |> select(lee_carter) |> autoplot()
 ```
-
-The components can be extracted.
 
 ```{r}
-age_components(lc)
-time_components(lc)
+fit |> select(lee_carter) |> age_components()
+fit |> select(lee_carter) |> time_components()
 ```
 
-Forecasts are obtained using the `forecast()` function
-
 ```{r lc5}
-# Forecasts from Lee-Carter model
-lc |>
-  forecast(h = 20) 
+fit |> forecast(h = 20) 
 ```
 
 The forecasts are returned as a distribution column (here transformed normal because of the log transformation used in the model). The `.mean` column gives the point forecasts equal to the mean of the distribution column.
-
-
-### Functional data models
-
-Functional data models (Hyndman & Ullah, CSDA, 2007) can be estimated in a similar way to Lee-Carter models, but with an additional smoothing step, then modelling with `LC` replaced by `FDM`. 
-
-```{r coherent}
-# FDM model
-fit <- nor |> 
-  smooth_mortality(Mortality) |> 
-  model(hu = FDM(log(.smooth)))
-fc <- fit |>
-  forecast(h = 20) 
-autoplot(fc) +
-  scale_y_log10()
-```
-
-### Coherent functional data models
-
-A coherent functional data model (Hyndman, Booth & Yasmeen, Demography, 2013), is obtained by first computing the sex-products and sex-ratios of the smoothed mortality data. Then a functional data model is fitted to the smoothed data, forecasts are obtained, and the product/ratio transformation is reversed. The following code shows the steps.
-
-```{r coherent2}
-fit <- nor |> 
-  smooth_mortality(Mortality) |> 
-  make_pr(.smooth) |>
-  model(hby = FDM(log(.smooth), coherent = TRUE))
-fc <- fit |>
-  forecast(h = 20) |>
-  undo_pr(.smooth)
-```
-
-Here, `make_pr()` makes the product-ratios, while `undo_pr()` undoes them.
-
-The argument `coherent = TRUE` in `FDM()` ensures that the ARIMA models fitted to the coefficients are stationary when applied to the sex-ratios. 
 

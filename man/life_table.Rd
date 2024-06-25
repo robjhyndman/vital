@@ -2,7 +2,7 @@
 % Please edit documentation in R/life_table.R
 \name{life_table}
 \alias{life_table}
-\title{Compute period lifetables from age-specific mortality rates}
+\title{Compute period life tables from age-specific mortality rates}
 \usage{
 life_table(.data, mortality)
 }
