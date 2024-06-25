@@ -1,3 +1,5 @@
+# vital (development version)
+
 # vital 1.1.0
 
 * Improved formatting of vital objects when printed
