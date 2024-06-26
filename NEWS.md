@@ -1,5 +1,7 @@
 # vital (development version)
 
+* Added vignette introducing the package
+
 # vital 1.1.0
 
 * Improved formatting of vital objects when printed
