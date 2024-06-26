@@ -38,6 +38,7 @@ Suggests:
     future,
     knitr,
     rmarkdown,
+    showtext,
     sysfonts,
     testthat (>= 3.0.0)
 License: GPL-3
