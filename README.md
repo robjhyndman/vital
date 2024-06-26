@@ -142,7 +142,7 @@ aus_mortality |>
   filter(State == "Victoria", Sex != "total", Year == 1967) |>
   smooth_mortality(Mortality) |>
   autoplot(Mortality) +
-  geom_line(aes(y = .smooth), col = "blue") +
+  geom_line(aes(y = .smooth), col = "#0072B2") +
   ylab("Mortality rate") +
   scale_y_log10()
 #> Warning: Removed 1 row containing missing values or values outside the scale range
