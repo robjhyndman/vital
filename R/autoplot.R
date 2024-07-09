@@ -84,6 +84,7 @@ autoplot.vital <- function(object, .vars = NULL, age = age_var(object),...) {
     ggplot2::ggplot(rlang::eval_tidy(rlang::expr(ggplot2::aes(!!!aes_spec)))) +
     ggplot2::geom_line() +
     ggplot2::xlab(age) +
+    #ggplot2::scale_color_gradientn(colours = hcl.colors(palette = "Batlow", n=10))
     ggplot2::scale_color_gradientn(colours = rainbow(10))
   if (nk > 0) {
     p <- p + ggplot2::facet_wrap(kv)
