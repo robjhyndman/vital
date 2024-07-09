@@ -1,129 +1,45 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/404.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/articles/intro.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/index.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/FDM.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/FMEAN.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/FNAIVE.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/LC.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/age_components.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/as_vital.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/aus_fertility.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/aus_mortality.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/autoplot.fbl_vtl_ts.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/autoplot.mdl_vtl_df.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/autoplot.vital.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/collapse_ages.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/forecast.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/generate.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/interpolate.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/life_expectancy.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/life_table.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/make_pr.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/make_sd.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/model.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/net_migration.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/norway_births.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/read_hfd.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/read_hfd_files.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/read_hmd.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/read_hmd_files.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/reexports.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/smooth_vital.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/time_components.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/total_fertility_rate.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/undo_pr.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/undo_sd.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/vital-package.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/vital.html</loc>
-  </url>
-  <url>
-    <loc>https://pkg.robjhyndman.com/vital/reference/vital_vars.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://pkg.robjhyndman.com/vital/404.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/articles/index.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/articles/intro.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/authors.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/index.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/news/index.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/FDM.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/FMEAN.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/FNAIVE.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/LC.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/age_components.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/as_vital.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/aus_fertility.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/aus_mortality.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/autoplot.fbl_vtl_ts.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/autoplot.mdl_vtl_df.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/autoplot.vital.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/collapse_ages.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/forecast.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/generate.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/index.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/interpolate.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/life_expectancy.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/life_table.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/make_pr.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/make_sd.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/model.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/net_migration.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/norway_births.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/read_hfd.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/read_hfd_files.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/read_hmd.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/read_hmd_files.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/reexports.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/smooth_vital.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/time_components.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/total_fertility_rate.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/undo_pr.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/undo_sd.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/vital-package.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/vital.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/vital_vars.html</loc></url>
 </urlset>
+
