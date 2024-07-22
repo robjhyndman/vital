@@ -270,11 +270,12 @@ fdm <- function(data, order = 6, ts_model_fn = fable::ARIMA, coherent = NULL) {
     dplyr::mutate(Age = ages) |>
     tidyr::pivot_longer(-Age, names_to = "Year", values_to = ".fitted") |>
     dplyr::mutate(Year = as.integer(Year))
+  colnames(fits)[1:2] <- c(agevar, indexvar)
 
   # Add fitted values and residuals to original data
   output <- data |>
     as_tibble() |>
-    dplyr::left_join(fits, by = c("Year", "Age")) |>
+    dplyr::left_join(fits, by = c(indexvar, agevar)) |>
     as_vital(index = sym(indexvar), key = sym(agevar), .age = agevar)
 
   by_x <- as_tibble(y.pca$basis)
