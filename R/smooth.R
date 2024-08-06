@@ -118,6 +118,8 @@ smooth_loess <- function(.data, .var, age_spacing = 1, span = 0.2) {
 smooth_loess_x <- function(data, var, age_spacing, age, popvar, span = 0.2) {
 	x <- data[[age]]
 	y <- data[[var]]
+	# Avoid small spans when there is insufficient data
+	span <- max(span, 12/length(x))
 	weights <- smooth_weights(data, var, popvar, lambda = 1)
 	fit <- stats::loess(y ~ x, span = span, degree = 2, weights = weights, surface = "direct")
 	age_grid <- seq(min(data[[age]]), max(data[[age]]), by = age_spacing)
