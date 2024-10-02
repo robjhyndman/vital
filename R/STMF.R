@@ -4,47 +4,44 @@
 #' series available in the Human Mortality Database (HMD) <https://www.mortality.org/Data/STMF>)
 #' and constructs a `vital` object suitable for use in other functions.
 #'
-#' @param CNTRY Directory abbreviation from the HMD. For instance, Australia = "AUS".
+#' @param country Directory abbreviation from the HMD. For instance, Australia = "AUS".
 #' @return `read_stmf_data` returns a `vital` object combining the downloaded data.
 #'
 #' @author Sixian Tang
 #' @examples
 #' \dontrun{
-#' norway <- read_stmf_data(CNTRY = "NOR")
+#' norway <- read_stmf_data(country = "NOR")
 #' }
 #'
 #'
 #' @export
-read_stmf_data <- function(CNTRY) {
+read_stmf_data <- function(country) {
 
   # check if country code is available
-  ctrylist    <- getSTMFcountries()
+  ctrylookup <- getSTMFcountries()
 
-  ctrylookup  <- ctrylist |>
-    dplyr::select(-"link")
-
-  # get CNTRY
-  if (missing(CNTRY)){
-    cat("\nCNTRY missing\n")
-    if (interactive()){
-      CNTRY <- select.list(choices = ctrylookup$CNTRY, multiple = FALSE, title = "Select Country Code")
+  # get country
+  if (missing(country) || !(country %in% ctrylookup$CNTRY)) {
+    if (missing(country)) {
+      cat("\nCountry missing\n")
     } else {
-      stop("CNTRY should be one of these:\n",paste(ctrylookup$CNTRY, collapse = ",\n"))
+      cat("\nCountry not found\n")
+    }
+
+    if (interactive()) {
+      country <- select.list(choices = ctrylookup$CNTRY, multiple = FALSE, title = "Select Country Code")
+    } else {
+      stop("Country should be one of these:\n", paste(ctrylookup$CNTRY, collapse = ",\n"))
     }
   }
-  if (!(CNTRY %in% ctrylookup$CNTRY)){
-    cat("\nCNTRY not found\n")
-    if (interactive()){
-      CNTRY <- select.list(choices = ctrylookup$CNTRY, multiple = FALSE, title = "Select Country Code")
-    } else {
-      stop("CNTRY should be one of these:\n",paste(ctrylookup$CNTRY, collapse = ",\n"))
-    }
-  }
-  stopifnot(length(CNTRY) == 1)
+  stopifnot(length(country) == 1)
 
   # read STMF data
-  url <- paste0("https://www.mortality.org/File/GetDocument/Public/STMF/Outputs/", CNTRY, "stmfout.csv")
+  url <- paste0("https://www.mortality.org/File/GetDocument/Public/STMF/Outputs/", country, "stmfout.csv")
   data <- read.csv(url, header = TRUE, stringsAsFactors = FALSE, check.names = FALSE)
+  data$Sex[data$Sex == "b"] <- "both"
+  data$Sex[data$Sex == "f"] <- "female"
+  data$Sex[data$Sex == "m"] <- "male"
 
   stmf_to_vital(data)
 }
@@ -58,9 +55,9 @@ getSTMFcountries <- function () {
   cntry_names <- rvest::html_text2(rvest::html_elements(rvest::html_element(html,
                                                        xpath = xpath), "a"))
   # Create a tibble with country names and links
-  tab_main <- dplyr::mutate(tsibble::tibble(Country = cntry_names, link = links),
+  tab_main <- dplyr::mutate(tsibble::tibble(Country = cntry_names),
                      # Extract country codes from the links
-                     CNTRY = sub("/File/GetDocument/Public\\\\STMF\\\\Outputs\\\\(\\w+)stmfout\\.csv", "\\1", .data$link))
+                     CNTRY = sub("/File/GetDocument/Public\\\\STMF\\\\Outputs\\\\(\\w+)stmfout\\.csv", "\\1", links))
   return(tab_main)
 }
 #'
@@ -81,45 +78,27 @@ stmf_to_vital <- function(stmf_data) {
   for (i in seq_along(age_groups)) {
     # Combine death counts and rates into a single data frame
     combined_data <- stmf_data |>
-      dplyr::select(Year, Week, Sex, all_of(age_groups[i]), all_of(age_rate_groups[i]), Forecast) |>
+      dplyr::select(Year, Week, Sex, all_of(age_groups[i]), all_of(age_rate_groups[i])) |>
       dplyr::rename(
-        Death_counts = all_of(age_groups[i]),
-        Death_rates = all_of(age_rate_groups[i])
+        Deaths = all_of(age_groups[i]),
+        Mortality = all_of(age_rate_groups[i])
       ) |>
       dplyr::mutate(Age_group = age_groups[i]) |>
-      dplyr::select(Year, Week, Sex, Age_group, Death_counts, Death_rates, Forecast)
+      dplyr::select(Year, Week, Sex, Age_group, Deaths, Mortality)
 
     # Bind the combined data to the main data frame
     formatted_data <- dplyr::bind_rows(formatted_data, combined_data)
   }
 
-  # Create YearWeek column in the format YYYYWW
+  # Create YearWeek column
   formatted_data <- formatted_data |>
-    dplyr::mutate(YearWeek = as.integer(sprintf("%d%02d", Year, Week))) |>
+    dplyr::mutate(YearWeek = tsibble::make_yearweek(year = Year, week = Week)) |>
     dplyr::select(-Year, -Week)  # Remove Year and Week columns
 
-  # Arrange the data by YearWeek, Sex, and Age_group
-  formatted_data <- formatted_data |>
-    dplyr::arrange(YearWeek, Sex, Age_group)
-
   # Convert the formatted data into a tsibble (or vital object as needed)
-  vital_data <- as_vital.data.frame(formatted_data, index = c("YearWeek"), key = c("Sex", "Age_group"))
+  vital_data <- as_vital.data.frame(formatted_data, index = c("YearWeek"), key = c("Sex", "Age_group"), .age = "Age_group", .sex = "Sex", .deaths = "Deaths")
 
   return(vital_data)
 }
 #'
-#'
-#' @export
-as_vital.data.frame <- function(x, key = NULL, index,
-    .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
-    reorder = TRUE,
-    ...) {
-  tsibble::as_tsibble(x, key = !!rlang::enquo(key), index = !!rlang::enquo(index), ...) |>
-    vital::as_vital(
-      .age = .age, .sex = .sex,
-      .deaths = .deaths, .births = .births,
-      .population = .population,
-      reorder = reorder
-    )
-}
 
