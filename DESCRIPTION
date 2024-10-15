@@ -31,7 +31,8 @@ Imports:
   tidyr,
   tidyselect,
   tsibble,
-  vctrs
+  vctrs,
+  rvest
 Suggests:
     demography,
     feasts,
