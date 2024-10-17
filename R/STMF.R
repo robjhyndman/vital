@@ -45,8 +45,8 @@ read_stmf_data <- function(country) {
 
   stmf_to_vital(data)
 }
-#'
-#' Get STMF country list
+
+# Get STMF country list
 getSTMFcountries <- function () {
   xpath <- "/html/body/div[1]/div/div/div/div/div[2]/table/tbody"
   html <- rvest::read_html("https://www.mortality.org/Data/STMF")
@@ -60,8 +60,8 @@ getSTMFcountries <- function () {
                      CNTRY = sub("/File/GetDocument/Public\\\\STMF\\\\Outputs\\\\(\\w+)stmfout\\.csv", "\\1", links))
   return(tab_main)
 }
-#'
-#'
+
+#
 stmf_to_vital <- function(stmf_data) {
   # Rename the second set of age columns by adding ".1" suffix
   age_groups <- c("0-14", "15-64", "65-74", "75-84", "85+", "Total")
