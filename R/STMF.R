@@ -1,6 +1,6 @@
 #' Read Short-Term Mortality Fluctuations data from HMD and construct a `vital` object for use in other functions
 #'
-#' `read_stmf` reads weekly mortality data from the Short-term Mortality Fluctuations (STMF)
+#' `read_stmf_data` reads weekly mortality data from the Short-term Mortality Fluctuations (STMF)
 #' series available in the Human Mortality Database (HMD) <https://www.mortality.org/Data/STMF>)
 #' and constructs a `vital` object suitable for use in other functions.
 #'
@@ -46,6 +46,7 @@ read_stmf_data <- function(country) {
   stmf_to_vital(data)
 }
 
+#' @keywords internal
 # Get STMF country list
 getSTMFcountries <- function () {
   xpath <- "/html/body/div[1]/div/div/div/div/div[2]/table/tbody"
@@ -61,7 +62,7 @@ getSTMFcountries <- function () {
   return(tab_main)
 }
 
-#
+#' @keywords internal
 stmf_to_vital <- function(stmf_data) {
   # Rename the second set of age columns by adding ".1" suffix
   age_groups <- c("0-14", "15-64", "65-74", "75-84", "85+", "Total")
