@@ -1,21 +1,21 @@
-#' Read Short-Term Mortality Fluctuations data from HMD and construct a `vital` object for use in other functions
+#' Read Short-Term Mortality Fluctuations data from the Human Mortality Database
 #'
-#' `read_stmf_data` reads weekly mortality data from the Short-term Mortality Fluctuations (STMF)
-#' series available in the Human Mortality Database (HMD) <https://www.mortality.org/Data/STMF>)
+#' `read_stmf` reads weekly mortality data from the Short-term Mortality Fluctuations (STMF)
+#' series available in the Human Mortality Database (HMD) <https://www.mortality.org/Data/STMF>),
 #' and constructs a `vital` object suitable for use in other functions.
 #'
 #' @param country Directory abbreviation from the HMD. For instance, Australia = "AUS".
-#' @return `read_stmf_data` returns a `vital` object combining the downloaded data.
+#' @return A `vital` object combining the downloaded data.
 #'
 #' @author Sixian Tang
 #' @examples
 #' \dontrun{
-#' norway <- read_stmf_data(country = "NOR")
+#' norway <- read_stmf(country = "NOR")
 #' }
 #'
 #'
 #' @export
-read_stmf_data <- function(country) {
+read_stmf <- function(country) {
 
   # check if country code is available
   ctrylookup <- getSTMFcountries()
@@ -46,7 +46,6 @@ read_stmf_data <- function(country) {
   stmf_to_vital(data)
 }
 
-#' @keywords internal
 # Get STMF country list
 getSTMFcountries <- function () {
   xpath <- "/html/body/div[1]/div/div/div/div/div[2]/table/tbody"
@@ -62,7 +61,6 @@ getSTMFcountries <- function () {
   return(tab_main)
 }
 
-#' @keywords internal
 stmf_to_vital <- function(stmf_data) {
   # Rename the second set of age columns by adding ".1" suffix
   age_groups <- c("0-14", "15-64", "65-74", "75-84", "85+", "Total")
