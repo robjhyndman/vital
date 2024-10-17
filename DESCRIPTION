@@ -8,6 +8,7 @@ Description: Analysing vital statistics based on tools
     modelling; functional data modelling and forecasting.
 Authors@R: c(
   person("Rob", "Hyndman", email="Rob.Hyndman@monash.edu", role=c("aut", "cre", "cph"), comment = c(ORCID = "0000-0002-2140-5352")),
+  person("Sixian", "Tang", role = "aut", comment = c(ORCID = "0000-0002-7292-462X")),
   person("Mitchell", "O'Hara-Wild", role = "ctb", comment = c(ORCID = "0000-0001-6729-7695"))
   )
 Depends:
