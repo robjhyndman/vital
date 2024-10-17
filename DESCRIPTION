@@ -27,6 +27,7 @@ Imports:
   progressr,
   purrr,
   rlang,
+  rvest,
   tibble,
   tidyr,
   tidyselect,
