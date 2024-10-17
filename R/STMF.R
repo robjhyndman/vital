@@ -29,7 +29,7 @@ read_stmf_data <- function(country) {
     }
 
     if (interactive()) {
-      country <- select.list(choices = ctrylookup$CNTRY, multiple = FALSE, title = "Select Country Code")
+      country <- utils::select.list(choices = ctrylookup$CNTRY, multiple = FALSE, title = "Select Country Code")
     } else {
       stop("Country should be one of these:\n", paste(ctrylookup$CNTRY, collapse = ",\n"))
     }
@@ -38,7 +38,7 @@ read_stmf_data <- function(country) {
 
   # read STMF data
   url <- paste0("https://www.mortality.org/File/GetDocument/Public/STMF/Outputs/", country, "stmfout.csv")
-  data <- read.csv(url, header = TRUE, stringsAsFactors = FALSE, check.names = FALSE)
+  data <- utils::read.csv(url, header = TRUE, stringsAsFactors = FALSE, check.names = FALSE)
   data$Sex[data$Sex == "b"] <- "both"
   data$Sex[data$Sex == "f"] <- "female"
   data$Sex[data$Sex == "m"] <- "male"
@@ -62,7 +62,6 @@ getSTMFcountries <- function () {
 }
 #'
 #'
-#' @export
 stmf_to_vital <- function(stmf_data) {
   # Rename the second set of age columns by adding ".1" suffix
   age_groups <- c("0-14", "15-64", "65-74", "75-84", "85+", "Total")
@@ -101,4 +100,4 @@ stmf_to_vital <- function(stmf_data) {
   return(vital_data)
 }
 
-
+globalVariables(c("Week","Age_group"))
