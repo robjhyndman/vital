@@ -1,9 +1,9 @@
 pandoc: 3.1.11
-pkgdown: 2.1.0
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   intro: intro.html
-last_built: 2024-08-06T01:28Z
+last_built: 2024-10-17T03:07Z
 urls:
   reference: https://pkg.robjhyndman.com/vital/reference
   article: https://pkg.robjhyndman.com/vital/articles
