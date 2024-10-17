@@ -38,11 +38,35 @@ read_stmf <- function(country) {
 
   # read STMF data
   url <- paste0("https://www.mortality.org/File/GetDocument/Public/STMF/Outputs/", country, "stmfout.csv")
-  data <- utils::read.csv(url, header = TRUE, stringsAsFactors = FALSE, check.names = FALSE)
+  read_stmf_file(url)
+}
+
+#' Read STMF data from files downloaded from HMD
+#'
+#' `read_stmf_file` reads weekly mortality data from a file downloaded
+#' from the Short-term Mortality Fluctuations (STMF) series available in the
+#' Human Mortality Database (HMD) <https://www.mortality.org/Data/STMF>),
+#' and constructs a `vital` object suitable for use in other functions.
+#'
+#' @param file Name of a file containing data downloaded from the HMD.
+#'
+#' @return `read_stmf_file` returns a `vital` object combining the downloaded data.
+#'
+#' @author Rob J Hyndman
+#' @examples
+#' \dontrun{
+#' # File downloaded from the [Human Mortality Database STMF series](https://www.mortality.org/Data/STMF)
+#' mortality <- read_stmf_file("AUSstmfout.csv")
+#' }
+#' @keywords manip
+#' @export
+#'
+
+read_stmf_file <- function(file) {
+  data <- utils::read.csv(file, header = TRUE, stringsAsFactors = FALSE, check.names = FALSE)
   data$Sex[data$Sex == "b"] <- "both"
   data$Sex[data$Sex == "f"] <- "female"
   data$Sex[data$Sex == "m"] <- "male"
-
   stmf_to_vital(data)
 }
 

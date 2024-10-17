@@ -31,6 +31,7 @@ reference:
       - read_hfd
       - read_hfd_files
       - read_stmf
+      - read_stmf_file
       - net_migration
   - title: Data
     desc: Data sets included in the package
