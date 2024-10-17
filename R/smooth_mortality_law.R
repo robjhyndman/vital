@@ -20,7 +20,7 @@
 #' library(MortalityLaws)
 #' norway_mortality |> smooth_mortality_law(Mortality)
 #'
-#' 	@export
+#' @export
 smooth_mortality_law <- function(.data, .var, law = "gompertz", opt.method = "LF2") {
   smooth_law_vital(.data, {{ .var }}, smooth_mortality_law_x, law, opt.method)
 }
