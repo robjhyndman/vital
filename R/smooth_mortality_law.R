@@ -1,11 +1,11 @@
-#' Function to smooth mortality rates using using MortalityLaw package
+#' Function to smooth mortality rates using MortalityLaw package
 #'
 #' This smoothing function allows smoothing of a variable in a vital object using MortalityLaw package.
 #' The vital object is returned along with some additional columns containing
 #' information about the smoothed variable: usually `.smooth` containing the
 #' smoothed values, and `.smooth_se` containing the corresponding standard errors.
 #'
-#' `smooth_mortality_law()` smoothes mortality rates using specified mortality law and optimisation method.
+#' `smooth_mortality_law()` smooths mortality rates using specified mortality law and optimisation method.
 #' @param .data A vital object
 #' @param .var name of variable to smooth
 #' @param law name of mortality law. For available mortality laws, users can check the \code{\link{MortalityLaws::availableLaws}}
@@ -17,25 +17,37 @@
 #' @rdname smooth_law_vital
 #' @author Sixian Tang and Rob J Hyndman
 #' @examples
-#' library(MortalityLaws)
 #' norway_mortality |> smooth_mortality_law(Mortality)
 #'
 #' @export
-smooth_mortality_law <- function(.data, .var, law = "gompertz", opt.method = "LF2") {
-  smooth_law_vital(.data, {{ .var }}, smooth_mortality_law_x, law, opt.method)
+smooth_mortality_law <- function(.data, .var, law = "gompertz", use_de = FALSE, ...) {
+  smooth_law_vital(.data, {{ .var }}, smooth_mortality_law_x, law, use_de, ...)
 }
 
-smooth_mortality_law_x <- function(data, var, age, law, opt.method) {
-  y <- data[[var]]
+smooth_mortality_law_x <- function(data, var, age, law, use_de, ...) {
+
   x <- data[[age]]
-  smooth.fit <- MortalityLaws::MortalityLaw(x = x, mx = y, law = law, opt.method = opt.method)
+
+  # Check if Dx Ex mx exist
+  Dx <- if ("Deaths" %in% colnames(data)) data$Deaths else NULL
+  Ex <- if ("Population" %in% colnames(data)) data$Population else NULL
+  # default variable to smooth
+  mx <- if ("Mortality" %in% colnames(data)) data$Mortality else NULL
+
+  if ((use_de && (is.null(Dx) || is.null(Ex))) || (!use_de && is.null(mx))) {
+    stop("Please specify the correct variable to smooth.")
+  } else if (use_de && !is.null(Dx) && !is.null(Ex)) {
+    smooth.fit <- MortalityLaws::MortalityLaw(x = x, Dx = Dx, Ex = Ex, law = law, ...)
+  } else {
+    smooth.fit <- MortalityLaws::MortalityLaw(x = x, mx = mx, law = law, ...)
+  }
   # Mean squared error
   residual_variance <- sum((smooth.fit$residuals)^2, na.rm = TRUE) / (length(smooth.fit$fitted.values) - length(smooth.fit$coefficients))
   standard_error <- sqrt(residual_variance)
   out <- tibble(
     age = x,
     .smooth = smooth.fit$fitted.values,
-    .smooth_se = .smooth * standard_error
+    .smooth_se = .smooth * standard_error / sqrt(length(x))
   )
   colnames(out)[1] <- age
 
@@ -46,7 +58,7 @@ smooth_mortality_law_x <- function(data, var, age, law, opt.method) {
   return(out)
 }
 
-smooth_law_vital <- function(.data, .var, smooth_fn, law, opt.method) {
+smooth_law_vital <- function(.data, .var, smooth_fn, law, use_de, ...) {
   if(rlang::quo_is_missing(enquo(.var))) {
     stop("Please specify which variable to smooth. .var is missing with no default.")
   }
@@ -66,7 +78,7 @@ smooth_law_vital <- function(.data, .var, smooth_fn, law, opt.method) {
   resp <- names(eval_select(enquo(.var), data = .data))
   nested_data <- tidyr::nest(as_tibble(.data), .by = tidyr::all_of(c(index, keys_noage)))
   smooth <- purrr::map(nested_data[["data"]],
-                       \(x) smooth_fn(x, resp, age, law, opt.method))
+                       \(x) smooth_fn(x, resp, age, law, use_de, ...))
   nested_data$sm <- smooth
   nested_data$data <- NULL
   out <- tsibble::as_tibble(nested_data) |>
