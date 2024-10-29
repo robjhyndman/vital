@@ -20,23 +20,23 @@
 #' norway_mortality |> smooth_mortality_law(Mortality)
 #'
 #' @export
-smooth_mortality_law <- function(.data, .var, law = "gompertz", use_de = FALSE, ...) {
-  smooth_law_vital(.data, {{ .var }}, smooth_mortality_law_x, law, use_de, ...)
+smooth_mortality_law <- function(.data, .var, law = "gompertz", ...) {
+  smooth_law_vital(.data, {{ .var }}, smooth_mortality_law_x, law, ...)
 }
 
-smooth_mortality_law_x <- function(data, var, age, law, use_de, ...) {
+smooth_mortality_law_x <- function(data, var, age, law, ...) {
 
   x <- data[[age]]
 
-  # Check if Dx Ex mx exist
-  Dx <- if ("Deaths" %in% colnames(data)) data$Deaths else NULL
-  Ex <- if ("Population" %in% colnames(data)) data$Population else NULL
-  # default variable to smooth
-  mx <- if ("Mortality" %in% colnames(data)) data$Mortality else NULL
+  Dx_name <- vital_vars(data)["deaths"]
+  Ex_name <- vital_vars(data)["population"]
 
-  if ((use_de && (is.null(Dx) || is.null(Ex))) || (!use_de && is.null(mx))) {
-    stop("Please specify the correct variable to smooth.")
-  } else if (use_de && !is.null(Dx) && !is.null(Ex)) {
+  # Check if Dx Ex mx exist
+  Dx <- if (!is.null(Dx_name)) data[[Dx_name]] else NULL
+  Ex <- if (!is.null(Ex_name)) data[[Ex_name]] else NULL
+  mx <- data$Mortality
+
+  if (!is.null(Dx) && !is.null(Ex)) {
     smooth.fit <- MortalityLaws::MortalityLaw(x = x, Dx = Dx, Ex = Ex, law = law, ...)
   } else {
     smooth.fit <- MortalityLaws::MortalityLaw(x = x, mx = mx, law = law, ...)
@@ -58,7 +58,7 @@ smooth_mortality_law_x <- function(data, var, age, law, use_de, ...) {
   return(out)
 }
 
-smooth_law_vital <- function(.data, .var, smooth_fn, law, use_de, ...) {
+smooth_law_vital <- function(.data, .var, smooth_fn, law, ...) {
   if(rlang::quo_is_missing(enquo(.var))) {
     stop("Please specify which variable to smooth. .var is missing with no default.")
   }
@@ -78,7 +78,7 @@ smooth_law_vital <- function(.data, .var, smooth_fn, law, use_de, ...) {
   resp <- names(eval_select(enquo(.var), data = .data))
   nested_data <- tidyr::nest(as_tibble(.data), .by = tidyr::all_of(c(index, keys_noage)))
   smooth <- purrr::map(nested_data[["data"]],
-                       \(x) smooth_fn(x, resp, age, law, use_de, ...))
+                       \(x) smooth_fn(x, resp, age, law, ...))
   nested_data$sm <- smooth
   nested_data$data <- NULL
   out <- tsibble::as_tibble(nested_data) |>
