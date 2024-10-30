@@ -24,6 +24,7 @@ Imports:
   ggplot2,
   HMDHFDplus (>= 2.0.3),
   mgcv,
+  MortalityLaws,
   patchwork,
   progressr,
   purrr,
