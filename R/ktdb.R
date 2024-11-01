@@ -54,11 +54,16 @@ read_ktdb <- function(country, triangle = 1) {
 #'#' Read old-age mortality data from files downloaded from K-T database
 #'
 #' `read_ktdb_file` reads old-age mortality data from a file downloaded from
-#'  K-T database (<https://www.demogr.mpg.de/cgi-bin/databases/ktdb/datamap.plx>)
+#' K-T database (<https://www.demogr.mpg.de/cgi-bin/databases/ktdb/datamap.plx>)
 #' and constructs a `vital` object suitable for use in other functions.
+#' If two files are provided, the function will treat them as data for each gender,
+#' returning a combined dataset. If only one file is provided, the function will
+#' assume that it represents data for a single gender.
 #'
-#' @param file Name of a file containing data downloaded from the K-T database.
+#' @param file1 Name of the first file containing data downloaded from the K-T database.
+#' @param file2 Name of the second file containing data downloaded from the K-T database.
 #' @param triangle Lexis triangle number, 1 (default) is lower triangle, 2 is upper triangle.
+#' @param male_first Indicator of whether file1 is for males. Default is TRUE.
 #' @return `read_ktdb_file` returns a `vital` object combining the downloaded data.
 #'
 #' @author Sixian Tang
@@ -69,12 +74,27 @@ read_ktdb <- function(country, triangle = 1) {
 #' }
 #'
 #' @export
-read_ktdb_file <- function(file, triangle = 1) {
-  data <- read.csv(file, header = TRUE, stringsAsFactors = FALSE, check.names = FALSE)
-  data <- data |> dplyr::filter(Triangle == triangle) |> dplyr::arrange(Year, Sex, Age)
+read_ktdb_file <- function(file1, file2 = NULL, triangle = 1, male_first = TRUE) {
+  data1 <- read.csv(file1, header = TRUE, stringsAsFactors = FALSE, check.names = FALSE)
+  if (!is.null(file2)) {
+    data2 <- read.csv(file2, header = TRUE, stringsAsFactors = FALSE, check.names = FALSE)
+    if (male_first == TRUE) {
+      data_male <- data1 |> dplyr::mutate(Sex = "Male")
+      data_female <- data2 |> dplyr::mutate(Sex = "Female")
+    } else {
+      data_male <- data2 |> dplyr::mutate(Sex = "Male")
+      data_female <- data1 |> dplyr::mutate(Sex = "Female")
+    }
+    data <- dplyr::bind_rows(data_male, data_female) |> dplyr::filter(Triangle == triangle) |> dplyr::arrange(Year, Sex, Age)
+  } else {
+    if (male_first == TRUE) {
+      data <- data1 |> dplyr::mutate(Sex = "Male") |> dplyr::filter(Triangle == triangle) |> dplyr::arrange(Year, Sex, Age)
+    } else {
+      data <- data1 |> dplyr::mutate(Sex = "Female") |> dplyr::filter(Triangle == triangle) |> dplyr::arrange(Year, Sex, Age)
+    }
+  }
   ktdb_to_vital(data)
 }
-
 
 #' Get ktdb country list
 getktdbcountries <- function () {
@@ -88,12 +108,9 @@ getktdbcountries <- function () {
 }
 
 #'
-#' @export
 ktdb_to_vital <- function(ktdb_data) {
-
   # Convert data into a vital object
   vital_data <- as_vital(ktdb_data, index = c("Year"), key = c("Sex", "Age"), .age = "Age", .sex = "Sex", .deaths = "Deaths", .population = "Population", .drop = TRUE)
-
   return(vital_data)
 }
 
