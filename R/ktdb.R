@@ -95,7 +95,8 @@ read_ktdb_file <- function(file1, file2 = NULL, triangle = 1, male_first = TRUE)
   }
   ktdb_to_vital(data)
 }
-
+#'
+#'
 # Get ktdb country list
 getktdbcountries <- function () {
   xpath <- "/html/body"
@@ -106,7 +107,8 @@ getktdbcountries <- function () {
   tab_main <- dplyr::mutate(tsibble::tibble(Country = country_names))
   return(tab_main)
 }
-
+#'
+#'
 #
 ktdb_to_vital <- function(ktdb_data) {
   # Convert data into a vital object
