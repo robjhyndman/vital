@@ -96,7 +96,7 @@ read_ktdb_file <- function(file1, file2 = NULL, triangle = 1, male_first = TRUE)
   ktdb_to_vital(data)
 }
 
-#' Get ktdb country list
+# Get ktdb country list
 getktdbcountries <- function () {
   xpath <- "/html/body"
   grab_url <- "https://www.demogr.mpg.de/cgi-bin/databases/ktdb/datamap.plx"
@@ -107,7 +107,7 @@ getktdbcountries <- function () {
   return(tab_main)
 }
 
-#'
+#
 ktdb_to_vital <- function(ktdb_data) {
   # Convert data into a vital object
   vital_data <- as_vital(ktdb_data, index = c("Year"), key = c("Sex", "Age"), .age = "Age", .sex = "Sex", .deaths = "Deaths", .population = "Population", .drop = TRUE)
