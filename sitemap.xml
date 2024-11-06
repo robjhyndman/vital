@@ -32,9 +32,12 @@
 <url><loc>https://pkg.robjhyndman.com/vital/reference/read_hfd_files.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/read_hmd.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/read_hmd_files.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/read_ktdb.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/read_ktdb_file.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/read_stmf.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/read_stmf_file.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/reexports.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/smooth_mortality_law.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/smooth_vital.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/time_components.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/total_fertility_rate.html</loc></url>
