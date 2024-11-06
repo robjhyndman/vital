@@ -20,9 +20,7 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{fabletools}{\code{\link[fabletools:reexports]{augment}}, \code{\link[fabletools]{estimate}}, \code{\link[fabletools:reexports]{glance}}, \code{\link[fabletools:reexports]{interpolate}}, \code{\link[fabletools]{model}}, \code{\link[fabletools]{report}}, \code{\link[fabletools:reexports]{tidy}}}
-
-  \item{generics}{\code{\link[generics]{forecast}}, \code{\link[generics]{generate}}}
+  \item{fabletools}{\code{\link[fabletools:reexports]{augment}}, \code{\link[fabletools]{estimate}}, \code{\link[fabletools:reexports]{forecast}}, \code{\link[fabletools:reexports]{generate}}, \code{\link[fabletools:reexports]{glance}}, \code{\link[fabletools:reexports]{interpolate}}, \code{\link[fabletools]{model}}, \code{\link[fabletools]{report}}, \code{\link[fabletools:reexports]{tidy}}}
 
   \item{ggplot2}{\code{\link[ggplot2]{autoplot}}}
 }}

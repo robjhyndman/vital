@@ -19,8 +19,6 @@ Imports:
   dplyr,
   fable,
   fabletools (>= 0.3.3),
-  future.apply,
-  generics,
   ggplot2,
   HMDHFDplus (>= 2.0.3),
   mgcv,
@@ -36,14 +34,15 @@ Imports:
   tsibble,
   vctrs
 Suggests:
-    demography,
-    feasts,
-    future,
-    knitr,
-    rmarkdown,
-    showtext,
-    sysfonts,
-    testthat (>= 3.0.0)
+  demography,
+  feasts,
+  future,
+  future.apply,
+  knitr,
+  rmarkdown,
+  showtext,
+  sysfonts,
+  testthat (>= 3.0.0)
 License: GPL-3
 URL: https://pkg.robjhyndman.com/vital/, https://github.com/robjhyndman/vital
 Encoding: UTF-8

@@ -30,10 +30,10 @@
 ggplot2::autoplot
 
 #' @export
-generics::forecast
+fabletools::forecast
 
 #' @export
-generics::generate
+fabletools::generate
 
 #' @export
 fabletools::model
