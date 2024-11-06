@@ -55,7 +55,8 @@ read_stmf <- function(country) {
 #' @author Rob J Hyndman
 #' @examples
 #' \dontrun{
-#' # File downloaded from the [Human Mortality Database STMF series](https://www.mortality.org/Data/STMF)
+#' # File downloaded from the [Human Mortality Database STMF series]
+#' (https://www.mortality.org/Data/STMF)
 #' mortality <- read_stmf_file("AUSstmfout.csv")
 #' }
 #' @keywords manip

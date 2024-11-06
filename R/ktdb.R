@@ -29,7 +29,7 @@ read_ktdb <- function(country, triangle = 1) {
     }
 
     if (interactive()) {
-      country <- select.list(choices = ctrylookup$Country, multiple = FALSE, title = "Select Country Code")
+      country <- utils::select.list(choices = ctrylookup$Country, multiple = FALSE, title = "Select Country Code")
     } else {
       stop("Country should be one of these:\n", paste(ctrylookup$Country, collapse = ",\n"))
     }
@@ -41,9 +41,9 @@ read_ktdb <- function(country, triangle = 1) {
   xpath <- "/html/body/table"
   url <- paste0("https://www.demogr.mpg.de/cgi-bin/databases/ktdb/record.plx?CountryID=", CountryID)
   html <- rvest::read_html(url)
-  links <- rvest::html_attr(html_elements(html_element(html, xpath = xpath), "a"), "href")[1:2]
-  data_male <- read.csv(paste0("https://www.demogr.mpg.de/", links[1]), header = TRUE, stringsAsFactors = FALSE, check.names = FALSE)
-  data_female <- read.csv(paste0("https://www.demogr.mpg.de/", links[2]), header = TRUE, stringsAsFactors = FALSE, check.names = FALSE)
+  links <- rvest::html_attr(rvest::html_elements(rvest::html_element(html, xpath = xpath), "a"), "href")[1:2]
+  data_male <- utils::read.csv(paste0("https://www.demogr.mpg.de/", links[1]), header = TRUE, stringsAsFactors = FALSE, check.names = FALSE)
+  data_female <- utils::read.csv(paste0("https://www.demogr.mpg.de/", links[2]), header = TRUE, stringsAsFactors = FALSE, check.names = FALSE)
   data_male <- data_male |> dplyr::mutate(Sex = "Male")
   data_female <- data_female |> dplyr::mutate(Sex = "Female")
   data <- dplyr::bind_rows(data_male, data_female) |> dplyr::filter(Triangle == triangle) |> dplyr::arrange(Year, Sex, Age)
@@ -75,9 +75,9 @@ read_ktdb <- function(country, triangle = 1) {
 #'
 #' @export
 read_ktdb_file <- function(file1, file2 = NULL, triangle = 1, male_first = TRUE) {
-  data1 <- read.csv(file1, header = TRUE, stringsAsFactors = FALSE, check.names = FALSE)
+  data1 <- utils::read.csv(file1, header = TRUE, stringsAsFactors = FALSE, check.names = FALSE)
   if (!is.null(file2)) {
-    data2 <- read.csv(file2, header = TRUE, stringsAsFactors = FALSE, check.names = FALSE)
+    data2 <- utils::read.csv(file2, header = TRUE, stringsAsFactors = FALSE, check.names = FALSE)
     if (male_first == TRUE) {
       data_male <- data1 |> dplyr::mutate(Sex = "Male")
       data_female <- data2 |> dplyr::mutate(Sex = "Female")
@@ -116,4 +116,4 @@ ktdb_to_vital <- function(ktdb_data) {
   return(vital_data)
 }
 
-
+globalVariables(c("Triangle"))

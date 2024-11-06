@@ -20,7 +20,8 @@ and constructs a \code{vital} object suitable for use in other functions.
 }
 \examples{
 \dontrun{
-# File downloaded from the [Human Mortality Database STMF series](https://www.mortality.org/Data/STMF)
+# File downloaded from the [Human Mortality Database STMF series]
+(https://www.mortality.org/Data/STMF)
 mortality <- read_stmf_file("AUSstmfout.csv")
 }
 }
