@@ -39,7 +39,7 @@ vital <- function(
   tsibble(..., key = !!enquo(key), index = !!enquo(index), regular = regular, .drop = .drop) |>
     as_vital(
       .age = .age, .sex = .sex, .deaths = .deaths,
-      births = .births, population = .population
+      .births = .births, .population = .population
     )
 }
 
