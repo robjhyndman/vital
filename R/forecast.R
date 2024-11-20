@@ -94,7 +94,8 @@ forecast.mdl_vtl_ts <- function(
   }
   if (simulate || bootstrap) {
     fc <- generate(object, new_data, bootstrap = bootstrap, times = times, ...)
-    fc_split <- paste(fc[[index_var(fc)]], fc[[agevar]])
+    fc_split_length <- NROW(unique(fc[, c(index_var(fc), age_var(fc))]))
+    fc_split <- rep(seq(fc_split_length), times)
     fc <- unname(split(object$transformation[[1]](fc[[".sim"]]), fc_split))
     fc <- distributional::dist_sample(fc)
   } else {
