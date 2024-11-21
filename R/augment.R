@@ -61,5 +61,6 @@ response.mdl_vtl_ts <- function(object, ...) {
   out[if (length(resp) == 1)
     ".response"
     else mv] <- resp
-  out
+  # Fix key
+  as_vital(out, key = vvar$age, index = index_var(object$data))
 }
