@@ -16,11 +16,11 @@ augment.mdl_vtl_df <- function(x, ...) {
 
 #' @export
 augment.mdl_vtl_ts <- function(x, ...) {
-  out <- response(x) |>
-    mutate(
-      .fitted = x$fit$fitted[[".fitted"]],
-      .resid = x$fit$fitted[[".resid"]],
-      .innov = x$fit$fitted[[".innov"]]
+  x_response <- response(x)
+  out <- x_response |>
+    left_join(
+      x$fit$fitted,
+      by = c(age_var(x_response), index_var(x_response))
     )
   # Back transform fitted value
   fits <- as.list(out)[".fitted"]
@@ -62,5 +62,10 @@ response.mdl_vtl_ts <- function(object, ...) {
     ".response"
     else mv] <- resp
   # Fix key
-  as_vital(out, key = vvar$age, index = index_var(object$data))
+  as_vital(
+    out,
+    key = vvar$age,
+    index = index_var(object$data),
+    .age = vvar$age
+  )
 }
