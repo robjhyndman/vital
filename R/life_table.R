@@ -154,7 +154,7 @@ lt <- function(dt, sex, age, mortality) {
   # Return the results in a tibble
   result <- tibble::tibble(mx = mx, qx = qx, lx = lx, dx = dx, Lx = Lx, Tx = Tx,
     ex = ex, rx = rx, nx = nx, ax = ax) |>
-    mutate(Age = dt[[age]])
+    mutate(!!age := dt[[age]])
 
   return(result)
 }
