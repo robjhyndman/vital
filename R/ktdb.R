@@ -16,7 +16,6 @@
 #'
 #' @export
 read_ktdb <- function(country, triangle = 1) {
-
   # check if country code is available
   ctrylookup <- getktdbcountries()
 
@@ -42,16 +41,15 @@ read_ktdb <- function(country, triangle = 1) {
   url <- paste0("https://www.demogr.mpg.de/cgi-bin/databases/ktdb/record.plx?CountryID=", CountryID)
   html <- rvest::read_html(url)
   links <- rvest::html_attr(rvest::html_elements(rvest::html_element(html, xpath = xpath), "a"), "href")[1:2]
-  data_male <- utils::read.csv(paste0("https://www.demogr.mpg.de/", links[1]), header = TRUE, stringsAsFactors = FALSE, check.names = FALSE)
-  data_female <- utils::read.csv(paste0("https://www.demogr.mpg.de/", links[2]), header = TRUE, stringsAsFactors = FALSE, check.names = FALSE)
-  data_male <- data_male |> dplyr::mutate(Sex = "Male")
-  data_female <- data_female |> dplyr::mutate(Sex = "Female")
-  data <- dplyr::bind_rows(data_male, data_female) |> dplyr::filter(Triangle == triangle) |> dplyr::arrange(Year, Sex, Age)
-  ktdb_to_vital(data)
+  read_ktdb_file(
+    male = paste0("https://www.demogr.mpg.de/", links[1]),
+    female = paste0("https://www.demogr.mpg.de/", links[2])
+  )
 }
+
 #'
 #'
-#'#' Read old-age mortality data from files downloaded from K-T database
+#' #' Read old-age mortality data from files downloaded from K-T database
 #'
 #' `read_ktdb_file` reads old-age mortality data from a file downloaded from
 #' K-T database (<https://www.demogr.mpg.de/cgi-bin/databases/ktdb/datamap.plx>)
@@ -60,10 +58,9 @@ read_ktdb <- function(country, triangle = 1) {
 #' returning a combined dataset. If only one file is provided, the function will
 #' assume that it represents data for a single gender.
 #'
-#' @param file1 Name of the first file containing data downloaded from the K-T database.
-#' @param file2 Name of the second file containing data downloaded from the K-T database.
+#' @param male File containing male mortality downloaded from the K-T database.
+#' @param female File containing female mortality downloaded from the K-T database.
 #' @param triangle Lexis triangle number, 1 (default) is lower triangle, 2 is upper triangle.
-#' @param male_first Indicator of whether file1 is for males. Default is TRUE.
 #' @return `read_ktdb_file` returns a `vital` object combining the downloaded data.
 #'
 #' @author Sixian Tang
@@ -74,31 +71,36 @@ read_ktdb <- function(country, triangle = 1) {
 #' }
 #'
 #' @export
-read_ktdb_file <- function(file1, file2 = NULL, triangle = 1, male_first = TRUE) {
-  data1 <- utils::read.csv(file1, header = TRUE, stringsAsFactors = FALSE, check.names = FALSE)
-  if (!is.null(file2)) {
-    data2 <- utils::read.csv(file2, header = TRUE, stringsAsFactors = FALSE, check.names = FALSE)
-    if (male_first == TRUE) {
-      data_male <- data1 |> dplyr::mutate(Sex = "Male")
-      data_female <- data2 |> dplyr::mutate(Sex = "Female")
-    } else {
-      data_male <- data2 |> dplyr::mutate(Sex = "Male")
-      data_female <- data1 |> dplyr::mutate(Sex = "Female")
-    }
-    data <- dplyr::bind_rows(data_male, data_female) |> dplyr::filter(Triangle == triangle) |> dplyr::arrange(Year, Sex, Age)
-  } else {
-    if (male_first == TRUE) {
-      data <- data1 |> dplyr::mutate(Sex = "Male") |> dplyr::filter(Triangle == triangle) |> dplyr::arrange(Year, Sex, Age)
-    } else {
-      data <- data1 |> dplyr::mutate(Sex = "Female") |> dplyr::filter(Triangle == triangle) |> dplyr::arrange(Year, Sex, Age)
-    }
+read_ktdb_file <- function(male = NULL, female = NULL, triangle = 1) {
+  # Read files
+  if (!is.null(male)) {
+    data_male <- utils::read.csv(male, header = TRUE, stringsAsFactors = FALSE, check.names = FALSE) |>
+      dplyr::mutate(Sex = "Male")
   }
+  if (!is.null(female)) {
+    data_female <- utils::read.csv(female, header = TRUE, stringsAsFactors = FALSE, check.names = FALSE) |>
+      dplyr::mutate(Sex = "Female")
+  }
+  # Combine data
+  if (!is.null(male) & !is.null(female)) {
+    data <- dplyr::bind_rows(data_male, data_female)
+  } else if (!is.null(female)) {
+    data <- data_female
+  } else {
+    data <- data_male
+  }
+  # Filter on triangle
+  data <- data |> dplyr::filter(Triangle == triangle)
+  # Fix class of each column
+  data$Population <- as.numeric(data$Population) |> suppressWarnings()
+  data$Deaths <- as.numeric(data$Deaths) |> suppressWarnings()
+  # Convert to vital
   ktdb_to_vital(data)
 }
 #'
 #'
 # Get ktdb country list
-getktdbcountries <- function () {
+getktdbcountries <- function() {
   xpath <- "/html/body"
   grab_url <- "https://www.demogr.mpg.de/cgi-bin/databases/ktdb/datamap.plx"
   html <- rvest::read_html(grab_url)
@@ -112,7 +114,9 @@ getktdbcountries <- function () {
 #
 ktdb_to_vital <- function(ktdb_data) {
   # Convert data into a vital object
-  vital_data <- as_vital(ktdb_data, index = c("Year"), key = c("Sex", "Age"), .age = "Age", .sex = "Sex", .deaths = "Deaths", .population = "Population", .drop = TRUE)
+  vital_data <- as_vital(ktdb_data, index = c("Year"), key = c("Sex", "Age"),
+    .age = "Age", .sex = "Sex", .deaths = "Deaths", .population = "Population",
+    reorder = TRUE)
   return(vital_data)
 }
 

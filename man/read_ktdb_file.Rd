@@ -4,16 +4,14 @@
 \alias{read_ktdb_file}
 \title{#' Read old-age mortality data from files downloaded from K-T database}
 \usage{
-read_ktdb_file(file1, file2 = NULL, triangle = 1, male_first = TRUE)
+read_ktdb_file(male = NULL, female = NULL, triangle = 1)
 }
 \arguments{
-\item{file1}{Name of the first file containing data downloaded from the K-T database.}
+\item{male}{File containing male mortality downloaded from the K-T database.}
 
-\item{file2}{Name of the second file containing data downloaded from the K-T database.}
+\item{female}{File containing female mortality downloaded from the K-T database.}
 
 \item{triangle}{Lexis triangle number, 1 (default) is lower triangle, 2 is upper triangle.}
-
-\item{male_first}{Indicator of whether file1 is for males. Default is TRUE.}
 }
 \value{
 \code{read_ktdb_file} returns a \code{vital} object combining the downloaded data.
