@@ -26,6 +26,7 @@ Authors:
 
 Other contributors:
 \itemize{
+  \item Miles McBain (\href{https://orcid.org/0000-0003-2865-2548}{ORCID}) [contributor]
   \item Mitchell O'Hara-Wild (\href{https://orcid.org/0000-0001-6729-7695}{ORCID}) [contributor]
 }
 
