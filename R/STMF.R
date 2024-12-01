@@ -119,7 +119,7 @@ stmf_to_vital <- function(stmf_data) {
     dplyr::select(-Year, -Week)  # Remove Year and Week columns
 
   # Convert the formatted data into a tsibble (or vital object as needed)
-  vital_data <- as_vital(formatted_data, index = c("YearWeek"), key = c("Sex", "Age_group"), .age = "Age_group", .sex = "Sex", .deaths = "Deaths")
+  vital_data <- as_vital(formatted_data, index = c("YearWeek"), key = c("Sex", "Age_group"), .sex = "Sex", .deaths = "Deaths")
 
   return(vital_data)
 }
