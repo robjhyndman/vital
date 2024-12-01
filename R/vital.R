@@ -208,6 +208,32 @@ as_vital.tbl_ts <- function(x,
     deaths = .deaths, births = .births, population = .population)
   # Add additional class
   class(x) <- c("vital", class(x))
+  # Check class of variables
+  if (!is.null(.age)) {
+    if(!is.numeric(x[[.age]])) {
+      stop("Age variable must be numeric")
+    }
+  }
+  if(!is.null(.sex)) {
+    if(!is.factor(x[[.sex]]) & !is.character((x[[.sex]]))) {
+      stop("Sex variable must be character or factor")
+    }
+  }
+  if (!is.null(.births)) {
+    if(!is.numeric(x[[.births]])) {
+      stop("Births variable must be numeric")
+    }
+  }
+  if (!is.null(.deaths)) {
+    if(!is.numeric(x[[.deaths]])) {
+      stop("Deaths variable must be numeric")
+    }
+  }
+  if (!is.null(.population)) {
+    if(!is.numeric(x[[.population]])) {
+      stop("Population variable must be numeric")
+    }
+  }
   # Sort variables
   if (reorder) {
     agevar <- age_var(x)
