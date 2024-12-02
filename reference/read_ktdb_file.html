@@ -58,27 +58,23 @@ assume that it represents data for a single gender.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_ktdb_file</span><span class="op">(</span><span class="va">file1</span>, file2 <span class="op">=</span> <span class="cn">NULL</span>, triangle <span class="op">=</span> <span class="fl">1</span>, male_first <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_ktdb_file</span><span class="op">(</span>male <span class="op">=</span> <span class="cn">NULL</span>, female <span class="op">=</span> <span class="cn">NULL</span>, triangle <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-file-">file1<a class="anchor" aria-label="anchor" href="#arg-file-"></a></dt>
-<dd><p>Name of the first file containing data downloaded from the K-T database.</p></dd>
+<dl><dt id="arg-male">male<a class="anchor" aria-label="anchor" href="#arg-male"></a></dt>
+<dd><p>File containing male mortality downloaded from the K-T database.</p></dd>
 
 
-<dt id="arg-file-">file2<a class="anchor" aria-label="anchor" href="#arg-file-"></a></dt>
-<dd><p>Name of the second file containing data downloaded from the K-T database.</p></dd>
+<dt id="arg-female">female<a class="anchor" aria-label="anchor" href="#arg-female"></a></dt>
+<dd><p>File containing female mortality downloaded from the K-T database.</p></dd>
 
 
 <dt id="arg-triangle">triangle<a class="anchor" aria-label="anchor" href="#arg-triangle"></a></dt>
 <dd><p>Lexis triangle number, 1 (default) is lower triangle, 2 is upper triangle.</p></dd>
-
-
-<dt id="arg-male-first">male_first<a class="anchor" aria-label="anchor" href="#arg-male-first"></a></dt>
-<dd><p>Indicator of whether file1 is for males. Default is TRUE.</p></dd>
 
 </dl></div>
     <div class="section level2">
