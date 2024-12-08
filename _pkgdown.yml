@@ -30,7 +30,11 @@ reference:
       - read_hmd_files
       - read_hfd
       - read_hfd_files
+      - read_stmf
+      - read_stmf_file
       - net_migration
+      - read_ktdb
+      - read_ktdb_file
   - title: Data
     desc: Data sets included in the package
     contents:
@@ -51,6 +55,7 @@ reference:
       - smooth_fertility
       - smooth_spline
       - smooth_loess
+      - smooth_mortality_law
   - title: Modelling
     desc: Functions for fitting models to vitals
     contents:
