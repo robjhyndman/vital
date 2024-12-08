@@ -94,8 +94,8 @@ forecast.mdl_vtl_ts <- function(
   }
   if (simulate || bootstrap) {
     fc <- generate(object, new_data, bootstrap = bootstrap, times = times, ...)
-    fc_split <- paste(fc[[index_var(fc)]], fc[[agevar]])
-    fc <- unname(split(object$transformation[[1]](fc[[".sim"]]), fc_split))
+    fc <- unname(split(object$transformation[[1]](fc[[".sim"]]),
+                       list(fc[[index_var(fc)]], fc[[agevar]])))
     fc <- distributional::dist_sample(fc)
   } else {
     object$model$stage <- "forecast"
