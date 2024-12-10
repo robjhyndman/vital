@@ -76,11 +76,7 @@ smooth_mortality_x <- function(data, var, age_spacing, age, popvar, b = 65, powe
 	y_trans <- log(y + 0.0000001)
 	age_grid <- seq(min(data[[age]]), max(data[[age]]), by = age_spacing)
 	xgrid <- age_grid^power
-	if(!is.null(popvar)) {
-  	weights <- smooth_weights(data, var, popvar, lambda = 0)
-	} else {
-	  weights <- NULL
-	}
+	weights <- smooth_weights(data, var, popvar, lambda = 0)
 	smooth.fit <- smooth.monotonic(x_trans, y_trans, b^power, w = weights, k = k, newx = xgrid)
 	out <- tibble(
 		age = age_grid,
@@ -124,7 +120,7 @@ smooth_loess_x <- function(data, var, age_spacing, age, popvar, span = 0.2) {
 	y <- data[[var]]
 	# Avoid small spans when there is insufficient data
 	span <- max(span, 12/length(x))
-	weights <- smooth_weights(data, var, popvar, lambda = 1)
+  weights <- smooth_weights(data, var, popvar, lambda = 0)
 	fit <- stats::loess(y ~ x, span = span, degree = 2, weights = weights, surface = "direct")
 	age_grid <- seq(min(data[[age]]), max(data[[age]]), by = age_spacing)
 	smooth_y <- predict(fit, se = TRUE, newdata = data.frame(x = age_grid))
@@ -271,11 +267,10 @@ smooth_vital <- function(.data, .var, age_spacing, smooth_fn, ...) {
 		)
 }
 
-
 smooth_weights <- function(data, var, popvar, lambda) {
-  rate <- data[[var]]
-  pop <- data[[popvar]]
-  if(!is.null(pop)) {
+  if(!is.null(popvar)) {
+    rate <- data[[var]]
+    pop <- data[[popvar]]
     pop <- pop/max(pop, na.rm = TRUE)
     weight <- pop * rate^(1 - 2*lambda)
     if (mean(weight, na.rm = TRUE) < 0)
