@@ -76,7 +76,11 @@ smooth_mortality_x <- function(data, var, age_spacing, age, popvar, b = 65, powe
 	y_trans <- log(y + 0.0000001)
 	age_grid <- seq(min(data[[age]]), max(data[[age]]), by = age_spacing)
 	xgrid <- age_grid^power
-	weights <- smooth_weights(data, var, popvar, lambda = 0)
+	if(!is.null(popvar)) {
+  	weights <- smooth_weights(data, var, popvar, lambda = 0)
+	} else {
+	  weights <- NULL
+	}
 	smooth.fit <- smooth.monotonic(x_trans, y_trans, b^power, w = weights, k = k, newx = xgrid)
 	out <- tibble(
 		age = age_grid,
