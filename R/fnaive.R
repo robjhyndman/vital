@@ -108,11 +108,11 @@ generate.FNAIVE <- function(
     stop("We have a problem")
   }
   measure <- colnames(x$fitted)[3]
-  setup <- x$fitted[,c(indexvar, agevar, measure, ".innov")] |>
+  setup <- x$fitted[, c(indexvar, agevar, measure, ".innov")] |>
     left_join(x$model, by = agevar) |>
     tidyr::expand_grid(.rep = unique(new_data$.rep)) |>
     group_by(!!sym(agevar), .rep)
-  if(bootstrap) {
+  if (bootstrap) {
     out <- setup |>
       dplyr::group_modify(function(x, ...) {
         measure <- colnames(x)[[2]]
@@ -125,7 +125,7 @@ generate.FNAIVE <- function(
         measure <- colnames(x)[[2]]
         innov <- stats::rnorm(n = h, sd = x$sigma[1])
         tibble(horizon = seq(h), .sim = tail(x[[measure]], 1) + cumsum(innov))
-    })
+      })
   }
   new_data$horizon <- new_data[[indexvar]] - min(new_data[[indexvar]]) + 1
   new_data |>
@@ -158,9 +158,11 @@ model_sum.FNAIVE <- function(x) {
 autoplot.FNAIVE <- function(object, age = "Age", ...) {
   modelname <- attributes(object)$model
   object <- object |>
-    mutate(out = purrr::map(object[[modelname]], function(x){x$fit$model}))
+    mutate(out = purrr::map(object[[modelname]], function(x) {
+      x$fit$model
+    }))
   object[[modelname]] <- NULL
-  object <- object  |>
+  object <- object |>
     tidyr::unnest("out")
   keys <- colnames(object)
   keys <- keys[!(keys %in% c("sigma", age))]
@@ -182,7 +184,9 @@ autoplot.FNAIVE <- function(object, age = "Age", ...) {
 age_components.FNAIVE <- function(object, ...) {
   modelname <- attributes(object)$model
   object <- object |>
-    mutate(out = purrr::map(object[[modelname]], function(x){x$fit$model})) |>
+    mutate(out = purrr::map(object[[modelname]], function(x) {
+      x$fit$model
+    })) |>
     as_tibble()
   object[[modelname]] <- NULL
   object |> tidyr::unnest("out")

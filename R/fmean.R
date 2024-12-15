@@ -33,7 +33,7 @@ train_fmean <- function(.data, ...) {
   ave_measure <- .data |>
     as_tibble() |>
     group_by(!!sym(agevar)) |>
-    summarise(.fitted = mean(.data[[measure]], na.rm=TRUE))
+    summarise(.fitted = mean(.data[[measure]], na.rm = TRUE))
   out <- .data |>
     as_tibble() |>
     left_join(ave_measure, by = agevar) |>
@@ -43,9 +43,9 @@ train_fmean <- function(.data, ...) {
     )
   sigma <- out |>
     group_by(across(all_of(agevar))) |>
-    summarise(sigma = sd(.resid, na.rm=TRUE))
+    summarise(sigma = sd(.resid, na.rm = TRUE))
   out <- out |>
-    as_tsibble(index = indexvar, key=agevar) |>
+    as_tsibble(index = indexvar, key = agevar) |>
     as_vital(.age = agevar) |>
     select(all_of(c(indexvar, agevar)), everything())
   model <- ave_measure |>
@@ -64,7 +64,8 @@ train_fmean <- function(.data, ...) {
 
 #' @rdname forecast
 #' @export
-forecast.FMEAN <- function(object, new_data = NULL, h = NULL,
+forecast.FMEAN <- function(
+    object, new_data = NULL, h = NULL,
     point_forecast = list(.mean = mean),
     simulate = FALSE, bootstrap = FALSE, times = 5000, ...) {
   # simulation/bootstrap not actually used here as forecast.mdl_vtl_ts
@@ -74,18 +75,20 @@ forecast.FMEAN <- function(object, new_data = NULL, h = NULL,
   agevar <- age_var(new_data)
   new_data |>
     left_join(object$model, by = agevar) |>
-    transmute(fc = distributional::dist_normal(mean, sigma))  |>
+    transmute(fc = distributional::dist_normal(mean, sigma)) |>
     pull(fc)
 }
 
 #' @export
-generate.FMEAN <- function(x, new_data = NULL, h = NULL,
-    bootstrap = FALSE, times = 1,  ...) {
+generate.FMEAN <- function(
+    x, new_data = NULL, h = NULL,
+    bootstrap = FALSE, times = 1, ...) {
   agevar <- age_var(new_data)
   new_data <- new_data |>
     dplyr::left_join(x$model, by = agevar)
-  if(times != length(unique(new_data$.rep)))
+  if (times != length(unique(new_data$.rep))) {
     stop("We have a problem")
+  }
 
   if (!(".innov" %in% names(new_data))) {
     if (bootstrap) {
@@ -98,13 +101,13 @@ generate.FMEAN <- function(x, new_data = NULL, h = NULL,
             tibble(
               .innov = sample(unlist(na.omit(data)), times, replace = TRUE),
               .rep = as.character(seq_along(.innov))
-            ))
+            )
+          )
         ) |>
         tidyr::unnest(data)
       new_data <- new_data |>
-        left_join(innov, by=c(agevar, ".rep"))
-    }
-    else {
+        left_join(innov, by = c(agevar, ".rep"))
+    } else {
       new_data$.innov <- stats::rnorm(NROW(new_data), sd = x$model$sigma)
     }
   }
@@ -114,17 +117,17 @@ generate.FMEAN <- function(x, new_data = NULL, h = NULL,
 
 #' @export
 glance.FMEAN <- function(x, ...) {
-  tibble(sigma2 = var(x$fitted$.resid, na.rm=TRUE))
+  tibble(sigma2 = var(x$fitted$.resid, na.rm = TRUE))
 }
 
 #' @export
 tidy.FMEAN <- function(x, ...) {
-  x$model  |>
+  x$model |>
     mutate(
       term = "mean",
       estimate = mean,
       std.error = sigma / sqrt(x$nobs),
-      stat = mean/std.error,
+      stat = mean / std.error,
       p.value = 2 * stats::pt(abs(stat), x$nobs - 1, lower.tail = FALSE)
     ) |>
     select(-mean, -sigma)
@@ -142,38 +145,41 @@ model_sum.FMEAN <- function(x) {
 }
 
 #' @export
-autoplot.FMEAN <- function(object, age = "Age",...) {
+autoplot.FMEAN <- function(object, age = "Age", ...) {
   modelname <- attributes(object)$model
   object <- object |>
-    mutate(out = purrr::map(object[[modelname]], function(x){x$fit$model}))
+    mutate(out = purrr::map(object[[modelname]], function(x) {
+      x$fit$model
+    }))
   object[[modelname]] <- NULL
-  object <- object  |>
+  object <- object |>
     tidyr::unnest("out")
   keys <- colnames(object)
-  keys <- keys[!(keys %in% c("mean","sigma", age))]
+  keys <- keys[!(keys %in% c("mean", "sigma", age))]
   nk <- length(keys)
   object <- object |> rename(.mean = mean)
   aes_spec <- list(x = sym(age), y = expr(.mean))
-  if(nk > 0) {
-    aes_spec[["colour"]] <- expr(interaction(!!!syms(keys), sep="/"))
+  if (nk > 0) {
+    aes_spec[["colour"]] <- expr(interaction(!!!syms(keys), sep = "/"))
   }
   p <- ggplot(object, eval_tidy(expr(aes(!!!aes_spec)))) +
-    geom_line() + ggplot2::labs(x = age, y = "Mean")
-  if(nk > 1) {
-    p <- p + ggplot2::guides(colour = ggplot2::guide_legend(paste0(keys, collapse="/")))
+    geom_line() +
+    ggplot2::labs(x = age, y = "Mean")
+  if (nk > 1) {
+    p <- p + ggplot2::guides(colour = ggplot2::guide_legend(paste0(keys, collapse = "/")))
   }
   p
 }
 
 #' @export
-interpolate.FMEAN <- function (object, new_data, specials, ...) {
+interpolate.FMEAN <- function(object, new_data, specials, ...) {
   attrx <- attributes(new_data)
   keyvar <- key_vars(new_data)
   vvar <- vital_var_list(new_data)
   agevar <- vvar$age
   timevar <- attrx$index
   measures <- measured_vars(new_data)
-  measures <- measures[!(measures %in% c(agevar,  vvar$population))]
+  measures <- measures[!(measures %in% c(agevar, vvar$population))]
   measure <- measures[1]
   fits <- fitted(object) |> select(.fitted)
   output <- as_tibble(new_data) |>
@@ -181,15 +187,19 @@ interpolate.FMEAN <- function (object, new_data, specials, ...) {
   missing <- is.na(output[[measure]])
   output[[measure]][missing] <- output$.fitted[missing]
   output$.fitted <- NULL
-  return(vital(output, key = unique(c(keyvar, agevar)),
-               index = timevar, .age = agevar))
+  return(vital(output,
+    key = unique(c(keyvar, agevar)),
+    index = timevar, .age = agevar
+  ))
 }
 
 #' @export
 age_components.FMEAN <- function(object, ...) {
   modelname <- attributes(object)$model
   object <- object |>
-    mutate(out = purrr::map(object[[modelname]], function(x){x$fit$model})) |>
+    mutate(out = purrr::map(object[[modelname]], function(x) {
+      x$fit$model
+    })) |>
     as_tibble()
   object[[modelname]] <- NULL
   object |> tidyr::unnest("out")

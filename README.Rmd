@@ -14,13 +14,13 @@ knitr::opts_chunk$set(
 
 # Okabe-Ito colours for discrete scales
 options(
-  ggplot2.discrete.colour = c("#D55E00", "#0072B2","#009E73", "#CC79A7", "#E69F00", "#56B4E9", "#F0E442"),
-  ggplot2.discrete.fill = c("#D55E00", "#0072B2","#009E73", "#CC79A7", "#E69F00", "#56B4E9", "#F0E442")
+  ggplot2.discrete.colour = c("#D55E00", "#0072B2", "#009E73", "#CC79A7", "#E69F00", "#56B4E9", "#F0E442"),
+  ggplot2.discrete.fill = c("#D55E00", "#0072B2", "#009E73", "#CC79A7", "#E69F00", "#56B4E9", "#F0E442")
 )
 # Fira Sans font for graphics
 ggplot2::theme_set(
-  ggplot2::theme_get() + 
-  ggplot2::theme(text = ggplot2::element_text(family = "Fira Sans"))
+  ggplot2::theme_get() +
+    ggplot2::theme(text = ggplot2::element_text(family = "Fira Sans"))
 )
 ```
 
@@ -80,7 +80,7 @@ vital_vars(aus_mortality)
 ### Plots
 
 ```{r autoplot, warning = FALSE}
-aus_mortality |> 
+aus_mortality |>
   filter(State == "Victoria", Sex != "total", Year < 1980, Age < 90) |>
   autoplot(Mortality) + scale_y_log10()
 ```
@@ -135,24 +135,30 @@ fit
 Models are fitted for all combinations of key variables excluding age. 
 
 ```{r lc2}
-fit |> 
+fit |>
   select(lee_carter) |>
-  filter(Sex == "female") |> 
+  filter(Sex == "female") |>
   report()
 ```
 
 
 ```{r lc3}
-fit |> select(lee_carter) |> autoplot()
+fit |>
+  select(lee_carter) |>
+  autoplot()
 ```
 
 ```{r}
-fit |> select(lee_carter) |> age_components()
-fit |> select(lee_carter) |> time_components()
+fit |>
+  select(lee_carter) |>
+  age_components()
+fit |>
+  select(lee_carter) |>
+  time_components()
 ```
 
 ```{r lc5}
-fit |> forecast(h = 20) 
+fit |> forecast(h = 20)
 ```
 
 The forecasts are returned as a distribution column (here transformed normal because of the log transformation used in the model). The `.mean` column gives the point forecasts equal to the mean of the distribution column.

@@ -59,8 +59,8 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   # Drop Age as a key
   kv <- keys[!(keys %in% c(agevar, "Age", "AgeGroup"))]
   # Make sure Sex is first key (so it can be identified inside estimate_progress)
-  if(!is.null(sexvar)) {
-    if(!(sexvar %in% kv)) {
+  if (!is.null(sexvar)) {
+    if (!(sexvar %in% kv)) {
       stop("Sex should be one of the keys")
     }
     kv <- c(sexvar, kv[kv != sexvar])
@@ -86,13 +86,13 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   }
 
   estimate_progress <- function(dt, keys, mdl) {
-    if(!is.null(sexvar)) {
+    if (!is.null(sexvar)) {
       sex <- keys[1]
     } else {
       sex <- NULL
     }
-    if(!is.null(mdl$extra$coherent)) {
-      if("geometric_mean" %in% keys & mdl$extra$coherent) {
+    if (!is.null(mdl$extra$coherent)) {
+      if ("geometric_mean" %in% keys & mdl$extra$coherent) {
         # No need to make the model stationary
         mdl$extra$coherent <- FALSE
       } else {
@@ -122,13 +122,16 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
   } else {
     eval_models <- function(models, lst_data, keyvars) {
       vars <- colnames(keyvars)
-      keyvars <- keyvars |> t() |> as.data.frame() |> as_tibble()
+      keyvars <- keyvars |>
+        t() |>
+        as.data.frame() |>
+        as_tibble()
       purrr::map(models, function(model) {
         purrr::map2(lst_data, keyvars, estimate_progress, model)
       })
     }
   }
-  fits <- eval_models(models, .data[["lst_data"]], .data[,kv])
+  fits <- eval_models(models, .data[["lst_data"]], .data[, kv])
   names(fits) <- ifelse(nchar(names(models)), names(models), nm)
 
   # Report errors if estimated safely
@@ -204,11 +207,13 @@ nest_keys <- function(.data, nm = "data") {
       index = idx, index2 = idx2, ordered = ordered,
       interval = if (length(i) > 1 && regular) tsibble::interval_pull(out[[idx]]) else tsibble::interval(.data)
     ) |>
-      as_vital(.age = attr_data$age,
-               .sex = attr_data$sex,
-               .births = attr_data$births,
-               .deaths = attr_data$deaths,
-               .population = attr_data$population)
+      as_vital(
+        .age = attr_data$age,
+        .sex = attr_data$sex,
+        .births = attr_data$births,
+        .deaths = attr_data$deaths,
+        .population = attr_data$population
+      )
   }, x = tibble::as_tibble(.data), j = col_nest)
   tibble::as_tibble(out)
 }
@@ -233,31 +238,37 @@ estimate.vital <- function(.data, .model, sex, ...) {
   deathsvar <- vvar$deaths
   birthsvar <- vvar$births
   age <- .data[[agevar]]
-  if(!is.null(popvar))
+  if (!is.null(popvar)) {
     pop <- .data[[popvar]]
-  if(!is.null(deathsvar))
+  }
+  if (!is.null(deathsvar)) {
     deaths <- .data[[deathsvar]]
-  if(!is.null(birthsvar))
+  }
+  if (!is.null(birthsvar)) {
     births <- .data[[birthsvar]]
+  }
   resp <- map(parsed$expressions, eval_tidy,
-              data = .data,
-              env = .model$specials
+    data = .data,
+    env = .model$specials
   )
   .data <- unclass(.data)[index_var(.data)]
   .data[map_chr(parsed$expressions, rlang::expr_name)] <- resp
   .data[[agevar]] <- age
-  if(!is.null(popvar))
+  if (!is.null(popvar)) {
     .data[[popvar]] <- pop
-  if(!is.null(deathsvar))
+  }
+  if (!is.null(deathsvar)) {
     .data[[deathsvar]] <- deaths
-  if(!is.null(birthsvar))
+  }
+  if (!is.null(birthsvar)) {
     .data[[birthsvar]] <- births
+  }
   attributes(.data) <- c(attributes(.data), .dt_attr[setdiff(
     names(.dt_attr),
     names(attributes(.data))
   )])
   fit <- eval_tidy(
-    expr(.model$train(.data = .data, sex=sex, specials = parsed$specials, !!!.model$extra))
+    expr(.model$train(.data = .data, sex = sex, specials = parsed$specials, !!!.model$extra))
   )
   .model$remove_data()
   .model$stage <- NULL

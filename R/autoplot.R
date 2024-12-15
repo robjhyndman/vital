@@ -18,22 +18,22 @@
 #' @examples
 #' autoplot(aus_fertility, Fertility)
 #' @export
-autoplot.vital <- function(object, .vars = NULL, age = age_var(object),...) {
+autoplot.vital <- function(object, .vars = NULL, age = age_var(object), ...) {
   quo_vars <- enquo(.vars)
 
   # Index variable
   index <- tsibble::index_var(object)
 
   # Age variable
-  if(is.null(age)) {
-    if(inherits(object, "vital")) {
+  if (is.null(age)) {
+    if (inherits(object, "vital")) {
       age <- age_var(object)
-      if(is.null(age)) {
+      if (is.null(age)) {
         # A vital without age, so try a tsibble autoplot
         object <- as_tsibble(object)
-        return(autoplot(object, .vars={{ .vars }}, ...))
+        return(autoplot(object, .vars = {{ .vars }}, ...))
       }
-    } else if(inherits(object, "tbl_ts")) {
+    } else if (inherits(object, "tbl_ts")) {
       # Need to find the age variable
       age <- find_key(object, c("age", "age_group"))
     } else {
@@ -47,10 +47,10 @@ autoplot.vital <- function(object, .vars = NULL, age = age_var(object),...) {
   nk <- length(kv)
 
   # Variable to plot
-  if(quo_is_null(quo_vars)){
+  if (quo_is_null(quo_vars)) {
     mv <- tsibble::measured_vars(object)
     pos <- which(vapply(object[mv], is.numeric, logical(1L)))
-    if(is_empty(pos)) {
+    if (is_empty(pos)) {
       abort("Could not automatically identify an appropriate plot variable, please specify the variable to plot.")
     }
     inform(sprintf(
@@ -59,23 +59,22 @@ autoplot.vital <- function(object, .vars = NULL, age = age_var(object),...) {
     ))
     y <- sym(mv[pos[1]])
     .vars <- as_quosures(list(y), env = empty_env())
-  }
-  else if(possibly(compose(is_quosures, eval_tidy), FALSE)(.vars)){
+  } else if (possibly(compose(is_quosures, eval_tidy), FALSE)(.vars)) {
     .vars <- eval_tidy(.vars)
     object <- tidyr::gather(
       mutate(object, !!!.vars),
-      ".response", "value", !!!map(.vars, quo_name), factor_key = TRUE
+      ".response", "value", !!!map(.vars, quo_name),
+      factor_key = TRUE
     )
     y <- sym("value")
-  }
-  else{
+  } else {
     y <- quo_vars
     .vars <- list(y)
   }
 
   nyears <- length(unique(object[[index]]))
   aes_spec <- list(x = rlang::sym(age), y = y)
-  if(nyears > 1) {
+  if (nyears > 1) {
     aes_spec$color <- rlang::sym(index)
     aes_spec$group <- rlang::sym(index)
   }
@@ -84,7 +83,7 @@ autoplot.vital <- function(object, .vars = NULL, age = age_var(object),...) {
     ggplot2::ggplot(rlang::eval_tidy(rlang::expr(ggplot2::aes(!!!aes_spec)))) +
     ggplot2::geom_line() +
     ggplot2::xlab(age) +
-    #ggplot2::scale_color_gradientn(colours = hcl.colors(palette = "Batlow", n=10))
+    # ggplot2::scale_color_gradientn(colours = hcl.colors(palette = "Batlow", n=10))
     ggplot2::scale_color_gradientn(colours = rainbow(10))
   if (nk > 0) {
     p <- p + ggplot2::facet_wrap(kv)
@@ -104,10 +103,10 @@ autoplot.vital <- function(object, .vars = NULL, age = age_var(object),...) {
 #' @examples
 #' library(ggplot2)
 #' aus_mortality |>
-#'  dplyr::filter(State == "Victoria") |>
-#'  model(ave = FMEAN(Mortality)) |>
-#'  forecast(h = 10) |>
-#'  autoplot() + scale_y_log10()
+#'   dplyr::filter(State == "Victoria") |>
+#'   model(ave = FMEAN(Mortality)) |>
+#'   forecast(h = 10) |>
+#'   autoplot() + scale_y_log10()
 #'
 #' @author Rob J Hyndman
 #' @export
@@ -118,7 +117,7 @@ autoplot.fbl_vtl_ts <- function(object, ...) {
   dist <- attributes(object)$dist
   to_plot <- colnames(object)
   to_plot <- to_plot[!(to_plot %in% c(keys, index, dist))]
-  if(length(to_plot) > 1) {
+  if (length(to_plot) > 1) {
     warning(paste("Multiple variables to plot. Choosing", to_plot[1]))
   }
   autoplot.vital(object, .vars = !!sym(to_plot[1]), ...)
@@ -138,12 +137,12 @@ autoplot.fbl_vtl_ts <- function(object, ...) {
 #' @examples
 #' library(ggplot2)
 #' aus_mortality |>
-#'  dplyr::filter(State == "Victoria") |>
-#'  model(ave = FMEAN(Mortality)) |>
-#'  autoplot() + scale_y_log10()
+#'   dplyr::filter(State == "Victoria") |>
+#'   model(ave = FMEAN(Mortality)) |>
+#'   autoplot() + scale_y_log10()
 #'
 #' @export
-autoplot.mdl_vtl_df <- function (object, ...) {
+autoplot.mdl_vtl_df <- function(object, ...) {
   if (length(mable_vars(object)) > 1) {
     stop("Model plotting is only supported for one class of models. To produce a plot for a specific class of models, use `select()`")
   } else {
@@ -159,8 +158,8 @@ autoplot.mdl_vtl_df <- function (object, ...) {
 age_plot <- function(object, .var, keys) {
   # Convert age to time and use fabletools::autoplot.tbl_ts
   names <- colnames(object)[!(colnames(object) %in% c(keys, .var))]
-  age <- names[grep("age", names, ignore.case=TRUE)]
-  object_ts <- tsibble::as_tsibble(object, index=sym(age), key = all_of(keys[keys != age]))
+  age <- names[grep("age", names, ignore.case = TRUE)]
+  object_ts <- tsibble::as_tsibble(object, index = sym(age), key = all_of(keys[keys != age]))
   fabletools::autoplot(object_ts, !!sym(.var)) + ggplot2::xlab(age)
 }
 

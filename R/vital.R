@@ -47,7 +47,7 @@ vital <- function(
 #' @export
 as_vital.vital <- function(x, index, keys, ...) {
   as_tibble(x) |>
-    as_tsibble(index= !!enquo(index), key = !!enquo(keys)) |>
+    as_tsibble(index = !!enquo(index), key = !!enquo(keys)) |>
     as_vital(...)
 }
 
@@ -184,53 +184,66 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
 #' @param reorder Logical indicating if the variables should be reordered.
 #' @rdname as_vital
 #' @export
-as_vital.tbl_ts <- function(x,
+as_vital.tbl_ts <- function(
+    x,
     .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
     reorder = FALSE, ...) {
   # Add attributes to x to identify the various variables
   vnames <- colnames(x)
-  if(!is.null(.age)) {
-    if(!(.age %in% vnames)) { .age <- NULL }
+  if (!is.null(.age)) {
+    if (!(.age %in% vnames)) {
+      .age <- NULL
+    }
   }
-  if(!is.null(.sex)) {
-    if(!(.sex %in% vnames)) { .sex <- NULL }
+  if (!is.null(.sex)) {
+    if (!(.sex %in% vnames)) {
+      .sex <- NULL
+    }
   }
-  if(!is.null(.births)) {
-    if(!(.births %in% vnames)) { .births <- NULL }
+  if (!is.null(.births)) {
+    if (!(.births %in% vnames)) {
+      .births <- NULL
+    }
   }
-  if(!is.null(.deaths)) {
-    if(!(.deaths %in% vnames)) { .deaths <- NULL }
+  if (!is.null(.deaths)) {
+    if (!(.deaths %in% vnames)) {
+      .deaths <- NULL
+    }
   }
-  if(!is.null(.population)) {
-    if(!(.population %in% vnames)) { .population <- NULL }
+  if (!is.null(.population)) {
+    if (!(.population %in% vnames)) {
+      .population <- NULL
+    }
   }
-  attr(x, "vital")  <- c(age = .age, sex = .sex,
-    deaths = .deaths, births = .births, population = .population)
+  attr(x, "vital") <- c(
+    age = .age, sex = .sex,
+    deaths = .deaths, births = .births, population = .population
+  )
   # Add additional class
   class(x) <- c("vital", class(x))
   # Check class of variables
   if (!is.null(.age)) {
-    if(!is.numeric(x[[.age]])) {
+    if (!is.numeric(x[[.age]])) {
       stop("Age variable must be numeric")
     }
   }
-  if(!is.null(.sex)) {
-    if(!is.factor(x[[.sex]]) & !is.character((x[[.sex]]))) {
+  if (!is.null(.sex)) {
+    if (!is.factor(x[[.sex]]) & !is.character((x[[.sex]]))) {
       stop("Sex variable must be character or factor")
     }
   }
   if (!is.null(.births)) {
-    if(!is.numeric(x[[.births]])) {
+    if (!is.numeric(x[[.births]])) {
       stop("Births variable must be numeric")
     }
   }
   if (!is.null(.deaths)) {
-    if(!is.numeric(x[[.deaths]])) {
+    if (!is.numeric(x[[.deaths]])) {
       stop("Deaths variable must be numeric")
     }
   }
   if (!is.null(.population)) {
-    if(!is.numeric(x[[.population]])) {
+    if (!is.numeric(x[[.population]])) {
       stop("Population variable must be numeric")
     }
   }
@@ -239,7 +252,7 @@ as_vital.tbl_ts <- function(x,
     agevar <- age_var(x)
     keys <- key_vars(x)
     agevars <- colnames(x)
-    agevars <- agevars[grep("age", agevars, ignore.case=TRUE)]
+    agevars <- agevars[grep("age", agevars, ignore.case = TRUE)]
     keys_noage <- keys[!(keys %in% c(agevar, agevars))]
     x <- select(x, all_of(c(index_var(x), agevar)), everything()) |>
       arrange(across(all_of(c(index_var(x), keys_noage, agevar))))
@@ -266,7 +279,8 @@ as_vital.tbl_ts <- function(x,
 #'     .age = "age"
 #'   )
 #' @export
-as_vital.data.frame <- function(x, key = NULL, index,
+as_vital.data.frame <- function(
+    x, key = NULL, index,
     .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
     reorder = TRUE,
     ...) {
@@ -297,18 +311,18 @@ tbl_sum.vital <- function(x) {
     first
   } else {
     age_key <- vital_var_list(x)$age
-    if(!is.null(age_key)) {
+    if (!is.null(age_key)) {
       keys_noage <- keys[!(keys %in% age_key)]
-      if(length(keys_noage) > 1) {
-        keys <- paste0(age_key, " x (", comma(keys_noage),")")
-      } else if(length(keys_noage) == 1L) {
+      if (length(keys_noage) > 1) {
+        keys <- paste0(age_key, " x (", comma(keys_noage), ")")
+      } else if (length(keys_noage) == 1L) {
         keys <- paste0(age_key, " x ", comma(keys_noage))
       } else {
         keys <- age_key
       }
       nages <- length(unique(x[[age_key]]))
-      nkeys_noage <- n_keys/nages
-      n_keys <- paste(big_mark(nages),"x",big_mark(nkeys_noage))
+      nkeys_noage <- n_keys / nages
+      n_keys <- paste(big_mark(nages), "x", big_mark(nkeys_noage))
     } else {
       n_keys <- big_mark(n_keys)
     }

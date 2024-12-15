@@ -114,9 +114,11 @@ getktdbcountries <- function() {
 #
 ktdb_to_vital <- function(ktdb_data) {
   # Convert data into a vital object
-  vital_data <- as_vital(ktdb_data, index = c("Year"), key = c("Sex", "Age"),
+  vital_data <- as_vital(ktdb_data,
+    index = c("Year"), key = c("Sex", "Age"),
     .age = "Age", .sex = "Sex", .deaths = "Deaths", .population = "Population",
-    reorder = TRUE)
+    reorder = TRUE
+  )
   return(vital_data)
 }
 

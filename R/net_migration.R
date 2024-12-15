@@ -35,7 +35,7 @@ net_migration <- function(deaths, births) {
   dvvar <- vital_var_list(deaths)
   bvvar <- vital_var_list(births)
   deathsvar <- dvvar$deaths
-  if(is.null(deathsvar)) {
+  if (is.null(deathsvar)) {
     deathsvar <- "Deaths"
   }
   agevar <- dvvar$age
@@ -44,22 +44,22 @@ net_migration <- function(deaths, births) {
   bpopvar <- bvvar$population
 
   # Check indexes are the same
-  if(!identical(death_idx, birth_idx)) {
+  if (!identical(death_idx, birth_idx)) {
     stop("Index variables are different in deaths and births objects")
   }
   # Check keys are the same
   birth_keys <- unique(c(birth_keys, agevar))
-  if(!identical(sort(death_keys), sort(birth_keys))) {
+  if (!identical(sort(death_keys), sort(birth_keys))) {
     stop("Keys are different in deaths and births objects")
   }
 
   # Convert births to population at age -1 so they are 0 on 1 January following year
   births[[agevar]] <- -1
   births <- births[births[[birth_idx]] >= min(deaths[[death_idx]]) &
-                    births[[birth_idx]] <= max(deaths[[death_idx]]),]
-  if(birthsvar %in% colnames(births)) {
+    births[[birth_idx]] <= max(deaths[[death_idx]]), ]
+  if (birthsvar %in% colnames(births)) {
     births[[popvar]] <- births[[birthsvar]]
-  } else if(bpopvar != colnames(births)) {
+  } else if (bpopvar != colnames(births)) {
     stop("Births or Population variable not found in births object")
   } else {
     births[[popvar]] <- births[[bpopvar]]
@@ -88,10 +88,12 @@ net_migration <- function(deaths, births) {
 
   deaths$Lx <- if_else(deaths[[agevar]] == -1, 1, deaths$Lx)
   deaths$Lxplus1 <- if_else(deaths[[agevar]] == max(deaths[[agevar]]),
-                              deaths$Tx, deaths$Lxplus1)
+    deaths$Tx, deaths$Lxplus1
+  )
   deaths$Lx <- if_else(deaths[[agevar]] == max(deaths[[agevar]]),
-                      deaths$Txminus1, deaths$Lx)
-  deaths[[deathsvar]] <- pmax(0, deaths[[popvar]] * (1 - deaths$Lxplus1/deaths$Lx))
+    deaths$Txminus1, deaths$Lx
+  )
+  deaths[[deathsvar]] <- pmax(0, deaths[[popvar]] * (1 - deaths$Lxplus1 / deaths$Lx))
   deaths$Lx <- deaths$Lxplus1 <- deaths$Tx <- deaths$Txminus1 <- NULL
 
   nextpop <- deaths |> select(all_of(popvar))
@@ -104,10 +106,13 @@ net_migration <- function(deaths, births) {
     dplyr::mutate(diff = tsibble::difference(nextpop)) |>
     dplyr::ungroup()
   nextpop$nextpop <- if_else(nextpop[[agevar]] == max(nextpop[[agevar]]),
-                             nextpop$diff, nextpop$nextpop)
+    nextpop$diff, nextpop$nextpop
+  )
   nextpop$diff <- NULL
 
-  mig <- deaths |> left_join(nextpop) |> suppressMessages()
+  mig <- deaths |>
+    left_join(nextpop) |>
+    suppressMessages()
 
   # Net migrants is difference between population and lagpop plus
   # average of deaths over this year and next
@@ -115,12 +120,14 @@ net_migration <- function(deaths, births) {
 
   # Zap nextpop and nextdeaths
   mig$nextpop <- mig$nextdeaths <- NULL
-  mig <- mig[!is.na(mig$NetMigration),]
+  mig <- mig[!is.na(mig$NetMigration), ]
 
   # Only return population, estimated (not actual) deaths, net migrants
   mig |>
-    dplyr::select(dplyr::all_of(c(death_idx,death_keys,popvar, deathsvar,
-                                  "NetMigration"))) |>
+    dplyr::select(dplyr::all_of(c(
+      death_idx, death_keys, popvar, deathsvar,
+      "NetMigration"
+    ))) |>
     as_vital(
       index = death_idx,
       keys = death_keys,
@@ -131,4 +138,4 @@ net_migration <- function(deaths, births) {
     )
 }
 
-utils::globalVariables(c("Population","population"))
+utils::globalVariables(c("Population", "population"))

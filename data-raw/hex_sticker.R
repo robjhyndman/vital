@@ -22,7 +22,7 @@ fr_sm |>
   guides(col = "none") +
   theme_void() +
   xlim(-3, 80) +
-  scale_y_log10(limits = c(exp(-13),4))
+  scale_y_log10(limits = c(exp(-13), 4))
 
 hex_scatter <- tempfile(fileext = ".png")
 ggsave(hex_scatter, height = 6, width = 6)
@@ -36,8 +36,10 @@ img_cropped <- hex_crop(
 
 ggplot() +
   geom_from_path(aes(0.5, 0.5, path = img_cropped)) +
-  annotate("text", x = 0.3, y = -0.5, label = "vital", family = "firasans", size = 96, colour = "white",
-           angle = 30, hjust = 0, fontface = "bold") +
+  annotate("text",
+    x = 0.3, y = -0.5, label = "vital", family = "firasans", size = 96, colour = "white",
+    angle = 30, hjust = 0, fontface = "bold"
+  ) +
   xlim(-1, 2) +
   ylim(-1, 2) +
   theme_void() +

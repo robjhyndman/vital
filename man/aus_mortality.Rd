@@ -37,7 +37,7 @@ and is only available up to 2003. The data exclusively from the ACT begins in 19
 library(ggplot2)
 aus_mortality
 aus_mortality |>
-  dplyr::filter(State=="Victoria", Sex != "total") |>
+  dplyr::filter(State == "Victoria", Sex != "total") |>
   autoplot(Exposure) +
   ylab("Population at 30 June (thousands)")
 

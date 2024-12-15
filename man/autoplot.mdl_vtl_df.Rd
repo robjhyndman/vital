@@ -22,9 +22,9 @@ If there are multiple keys, separate models will be identified by colour.
 \examples{
 library(ggplot2)
 aus_mortality |>
- dplyr::filter(State == "Victoria") |>
- model(ave = FMEAN(Mortality)) |>
- autoplot() + scale_y_log10()
+  dplyr::filter(State == "Victoria") |>
+  model(ave = FMEAN(Mortality)) |>
+  autoplot() + scale_y_log10()
 
 }
 \author{

@@ -37,15 +37,18 @@
 #' }
 #' @export
 
-read_hmd <- function(country, username, password,
+read_hmd <- function(
+    country, username, password,
     variables = c("Deaths", "Exposures", "Population", "Mx")) {
   var1x1 <- variables %in% c("Deaths", "Exposures", "Mx")
   item <- variables
-  item[var1x1] <- paste0(variables[var1x1],"_1x1")
+  item[var1x1] <- paste0(variables[var1x1], "_1x1")
   data <- list()
-  for(i in seq_along(item)) {
-    data[[i]] <- HMDHFDplus::readHMDweb(country, item = item[i],
-      username = username, password = password, fixup = TRUE)
+  for (i in seq_along(item)) {
+    data[[i]] <- HMDHFDplus::readHMDweb(country,
+      item = item[i],
+      username = username, password = password, fixup = TRUE
+    )
   }
   names(data) <- variables
   hmd_to_vital(data)
@@ -88,7 +91,7 @@ read_hmd_files <- function(files) {
   # Remove paths from file names
   variables <- gsub(".*/", "", variables)
   data <- list()
-  for(i in seq_along(files)) {
+  for (i in seq_along(files)) {
     data[[i]] <- HMDHFDplus::readHMD(files[i], fixup = TRUE)
   }
   names(data) <- variables
@@ -99,17 +102,17 @@ read_hmd_files <- function(files) {
 hmd_to_vital <- function(object) {
   variables <- names(object)
   sex_included <- any(grepl("female", colnames(object[[1]]), ignore.case = TRUE))
-  if(sex_included) {
+  if (sex_included) {
     sex <- "Sex"
   } else {
     sex <- NULL
   }
-  for(i in seq_along(object)) {
+  for (i in seq_along(object)) {
     # Remove columns ending with "2"
     object[[i]] <- object[[i]] |>
       dplyr::select(-dplyr::ends_with("2")) |>
       dplyr::rename_with(~ gsub("1$", "", .x), dplyr::ends_with("1"))
-    if(sex_included) {
+    if (sex_included) {
       # Turn Sex into a variable
       object[[i]] <- object[[i]] |>
         tidyr::pivot_longer(Female:Total, names_to = sex, values_to = variables[i])
@@ -118,51 +121,57 @@ hmd_to_vital <- function(object) {
 
   # Find which variables are present to be added as attributes
   deaths <- population <- births <- NULL
-  if("Deaths" %in% variables) {
+  if ("Deaths" %in% variables) {
     deaths <- "Deaths"
   }
-  if("Exposures" %in% variables) {
+  if ("Exposures" %in% variables) {
     population <- "Exposures"
   } else if ("Population" %in% variables) {
     population <- "Population"
   }
-  if("Births" %in% variables) {
+  if ("Births" %in% variables) {
     births <- "Births"
   }
 
   # Combine age-specific data and age-non-specific data into separate tsibbles
   data1 <- data2 <- NULL
-  age_included <- unlist(lapply(object, function(x) {"Age" %in% colnames(x)}))
-  if(any(age_included)) {
+  age_included <- unlist(lapply(object, function(x) {
+    "Age" %in% colnames(x)
+  }))
+  if (any(age_included)) {
     data1 <- purrr::reduce(object[age_included], dplyr::left_join) |>
-        suppressMessages() |>
-        mutate(Age = as.integer(Age)) |>
-        tsibble::as_tsibble(index = Year, key = all_of(c("Age",sex)))
+      suppressMessages() |>
+      mutate(Age = as.integer(Age)) |>
+      tsibble::as_tsibble(index = Year, key = all_of(c("Age", sex)))
 
-    if("Mx" %in% colnames(data1)) {
+    if ("Mx" %in% colnames(data1)) {
       data1 <- data1 |>
         dplyr::rename(Mortality = Mx)
     }
     data1 <- data1 |>
-      as_vital(.age = "Age", .sex = sex, .deaths = deaths,
-             .population = population, reorder = TRUE)
+      as_vital(
+        .age = "Age", .sex = sex, .deaths = deaths,
+        .population = population, reorder = TRUE
+      )
   }
-  if(any(!age_included)) {
+  if (!all(age_included)) {
     data2 <- purrr::reduce(object[!age_included], dplyr::left_join) |>
-        suppressMessages() |>
-        tsibble::as_tsibble(index = Year, key = sex) |>
-        as_vital(.sex = sex, .deaths = deaths, .population = population,
-                 .births = births, reorder = TRUE)
+      suppressMessages() |>
+      tsibble::as_tsibble(index = Year, key = sex) |>
+      as_vital(
+        .sex = sex, .deaths = deaths, .population = population,
+        .births = births, reorder = TRUE
+      )
   }
-  if(!is.null(data1) & !is.null(data2)) {
+  if (!is.null(data1) & !is.null(data2)) {
     # Join age-specific and age-non-specific data by Year and Sex
     warning("Duplicating non-age-specific data for each age group")
     return(left_join(data1, data2, by = c("Year", sex)))
-  } else if(!is.null(data1)) {
+  } else if (!is.null(data1)) {
     return(data1)
   } else {
     return(data2)
   }
 }
 
-globalVariables(c("Female","Total","Total1","Sex","Mx"))
+globalVariables(c("Female", "Total", "Total1", "Sex", "Mx"))

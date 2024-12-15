@@ -62,7 +62,7 @@ NULL
 #' library(ggplot2)
 #' aus_mortality
 #' aus_mortality |>
-#'   dplyr::filter(State=="Victoria", Sex != "total") |>
+#'   dplyr::filter(State == "Victoria", Sex != "total") |>
 #'   autoplot(Exposure) +
 #'   ylab("Population at 30 June (thousands)")
 #'

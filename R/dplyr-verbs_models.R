@@ -79,4 +79,3 @@ dplyr_col_modify.mdl_vtl_df <- function(data, cols) {
   class(out) <- c("mdl_vtl_df", class(out))
   out
 }
-

@@ -26,13 +26,13 @@
 #' @export
 
 make_pr <- function(.data, .var, key = Sex) {
-  if(!inherits(.data, "vital")) {
+  if (!inherits(.data, "vital")) {
     stop(".data needs to be a vital object")
   }
-  if(missing(.var)) {
+  if (missing(.var)) {
     stop("Missing .var. Please specify which variable to use.")
   }
-    # Character strings for variable and key
+  # Character strings for variable and key
   varname <- names(eval_select(enquo(.var), data = .data))
   key <- names(eval_select(enquo(key), data = .data))
   # Index variable
@@ -42,9 +42,9 @@ make_pr <- function(.data, .var, key = Sex) {
   attr_data <- vital_var_list(.data)
   age <- attr_data$age
   keys_noage <- keys[!(keys %in% c(age, "Age", "AgeGroup", "Age_Group"))]
-  if(key %in% c(age, "Age", "AgeGroup", "Age_Group")) {
+  if (key %in% c(age, "Age", "AgeGroup", "Age_Group")) {
     stop("key cannot be an age variable")
-  } else if(!(key %in% keys_noage)) {
+  } else if (!(key %in% keys_noage)) {
     stop("key not found in data set")
   } else {
     # All keys other than the key argument
@@ -63,7 +63,7 @@ make_pr <- function(.data, .var, key = Sex) {
   # Compute ratios of the variable to the geometric mean
   .data <- .data |>
     left_join(gm, by = c(index, keys_nokey))
-  .data[[varname]] <- .data[[varname]]/.data$.gm
+  .data[[varname]] <- .data[[varname]] / .data$.gm
   .data$.gm <- NULL
   # Now add the geometric mean to the data set
   gm[[key]] <- "geometric_mean"
@@ -71,12 +71,14 @@ make_pr <- function(.data, .var, key = Sex) {
   gm$.gm <- NULL
   .data <- dplyr::bind_rows(.data, gm)
 
-  as_vital(.data, index = index, keys = keys,
-           .age = age,
-           .population = attr_data$population,
-           .sex = attr_data$sex,
-           .deaths = attr_data$deaths,
-           .births = attr_data$births, reorder = TRUE)
+  as_vital(.data,
+    index = index, keys = keys,
+    .age = age,
+    .population = attr_data$population,
+    .sex = attr_data$sex,
+    .deaths = attr_data$deaths,
+    .births = attr_data$births, reorder = TRUE
+  )
 }
 
 #' Do a sum/difference transformation
@@ -104,10 +106,10 @@ make_pr <- function(.data, .var, key = Sex) {
 #' @export
 
 make_sd <- function(.data, .var, key = Sex) {
-  if(!inherits(.data, "vital")) {
+  if (!inherits(.data, "vital")) {
     stop(".data needs to be a vital object")
   }
-  if(missing(.var)) {
+  if (missing(.var)) {
     stop("Missing .var. Please specify which variable to use.")
   }
   # Character strings for variable and key
@@ -120,9 +122,9 @@ make_sd <- function(.data, .var, key = Sex) {
   attr_data <- vital_var_list(.data)
   age <- attr_data$age
   keys_noage <- keys[!(keys %in% c(age, "Age", "AgeGroup", "Age_Group"))]
-  if(key %in% c(age, "Age", "AgeGroup", "Age_Group")) {
+  if (key %in% c(age, "Age", "AgeGroup", "Age_Group")) {
     stop("key cannot be an age variable")
-  } else if(!(key %in% keys_noage)) {
+  } else if (!(key %in% keys_noage)) {
     stop("key not found in data set")
   } else {
     # All keys other than the key argument
@@ -146,10 +148,12 @@ make_sd <- function(.data, .var, key = Sex) {
   gm$.gm <- NULL
   .data <- dplyr::bind_rows(.data, gm)
 
-  as_vital(.data, index = index, keys = keys,
-           .age = age,
-           .population = attr_data$population,
-           .sex = attr_data$sex,
-           .deaths = attr_data$deaths,
-           .births = attr_data$births, reorder = TRUE)
+  as_vital(.data,
+    index = index, keys = keys,
+    .age = age,
+    .population = attr_data$population,
+    .sex = attr_data$sex,
+    .deaths = attr_data$deaths,
+    .births = attr_data$births, reorder = TRUE
+  )
 }

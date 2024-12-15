@@ -29,11 +29,11 @@ life_table <- function(.data, mortality) {
   keys <- tsibble::key_vars(.data)
 
   age <- age_var(.data)
-  if(is.null(age)) {
+  if (is.null(age)) {
     stop("No age variable found")
   }
   sex <- sex_var(.data)
-  if(is.null(sex)) {
+  if (is.null(sex)) {
     sex <- "None"
   }
   if (!missing(mortality)) {
@@ -57,7 +57,7 @@ life_table <- function(.data, mortality) {
   tibble::as_tibble(.data) |>
     tidyr::unnest(cols = lt) |>
     tsibble::as_tsibble(index = index, key = tidyselect::all_of(keys)) |>
-    as_vital(.age = age, .sex=sex, reorder = TRUE)
+    as_vital(.age = age, .sex = sex, reorder = TRUE)
 }
 
 # This is a revised version of the demography::lt function.
@@ -134,7 +134,7 @@ lt <- function(dt, sex, age, mortality) {
   }
   # Now Lx, Tx and ex
   Lx <- nx * lx - dx * (nx - ax)
-  Lx[nn] <- if_else(mx[nn] == 0, 0, lx[nn]/mx[nn])
+  Lx[nn] <- if_else(mx[nn] == 0, 0, lx[nn] / mx[nn])
   Tx <- rev(cumsum(rev(Lx)))
   ex <- Tx / lx
   # Finally compute rx
@@ -152,11 +152,13 @@ lt <- function(dt, sex, age, mortality) {
     )
   }
   # Return the results in a tibble
-  result <- tibble::tibble(mx = mx, qx = qx, lx = lx, dx = dx, Lx = Lx, Tx = Tx,
-    ex = ex, rx = rx, nx = nx, ax = ax) |>
+  result <- tibble::tibble(
+    mx = mx, qx = qx, lx = lx, dx = dx, Lx = Lx, Tx = Tx,
+    ex = ex, rx = rx, nx = nx, ax = ax
+  ) |>
     mutate(!!age := dt[[age]])
 
   return(result)
 }
 
-globalVariables(c("agevar","sexvar"))
+globalVariables(c("agevar", "sexvar"))

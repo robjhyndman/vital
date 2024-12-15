@@ -21,10 +21,10 @@ Uses a fitted vital model to interpolate missing values from a dataset.
 }
 \examples{
 act_female <- aus_mortality |>
- dplyr::filter(Code == "ACTOT", Sex == "female")
+  dplyr::filter(Code == "ACTOT", Sex == "female")
 act_female |>
- model(mean = FMEAN(Mortality)) |>
- interpolate(act_female)
+  model(mean = FMEAN(Mortality)) |>
+  interpolate(act_female)
 }
 \author{
 Rob J Hyndman

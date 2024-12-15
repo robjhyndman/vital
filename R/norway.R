@@ -47,5 +47,3 @@ NULL
 #' @rdname norway_births
 #'
 NULL
-
-

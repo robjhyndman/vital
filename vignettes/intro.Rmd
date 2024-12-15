@@ -20,15 +20,15 @@ knitr::opts_chunk$set(
 
 # Okabe-Ito colours for discrete scales
 options(
-  ggplot2.discrete.colour = c("#D55E00", "#0072B2","#009E73", "#CC79A7", "#E69F00", "#56B4E9", "#F0E442"),
-  ggplot2.discrete.fill = c("#D55E00", "#0072B2","#009E73", "#CC79A7", "#E69F00", "#56B4E9", "#F0E442")
+  ggplot2.discrete.colour = c("#D55E00", "#0072B2", "#009E73", "#CC79A7", "#E69F00", "#56B4E9", "#F0E442"),
+  ggplot2.discrete.fill = c("#D55E00", "#0072B2", "#009E73", "#CC79A7", "#E69F00", "#56B4E9", "#F0E442")
 )
 # Fira Sans font for graphics
 sysfonts::font_add_google(name = "Fira Sans", family = "firasans")
 showtext::showtext_auto()
 ggplot2::theme_set(
-  ggplot2::theme_get() + 
-  ggplot2::theme(text = ggplot2::element_text(family = "firasans"))
+  ggplot2::theme_get() +
+    ggplot2::theme(text = ggplot2::element_text(family = "firasans"))
 )
 ```
 
@@ -51,7 +51,7 @@ We will use Norwegian data in the following examples. First, let's remove the "T
 ```{r example}
 nor <- norway_mortality |>
   filter(Sex != "Total") |>
-  collapse_ages(max_age = 100) 
+  collapse_ages(max_age = 100)
 nor
 ```
 
@@ -71,19 +71,19 @@ vital_vars(nor)
 There are `autoplot()` functions for plotting `vital` objects. These produce rainbow plots [@rainbow] where each line represents data for one year, and the variable is plotted against age.
 
 ```{r autoplot, warning = FALSE}
-nor |> 
-  autoplot(Mortality) + 
+nor |>
+  autoplot(Mortality) +
   scale_y_log10()
 ```
 
 We can use standard ggplot functions to modify the plot as desired. For example, here are population pyramids for all years.
 
 ```{r pyramid}
-nor |> 
+nor |>
   mutate(Population = if_else(Sex == "Female", -Population, Population)) |>
   autoplot(Population) +
   coord_flip() +
-  facet_grid( . ~ Sex, scales = "free_x")
+  facet_grid(. ~ Sex, scales = "free_x")
 ```
 
 ## Life tables and life expectancy
@@ -136,8 +136,8 @@ lc
 Models are fitted for all combinations of key variables excluding age. To see the details for a specific model, use the `report()` function.
 
 ```{r lc2}
-lc |> 
-  filter(Sex == "Female") |> 
+lc |>
+  filter(Sex == "Female") |>
   report()
 ```
 
@@ -159,7 +159,7 @@ Forecasts are obtained using the `forecast()` function
 ```{r lc5}
 # Forecasts from Lee-Carter model
 lc |>
-  forecast(h = 20) 
+  forecast(h = 20)
 ```
 
 The forecasts are returned as a distribution column (here transformed normal because of the log transformation used in the model). The `.mean` column gives the point forecasts equal to the mean of the distribution column.
@@ -171,11 +171,11 @@ Functional data models [@hu] can be estimated in a similar way to Lee-Carter mod
 
 ```{r fdm}
 # FDM model
-fdm <- nor |> 
-  smooth_mortality(Mortality) |> 
+fdm <- nor |>
+  smooth_mortality(Mortality) |>
   model(hu = FDM(log(.smooth)))
 fc_fdm <- fdm |>
-  forecast(h = 20) 
+  forecast(h = 20)
 autoplot(fc_fdm) +
   scale_y_log10()
 ```
@@ -202,8 +202,8 @@ time_components(fdm)
 A coherent functional data model [@hby], is obtained by first computing the sex-products and sex-ratios of the smoothed mortality data. Then a functional data model is fitted to the smoothed data, forecasts are obtained, and the product/ratio transformation is reversed. The following code shows the steps.
 
 ```{r coherent}
-fdm_coherent <- nor |> 
-  smooth_mortality(Mortality) |> 
+fdm_coherent <- nor |>
+  smooth_mortality(Mortality) |>
   make_pr(.smooth) |>
   model(hby = FDM(log(.smooth), coherent = TRUE))
 fc_coherent <- fdm_coherent |>

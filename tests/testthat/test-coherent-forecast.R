@@ -8,14 +8,14 @@ nor <- norway_mortality |>
 fit1 <- nor |>
   model(fdm = FDM(log(.smooth)))
 fc1 <- fit1 |>
-  forecast(h=20)
+  forecast(h = 20)
 
 # Product ratio forecasts
 fit2 <- nor |>
   make_pr(.smooth) |>
   model(fdm = FDM(log(.smooth), coherent = TRUE))
 fc2 <- fit2 |>
-  forecast(h=20) |>
+  forecast(h = 20) |>
   undo_pr(.smooth) |>
   as_tibble() |>
   mutate(prmean = .mean) |>
@@ -26,7 +26,7 @@ test_that("Coherent forecasts", {
   fc1 <- fc1 |>
     as_tibble() |>
     select(-.smooth) |>
-    left_join(fc2, by = c("Sex",".model","Year","Age")) |>
+    left_join(fc2, by = c("Sex", ".model", "Year", "Age")) |>
     mutate(diff = abs(.mean - prmean))
   expect_lt(mean(fc1$diff), 0.002)
 })

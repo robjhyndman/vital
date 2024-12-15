@@ -16,12 +16,12 @@
 #' @author Rob J Hyndman
 #' @examples
 #' aus_mortality |>
-#'  dplyr::filter(State == "Victoria", Sex == "female") |>
-#'  collapse_ages(max_age = 85)
+#'   dplyr::filter(State == "Victoria", Sex == "female") |>
+#'   collapse_ages(max_age = 85)
 #' @export
 
 collapse_ages <- function(.data, max_age = 100) {
-  if(!inherits(.data, "vital")) {
+  if (!inherits(.data, "vital")) {
     stop(".data needs to be a vital object")
   }
   colnames <- colnames(.data)
@@ -41,15 +41,15 @@ collapse_ages <- function(.data, max_age = 100) {
   rates <- find_measures(.data, c("mx", "mortality", "fx", "fertility", "rate"))
 
   # Store values for max age in case they are needed
-  max_age_values <- .data[.data[[age]] == max_age,]
+  max_age_values <- .data[.data[[age]] == max_age, ]
 
   # Compute death and birth counts if they are missing
-  for(i in rates) {
-    if(!is.null(pop)) {
-      if(tolower(i) %in% c("mx", "mortality") && is.null(deaths)) {
+  for (i in rates) {
+    if (!is.null(pop)) {
+      if (tolower(i) %in% c("mx", "mortality") && is.null(deaths)) {
         .data[[".Deaths"]] <- .data[[i]] * .data[[pop]]
         deaths <- ".Deaths"
-      } else if(tolower(i) %in% c("fx", "fertility") && is.null(births)) {
+      } else if (tolower(i) %in% c("fx", "fertility") && is.null(births)) {
         .data[[".Births"]] <- .data[[i]] * .data[[pop]]
         births <- ".Births"
       }
@@ -61,21 +61,26 @@ collapse_ages <- function(.data, max_age = 100) {
   collapsed <- .data |>
     as_tibble() |>
     dplyr::group_by_at(c(index, keys_noage)) |>
-    dplyr::reframe(dplyr::across(everything(),
-      function(x) { collapse_age_vector(x, ages, max_age) } )) |>
+    dplyr::reframe(dplyr::across(
+      everything(),
+      function(x) {
+        collapse_age_vector(x, ages, max_age)
+      }
+    )) |>
     as_tsibble(index = index, key = all_of(c(keys_noage, age)))
   upper_ages <- collapsed[[age]] == max_age
 
   # Recompute rates where possible
-  for(i in rates) {
-    if(tolower(i) %in% c("mx", "mortality")) {
+  for (i in rates) {
+    if (tolower(i) %in% c("mx", "mortality")) {
       counts <- deaths
-    } else if(tolower(i) %in% c("fx", "fertility")) {
+    } else if (tolower(i) %in% c("fx", "fertility")) {
       counts <- births
-    } else
+    } else {
       counts <- NULL
-    if(!is.null(pop) & !is.null(counts)) {
-        collapsed[[i]][upper_ages] <- collapsed[[counts]][upper_ages] / collapsed[[pop]][upper_ages]
+    }
+    if (!is.null(pop) & !is.null(counts)) {
+      collapsed[[i]][upper_ages] <- collapsed[[counts]][upper_ages] / collapsed[[pop]][upper_ages]
     } else {
       warning("Cannot recompute rates for ", i, ". Using upper age value.")
       tmp <- max_age_values |>
@@ -89,26 +94,27 @@ collapse_ages <- function(.data, max_age = 100) {
   }
 
   # Return result
-  return(as_vital(collapsed, .age = age, .sex = sex,
+  return(as_vital(collapsed,
+    .age = age, .sex = sex,
     .deaths = deaths, .births = births, .population = pop,
-    reorder = TRUE)[,colnames]
-  )
+    reorder = TRUE
+  )[, colnames])
 }
 
 collapse_age_vector <- function(x, ages, max_age) {
-  if(is.numeric(x)) {
+  if (is.numeric(x)) {
     # is it an age variable? Keep it as is
-    if(is.constant(diff(x))) {
+    if (is.constant(diff(x))) {
       out <- x[ages <= max_age]
     } else {
       # Sum upper group
       out <- c(x[ages < max_age], sum(x[ages >= max_age]))
     }
-  } else if(is.character(x)) {
+  } else if (is.character(x)) {
     # Probably AgeGroup. Add + to upper group
     out <- x[ages <= max_age]
-    out[length(out)] <- paste0(out[length(out)],"+")
-  } else if(is.logical(x)) {
+    out[length(out)] <- paste0(out[length(out)], "+")
+  } else if (is.logical(x)) {
     # Perhaps OpenInterval variable
     out <- c(x[ages < max_age], any(x[ages > max_age]))
   } else {

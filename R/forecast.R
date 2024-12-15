@@ -28,16 +28,15 @@
 #'   above.
 #' @examples
 #' aus_mortality |>
-#'  dplyr::filter(State == "Victoria", Sex == "female") |>
-#'  model(naive = FNAIVE(Mortality)) |>
-#'  forecast(h = 10)
+#'   dplyr::filter(State == "Victoria", Sex == "female") |>
+#'   model(naive = FNAIVE(Mortality)) |>
+#'   forecast(h = 10)
 #'
 #' @rdname forecast
 #' @export
 forecast.mdl_vtl_df <- function(
     object, new_data = NULL, h = NULL, point_forecast = list(.mean = mean),
-    simulate = FALSE, bootstrap = FALSE, times = 5000, ...
-  ) {
+    simulate = FALSE, bootstrap = FALSE, times = 5000, ...) {
   mdls <- mable_vars(object)
   if (!is.null(h) && !is.null(new_data)) {
     warn("Input forecast horizon `h` will be ignored as `new_data` has been provided.")
@@ -61,8 +60,10 @@ forecast.mdl_vtl_df <- function(
   out <- suppressWarnings(
     unnest_tsbl(as_tibble(object)[c(kv, ".fc")], ".fc", parent_key = kv)
   )
-  build_vital_fable(out, response = fbl_attr$response, distribution = fbl_attr$dist,
-    vitals = vvars)
+  build_vital_fable(out,
+    response = fbl_attr$response, distribution = fbl_attr$dist,
+    vitals = vvars
+  )
 }
 
 #' @export
@@ -89,13 +90,17 @@ forecast.mdl_vtl_ts <- function(
   agevar <- age_var(new_data)
   if (NROW(new_data) == 0) {
     new_data[[dist_col]] <- distributional::new_dist(dimnames = resp_vars)
-    return(build_vital_fable(new_data, response = resp_vars,
-      distribution = !!sym(dist_col), vitals = vital_vars(object$data)))
+    return(build_vital_fable(new_data,
+      response = resp_vars,
+      distribution = !!sym(dist_col), vitals = vital_vars(object$data)
+    ))
   }
   if (simulate || bootstrap) {
     fc <- generate(object, new_data, bootstrap = bootstrap, times = times, ...)
-    fc <- unname(split(object$transformation[[1]](fc[[".sim"]]),
-                       list(fc[[index_var(fc)]], fc[[agevar]])))
+    fc <- unname(split(
+      object$transformation[[1]](fc[[".sim"]]),
+      list(fc[[index_var(fc)]], fc[[agevar]])
+    ))
     fc <- distributional::dist_sample(fc)
   } else {
     object$model$stage <- "forecast"
@@ -112,8 +117,8 @@ Does your model require extra variables to produce forecasts?",
     object$model$remove_data()
     object$model$stage <- NULL
     fc <- forecast(object$fit, new_data,
-                   specials = specials,
-                   times = times, ...
+      specials = specials,
+      times = times, ...
     )
   }
   bt <- map(object$transformation, function(x) {
@@ -150,11 +155,13 @@ Does your model require extra variables to produce forecasts?",
   if (any(is_transformed)) {
     if (identical(unique(dist_types(fc)), "dist_sample")) {
       fc <- distributional::dist_sample(.mapply(exec, list(
-        bt[[1]], distributional::parameters(fc)$x), MoreArgs = NULL))
+        bt[[1]], distributional::parameters(fc)$x
+      ), MoreArgs = NULL))
     } else {
       bt <- bt[[1]]
       fc <- distributional::dist_transformed(fc, `attributes<-`(
-        bt, NULL ), bt %@% "inverse")
+        bt, NULL
+      ), bt %@% "inverse")
     }
   }
   dimnames(fc) <- resp_vars
@@ -164,35 +171,41 @@ Does your model require extra variables to produce forecasts?",
   cn <- c(dist_col, names(point_fc))
   fbl <- tsibble::build_tsibble_meta(
     as_tibble(new_data)[unique(c(idx, agevar, cn, mv))],
-    key_data(new_data), index = idx, index2 = idx,
+    key_data(new_data),
+    index = idx, index2 = idx,
     ordered = is_ordered(new_data), interval = tsibble::interval(new_data)
   )
-  build_vital_fable(fbl, response = resp_vars, distribution = dist_col,
-                vitals = vital_vars(object$data))
+  build_vital_fable(fbl,
+    response = resp_vars, distribution = dist_col,
+    vitals = vital_vars(object$data)
+  )
 }
 
-make_future_data <- function (.data, h = NULL) {
+make_future_data <- function(.data, h = NULL) {
   n <- get_frequencies(h, .data, .auto = "smallest")
   if (length(n) > 1) {
     warn("More than one forecast horizon specified, using the smallest.")
     n <- min(n)
   }
-  if (is.null(h))
+  if (is.null(h)) {
     n <- n * 2
+  }
   out <- tsibble::new_data(.data, round(n))
   indexvar <- index_var(out)
   agevar <- age_var(.data)
-  ages <- .data[[agevar]] |> unique() |> sort()
+  ages <- .data[[agevar]] |>
+    unique() |>
+    sort()
   out <- tidyr::expand_grid(as_tibble(out), ages)
   colnames(out)[colnames(out) == "ages"] <- agevar
   as_tsibble(out, index = indexvar, key = agevar) |>
     as_vital(.age = agevar)
 }
 
-compute_point_forecasts <- function (distribution, measures) {
+compute_point_forecasts <- function(distribution, measures) {
   map(measures, calc, distribution)
 }
-calc <- function (f, ...) {
+calc <- function(f, ...) {
   f(...)
 }
 

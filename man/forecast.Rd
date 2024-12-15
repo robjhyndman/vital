@@ -103,9 +103,9 @@ The forecasts returned contain both point forecasts and their distribution.
 }
 \examples{
 aus_mortality |>
- dplyr::filter(State == "Victoria", Sex == "female") |>
- model(naive = FNAIVE(Mortality)) |>
- forecast(h = 10)
+  dplyr::filter(State == "Victoria", Sex == "female") |>
+  model(naive = FNAIVE(Mortality)) |>
+  forecast(h = 10)
 
 }
 \author{

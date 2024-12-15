@@ -30,9 +30,11 @@
 
 read_hfd <- function(country, username, password, variables = "asfrRR") {
   data <- list()
-  for(i in seq_along(variables)) {
-    data[[i]] <- HMDHFDplus::readHFDweb(country, item = variables[i],
-      username = username, password = password, fixup = TRUE)
+  for (i in seq_along(variables)) {
+    data[[i]] <- HMDHFDplus::readHFDweb(country,
+      item = variables[i],
+      username = username, password = password, fixup = TRUE
+    )
   }
   names(data) <- variables
   hmd_to_vital(data)
@@ -70,10 +72,9 @@ read_hfd_files <- function(files) {
   # Remove paths from file names
   variables <- gsub(".*/", "", variables)
   data <- list()
-  for(i in seq_along(files)) {
+  for (i in seq_along(files)) {
     data[[i]] <- HMDHFDplus::readHFD(files[i], fixup = TRUE)
   }
   names(data) <- variables
   hmd_to_vital(data)
 }
-
