@@ -31,7 +31,7 @@ train_fnaive <- function(.data, ...) {
   measures <- measures[!(measures %in% c(agevar, vvar$population))]
   measure <- measures[1]
   last_measure <- .data |>
-    tibble::as_tibble() |>
+    tsibble::as_tibble() |>
     dplyr::mutate(index = .data[[indexvar]] + 1)
   last_measure <- last_measure[, c("index", agevar, measure)]
   colnames(last_measure) <- c(indexvar, agevar, ".fitted")

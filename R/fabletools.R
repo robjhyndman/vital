@@ -185,7 +185,7 @@ build_mable <- function(x, key = NULL, key_data = NULL, model = NULL) {
 }
 
 build_mable_meta <- function(x, key_data, model, response) {
-  tibble::new_tibble(x,
+  tsibble::new_tibble(x,
     key = key_data, model = model, response = response,
     nrow = NROW(x), class = "mdl_df", subclass = "mdl_df"
   )

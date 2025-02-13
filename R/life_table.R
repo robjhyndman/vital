@@ -54,7 +54,7 @@ life_table <- function(.data, mortality) {
   }
   .data$lt <- out
   .data$data <- NULL
-  tibble::as_tibble(.data) |>
+  tsibble::as_tibble(.data) |>
     tidyr::unnest(cols = lt) |>
     tsibble::as_tsibble(index = index, key = tidyselect::all_of(keys)) |>
     as_vital(.age = age, .sex = sex, reorder = TRUE)
@@ -152,7 +152,7 @@ lt <- function(dt, sex, age, mortality) {
     )
   }
   # Return the results in a tibble
-  result <- tibble::tibble(
+  result <- tsibble::tibble(
     mx = mx, qx = qx, lx = lx, dx = dx, Lx = Lx, Tx = Tx,
     ex = ex, rx = rx, nx = nx, ax = ax
   ) |>

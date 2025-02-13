@@ -76,7 +76,7 @@ functions, including age, sex, births, deaths and population.
 as_vital(demography::fr.mort)
 \dontshow{\}) # examplesIf}
 # create a vital with only age as a key
-tibble::tibble(
+data.frame(
   year = rep(2010:2015, 100),
   age = rep(0:99, each = 6),
   mx = runif(600, 0, 1)

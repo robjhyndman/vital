@@ -87,7 +87,7 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
     rates <- NULL
     for (i in seq_along(x$rate)) {
       tmp <- x$rate[[i]] |>
-        tibble::as_tibble() |>
+        tsibble::as_tibble() |>
         mutate(
           AgeGroup = rownames(x$rate[[i]]),
           Age = x$age
@@ -268,7 +268,7 @@ as_vital.tbl_ts <- function(
 #' @rdname as_vital
 #' @examples
 #' # create a vital with only age as a key
-#' tibble::tibble(
+#' data.frame(
 #'   year = rep(2010:2015, 100),
 #'   age = rep(0:99, each = 6),
 #'   mx = runif(600, 0, 1)

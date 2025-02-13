@@ -348,7 +348,7 @@ lca <- function(data, sex, age, rates, pop, deaths,
   names(mdev) <- c("Mean deviance base", "Mean deviance total")
 
   # First object contains ages
-  output1 <- tibble::tibble(
+  output1 <- tsibble::tibble(
     age = ages,
     ax = ax,
     bx = bx
@@ -356,7 +356,7 @@ lca <- function(data, sex, age, rates, pop, deaths,
   colnames(output1)[1] <- age
 
   # Second object contains years
-  output2 <- tibble::tibble(
+  output2 <- tsibble::tibble(
     year = year,
     kt = kt
   )
@@ -391,7 +391,7 @@ estimate_e0 <- function(kt, ax, bx, agegroup, sex, startage = 0) {
 # sex is a string
 get.e0 <- function(x, agegroup, sex, startage = 0) {
   lt(
-    tibble::tibble(age = agegroup, sex = sex, mx = x),
+    tsibble::tibble(age = agegroup, sex = sex, mx = x),
     "sex", "age", "mx"
   )$ex[1]
 }

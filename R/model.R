@@ -203,7 +203,7 @@ nest_keys <- function(.data, nm = "data") {
     out <- if (is.null(j)) x[i, ] else x[i, j]
     tsibble::build_tsibble_meta(
       out,
-      key_data = tibble::as_tibble(list(.rows = list(seq_along(i)))),
+      key_data = tsibble::as_tibble(list(.rows = list(seq_along(i)))),
       index = idx, index2 = idx2, ordered = ordered,
       interval = if (length(i) > 1 && regular) tsibble::interval_pull(out[[idx]]) else tsibble::interval(.data)
     ) |>
@@ -214,8 +214,8 @@ nest_keys <- function(.data, nm = "data") {
         .deaths = attr_data$deaths,
         .population = attr_data$population
       )
-  }, x = tibble::as_tibble(.data), j = col_nest)
-  tibble::as_tibble(out)
+  }, x = tsibble::as_tibble(.data), j = col_nest)
+  tsibble::as_tibble(out)
 }
 
 list_of_models <- function(x = list()) {

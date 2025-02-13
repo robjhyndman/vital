@@ -29,7 +29,6 @@ Imports:
   purrr,
   rlang,
   rvest,
-  tibble,
   tidyr,
   tidyselect,
   tsibble,
