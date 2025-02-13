@@ -4,7 +4,19 @@
 library(rvest)
 library(dplyr)
 
-# HMD countries
+# KTDB countries ---------------------------------------------------
+# Get names, ids and links for KTDB countries
+
+ktdb_html <- read_html("https://www.demogr.mpg.de/cgi-bin/databases/ktdb/datamap.plx") |>
+  html_elements(xpath = "/html/body") |>
+  html_elements("a")
+ktdb_html <- ktdb_html[8:42]
+ktdb <- tibble(
+  Country = html_text2(ktdb_html),
+  ktdb_number = html_attr(ktdb_html, "href") |> str_extract("[0-9]*$")
+)
+
+# HMD countries ----------------------------------------------------
 hmd <- read_html("https://mortality.org/Data/DataAvailability") |>
   html_element(xpath = "/html/body/div/div/div[2]") |>
   html_table() |>
@@ -27,7 +39,7 @@ hmd <- hmd |>
     )
   )
 
-# STMF countries
+# STMF countries ----------------------------------------------------
 stmf_html <- read_html("https://www.mortality.org/Data/STMF") |>
   html_element(xpath = "/html/body/div[1]/div/div/div/div/div[2]/table/tbody") |>
   html_elements("a")
@@ -38,17 +50,7 @@ stmf <- tibble(
     stringr::str_remove("stmfout.csv")
 )
 
-# KTDB countries
-ktdb_html <- read_html("https://www.demogr.mpg.de/cgi-bin/databases/ktdb/datamap.plx") |>
-  html_elements(xpath = "/html/body") |>
-  html_elements("a")
-ktdb <- tibble(
-  Country = html_text2(ktdb_html)[8:42],
-  ktdb_number = seq_along(Country)
-)
-
 # Combine data frames, completing missing entries due to name variations
-
 countries <- hmd |>
   full_join(stmf, by = "Country") |>
   full_join(ktdb, by = "Country") |>
@@ -83,6 +85,35 @@ countries <- hmd |>
     )
   ) |>
   arrange(hmd_code)
+
+countries <- countries |>
+  mutate(
+    ktdb_male = if_else(!is.na(ktdb_number), "", NA_character_),
+    ktdb_female = if_else(!is.na(ktdb_number), "", NA_character_),
+  )
+
+# Now add KTDB links to relevant countries
+# This gives occasional errors, so we keep trying the countries until all are found
+
+get_ktdb_links <- function(id) {
+  html <- paste0("https://www.demogr.mpg.de/cgi-bin/databases/ktdb/record.plx?CountryID=", id) |>
+    read_html()
+  html |>
+    html_elements(xpath = "/html/body/table") |>
+    html_elements("a") |>
+    html_attr("href") |>
+    str_remove("/databases/ktdb/")
+}
+
+# Sometimes errors, even with tryCatch. Not sure why. Just rerun it.
+while (any(countries$ktdb_male == "" & !is.na(countries$ktdb_number))) {
+  i <- which(countries$ktdb_male == "" & !is.na(countries$ktdb_number))[1]
+  links <- tryCatch(get_ktdb_links(countries$ktdb_number[i]))
+  if (!inherits(links, "try-error")) {
+    countries$ktdb_male[i] <- links[1]
+    countries$ktdb_female[i] <- links[2]
+  }
+}
 
 # Save for internal use only
 usethis::use_data(countries, overwrite = TRUE, internal = TRUE)

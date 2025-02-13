@@ -28,14 +28,11 @@ read_ktdb <- function(country, triangle = 1) {
     stop("Unknown country")
   }
 
+  links <- countries[countries$ktdb_number == country, ]
   # read ktdb data
-  xpath <- "/html/body/table"
-  url <- paste0("https://www.demogr.mpg.de/cgi-bin/databases/ktdb/record.plx?CountryID=", country)
-  html <- rvest::read_html(url)
-  links <- rvest::html_attr(rvest::html_elements(rvest::html_element(html, xpath = xpath), "a"), "href")[1:2]
   read_ktdb_file(
-    male = paste0("https://www.demogr.mpg.de/", links[1]),
-    female = paste0("https://www.demogr.mpg.de/", links[2])
+    male = paste0("https://www.demogr.mpg.de/databases/ktdb/", links$ktdb_male[1]),
+    female = paste0("https://www.demogr.mpg.de/databases/ktdb/", links$ktdb_female[1])
   )
 }
 
