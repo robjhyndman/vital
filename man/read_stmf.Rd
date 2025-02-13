@@ -7,7 +7,8 @@
 read_stmf(country)
 }
 \arguments{
-\item{country}{Directory abbreviation from the HMD. For instance, Australia = "AUS".}
+\item{country}{Country name or country code as specified by the HMD. For instance, Australian
+data can be obtained using \code{country = "Australia"} or \code{country = "AUS"}.}
 }
 \value{
 A \code{vital} object combining the downloaded data.

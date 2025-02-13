@@ -4,7 +4,8 @@
 #' The series is available in Kannisto-Thatcher (K-T) database (<https://www.demogr.mpg.de/cgi-bin/databases/ktdb/datamap.plx>)
 #' and constructs a `vital` object suitable for use in other functions.
 #'
-#' @param country Directory abbreviation from the K-T database.
+#' @param country Country name or country code as specified by the KT database. For instance, Australian
+#' data can be obtained using \code{country = "Australia"} or \code{country = 1}.
 #' @param triangle Lexis triangle number, 1 (default) is lower triangle, 2 is upper triangle.
 #' @return `read_ktdb` returns a `vital` object combining the downloaded data.
 #'
@@ -16,29 +17,20 @@
 #'
 #' @export
 read_ktdb <- function(country, triangle = 1) {
-  # check if country code is available
-  ctrylookup <- getktdbcountries()
-
-  # get country
-  if (missing(country) || !(country %in% ctrylookup$Country)) {
-    if (missing(country)) {
-      cat("\nCountry missing\n")
-    } else {
-      cat("\nCountry not found\n")
-    }
-
-    if (interactive()) {
-      country <- utils::select.list(choices = ctrylookup$Country, multiple = FALSE, title = "Select Country Code")
-    } else {
-      stop("Country should be one of these:\n", paste(ctrylookup$Country, collapse = ",\n"))
-    }
+   # Get country code
+  if(is.numeric(country)) {
+    country <- round(country)
+    if(country < 1 | country > 36)
+      stop("Unknown country code")
+  } else if(country %in% countries$Country) {
+      country <- countries$ktdb_number[countries$Country == country]
+  } else {
+    stop("Unknown country")
   }
-  stopifnot(length(country) == 1)
-  CountryID <- which(ctrylookup$Country == country)
 
   # read ktdb data
   xpath <- "/html/body/table"
-  url <- paste0("https://www.demogr.mpg.de/cgi-bin/databases/ktdb/record.plx?CountryID=", CountryID)
+  url <- paste0("https://www.demogr.mpg.de/cgi-bin/databases/ktdb/record.plx?CountryID=", country)
   html <- rvest::read_html(url)
   links <- rvest::html_attr(rvest::html_elements(rvest::html_element(html, xpath = xpath), "a"), "href")[1:2]
   read_ktdb_file(
@@ -97,21 +89,7 @@ read_ktdb_file <- function(male = NULL, female = NULL, triangle = 1) {
   # Convert to vital
   ktdb_to_vital(data)
 }
-#'
-#'
-# Get ktdb country list
-getktdbcountries <- function() {
-  xpath <- "/html/body"
-  grab_url <- "https://www.demogr.mpg.de/cgi-bin/databases/ktdb/datamap.plx"
-  html <- rvest::read_html(grab_url)
-  country_names <- rvest::html_text2(rvest::html_elements(rvest::html_elements(html, xpath = xpath), "a"))[8:42]
-  # Create a tibble with country names
-  tab_main <- dplyr::mutate(tsibble::tibble(Country = country_names))
-  return(tab_main)
-}
-#'
-#'
-#
+
 ktdb_to_vital <- function(ktdb_data) {
   # Convert data into a vital object
   vital_data <- as_vital(ktdb_data,

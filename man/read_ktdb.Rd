@@ -7,7 +7,8 @@
 read_ktdb(country, triangle = 1)
 }
 \arguments{
-\item{country}{Directory abbreviation from the K-T database.}
+\item{country}{Country name or country code as specified by the KT database. For instance, Australian
+data can be obtained using \code{country = "Australia"} or \code{country = 1}.}
 
 \item{triangle}{Lexis triangle number, 1 (default) is lower triangle, 2 is upper triangle.}
 }

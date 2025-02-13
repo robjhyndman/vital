@@ -4,7 +4,8 @@
 #' series available in the Human Mortality Database (HMD) <https://www.mortality.org/Data/STMF>),
 #' and constructs a `vital` object suitable for use in other functions.
 #'
-#' @param country Directory abbreviation from the HMD. For instance, Australia = "AUS".
+#' @param country Country name or country code as specified by the HMD. For instance, Australian
+#' data can be obtained using \code{country = "Australia"} or \code{country = "AUS"}.
 #' @return A `vital` object combining the downloaded data.
 #'
 #' @author Sixian Tang
@@ -16,22 +17,12 @@
 #'
 #' @export
 read_stmf <- function(country) {
-
-  # check if country code is available
-  ctrylookup <- getSTMFcountries()
-
-  # get country
-  if (missing(country) || !(country %in% ctrylookup$CNTRY)) {
-    if (missing(country)) {
-      cat("\nCountry missing\n")
+   # Get country code
+   if(!(country %in% countries$stmf_code)) {
+    if(country %in% countries$Country) {
+      country <- countries$stmf_code[countries$Country == country]
     } else {
-      cat("\nCountry not found\n")
-    }
-
-    if (interactive()) {
-      country <- utils::select.list(choices = ctrylookup$CNTRY, multiple = FALSE, title = "Select Country Code")
-    } else {
-      stop("Country should be one of these:\n", paste(ctrylookup$CNTRY, collapse = ",\n"))
+      stop("Unknown country")
     }
   }
   stopifnot(length(country) == 1)
@@ -69,21 +60,6 @@ read_stmf_file <- function(file) {
   data$Sex[data$Sex == "f"] <- "female"
   data$Sex[data$Sex == "m"] <- "male"
   stmf_to_vital(data)
-}
-
-# Get STMF country list
-getSTMFcountries <- function () {
-  xpath <- "/html/body/div[1]/div/div/div/div/div[2]/table/tbody"
-  html <- rvest::read_html("https://www.mortality.org/Data/STMF")
-  links <- rvest::html_attr(rvest::html_elements(rvest::html_element(html, xpath = xpath),
-                                   "a"), "href")
-  cntry_names <- rvest::html_text2(rvest::html_elements(rvest::html_element(html,
-                                                       xpath = xpath), "a"))
-  # Create a tibble with country names and links
-  tab_main <- dplyr::mutate(tsibble::tibble(Country = cntry_names),
-                     # Extract country codes from the links
-                     CNTRY = sub("/File/GetDocument/Public\\\\STMF\\\\Outputs\\\\(\\w+)stmfout\\.csv", "\\1", links))
-  return(tab_main)
 }
 
 stmf_to_vital <- function(stmf_data) {

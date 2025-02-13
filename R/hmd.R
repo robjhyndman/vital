@@ -11,7 +11,8 @@
 #' In order to read the data, users are required to create an account with the
 #' HMD website (<https://www.mortality.org>), and obtain a valid username and password.
 #'
-#' @param country Directory abbreviation from the HMD. For instance, Australia = "AUS".
+#' @param country Country name or country code as specified by the HMD. For instance, Australian
+#' data can be obtained using \code{country = "Australia"} or \code{country = "AUS"}.
 #' @param username HMD username (case-sensitive)
 #' @param password HMD password (case-sensitive)
 #' @param variables List of variables to download from the HMD. If the data
@@ -24,12 +25,12 @@
 #' @examples
 #' \dontrun{
 #' norway <- read_hmd(
-#'   country = "NOR",
+#'   country = "Norway",
 #'   username = "Nora.Weigh@mymail.com",
 #'   password = "FF!5xeEFa6"
 #' )
 #' norway_births <- read_hmd(
-#'   country = "NOR",
+#'   country = "Norway",
 #'   username = "Nora.Weigh@mymail.com",
 #'   password = "FF!5xeEFa6",
 #'   variables = "Births"
@@ -40,6 +41,14 @@
 read_hmd <- function(
     country, username, password,
     variables = c("Deaths", "Exposures", "Population", "Mx")) {
+  # Get country code
+  if(!(country %in% countries$hmd_code)) {
+    if(country %in% countries$Country) {
+      country <- countries$hmd_code[countries$Country == country]
+    } else {
+      stop("Unknown country")
+    }
+  }
   var1x1 <- variables %in% c("Deaths", "Exposures", "Mx")
   item <- variables
   item[var1x1] <- paste0(variables[var1x1], "_1x1")

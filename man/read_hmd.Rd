@@ -12,7 +12,8 @@ read_hmd(
 )
 }
 \arguments{
-\item{country}{Directory abbreviation from the HMD. For instance, Australia = "AUS".}
+\item{country}{Country name or country code as specified by the HMD. For instance, Australian
+data can be obtained using \code{country = "Australia"} or \code{country = "AUS"}.}
 
 \item{username}{HMD username (case-sensitive)}
 
@@ -41,12 +42,12 @@ HMD website (\url{https://www.mortality.org}), and obtain a valid username and p
 \examples{
 \dontrun{
 norway <- read_hmd(
-  country = "NOR",
+  country = "Norway",
   username = "Nora.Weigh@mymail.com",
   password = "FF!5xeEFa6"
 )
 norway_births <- read_hmd(
-  country = "NOR",
+  country = "Norway",
   username = "Nora.Weigh@mymail.com",
   password = "FF!5xeEFa6",
   variables = "Births"
