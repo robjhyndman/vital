@@ -28,6 +28,7 @@ Imports:
   progressr,
   purrr,
   rlang,
+  StMoMo,
   tidyr,
   tidyselect,
   tsibble,

@@ -5,27 +5,37 @@
 \alias{report.GAPC}
 \title{Generalized APC stochastic mortality model}
 \usage{
-GAPC(formula, ...)
+GAPC(formula, use_weights = TRUE, clip = 0, zeroCohorts = NULL, ...)
 }
 \arguments{
-\item{formula}{Model specification.}
+\item{formula}{Model specification}
 
-\item{...}{Arguments passed to StMoMo::StMoMo()}
+\item{use_weights}{If \code{TRUE}, will call \code{\link[stMoMo]{genWeightMat}} with arguments \code{clip} and \code{zeroCohorts}.}
+
+\item{clip}{Passed to \code{\link[stMoMo]{genWeightMat}()}}
+
+\item{zeroCohorts}{Passed to \code{\link[stMoMo]{genWeightMat}()}}
+
+\item{...}{All other arguments passed to \code{\link[StMoMo]{StMoMo}()}}
 }
 \value{
 A model specification.
 }
 \description{
-A Generalized Age-Period-Cohort (GAPC) stochastic mortality model, as defined in the StMoMo package.
-\code{GAPC()} returns a GAPC model applied to the formula's response
-variable as a function of age.
+A Generalized Age-Period-Cohort (GAPC) stochastic mortality model, as defined
+in Villegas et al. (2018). The StMoMo package is used to fit the model.
+\code{GAPC()} returns a GAPC model applied to the formula's response variable as a function of age.
+The model will optionally call \code{\link[stMoMo]{genWeightMat}} with arguments \code{clip} and \code{zeroCohorts}.
+All other arguments are passed to \code{\link[StMoMo]{StMoMo}}.
 }
 \examples{
+# CBD model
 f2 <- function(x, ages) x - mean(ages)
 cbd <- aus_mortality |>
   dplyr::filter(State == "Victoria", Sex == "female") |>
-  model(cbd = GAPC(Mortality, link = "logit", staticAgeFun = FALSE,
-  periodAgeFun = c("1", f2)))
+  model(cbd = GAPC(Mortality, link = "log",
+    staticAgeFun = FALSE, periodAgeFun = c("1", f2))
+  )
 report(cbd)
 }
 \references{
