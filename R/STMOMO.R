@@ -56,7 +56,7 @@ train_stmomo <- function(.data, sex = NULL, specials,
   }
 
   if (use_weights) {
-    wxt <- StMoMo::genWeightMat(ages == data2$ages,
+    wxt <- StMoMo::genWeightMat(ages = data2$ages,
       years = data2$years,
       clip = clip, zeroCohorts = zeroCohorts
     )
@@ -93,6 +93,11 @@ forecast.GAPC <- function(
   indexvar <- index_var(new_data)
   h <- length(unique(new_data[[indexvar]]))
   pred <- forecast(object$model, h = h)
+  # Standard error of kt
+  #pred$se <- (pred$kt.f$upper[,,"95%"] - pred$kt.f$lower[,,"95%"]) / qnorm(0.975) / 2
+  # Need to adjust the Poisson distribution to have random rates.
+  # Equal to Poisson-lognormal distribution. Will probably need to either add
+  # dist_poisson_lognormal to distributional, or use simulation
   df <- as.data.frame(pred$rates) |>
     mutate(age = pred$ages) |>
     pivot_longer(-age, names_to = "year", values_to = ".mean")
