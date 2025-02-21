@@ -3,9 +3,71 @@
 \name{GAPC}
 \alias{GAPC}
 \alias{report.GAPC}
+\alias{LC2}
+\alias{CBD}
+\alias{RH}
+\alias{APC}
+\alias{M7}
+\alias{PLAT}
 \title{Generalized APC stochastic mortality model}
 \usage{
 GAPC(formula, use_weights = TRUE, clip = 0, zeroCohorts = NULL, ...)
+
+LC2(
+  formula,
+  link = c("log", "logit"),
+  const = c("sum", "last", "first"),
+  use_weights = TRUE,
+  clip = 0,
+  zeroCohorts = NULL,
+  ...
+)
+
+CBD(
+  formula,
+  link = c("log", "logit"),
+  use_weights = TRUE,
+  clip = 0,
+  zeroCohorts = NULL,
+  ...
+)
+
+RH(
+  formula,
+  link = c("log", "logit"),
+  cohortAgeFun = c("1", "NP"),
+  use_weights = TRUE,
+  clip = 0,
+  zeroCohorts = NULL,
+  ...
+)
+
+APC(
+  formula,
+  link = c("log", "logit"),
+  use_weights = TRUE,
+  clip = 0,
+  zeroCohorts = NULL,
+  ...
+)
+
+M7(
+  formula,
+  link = c("log", "logit"),
+  use_weights = TRUE,
+  clip = 0,
+  zeroCohorts = NULL,
+  ...
+)
+
+PLAT(
+  formula,
+  link = c("log", "logit"),
+  use_weights = TRUE,
+  clip = 0,
+  zeroCohorts = NULL,
+  ...
+)
 }
 \arguments{
 \item{formula}{Model specification}
@@ -17,32 +79,106 @@ GAPC(formula, use_weights = TRUE, clip = 0, zeroCohorts = NULL, ...)
 \item{zeroCohorts}{Passed to \code{\link[stMoMo]{genWeightMat}()}}
 
 \item{...}{All other arguments passed to \code{\link[StMoMo]{StMoMo}()}}
+
+\item{link}{The link function to use. Either "log" or "logit". When using
+logit, the mortality rates need to be between 0 and 1. If they are not, most
+likely you need to use initial rather than central population values when
+computing them.}
+
+\item{cohortAgeFun}{A function defining the cohort age modulating parameter
+\eqn{\beta_x^{(0)}}. It can take values: "NP" for a non-parametric age term or "1" for
+\eqn{\beta_x^{(0)} = 1} (the default).}
 }
 \value{
 A model specification.
 }
 \description{
-A Generalized Age-Period-Cohort (GAPC) stochastic mortality model, as defined
-in Villegas et al. (2018). The StMoMo package is used to fit the model.
-\code{GAPC()} returns a GAPC model applied to the formula's response variable as a function of age.
+A Generalized Age-Period-Cohort (GAPC) stochastic mortality mode is defined
+in Villegas et al. (2018). The StMoMo package is used to fit the model. Separate
+functions are available to fit various special cases of the GAPC model.
+}
+\details{
+\code{LC2()} provides an alternative implementation of the Lee-Carter model based
+on a GAPC specification. The advantage of this approach over \code{LC()} is that
+it allows for 0 rates in the mortality data. Note that it does not return
+identical results to \code{LC()} because the model formulation is different.
+
+The Renshaw-Haberman (RH) model due to Renshaw and Haberman (2006) is another
+special case of a GAPC model, that can be considered an extension of a Lee-Carter
+model with an age-specific cohort effect.
+
+The Age-Period-Cohort (APC) model is a special case of a GAPC model discussed
+by Renshaw and Haberman (2011).
+
+The Cairns-Blake-Dowd (CBD) model due to Cairns et al (2006) can be considered
+another  special case of a GAPC model that is primarily intended for forecasting
+mortality patterns in older populations.
+
+Cairns et al (2009) extended the CBD model by adding a cohort effect and a quadratic
+age effect, giving the M7 model.
+
+Plat (2009) combined the CBD model with some features of the Lee-Carter model
+to produce a model that is suitable for full age ranges and captures the cohort effect.
+
+Each of these functions returns a GAPC model applied to the formula's response
+variable as a function of age.
 The model will optionally call \code{\link[stMoMo]{genWeightMat}} with arguments \code{clip} and \code{zeroCohorts}.
 All other arguments are passed to \code{\link[StMoMo]{StMoMo}}.
 }
 \examples{
-# CBD model
-f2 <- function(x, ages) x - mean(ages)
-cbd <- aus_mortality |>
-  dplyr::filter(State == "Victoria", Sex == "female") |>
-  model(cbd = GAPC(Mortality, link = "log",
-    staticAgeFun = FALSE, periodAgeFun = c("1", f2))
+# Fit the same CBD model using GAPC() and CBD()
+gapc <- aus_mortality |>
+  dplyr::filter(State == "Victoria", Sex == "female", Age > 50) |>
+  model(
+    cbd1 = GAPC(Mortality,
+      link = "log",
+      staticAgeFun = FALSE,
+      periodAgeFun = c("1", function(x, ages) x - mean(ages))
+    ),
+    cbd2 = CBD(Mortality)
   )
-report(cbd)
+glance(gapc)
+gapc |>
+  dplyr::select(cbd2) |>
+  report()
 }
 \references{
-Villegas, A.M., Millossovich, P., and Kaishev, V.K. (2018).
+Cairns, AJG, Blake, D, and Dowd, K (2006). A two-factor model for
+stochastic mortality with parameter uncertainty: Theory and calibration.
+\emph{Journal of Risk and Insurance}, \strong{73}(4), 687-718.
+\url{doi:10.1111/j.1539-6975.2006.00195.x}
+
+Cairns AJG, Blake D, Dowd K, Coughlan GD, Epstein D, Ong A, Balevich I (2009).
+A quantitative comparison of stochastic mortality models using data from
+England and Wales and the United States.
+\emph{North American Actuarial Journal}, \strong{13}(1), 1–35.
+\url{doi:10.1080/10920277.2009.10597538}
+
+Lee, RD, and Carter, LR (1992) Modeling and forecasting US mortality.
+\emph{Journal of the American Statistical Association}, 87, 659-671.
+\url{doi:10.1080/01621459.1992.10475265}
+
+Plat R (2009). On stochastic mortality modeling.
+\emph{Insurance: Mathematics and Economics}, \strong{45}(3), 393–404.
+\url{doi:10.1016/j.insmatheco.2009.08.006}
+
+Renshaw, AE, and Haberman, S (2006). A cohort-based extension to
+the Lee-Carter model for mortality reduction factors.
+\emph{Insurance: Mathematics and Economics}, \strong{38}(3), 556-570.
+\url{doi:10.1016/j.insmatheco.2005.12.001}
+
+Renshaw, AE, and Haberman, S (2011). A comparative study of
+parametric mortality projection models.
+\emph{Insurance: Mathematics and Economics}, \strong{48}(1), 35–55.
+<doi:10.1016/j. insmatheco.2010.09.003>
+
+Villegas, AM, Millossovich, P, and Kaishev, VK (2018).
 StMoMo: An R package for stochastic mortality modelling.
 \emph{Journal of Statistical Software}, \strong{84}(3), 1-38.
 \url{doi:10.18637/jss.v084.i03}
+}
+\seealso{
+\code{\link[=LC]{LC()}}
 }
 \author{
 Rob J Hyndman

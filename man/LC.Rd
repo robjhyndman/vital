@@ -66,6 +66,9 @@ Lee, R D, and Carter, L R (1992) Modeling and forecasting US mortality.
 Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
 method for forecasting mortality. \emph{Demography}, 38(4), 537–549.
 }
+\seealso{
+\code{\link[=LC2]{LC2()}}, \code{\link[=FDM]{FDM()}}
+}
 \author{
 Rob J Hyndman
 }

@@ -20,7 +20,7 @@
 #' mortality and fertility rates: a functional data approach.
 #' *Computational Statistics & Data Analysis*, 5, 4942-4956.
 #' <https://robjhyndman.com/publications/funcfor/>
-#' Hyndman, R. J., Booth, H., & Yasmeen, F. (2013). Coherent mortality
+#' @references Hyndman, R. J., Booth, H., & Yasmeen, F. (2013). Coherent mortality
 #' forecasting: the product-ratio method with functional time series models.
 #' *Demography*, 50(1), 261-283.
 #' <https://robjhyndman.com/publications/coherentfdm/>

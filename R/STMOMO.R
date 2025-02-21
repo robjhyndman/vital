@@ -1,19 +1,75 @@
 #' Generalized APC stochastic mortality model
 #'
-#' A Generalized Age-Period-Cohort (GAPC) stochastic mortality model, as defined
-#' in Villegas et al. (2018). The StMoMo package is used to fit the model.
-#' `GAPC()` returns a GAPC model applied to the formula's response variable as a function of age.
+#' A Generalized Age-Period-Cohort (GAPC) stochastic mortality mode is defined
+#' in Villegas et al. (2018). The StMoMo package is used to fit the model. Separate
+#' functions are available to fit various special cases of the GAPC model.
+#'
+#' `LC2()` provides an alternative implementation of the Lee-Carter model based
+#' on a GAPC specification. The advantage of this approach over `LC()` is that
+#' it allows for 0 rates in the mortality data. Note that it does not return
+#' identical results to `LC()` because the model formulation is different.
+#'
+#' The Renshaw-Haberman (RH) model due to Renshaw and Haberman (2006) is another
+#' special case of a GAPC model, that can be considered an extension of a Lee-Carter
+#' model with an age-specific cohort effect.
+#'
+#' The Age-Period-Cohort (APC) model is a special case of a GAPC model discussed
+#' by Renshaw and Haberman (2011).
+#'
+#' The Cairns-Blake-Dowd (CBD) model due to Cairns et al (2006) can be considered
+#' another  special case of a GAPC model that is primarily intended for forecasting
+#' mortality patterns in older populations.
+#'
+#' Cairns et al (2009) extended the CBD model by adding a cohort effect and a quadratic
+#' age effect, giving the M7 model.
+#'
+#' Plat (2009) combined the CBD model with some features of the Lee-Carter model
+#' to produce a model that is suitable for full age ranges and captures the cohort effect.
+#'
+#' Each of these functions returns a GAPC model applied to the formula's response
+#' variable as a function of age.
 #' The model will optionally call \code{\link[stMoMo]{genWeightMat}} with arguments `clip` and `zeroCohorts`.
 #' All other arguments are passed to \code{\link[StMoMo]{StMoMo}}.
 #'
 #' @aliases report.GAPC
+#' @seealso [LC()]
 #' @param formula Model specification
+#' @param link The link function to use. Either "log" or "logit". When using
+#' logit, the mortality rates need to be between 0 and 1. If they are not, most
+#' likely you need to use initial rather than central population values when
+#' computing them.
+#' @param cohortAgeFun A function defining the cohort age modulating parameter
+#' \eqn{\beta_x^{(0)}}. It can take values: "NP" for a non-parametric age term or "1" for
+#' \eqn{\beta_x^{(0)} = 1} (the default).
 #' @param use_weights If `TRUE`, will call \code{\link[stMoMo]{genWeightMat}} with arguments `clip` and `zeroCohorts`.
 #' @param clip Passed to \code{\link[stMoMo]{genWeightMat}()}
 #' @param zeroCohorts Passed to \code{\link[stMoMo]{genWeightMat}()}
 #' @param ... All other arguments passed to \code{\link[StMoMo]{StMoMo}()}
 #'
-#' @references Villegas, A.M., Millossovich, P., and Kaishev, V.K. (2018).
+#' @references Cairns, AJG, Blake, D, and Dowd, K (2006). A two-factor model for
+#' stochastic mortality with parameter uncertainty: Theory and calibration.
+#' *Journal of Risk and Insurance*, **73**(4), 687-718.
+#' <doi:10.1111/j.1539-6975.2006.00195.x>
+#' @references Cairns AJG, Blake D, Dowd K, Coughlan GD, Epstein D, Ong A, Balevich I (2009).
+#' A quantitative comparison of stochastic mortality models using data from
+#' England and Wales and the United States.
+#' *North American Actuarial Journal*, **13**(1), 1–35.
+#' <doi:10.1080/10920277.2009.10597538>
+#' @references Lee, RD, and Carter, LR (1992) Modeling and forecasting US mortality.
+#' *Journal of the American Statistical Association*, 87, 659-671.
+#' <doi:10.1080/01621459.1992.10475265>
+#' @references Plat R (2009). On stochastic mortality modeling.
+#' *Insurance: Mathematics and Economics*, **45**(3), 393–404.
+#' <doi:10.1016/j.insmatheco.2009.08.006>
+#' @references Renshaw, AE, and Haberman, S (2006). A cohort-based extension to
+#' the Lee-Carter model for mortality reduction factors.
+#' *Insurance: Mathematics and Economics*, **38**(3), 556-570.
+#' <doi:10.1016/j.insmatheco.2005.12.001>
+#' @references Renshaw, AE, and Haberman, S (2011). A comparative study of
+#' parametric mortality projection models.
+#' *Insurance: Mathematics and Economics*, **48**(1), 35–55.
+#' <doi:10.1016/j. insmatheco.2010.09.003>
+#' @references Villegas, AM, Millossovich, P, and Kaishev, VK (2018).
 #' StMoMo: An R package for stochastic mortality modelling.
 #' *Journal of Statistical Software*, **84**(3), 1-38.
 #' <doi:10.18637/jss.v084.i03>
@@ -21,14 +77,21 @@
 #' @return A model specification.
 #'
 #' @examples
-#' # CBD model
-#' f2 <- function(x, ages) x - mean(ages)
-#' cbd <- aus_mortality |>
-#'   dplyr::filter(State == "Victoria", Sex == "female") |>
-#'   model(cbd = GAPC(Mortality, link = "log",
-#'     staticAgeFun = FALSE, periodAgeFun = c("1", f2))
+#' # Fit the same CBD model using GAPC() and CBD()
+#' gapc <- aus_mortality |>
+#'   dplyr::filter(State == "Victoria", Sex == "female", Age > 50) |>
+#'   model(
+#'     cbd1 = GAPC(Mortality,
+#'       link = "log",
+#'       staticAgeFun = FALSE,
+#'       periodAgeFun = c("1", function(x, ages) x - mean(ages))
+#'     ),
+#'     cbd2 = CBD(Mortality)
 #'   )
-#' report(cbd)
+#' glance(gapc)
+#' gapc |>
+#'   dplyr::select(cbd2) |>
+#'   report()
 #' @export
 GAPC <- function(formula, use_weights = TRUE, clip = 0, zeroCohorts = NULL, ...) {
   stmomo_model <- new_model_class("stmomo", train = train_stmomo)
@@ -37,6 +100,220 @@ GAPC <- function(formula, use_weights = TRUE, clip = 0, zeroCohorts = NULL, ...)
     clip = clip, zeroCohorts = zeroCohorts, ...
   )
 }
+
+#' @rdname GAPC
+#' @export
+LC2 <- function(formula, link = c("log", "logit"), const = c("sum", "last", "first"),
+                use_weights = TRUE, clip = 0, zeroCohorts = NULL, ...) {
+  # Based on StMoMo::lc
+  link <- match.arg(link)
+  const <- match.arg(const)
+  constLC <- function(ax, bx, kt, b0x, gc, wxt, ages) {
+    c1 <- switch(const,
+      sum = mean(kt[1, ], na.rm = TRUE),
+      first = kt[1, 1],
+      last = tail(kt[1, ], 1)
+    )
+    ax <- ax + c1 * bx[, 1]
+    kt[1, ] <- kt[1, ] - c1
+    c2 <- sum(bx[, 1], na.rm = TRUE)
+    bx[, 1] <- bx[, 1] / c2
+    kt[1, ] <- kt[1, ] * c2
+    list(ax = ax, bx = bx, kt = kt, b0x = b0x, gc = gc)
+  }
+  stmomo_model <- new_model_class("stmomo", train = train_stmomo)
+  new_model_definition(stmomo_model, !!enquo(formula),
+    use_weights = use_weights,
+    clip = clip,
+    zeroCohorts = zeroCohorts,
+    link = link,
+    staticAgeFun = TRUE,
+    periodAgeFun = "NP",
+    constFun = constLC,
+    ...
+  )
+}
+
+#' @rdname GAPC
+#' @export
+CBD <- function(formula, link = c("log", "logit"),
+                use_weights = TRUE, clip = 0, zeroCohorts = NULL, ...) {
+  # Based on StMoMo::cbd
+  link <- match.arg(link)
+  stmomo_model <- new_model_class("stmomo", train = train_stmomo)
+  new_model_definition(stmomo_model, !!enquo(formula),
+    use_weights = use_weights,
+    clip = clip,
+    zeroCohorts = zeroCohorts,
+    link = link,
+    staticAgeFun = FALSE,
+    periodAgeFun = c("1", function(x, ages) x - mean(ages)),
+    ...
+  )
+}
+
+#' @rdname GAPC
+#' @export
+RH <- function(formula, link = c("log", "logit"), cohortAgeFun = c("1", "NP"),
+               use_weights = TRUE, clip = 0, zeroCohorts = NULL, ...) {
+  # Based on StMoMo::rh
+  link <- match.arg(link)
+  cohortAgeFun <- match.arg(cohortAgeFun)
+  constRHgeneral <- function(ax, bx, kt, b0x, gc, wxt, ages,
+                             cohortAgeFun, approxConst) {
+    c1 <- mean(kt[1, ], na.rm = TRUE)
+    ax <- ax + c1 * bx[, 1]
+    kt[1, ] <- kt[1, ] - c1
+    c2 <- sum(bx[, 1], na.rm = TRUE)
+    bx[, 1] <- bx[, 1] / c2
+    kt[1, ] <- kt[1, ] * c2
+    c3 <- mean(gc, na.rm = TRUE)
+    ax <- ax + c3 * b0x
+    gc <- gc - c3
+    if (cohortAgeFun == "NP") {
+      c4 <- sum(b0x, na.rm = TRUE)
+      b0x <- b0x / c4
+      gc <- gc * c4
+    }
+    list(ax = ax, bx = bx, kt = kt, b0x = b0x, gc = gc)
+  }
+  constRH <- function(ax, bx, kt, b0x, gc, wxt, ages) {
+    constRHgeneral(
+      ax, bx, kt, b0x, gc, wxt, ages, cohortAgeFun,
+      FALSE
+    )
+  }
+
+  stmomo_model <- new_model_class("stmomo", train = train_stmomo)
+  new_model_definition(stmomo_model, !!enquo(formula),
+    use_weights = use_weights,
+    clip = clip,
+    zeroCohorts = zeroCohorts,
+    link = link,
+    staticAgeFun = TRUE,
+    periodAgeFun = "NP",
+    cohortAgeFun = cohortAgeFun,
+    constFun = constRH,
+    ...
+  )
+}
+
+#' @rdname GAPC
+#' @export
+APC <- function(formula, link = c("log", "logit"),
+                use_weights = TRUE, clip = 0, zeroCohorts = NULL, ...) {
+  # Based on StMoMo::apc
+  link <- match.arg(link)
+  constAPC <- function(ax, bx, kt, b0x, gc, wxt, ages) {
+    nYears <- dim(kt)[2]
+    x <- ages
+    t <- 1:nYears
+    c <- (1 - tail(ages, 1)):(nYears - ages[1])
+    phiReg <- lm(gc ~ 1 + c, na.action = na.omit)
+    phi <- coef(phiReg)
+    gc <- gc - phi[1] - phi[2] * c
+    ax <- ax + phi[1] - phi[2] * x
+    kt <- kt + phi[2] * t
+    c1 <- mean(kt, na.rm = TRUE)
+    kt <- kt - c1
+    ax <- ax + c1
+    list(ax = ax, bx = bx, kt = kt, b0x = b0x, gc = gc)
+  }
+  stmomo_model <- new_model_class("stmomo", train = train_stmomo)
+  new_model_definition(stmomo_model, !!enquo(formula),
+    use_weights = use_weights,
+    clip = clip,
+    zeroCohorts = zeroCohorts,
+    link = link,
+    staticAgeFun = TRUE,
+    periodAgeFun = "1",
+    cohortAgeFun = "1",
+    constFun = constAPC,
+    ...
+  )
+}
+
+#' @rdname GAPC
+#' @export
+M7 <- function(formula, link = c("log", "logit"),
+               use_weights = TRUE, clip = 0, zeroCohorts = NULL, ...) {
+  # Based on StMoMo::m7
+  link <- match.arg(link)
+  f1 <- function(x, ages) x - mean(ages)
+  f2 <- function(x, ages) {
+    xbar <- mean(ages)
+    s2 <- mean((ages - xbar)^2)
+    (x - xbar)^2 - s2
+  }
+  constM7 <- function(ax, bx, kt, b0x, gc, wxt, ages) {
+    nYears <- dim(kt)[2]
+    x <- ages
+    t <- 1:nYears
+    c <- (1 - tail(ages, 1)):(nYears - ages[1])
+    xbar <- mean(x)
+    s2 <- mean((x - xbar)^2)
+    phiReg <- lm(gc ~ 1 + c + I(c^2), na.action = na.omit)
+    phi <- coef(phiReg)
+    gc <- gc - phi[1] - phi[2] * c - phi[3] * c^2
+    kt[3, ] <- kt[3, ] + phi[3]
+    kt[2, ] <- kt[2, ] - phi[2] - 2 * phi[3] * (t - xbar)
+    kt[1, ] <- kt[1, ] + phi[1] + phi[2] * (t - xbar) + phi[3] *
+      ((t - xbar)^2 + s2)
+    list(ax = ax, bx = bx, kt = kt, b0x = b0x, gc = gc)
+  }
+  stmomo_model <- new_model_class("stmomo", train = train_stmomo)
+  new_model_definition(stmomo_model, !!enquo(formula),
+    use_weights = use_weights,
+    clip = clip,
+    zeroCohorts = zeroCohorts,
+    link = link,
+    staticAgeFun = FALSE,
+    periodAgeFun = c("1", f1, f2),
+    cohortAgeFun = "1",
+    constFun = constM7,
+    ...
+  )
+}
+
+#' @rdname GAPC
+#' @export
+PLAT <- function(formula, link = c("log", "logit"),
+                 use_weights = TRUE, clip = 0, zeroCohorts = NULL, ...) {
+  link <- match.arg(link)
+  f2 <- function(x, ages) mean(ages) - x
+  constPlat <- function(ax, bx, kt, b0x, gc, wxt, ages) {
+    nYears <- dim(wxt)[2]
+    x <- ages
+    t <- 1:nYears
+    c <- (1 - tail(ages, 1)):(nYears - ages[1])
+    xbar <- mean(x)
+    phiReg <- lm(gc ~ 1 + c + I(c^2), na.action = na.omit)
+    phi <- coef(phiReg)
+    gc <- gc - phi[1] - phi[2] * c - phi[3] * c^2
+    kt[2, ] <- kt[2, ] + 2 * phi[3] * t
+    kt[1, ] <- kt[1, ] + phi[2] * t + phi[3] * (t^2 - 2 * xbar * t)
+    ax <- ax + phi[1] - phi[2] * x + phi[3] * x^2
+    ci <- rowMeans(kt, na.rm = TRUE)
+    ax <- ax + ci[1] + ci[2] * (xbar - x)
+    kt[1, ] <- kt[1, ] - ci[1]
+    kt[2, ] <- kt[2, ] - ci[2]
+    list(ax = ax, bx = bx, kt = kt, b0x = b0x, gc = gc)
+  }
+  stmomo_model <- new_model_class("stmomo", train = train_stmomo)
+  new_model_definition(stmomo_model, !!enquo(formula),
+    use_weights = use_weights,
+    clip = clip,
+    zeroCohorts = zeroCohorts,
+    link = link,
+    staticAgeFun = TRUE,
+    periodAgeFun = c("1", f2),
+    cohortAgeFun = "1",
+    constFun = constPlat,
+    ...
+  )
+}
+
+# Training function
 
 train_stmomo <- function(.data, sex = NULL, specials,
                          use_weights = TRUE, clip = 0, zeroCohorts = NULL, ...) {
@@ -56,7 +333,8 @@ train_stmomo <- function(.data, sex = NULL, specials,
   }
 
   if (use_weights) {
-    wxt <- StMoMo::genWeightMat(ages = data2$ages,
+    wxt <- StMoMo::genWeightMat(
+      ages = data2$ages,
       years = data2$years,
       clip = clip, zeroCohorts = zeroCohorts
     )
@@ -101,10 +379,10 @@ forecast.GAPC <- function(
   df <- df[, c("year", "age", ".mean")]
   colnames(df)[1:2] <- colnames(new_data)
   df$Year <- as.numeric(df$Year)
-  if(any(sort(unique(df$Year)) != sort(unique(new_data$Year)))) {
+  if (any(sort(unique(df$Year)) != sort(unique(new_data$Year)))) {
     stop("Years don't match")
   }
-  if(any(sort(unique(df$Age)) != sort(unique(new_data$Age)))) {
+  if (any(sort(unique(df$Age)) != sort(unique(new_data$Age)))) {
     stop("Ages don't match")
   }
   left_join(new_data, df, by = c("Age", "Year")) |>

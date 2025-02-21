@@ -34,6 +34,7 @@
 #' @references Lee R D, and Miller T (2001). Evaluating the performance of the Lee-Carter
 #' method for forecasting mortality. *Demography*, 38(4), 537–549.
 #' @author Rob J Hyndman
+#' @seealso [LC2()], [FDM()]
 #' @return A model specification.
 #'
 #' @examples
