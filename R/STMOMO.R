@@ -90,14 +90,11 @@ train_stmomo <- function(.data, sex = NULL, specials,
 forecast.GAPC <- function(
     object, new_data = NULL, h = NULL, point_forecast = list(.mean = mean),
     simulate = FALSE, bootstrap = FALSE, times = 5000, ...) {
+  # Uncertainty does not work here. Users should call with simulate = TRUE for PI
+  warning("Use simulate = TRUE to get distributional forecasts")
   indexvar <- index_var(new_data)
   h <- length(unique(new_data[[indexvar]]))
   pred <- forecast(object$model, h = h)
-  # Standard error of kt
-  #pred$se <- (pred$kt.f$upper[,,"95%"] - pred$kt.f$lower[,,"95%"]) / qnorm(0.975) / 2
-  # Need to adjust the Poisson distribution to have random rates.
-  # Equal to Poisson-lognormal distribution. Will probably need to either add
-  # dist_poisson_lognormal to distributional, or use simulation
   df <- as.data.frame(pred$rates) |>
     mutate(age = pred$ages) |>
     pivot_longer(-age, names_to = "year", values_to = ".mean")
@@ -110,15 +107,9 @@ forecast.GAPC <- function(
   if(any(sort(unique(df$Age)) != sort(unique(new_data$Age)))) {
     stop("Ages don't match")
   }
-  new_data <- left_join(new_data, df, by = c("Age", "Year"))
-  dist <- as.character(object$model$fittingModel$family)[1]
-  if (dist == "poisson") {
-    return(distributional::dist_poisson(new_data$.mean))
-  } else if (dist == "binomial") {
-    return(distributional::dist_bernoulli(new_data$.mean))
-  } else {
-    stop("Unknown distribution")
-  }
+  left_join(new_data, df, by = c("Age", "Year")) |>
+    dplyr::pull(.mean) |>
+    distributional::dist_degenerate()
 }
 
 #' @export
@@ -141,7 +132,7 @@ generate.GAPC <- function(
     )
   df <- df[, c(".rep", "year", "age", ".sim")]
   colnames(df)[1:3] <- colnames(new_data)
-  new_data <- left_join(new_data, df, by = c(".rep", "Year", "Age"))
+  left_join(new_data, df, by = c(".rep", "Year", "Age"))
 }
 
 #' @export
