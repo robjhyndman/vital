@@ -519,9 +519,7 @@ generate.GAPC <- function(
     mutate(age = pred$ages) |>
     pivot_longer(-age, names_to = "year", values_to = ".sim") |>
     mutate(
-      #.rep = stringr::str_extract(year, "\\d*$"),
-      .rep = grep("\\d*$", year, value = TRUE),
-      #year = as.numeric(stringr::str_remove(year, "\\.\\d*$"))
+      .rep = sub(".*?(\\d*)$", "\\1", year),
       year = as.numeric(sub("\\.\\d*$", "", year))
     )
   df <- df[, c(".rep", "year", "age", ".sim")]
