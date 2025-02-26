@@ -31,7 +31,7 @@
 #'
 #' Each of these functions returns a GAPC model applied to the formula's response
 #' variable as a function of age.
-#' The model will optionally call \code{\link[stMoMo]{genWeightMat}} with arguments `clip` and `zeroCohorts`.
+#' The model will optionally call \code{\link[StMoMo]{genWeightMat}} with arguments `clip` and `zeroCohorts`.
 #' All other arguments are passed to \code{\link[StMoMo]{StMoMo}}.
 #'
 #' @aliases report.GAPC
@@ -41,12 +41,16 @@
 #' logit, the mortality rates need to be between 0 and 1. If they are not, most
 #' likely you need to use initial rather than central population values when
 #' computing them.
+#' @param const defines the constraint to impose on the period index of the model
+#' ensure identifiability. The alternatives are "sum" (default), "last" and "first"
+#' which apply constraints \eqn{\sum_{t=1}^T \kappa_t=0}, \eqn{\kappa_T = 0} and
+#' \eqn{\kappa_1 = 0} respectively.
 #' @param cohortAgeFun A function defining the cohort age modulating parameter
 #' \eqn{\beta_x^{(0)}}. It can take values: "NP" for a non-parametric age term or "1" for
 #' \eqn{\beta_x^{(0)} = 1} (the default).
-#' @param use_weights If `TRUE`, will call \code{\link[stMoMo]{genWeightMat}} with arguments `clip` and `zeroCohorts`.
-#' @param clip Passed to \code{\link[stMoMo]{genWeightMat}()}
-#' @param zeroCohorts Passed to \code{\link[stMoMo]{genWeightMat}()}
+#' @param use_weights If `TRUE`, will call \code{\link[StMoMo]{genWeightMat}} with arguments `clip` and `zeroCohorts`.
+#' @param clip Passed to \code{\link[StMoMo]{genWeightMat}()}
+#' @param zeroCohorts Passed to \code{\link[StMoMo]{genWeightMat}()}
 #' @param ... All other arguments passed to \code{\link[StMoMo]{StMoMo}()}
 #'
 #' @references Cairns, AJG, Blake, D, and Dowd, K (2006). A two-factor model for
@@ -271,8 +275,8 @@ APC <- function(
     x <- ages
     t <- 1:nYears
     c <- (1 - tail(ages, 1)):(nYears - ages[1])
-    phiReg <- lm(gc ~ 1 + c, na.action = na.omit)
-    phi <- coef(phiReg)
+    phiReg <- stats::lm(gc ~ 1 + c, na.action = na.omit)
+    phi <- stats::coef(phiReg)
     gc <- gc - phi[1] - phi[2] * c
     ax <- ax + phi[1] - phi[2] * x
     kt <- kt + phi[2] * t
@@ -322,8 +326,8 @@ M7 <- function(
     c <- (1 - tail(ages, 1)):(nYears - ages[1])
     xbar <- mean(x)
     s2 <- mean((x - xbar)^2)
-    phiReg <- lm(gc ~ 1 + c + I(c^2), na.action = na.omit)
-    phi <- coef(phiReg)
+    phiReg <- stats::lm(gc ~ 1 + c + I(c^2), na.action = na.omit)
+    phi <- stats::coef(phiReg)
     gc <- gc - phi[1] - phi[2] * c - phi[3] * c^2
     kt[3, ] <- kt[3, ] + phi[3]
     kt[2, ] <- kt[2, ] - phi[2] - 2 * phi[3] * (t - xbar)
@@ -368,8 +372,8 @@ PLAT <- function(
     t <- 1:nYears
     c <- (1 - tail(ages, 1)):(nYears - ages[1])
     xbar <- mean(x)
-    phiReg <- lm(gc ~ 1 + c + I(c^2), na.action = na.omit)
-    phi <- coef(phiReg)
+    phiReg <- stats::lm(gc ~ 1 + c + I(c^2), na.action = na.omit)
+    phi <- stats::coef(phiReg)
     gc <- gc - phi[1] - phi[2] * c - phi[3] * c^2
     kt[2, ] <- kt[2, ] + 2 * phi[3] * t
     kt[1, ] <- kt[1, ] + phi[2] * t + phi[3] * (t^2 - 2 * xbar * t)
@@ -510,13 +514,15 @@ generate.GAPC <- function(
   if (times != length(unique(new_data$.rep))) {
     stop("We have a problem")
   }
-  pred <- simulate(x$model, nsim = times, h = max(2, h))
+  pred <- stats::simulate(x$model, nsim = times, h = max(2, h))
   df <- as.data.frame(pred$rates) |>
     mutate(age = pred$ages) |>
     pivot_longer(-age, names_to = "year", values_to = ".sim") |>
     mutate(
-      .rep = stringr::str_extract(year, "\\d*$"),
-      year = as.numeric(stringr::str_remove(year, "\\.\\d*$"))
+      #.rep = stringr::str_extract(year, "\\d*$"),
+      .rep = grep("\\d*$", year, value = TRUE),
+      #year = as.numeric(stringr::str_remove(year, "\\.\\d*$"))
+      year = as.numeric(sub("\\.\\d*$", "", year))
     )
   df <- df[, c(".rep", "year", "age", ".sim")]
   colnames(df)[1:3] <- colnames(new_data)
@@ -552,7 +558,7 @@ model_sum.GAPC <- function(x) {
 vital_to_stmomo <- function(.data) {
   # Variable names
   indexvar <- index_var(.data)
-  vvar <- vital:::vital_var_list(.data)
+  vvar <- vital_var_list(.data)
   if (!("deaths" %in% names(vvar))) {
     stop("Deaths variable is required")
   }
@@ -656,3 +662,10 @@ cohort_components.GAPC <- function(object, ...) {
     tidyr::unnest("out") |>
     as_tsibble(index = Birth_Year, key = all_of(keys))
 }
+
+
+utils::globalVariables(c(
+  "Birth_Year",
+  "age",
+  "year"
+))

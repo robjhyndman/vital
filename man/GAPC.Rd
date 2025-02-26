@@ -72,11 +72,11 @@ PLAT(
 \arguments{
 \item{formula}{Model specification}
 
-\item{use_weights}{If \code{TRUE}, will call \code{\link[stMoMo]{genWeightMat}} with arguments \code{clip} and \code{zeroCohorts}.}
+\item{use_weights}{If \code{TRUE}, will call \code{\link[StMoMo]{genWeightMat}} with arguments \code{clip} and \code{zeroCohorts}.}
 
-\item{clip}{Passed to \code{\link[stMoMo]{genWeightMat}()}}
+\item{clip}{Passed to \code{\link[StMoMo]{genWeightMat}()}}
 
-\item{zeroCohorts}{Passed to \code{\link[stMoMo]{genWeightMat}()}}
+\item{zeroCohorts}{Passed to \code{\link[StMoMo]{genWeightMat}()}}
 
 \item{...}{All other arguments passed to \code{\link[StMoMo]{StMoMo}()}}
 
@@ -84,6 +84,11 @@ PLAT(
 logit, the mortality rates need to be between 0 and 1. If they are not, most
 likely you need to use initial rather than central population values when
 computing them.}
+
+\item{const}{defines the constraint to impose on the period index of the model
+ensure identifiability. The alternatives are "sum" (default), "last" and "first"
+which apply constraints \eqn{\sum_{t=1}^T \kappa_t=0}, \eqn{\kappa_T = 0} and
+\eqn{\kappa_1 = 0} respectively.}
 
 \item{cohortAgeFun}{A function defining the cohort age modulating parameter
 \eqn{\beta_x^{(0)}}. It can take values: "NP" for a non-parametric age term or "1" for
@@ -125,7 +130,7 @@ to produce a model that is suitable for full age ranges and captures the cohort 
 
 Each of these functions returns a GAPC model applied to the formula's response
 variable as a function of age.
-The model will optionally call \code{\link[stMoMo]{genWeightMat}} with arguments \code{clip} and \code{zeroCohorts}.
+The model will optionally call \code{\link[StMoMo]{genWeightMat}} with arguments \code{clip} and \code{zeroCohorts}.
 All other arguments are passed to \code{\link[StMoMo]{StMoMo}}.
 }
 \examples{

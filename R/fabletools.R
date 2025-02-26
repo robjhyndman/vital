@@ -237,7 +237,7 @@ build_mable <- function(x, key = NULL, key_data = NULL, model = NULL) {
 }
 
 build_mable_meta <- function(x, key_data, model, response) {
-  tsibble::new_tibble(
+  tsibble::new_tsibble(
     x,
     key = key_data,
     model = model,

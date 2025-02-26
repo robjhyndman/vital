@@ -29,6 +29,7 @@ Imports:
   purrr,
   rlang,
   StMoMo,
+  tibble,
   tidyr,
   tidyselect,
   tsibble,
