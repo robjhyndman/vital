@@ -44,20 +44,35 @@
 #' report(lc)
 #' autoplot(lc)
 #' @export
-LC <- function(formula, adjust = c("dt", "dxt", "e0", "none"),
-               jump_choice = c("fit", "actual"), scale = FALSE,
-               ...) {
+LC <- function(
+  formula,
+  adjust = c("dt", "dxt", "e0", "none"),
+  jump_choice = c("fit", "actual"),
+  scale = FALSE,
+  ...
+) {
   adjust <- match.arg(adjust)
   jump_choice <- match.arg(jump_choice)
   lc_model <- new_model_class("lc", train = train_lc)
-  new_model_definition(lc_model, !!enquo(formula),
+  new_model_definition(
+    lc_model,
+    !!enquo(formula),
     adjust = adjust,
-    jump_choice = jump_choice, scale = scale, ...
+    jump_choice = jump_choice,
+    scale = scale,
+    ...
   )
 }
 
-train_lc <- function(.data, sex = NULL, specials, adjust,
-                     jump_choice, scale = FALSE, ...) {
+train_lc <- function(
+  .data,
+  sex = NULL,
+  specials,
+  adjust,
+  jump_choice,
+  scale = FALSE,
+  ...
+) {
   # Variable names
   indexvar <- index_var(.data)
   vvar <- vital_var_list(.data)
@@ -66,11 +81,16 @@ train_lc <- function(.data, sex = NULL, specials, adjust,
   measures <- measures[1]
 
   # Compute Lee-Carter model
-  out <- lca(.data,
-    sex = sex, age = vvar$age, pop = vvar$population,
+  out <- lca(
+    .data,
+    sex = sex,
+    age = vvar$age,
+    pop = vvar$population,
     deaths = vvar$deaths,
     rates = colnames(.data)[2],
-    adjust = adjust, jump_choice = jump_choice, scale = scale
+    adjust = adjust,
+    jump_choice = jump_choice,
+    scale = scale
   )
 
   # Save jump_choice for forecasting
@@ -101,8 +121,15 @@ train_lc <- function(.data, sex = NULL, specials, adjust,
 #' @export
 
 forecast.LC <- function(
-    object, new_data = NULL, h = NULL, point_forecast = list(.mean = mean),
-    simulate = FALSE, bootstrap = FALSE, times = 5000, ...) {
+  object,
+  new_data = NULL,
+  h = NULL,
+  point_forecast = list(.mean = mean),
+  simulate = FALSE,
+  bootstrap = FALSE,
+  times = 5000,
+  ...
+) {
   jump_choice <- object$model$jump_choice
 
   # simulation/bootstrap not actually used here as forecast.mdl_vtl_ts
@@ -126,7 +153,9 @@ forecast.LC <- function(
 
   if (jump_choice == "actual") {
     # Adjust forecasts based on last year
-    lastresid <- object$fitted[object$fitted[[indexvar]] == max(object$fitted[[indexvar]]), ] |>
+    lastresid <- object$fitted[
+      object$fitted[[indexvar]] == max(object$fitted[[indexvar]]),
+    ] |>
       dplyr::select(all_of(c(agevar, ".innov")))
     fc2 <- fc2 |>
       left_join(lastresid, by = agevar) |>
@@ -138,8 +167,13 @@ forecast.LC <- function(
 
 #' @export
 generate.LC <- function(
-    x, new_data = NULL, h = NULL,
-    bootstrap = FALSE, times = 1, ...) {
+  x,
+  new_data = NULL,
+  h = NULL,
+  bootstrap = FALSE,
+  times = 1,
+  ...
+) {
   agevar <- age_var(new_data)
   indexvar <- index_var(new_data)
   if (times != length(unique(new_data$.rep))) {
@@ -204,17 +238,27 @@ model_sum.LC <- function(x) {
 #   patchwork::plot_annotation("Lee Carter components for Victoria")
 # autoplot(aus_lc$time, kt)
 
-
 # Based on demography::lca()
 # But assumes any log transformation has already occurred
 
-lca <- function(data, sex, age, rates, pop, deaths,
-                adjust, jump_choice, scale) {
+lca <- function(
+  data,
+  sex,
+  age,
+  rates,
+  pop,
+  deaths,
+  adjust,
+  jump_choice,
+  scale
+) {
   index <- tsibble::index_var(data)
 
   # Check transformation
   if (substr(rates, 1, 3) != "log") {
-    stop("Lee-Carter models require a log transformation of the response variable.")
+    stop(
+      "Lee-Carter models require a log transformation of the response variable."
+    )
   }
 
   # Extract mortality rates and population numbers
@@ -236,7 +280,6 @@ lca <- function(data, sex, age, rates, pop, deaths,
     deaths <- t(matrix(data[[deaths]], nrow = n, ncol = m, byrow = TRUE))
     deaths[is.na(deaths)] <- 0
   }
-
 
   # Do SVD
   ax <- colMeans(logrates, na.rm = TRUE) # ax is mean of logrates by column
@@ -273,7 +316,11 @@ lca <- function(data, sex, age, rates, pop, deaths,
       zi <- as.numeric(z[, i])
       weight <- as.numeric(zi > -1e-8) # Avoid -infinity due to zero population
       # Prevent warnings if population is non-integer
-      yearglm <- stats::glm(y ~ offset(zi) - 1 + bx, family = stats::poisson, weights = weight) |>
+      yearglm <- stats::glm(
+        y ~ offset(zi) - 1 + bx,
+        family = stats::poisson,
+        weights = weight
+      ) |>
         suppressWarnings()
       ktadj[i] <- yearglm$coef[1]
     }
@@ -290,9 +337,14 @@ lca <- function(data, sex, age, rates, pop, deaths,
         } else {
           guess <- mean(c(ktadj[i - 1], kt[i]))
         }
-        ktadj[i] <- findroot(FUN,
-          guess = guess, margin = 10 * ktse[i],
-          ax = ax, bx = bx, popi = pop[i, ], Dt = sum_deaths
+        ktadj[i] <- findroot(
+          FUN,
+          guess = guess,
+          margin = 10 * ktse[i],
+          ax = ax,
+          bx = bx,
+          popi = pop[i, ],
+          Dt = sum_deaths
         )
       }
     }
@@ -313,9 +365,16 @@ lca <- function(data, sex, age, rates, pop, deaths,
         } else {
           guess <- mean(c(ktadj[i - 1], kt[i]))
         }
-        ktadj[i] <- findroot(FUN2,
-          guess = guess, margin = 10 * ktse[i], e0i = e0[i],
-          ax = ax, bx = bx, ages = ages, sex = sex, startage = startage
+        ktadj[i] <- findroot(
+          FUN2,
+          guess = guess,
+          margin = 10 * ktse[i],
+          e0i = e0[i],
+          ax = ax,
+          bx = bx,
+          ages = ages,
+          sex = sex,
+          startage = startage
         )
       }
     }
@@ -330,8 +389,6 @@ lca <- function(data, sex, age, rates, pop, deaths,
     kt <- kt / avdiffk
   }
 
-
-
   # Compute deviances
   logfit <- fitmx(kt, ax, bx, transform = TRUE)
   deathsadjfit <- exp(logfit) * pop
@@ -342,14 +399,18 @@ lca <- function(data, sex, age, rates, pop, deaths,
   # Drop zero deaths from mdev calculation
   d_nozero <- deaths
   d_nozero[deaths == 0] <- 0.000001
-  mdevlogadd <- 2 / dflogadd * sum(deaths * log(d_nozero / deathsadjfit) - (deaths - deathsadjfit))
+  mdevlogadd <- 2 /
+    dflogadd *
+    sum(deaths * log(d_nozero / deathsadjfit) - (deaths - deathsadjfit))
   dfloglin <- (m - 2) * n
-  mdevloglin <- 2 / dfloglin * sum(deaths * log(d_nozero / deathslinfit) - (deaths - deathslinfit))
+  mdevloglin <- 2 /
+    dfloglin *
+    sum(deaths * log(d_nozero / deathslinfit) - (deaths - deathslinfit))
   mdev <- c(mdevlogadd, mdevloglin)
   names(mdev) <- c("Mean deviance base", "Mean deviance total")
 
   # First object contains ages
-  output1 <- tsibble::tibble(
+  output1 <- tibble::tibble(
     age = ages,
     ax = ax,
     bx = bx
@@ -357,13 +418,12 @@ lca <- function(data, sex, age, rates, pop, deaths,
   colnames(output1)[1] <- age
 
   # Second object contains years
-  output2 <- tsibble::tibble(
+  output2 <- tibble::tibble(
     year = year,
     kt = kt
   )
   colnames(output2)[1] <- index
   output2 <- as_tsibble(output2, index = index)
-
 
   # Fit model to kt series
   fit_kt <- output2 |>
@@ -371,9 +431,11 @@ lca <- function(data, sex, age, rates, pop, deaths,
 
   # Return
   list(
-    by_x = output1, by_t = output2,
+    by_x = output1,
+    by_t = output2,
     fit_kt = fit_kt,
-    varprop = svd.mx$d[1]^2 / sum(svd.mx$d^2), mdev = mdev,
+    varprop = svd.mx$d[1]^2 / sum(svd.mx$d^2),
+    mdev = mdev,
     adjust = adjust
   )
 }
@@ -392,8 +454,10 @@ estimate_e0 <- function(kt, ax, bx, agegroup, sex, startage = 0) {
 # sex is a string
 get.e0 <- function(x, agegroup, sex, startage = 0) {
   lt(
-    tsibble::tibble(age = agegroup, sex = sex, mx = x),
-    "sex", "age", "mx"
+    tibble::tibble(age = agegroup, sex = sex, mx = x),
+    "sex",
+    "age",
+    "mx"
   )$ex[1]
 }
 
@@ -412,15 +476,20 @@ fitmx <- function(kt, ax, bx, transform = FALSE) {
 
 findroot <- function(FUN, guess, margin, try = 1, ...) {
   # First try in successively larger intervals around best guess
-  for (i in 1:5)
-  {
-    rooti <- try(stats::uniroot(FUN, interval = guess + i * margin / 3 * c(-1, 1), ...), silent = TRUE)
+  for (i in 1:5) {
+    rooti <- try(
+      stats::uniroot(FUN, interval = guess + i * margin / 3 * c(-1, 1), ...),
+      silent = TRUE
+    )
     if (!(inherits(rooti, "try-error"))) {
       return(rooti$root)
     }
   }
   # No luck. Try really big intervals
-  rooti <- try(stats::uniroot(FUN, interval = guess + 10 * margin * c(-1, 1), ...), silent = TRUE)
+  rooti <- try(
+    stats::uniroot(FUN, interval = guess + 10 * margin * c(-1, 1), ...),
+    silent = TRUE
+  )
   if (!(inherits(rooti, "try-error"))) {
     return(rooti$root)
   }
@@ -498,9 +567,11 @@ newroot <- function(FUN, guess, ...) {
 time_components.LC <- function(object, ...) {
   modelname <- attributes(object)$model
   object <- object |>
-    mutate(out = purrr::map(object[[modelname]], function(x) {
-      x$fit$model
-    })) |>
+    mutate(
+      out = purrr::map(object[[modelname]], function(x) {
+        x$fit$model
+      })
+    ) |>
     as_tibble()
   object[[modelname]] <- NULL
   index <- index_var(object$out[[1]]$by_t)
@@ -515,9 +586,11 @@ time_components.LC <- function(object, ...) {
 age_components.LC <- function(object, ...) {
   modelname <- attributes(object)$model
   object <- object |>
-    mutate(out = purrr::map(object[[modelname]], function(x) {
-      x$fit$model
-    })) |>
+    mutate(
+      out = purrr::map(object[[modelname]], function(x) {
+        x$fit$model
+      })
+    ) |>
     as_tibble()
   object[[modelname]] <- NULL
   object$out <- lapply(object$out, function(x) as_tibble(x$by_x))
@@ -542,4 +615,12 @@ autoplot.LC <- function(object, age = "Age", ...) {
     patchwork::plot_layout(ncol = 2, nrow = 2, guides = "collect")
 }
 
-utils::globalVariables(c("kt", "ax", "bx", "varprop", "lst_data", "by_x", "by_t"))
+utils::globalVariables(c(
+  "kt",
+  "ax",
+  "bx",
+  "varprop",
+  "lst_data",
+  "by_x",
+  "by_t"
+))

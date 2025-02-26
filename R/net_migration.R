@@ -55,8 +55,10 @@ net_migration <- function(deaths, births) {
 
   # Convert births to population at age -1 so they are 0 on 1 January following year
   births[[agevar]] <- -1
-  births <- births[births[[birth_idx]] >= min(deaths[[death_idx]]) &
-    births[[birth_idx]] <= max(deaths[[death_idx]]), ]
+  births <- births[
+    births[[birth_idx]] >= min(deaths[[death_idx]]) &
+      births[[birth_idx]] <= max(deaths[[death_idx]]),
+  ]
   if (birthsvar %in% colnames(births)) {
     births[[popvar]] <- births[[birthsvar]]
   } else if (bpopvar != colnames(births)) {
@@ -87,13 +89,20 @@ net_migration <- function(deaths, births) {
     suppressMessages()
 
   deaths$Lx <- if_else(deaths[[agevar]] == -1, 1, deaths$Lx)
-  deaths$Lxplus1 <- if_else(deaths[[agevar]] == max(deaths[[agevar]]),
-    deaths$Tx, deaths$Lxplus1
+  deaths$Lxplus1 <- if_else(
+    deaths[[agevar]] == max(deaths[[agevar]]),
+    deaths$Tx,
+    deaths$Lxplus1
   )
-  deaths$Lx <- if_else(deaths[[agevar]] == max(deaths[[agevar]]),
-    deaths$Txminus1, deaths$Lx
+  deaths$Lx <- if_else(
+    deaths[[agevar]] == max(deaths[[agevar]]),
+    deaths$Txminus1,
+    deaths$Lx
   )
-  deaths[[deathsvar]] <- pmax(0, deaths[[popvar]] * (1 - deaths$Lxplus1 / deaths$Lx))
+  deaths[[deathsvar]] <- pmax(
+    0,
+    deaths[[popvar]] * (1 - deaths$Lxplus1 / deaths$Lx)
+  )
   deaths$Lx <- deaths$Lxplus1 <- deaths$Tx <- deaths$Txminus1 <- NULL
 
   nextpop <- deaths |> select(all_of(popvar))
@@ -105,8 +114,10 @@ net_migration <- function(deaths, births) {
     tsibble::group_by_key() |>
     dplyr::mutate(diff = tsibble::difference(nextpop)) |>
     dplyr::ungroup()
-  nextpop$nextpop <- if_else(nextpop[[agevar]] == max(nextpop[[agevar]]),
-    nextpop$diff, nextpop$nextpop
+  nextpop$nextpop <- if_else(
+    nextpop[[agevar]] == max(nextpop[[agevar]]),
+    nextpop$diff,
+    nextpop$nextpop
   )
   nextpop$diff <- NULL
 
@@ -125,7 +136,10 @@ net_migration <- function(deaths, births) {
   # Only return population, estimated (not actual) deaths, net migrants
   mig |>
     dplyr::select(dplyr::all_of(c(
-      death_idx, death_keys, popvar, deathsvar,
+      death_idx,
+      death_keys,
+      popvar,
+      deathsvar,
       "NetMigration"
     ))) |>
     as_vital(

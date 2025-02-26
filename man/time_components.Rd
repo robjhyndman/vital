@@ -23,5 +23,4 @@ aus_mortality |>
   dplyr::filter(State == "Victoria", Sex == "female") |>
   model(lee_carter = LC(log(Mortality))) |>
   time_components()
-
 }

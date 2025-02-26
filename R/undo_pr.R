@@ -70,26 +70,38 @@ undo_pr <- function(.data, .var, key = Sex, times = 2000) {
     left_join(gm, by = c(index, keys_nokey))
   # Convert distributions to samples
   if (distributional::is_distribution(.data[[varname]])) {
-    .data$.gm <- distributional::dist_sample(distributional::generate(.data$.gm, times))
-    .data[[varname]] <- distributional::dist_sample(distributional::generate(.data[[varname]], times))
+    .data$.gm <- distributional::dist_sample(distributional::generate(
+      .data$.gm,
+      times
+    ))
+    .data[[varname]] <- distributional::dist_sample(distributional::generate(
+      .data[[varname]],
+      times
+    ))
   }
   .data[[varname]] <- .data[[varname]] * .data$.gm
   if (distributional::is_distribution(.data[[varname]])) {
     .data$.mean <- mean(.data[[varname]])
   }
   .data$.gm <- NULL
-  output <- as_vital(.data,
-    index = index, key = keys,
+  output <- as_vital(
+    .data,
+    index = index,
+    key = keys,
     .age = vvar$age,
     .population = vvar$population,
     .sex = vvar$sex,
     .deaths = vvar$deaths,
-    .births = vvar$births, reorder = TRUE
+    .births = vvar$births,
+    reorder = TRUE
   )
   if (fable) {
-    output <- build_vital_fable(output,
-      response = varname, distribution = varname,
-      vitals = vvar, reorder = TRUE
+    output <- build_vital_fable(
+      output,
+      response = varname,
+      distribution = varname,
+      vitals = vvar,
+      reorder = TRUE
     )
   }
   return(output)
@@ -160,26 +172,38 @@ undo_sd <- function(.data, .var, key = Sex, times = 2000) {
     left_join(gm, by = c(index, keys_nokey))
   # Convert distributions to samples
   if (distributional::is_distribution(.data[[varname]])) {
-    .data$.gm <- distributional::dist_sample(distributional::generate(.data$.gm, times))
-    .data[[varname]] <- distributional::dist_sample(distributional::generate(.data[[varname]], times))
+    .data$.gm <- distributional::dist_sample(distributional::generate(
+      .data$.gm,
+      times
+    ))
+    .data[[varname]] <- distributional::dist_sample(distributional::generate(
+      .data[[varname]],
+      times
+    ))
   }
   .data[[varname]] <- .data[[varname]] + .data$.gm
   if (distributional::is_distribution(.data[[varname]])) {
     .data$.mean <- mean(.data[[varname]])
   }
   .data$.gm <- NULL
-  output <- as_vital(.data,
-    index = index, key = keys,
+  output <- as_vital(
+    .data,
+    index = index,
+    key = keys,
     .age = vvar$age,
     .population = vvar$population,
     .sex = vvar$sex,
     .deaths = vvar$deaths,
-    .births = vvar$births, reorder = TRUE
+    .births = vvar$births,
+    reorder = TRUE
   )
   if (fable) {
-    output <- build_vital_fable(output,
-      response = varname, distribution = varname,
-      vitals = vvar, reorder = TRUE
+    output <- build_vital_fable(
+      output,
+      response = varname,
+      distribution = varname,
+      vitals = vvar,
+      reorder = TRUE
     )
   }
   return(output)

@@ -48,8 +48,11 @@ model.vital <- function(.data, ..., .safely = TRUE) {
     abort("At least one model must be specified.")
   }
   if (!all(is_mdl <- purrr::map_lgl(models, inherits, "mdl_defn"))) {
-    abort(sprintf("Model definition(s) incorrectly created: %s
-Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
+    abort(sprintf(
+      "Model definition(s) incorrectly created: %s
+Check that specified model(s) are model definitions.",
+      nm[which(!is_mdl)[1]]
+    ))
   }
 
   # Keys including age
@@ -139,7 +142,10 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
     fits <- purrr::imap(fits, function(x, nm) {
       err <- purrr::map_lgl(x, function(x) !is.null(x[["error"]]))
       if ((tot_err <- sum(err)) > 0) {
-        err_msg <- table(purrr::map_chr(x[err], function(x) x[["error"]][["message"]]))
+        err_msg <- table(purrr::map_chr(
+          x[err],
+          function(x) x[["error"]][["message"]]
+        ))
         rlang::warn(
           sprintf(
             "%i error%s encountered for %s\n%s\n",
@@ -168,7 +174,11 @@ Check that specified model(s) are model definitions.", nm[which(!is_mdl)[1]]))
 
 require_package <- function(pkg) {
   if (!requireNamespace(pkg, quietly = TRUE)) {
-    abort(sprintf("The `%s` package must be installed to use this functionality. It can be installed with install.packages(\"%s\")", pkg, pkg))
+    abort(sprintf(
+      "The `%s` package must be installed to use this functionality. It can be installed with install.packages(\"%s\")",
+      pkg,
+      pkg
+    ))
   }
 }
 
@@ -199,22 +209,30 @@ nest_keys <- function(.data, nm = "data") {
   ordered <- is_ordered(.data)
   regular <- is_regular(.data)
   attr_data <- vital_var_list(.data)
-  out[[nm]] <- purrr::map(row_indices, function(x, i, j) {
-    out <- if (is.null(j)) x[i, ] else x[i, j]
-    tsibble::build_tsibble_meta(
-      out,
-      key_data = tsibble::as_tibble(list(.rows = list(seq_along(i)))),
-      index = idx, index2 = idx2, ordered = ordered,
-      interval = if (length(i) > 1 && regular) tsibble::interval_pull(out[[idx]]) else tsibble::interval(.data)
-    ) |>
-      as_vital(
-        .age = attr_data$age,
-        .sex = attr_data$sex,
-        .births = attr_data$births,
-        .deaths = attr_data$deaths,
-        .population = attr_data$population
-      )
-  }, x = tsibble::as_tibble(.data), j = col_nest)
+  out[[nm]] <- purrr::map(
+    row_indices,
+    function(x, i, j) {
+      out <- if (is.null(j)) x[i, ] else x[i, j]
+      tsibble::build_tsibble_meta(
+        out,
+        key_data = tsibble::as_tibble(list(.rows = list(seq_along(i)))),
+        index = idx,
+        index2 = idx2,
+        ordered = ordered,
+        interval = if (length(i) > 1 && regular)
+          tsibble::interval_pull(out[[idx]]) else tsibble::interval(.data)
+      ) |>
+        as_vital(
+          .age = attr_data$age,
+          .sex = attr_data$sex,
+          .births = attr_data$births,
+          .deaths = attr_data$deaths,
+          .population = attr_data$population
+        )
+    },
+    x = tsibble::as_tibble(.data),
+    j = col_nest
+  )
   tsibble::as_tibble(out)
 }
 
@@ -225,7 +243,9 @@ list_of_models <- function(x = list()) {
 #' @export
 estimate.vital <- function(.data, .model, sex, ...) {
   if (!inherits(.model, "mdl_defn")) {
-    abort("Model definition incorrectly created. Check that specified model(s) are model definitions.")
+    abort(
+      "Model definition incorrectly created. Check that specified model(s) are model definitions."
+    )
   }
   .model$stage <- "estimate"
   .model$add_data(.data)
@@ -247,7 +267,9 @@ estimate.vital <- function(.data, .model, sex, ...) {
   if (!is.null(birthsvar)) {
     births <- .data[[birthsvar]]
   }
-  resp <- map(parsed$expressions, eval_tidy,
+  resp <- map(
+    parsed$expressions,
+    eval_tidy,
     data = .data,
     env = .model$specials
   )
@@ -263,12 +285,20 @@ estimate.vital <- function(.data, .model, sex, ...) {
   if (!is.null(birthsvar)) {
     .data[[birthsvar]] <- births
   }
-  attributes(.data) <- c(attributes(.data), .dt_attr[setdiff(
-    names(.dt_attr),
-    names(attributes(.data))
-  )])
+  attributes(.data) <- c(
+    attributes(.data),
+    .dt_attr[setdiff(
+      names(.dt_attr),
+      names(attributes(.data))
+    )]
+  )
   fit <- eval_tidy(
-    expr(.model$train(.data = .data, sex = sex, specials = parsed$specials, !!!.model$extra))
+    expr(.model$train(
+      .data = .data,
+      sex = sex,
+      specials = parsed$specials,
+      !!!.model$extra
+    ))
   )
   .model$remove_data()
   .model$stage <- NULL
@@ -277,10 +307,16 @@ estimate.vital <- function(.data, .model, sex, ...) {
 
 # Same as fabletools function but with different class
 new_model <- function(fit = NULL, model, data, response, transformation) {
-  structure(list(
-    fit = fit, model = model, data = data, response = response,
-    transformation = transformation
-  ), class = c("mdl_vtl_ts", "mdl_ts"))
+  structure(
+    list(
+      fit = fit,
+      model = model,
+      data = data,
+      response = response,
+      transformation = transformation
+    ),
+    class = c("mdl_vtl_ts", "mdl_ts")
+  )
 }
 
 globalVariables(c(".rows", "data", "calc", "sex"))

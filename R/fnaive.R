@@ -63,9 +63,15 @@ train_fnaive <- function(.data, ...) {
 #' @rdname forecast
 #' @export
 forecast.FNAIVE <- function(
-    object, new_data = NULL, h = NULL,
-    point_forecast = list(.mean = mean),
-    simulate = FALSE, bootstrap = FALSE, times = 5000, ...) {
+  object,
+  new_data = NULL,
+  h = NULL,
+  point_forecast = list(.mean = mean),
+  simulate = FALSE,
+  bootstrap = FALSE,
+  times = 5000,
+  ...
+) {
   # simulation/bootstrap not actually used here as forecast.mdl_vtl_ts
   # handles this using generate() and forecast.LC is never called.
   # The arguments are included so they show in the docs
@@ -98,8 +104,13 @@ forecast.FNAIVE <- function(
 
 #' @export
 generate.FNAIVE <- function(
-    x, new_data = NULL, h = NULL,
-    bootstrap = FALSE, times = 1, ...) {
+  x,
+  new_data = NULL,
+  h = NULL,
+  bootstrap = FALSE,
+  times = 1,
+  ...
+) {
   agevar <- age_var(new_data)
   indexvar <- index_var(x$fitted)
   h <- length(unique(new_data[[indexvar]]))
@@ -158,9 +169,11 @@ model_sum.FNAIVE <- function(x) {
 autoplot.FNAIVE <- function(object, age = "Age", ...) {
   modelname <- attributes(object)$model
   object <- object |>
-    mutate(out = purrr::map(object[[modelname]], function(x) {
-      x$fit$model
-    }))
+    mutate(
+      out = purrr::map(object[[modelname]], function(x) {
+        x$fit$model
+      })
+    )
   object[[modelname]] <- NULL
   object <- object |>
     tidyr::unnest("out")
@@ -175,7 +188,10 @@ autoplot.FNAIVE <- function(object, age = "Age", ...) {
     geom_line() +
     ggplot2::labs(x = age, y = "Sigma")
   if (nk > 1) {
-    p <- p + ggplot2::guides(colour = ggplot2::guide_legend(paste0(keys, collapse = "/")))
+    p <- p +
+      ggplot2::guides(
+        colour = ggplot2::guide_legend(paste0(keys, collapse = "/"))
+      )
   }
   p
 }
@@ -184,9 +200,11 @@ autoplot.FNAIVE <- function(object, age = "Age", ...) {
 age_components.FNAIVE <- function(object, ...) {
   modelname <- attributes(object)$model
   object <- object |>
-    mutate(out = purrr::map(object[[modelname]], function(x) {
-      x$fit$model
-    })) |>
+    mutate(
+      out = purrr::map(object[[modelname]], function(x) {
+        x$fit$model
+      })
+    ) |>
     as_tibble()
   object[[modelname]] <- NULL
   object |> tidyr::unnest("out")
@@ -197,4 +215,12 @@ time_components.FNAIVE <- function(object, ...) {
   stop("FNAIVE objects have no time components")
 }
 
-globalVariables(c(".resid", "sigma", "std.error", "stat", ".innov", "fit", "horizon"))
+globalVariables(c(
+  ".resid",
+  "sigma",
+  "std.error",
+  "stat",
+  ".innov",
+  "fit",
+  "horizon"
+))

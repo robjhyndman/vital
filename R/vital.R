@@ -33,13 +33,30 @@
 #' @seealso [tsibble::tsibble()]
 #' @export
 vital <- function(
-    ..., key = NULL, index,
-    .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
-    regular = TRUE, .drop = TRUE) {
-  tsibble(..., key = !!enquo(key), index = !!enquo(index), regular = regular, .drop = .drop) |>
+  ...,
+  key = NULL,
+  index,
+  .age = NULL,
+  .sex = NULL,
+  .deaths = NULL,
+  .births = NULL,
+  .population = NULL,
+  regular = TRUE,
+  .drop = TRUE
+) {
+  tsibble(
+    ...,
+    key = !!enquo(key),
+    index = !!enquo(index),
+    regular = regular,
+    .drop = .drop
+  ) |>
     as_vital(
-      .age = .age, .sex = .sex, .deaths = .deaths,
-      .births = .births, .population = .population
+      .age = .age,
+      .sex = .sex,
+      .deaths = .deaths,
+      .births = .births,
+      .population = .population
     )
 }
 
@@ -130,18 +147,32 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
     }
   }
   if (rates_included & pop_included) {
-    output <- dplyr::full_join(rates, pop, by = c("Group", "Year", "AgeGroup", "Age"))
+    output <- dplyr::full_join(
+      rates,
+      pop,
+      by = c("Group", "Year", "AgeGroup", "Age")
+    )
     if ("Mortality" %in% colnames(output) & "Exposure" %in% colnames(output)) {
       output <- output |>
         mutate(
           Deaths = if_else(is.na(Mortality), 0, Exposure * Mortality),
-          Mortality = if_else(is.na(Mortality) & Exposure > 0 & Deaths == 0, 0, Mortality)
+          Mortality = if_else(
+            is.na(Mortality) & Exposure > 0 & Deaths == 0,
+            0,
+            Mortality
+          )
         )
-    } else if ("Fertility" %in% colnames(output) & "Exposure" %in% colnames(output)) {
+    } else if (
+      "Fertility" %in% colnames(output) & "Exposure" %in% colnames(output)
+    ) {
       output <- output |>
         mutate(
           Births = if_else(is.na(Fertility), 0, Exposure * Fertility / 1000),
-          Fertility = if_else(is.na(Fertility) & Exposure > 0 & Births == 0, 0, Fertility)
+          Fertility = if_else(
+            is.na(Fertility) & Exposure > 0 & Births == 0,
+            0,
+            Fertility
+          )
         )
     }
   }
@@ -170,9 +201,13 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
   } else if ("Population" %in% colnames(output)) {
     popvar <- "Population"
   }
-  as_vital(output,
-    .age = "Age", .sex = sexvar, .deaths = deathsvar,
-    .births = birthsvar, .population = popvar
+  as_vital(
+    output,
+    .age = "Age",
+    .sex = sexvar,
+    .deaths = deathsvar,
+    .births = birthsvar,
+    .population = popvar
   )
 }
 
@@ -185,9 +220,15 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
 #' @rdname as_vital
 #' @export
 as_vital.tbl_ts <- function(
-    x,
-    .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
-    reorder = FALSE, ...) {
+  x,
+  .age = NULL,
+  .sex = NULL,
+  .deaths = NULL,
+  .births = NULL,
+  .population = NULL,
+  reorder = FALSE,
+  ...
+) {
   # Add attributes to x to identify the various variables
   vnames <- colnames(x)
   if (!is.null(.age)) {
@@ -216,8 +257,11 @@ as_vital.tbl_ts <- function(
     }
   }
   attr(x, "vital") <- c(
-    age = .age, sex = .sex,
-    deaths = .deaths, births = .births, population = .population
+    age = .age,
+    sex = .sex,
+    deaths = .deaths,
+    births = .births,
+    population = .population
   )
   # Add additional class
   class(x) <- c("vital", class(x))
@@ -280,14 +324,23 @@ as_vital.tbl_ts <- function(
 #'   )
 #' @export
 as_vital.data.frame <- function(
-    x, key = NULL, index,
-    .age = NULL, .sex = NULL, .deaths = NULL, .births = NULL, .population = NULL,
-    reorder = TRUE,
-    ...) {
+  x,
+  key = NULL,
+  index,
+  .age = NULL,
+  .sex = NULL,
+  .deaths = NULL,
+  .births = NULL,
+  .population = NULL,
+  reorder = TRUE,
+  ...
+) {
   as_tsibble(x, key = !!enquo(key), index = !!enquo(index), ...) |>
     as_vital(
-      .age = .age, .sex = .sex,
-      .deaths = .deaths, .births = .births,
+      .age = .age,
+      .sex = .sex,
+      .deaths = .deaths,
+      .births = .births,
       .population = .population,
       reorder = reorder
     )

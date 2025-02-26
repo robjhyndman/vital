@@ -65,11 +65,35 @@ smooth_spline_x <- function(data, var, age_spacing, age, popvar, k = -1) {
 
 #' @rdname smooth_vital
 #' @export
-smooth_mortality <- function(.data, .var, age_spacing = 1, b = 65, power = 0.4, k = 30) {
-  smooth_vital(.data, {{ .var }}, age_spacing, smooth_mortality_x, b = b, power = power, k = k)
+smooth_mortality <- function(
+  .data,
+  .var,
+  age_spacing = 1,
+  b = 65,
+  power = 0.4,
+  k = 30
+) {
+  smooth_vital(
+    .data,
+    {{ .var }},
+    age_spacing,
+    smooth_mortality_x,
+    b = b,
+    power = power,
+    k = k
+  )
 }
 
-smooth_mortality_x <- function(data, var, age_spacing, age, popvar, b = 65, power = 0.4, k = 30) {
+smooth_mortality_x <- function(
+  data,
+  var,
+  age_spacing,
+  age,
+  popvar,
+  b = 65,
+  power = 0.4,
+  k = 30
+) {
   y <- data[[var]]
   x <- data[[age]]
   x_trans <- x^power
@@ -77,7 +101,14 @@ smooth_mortality_x <- function(data, var, age_spacing, age, popvar, b = 65, powe
   age_grid <- seq(min(data[[age]]), max(data[[age]]), by = age_spacing)
   xgrid <- age_grid^power
   weights <- smooth_weights(data, var, popvar, lambda = 0)
-  smooth.fit <- smooth.monotonic(x_trans, y_trans, b^power, w = weights, k = k, newx = xgrid)
+  smooth.fit <- smooth.monotonic(
+    x_trans,
+    y_trans,
+    b^power,
+    w = weights,
+    k = k,
+    newx = xgrid
+  )
   out <- tibble(
     age = age_grid,
     .smooth = exp(smooth.fit$fit), #* (1 + 0.5 * smooth.fit$se.fit^2),
@@ -90,10 +121,23 @@ smooth_mortality_x <- function(data, var, age_spacing, age, popvar, b = 65, powe
 #' @rdname smooth_vital
 #' @export
 smooth_fertility <- function(.data, .var, age_spacing = 1, lambda = 1e-10) {
-  smooth_vital(.data, {{ .var }}, age_spacing, smooth_fertility_x, lambda = lambda)
+  smooth_vital(
+    .data,
+    {{ .var }},
+    age_spacing,
+    smooth_fertility_x,
+    lambda = lambda
+  )
 }
 
-smooth_fertility_x <- function(data, var, age_spacing, age, popvar, lambda = 1e-10) {
+smooth_fertility_x <- function(
+  data,
+  var,
+  age_spacing,
+  age,
+  popvar,
+  lambda = 1e-10
+) {
   y <- data[[var]]
   x <- data[[age]]
   y_trans <- log(y + 0.0000001)
@@ -121,7 +165,13 @@ smooth_loess_x <- function(data, var, age_spacing, age, popvar, span = 0.2) {
   # Avoid small spans when there is insufficient data
   span <- max(span, 12 / length(x))
   weights <- smooth_weights(data, var, popvar, lambda = 0)
-  fit <- stats::loess(y ~ x, span = span, degree = 2, weights = weights, surface = "direct")
+  fit <- stats::loess(
+    y ~ x,
+    span = span,
+    degree = 2,
+    weights = weights,
+    surface = "direct"
+  )
   age_grid <- seq(min(data[[age]]), max(data[[age]]), by = age_spacing)
   smooth_y <- predict(fit, se = TRUE, newdata = data.frame(x = age_grid))
   out <- tibble(
@@ -154,7 +204,12 @@ fert.curve <- function(x, y, w, lambda = 1, newx = x, ...) {
     suppressWarnings()
 
   fit <- stats::approx(fred[, 1], fred[, 2], xout = newx, rule = 1)$y
-  se <- stats::approx(fred[, 1], (fred[, 4] - fred[, 3]) / 2 / 1.96, xout = newx, rule = 1)$y
+  se <- stats::approx(
+    fred[, 1],
+    (fred[, 4] - fred[, 3]) / 2 / 1.96,
+    xout = newx,
+    rule = 1
+  )$y
   return(list(fit = fit, se = se))
 }
 
@@ -186,11 +241,19 @@ smooth.monotonic <- function(x, y, b, k = -1, w = NULL, newx = x) {
   }
 
   if (max(xx) <= b) {
-    return(mgcv::predict.gam(f.ug, newdata = data.frame(xx = newx), se.fit = TRUE))
+    return(mgcv::predict.gam(
+      f.ug,
+      newdata = data.frame(xx = newx),
+      se.fit = TRUE
+    ))
   }
 
   # Create Design matrix, constraints etc. for monotonic spline....
-  G <- mgcv::gam(yy ~ s(xx, k = k), data = data.frame(xx = xx, yy = yy), fit = FALSE)
+  G <- mgcv::gam(
+    yy ~ s(xx, k = k),
+    data = data.frame(xx = xx, yy = yy),
+    fit = FALSE
+  )
   if (weight) {
     G$w <- w
   }
@@ -222,12 +285,18 @@ smooth.monotonic <- function(x, y, b, k = -1, w = NULL, newx = x) {
   # now modify the gam object from unconstrained fit a little, to use it
   # for predicting and plotting constrained fit.
   f.ug$coefficients <- p
-  return(mgcv::predict.gam(f.ug, newdata = data.frame(xx = newx), se.fit = TRUE))
+  return(mgcv::predict.gam(
+    f.ug,
+    newdata = data.frame(xx = newx),
+    se.fit = TRUE
+  ))
 }
 
 smooth_vital <- function(.data, .var, age_spacing, smooth_fn, ...) {
   if (rlang::quo_is_missing(enquo(.var))) {
-    stop("Please specify which variable to smooth. .var is missing with no default.")
+    stop(
+      "Please specify which variable to smooth. .var is missing with no default."
+    )
   }
   # Index variable
   index <- tsibble::index_var(.data)
@@ -243,10 +312,21 @@ smooth_vital <- function(.data, .var, age_spacing, smooth_fn, ...) {
   keys_noage <- keys[!(keys %in% c(age, "AgeGroup", "Age_Group"))]
   # Turn .var into character
   resp <- names(eval_select(enquo(.var), data = .data))
-  nested_data <- tidyr::nest(as_tibble(.data), .by = tidyr::all_of(c(index, keys_noage)))
+  nested_data <- tidyr::nest(
+    as_tibble(.data),
+    .by = tidyr::all_of(c(index, keys_noage))
+  )
   smooth <- purrr::map(
     nested_data[["data"]],
-    \(x) smooth_fn(x, var = resp, age_spacing = age_spacing, age = age, pop = pop, ...)
+    \(x)
+      smooth_fn(
+        x,
+        var = resp,
+        age_spacing = age_spacing,
+        age = age,
+        pop = pop,
+        ...
+      )
   )
   nested_data$sm <- smooth
   nested_data$data <- NULL

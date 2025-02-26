@@ -17,13 +17,12 @@
 #'
 #' @export
 read_ktdb <- function(country, triangle = 1) {
-   # Get country code
-  if(is.numeric(country)) {
+  # Get country code
+  if (is.numeric(country)) {
     country <- round(country)
-    if(country < 1 | country > 36)
-      stop("Unknown country code")
-  } else if(country %in% countries$Country) {
-      country <- countries$ktdb_number[countries$Country == country]
+    if (country < 1 | country > 36) stop("Unknown country code")
+  } else if (country %in% countries$Country) {
+    country <- countries$ktdb_number[countries$Country == country]
   } else {
     stop("Unknown country")
   }
@@ -31,8 +30,14 @@ read_ktdb <- function(country, triangle = 1) {
   links <- countries[countries$ktdb_number == country, ]
   # read ktdb data
   read_ktdb_file(
-    male = paste0("https://www.demogr.mpg.de/databases/ktdb/", links$ktdb_male[1]),
-    female = paste0("https://www.demogr.mpg.de/databases/ktdb/", links$ktdb_female[1])
+    male = paste0(
+      "https://www.demogr.mpg.de/databases/ktdb/",
+      links$ktdb_male[1]
+    ),
+    female = paste0(
+      "https://www.demogr.mpg.de/databases/ktdb/",
+      links$ktdb_female[1]
+    )
   )
 }
 
@@ -63,11 +68,21 @@ read_ktdb <- function(country, triangle = 1) {
 read_ktdb_file <- function(male = NULL, female = NULL, triangle = 1) {
   # Read files
   if (!is.null(male)) {
-    data_male <- utils::read.csv(male, header = TRUE, stringsAsFactors = FALSE, check.names = FALSE) |>
+    data_male <- utils::read.csv(
+      male,
+      header = TRUE,
+      stringsAsFactors = FALSE,
+      check.names = FALSE
+    ) |>
       dplyr::mutate(Sex = "Male")
   }
   if (!is.null(female)) {
-    data_female <- utils::read.csv(female, header = TRUE, stringsAsFactors = FALSE, check.names = FALSE) |>
+    data_female <- utils::read.csv(
+      female,
+      header = TRUE,
+      stringsAsFactors = FALSE,
+      check.names = FALSE
+    ) |>
       dplyr::mutate(Sex = "Female")
   }
   # Combine data
@@ -89,9 +104,14 @@ read_ktdb_file <- function(male = NULL, female = NULL, triangle = 1) {
 
 ktdb_to_vital <- function(ktdb_data) {
   # Convert data into a vital object
-  vital_data <- as_vital(ktdb_data,
-    index = c("Year"), key = c("Sex", "Age"),
-    .age = "Age", .sex = "Sex", .deaths = "Deaths", .population = "Population",
+  vital_data <- as_vital(
+    ktdb_data,
+    index = c("Year"),
+    key = c("Sex", "Age"),
+    .age = "Age",
+    .sex = "Sex",
+    .deaths = "Deaths",
+    .population = "Population",
     reorder = TRUE
   )
   return(vital_data)

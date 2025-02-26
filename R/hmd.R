@@ -39,11 +39,14 @@
 #' @export
 
 read_hmd <- function(
-    country, username, password,
-    variables = c("Deaths", "Exposures", "Population", "Mx")) {
+  country,
+  username,
+  password,
+  variables = c("Deaths", "Exposures", "Population", "Mx")
+) {
   # Get country code
-  if(!(country %in% countries$hmd_code)) {
-    if(country %in% countries$Country) {
+  if (!(country %in% countries$hmd_code)) {
+    if (country %in% countries$Country) {
       country <- countries$hmd_code[countries$Country == country]
     } else {
       stop("Unknown country")
@@ -54,9 +57,12 @@ read_hmd <- function(
   item[var1x1] <- paste0(variables[var1x1], "_1x1")
   data <- list()
   for (i in seq_along(item)) {
-    data[[i]] <- HMDHFDplus::readHMDweb(country,
+    data[[i]] <- HMDHFDplus::readHMDweb(
+      country,
       item = item[i],
-      username = username, password = password, fixup = TRUE
+      username = username,
+      password = password,
+      fixup = TRUE
     )
   }
   names(data) <- variables
@@ -110,7 +116,11 @@ read_hmd_files <- function(files) {
 # Convert hmd files into a vital object
 hmd_to_vital <- function(object) {
   variables <- names(object)
-  sex_included <- any(grepl("female", colnames(object[[1]]), ignore.case = TRUE))
+  sex_included <- any(grepl(
+    "female",
+    colnames(object[[1]]),
+    ignore.case = TRUE
+  ))
   if (sex_included) {
     sex <- "Sex"
   } else {
@@ -124,7 +134,11 @@ hmd_to_vital <- function(object) {
     if (sex_included) {
       # Turn Sex into a variable
       object[[i]] <- object[[i]] |>
-        tidyr::pivot_longer(Female:Total, names_to = sex, values_to = variables[i])
+        tidyr::pivot_longer(
+          Female:Total,
+          names_to = sex,
+          values_to = variables[i]
+        )
     }
   }
 
@@ -159,8 +173,11 @@ hmd_to_vital <- function(object) {
     }
     data1 <- data1 |>
       as_vital(
-        .age = "Age", .sex = sex, .deaths = deaths,
-        .population = population, reorder = TRUE
+        .age = "Age",
+        .sex = sex,
+        .deaths = deaths,
+        .population = population,
+        reorder = TRUE
       )
   }
   if (!all(age_included)) {
@@ -168,8 +185,11 @@ hmd_to_vital <- function(object) {
       suppressMessages() |>
       tsibble::as_tsibble(index = Year, key = sex) |>
       as_vital(
-        .sex = sex, .deaths = deaths, .population = population,
-        .births = births, reorder = TRUE
+        .sex = sex,
+        .deaths = deaths,
+        .population = population,
+        .births = births,
+        reorder = TRUE
       )
   }
   if (!is.null(data1) & !is.null(data2)) {

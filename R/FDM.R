@@ -35,8 +35,13 @@
 #' report(hu)
 #' autoplot(hu)
 #' @export
-FDM <- function(formula, order = 6, ts_model_fn = fable::ARIMA,
-                coherent = FALSE, ...) {
+FDM <- function(
+  formula,
+  order = 6,
+  ts_model_fn = fable::ARIMA,
+  coherent = FALSE,
+  ...
+) {
   if (coherent & !identical(ts_model_fn, fable::ARIMA)) {
     stop("coherent = TRUE only works with ts_model_fn = fable::ARIMA")
   }
@@ -44,8 +49,13 @@ FDM <- function(formula, order = 6, ts_model_fn = fable::ARIMA,
     coherent <- NULL
   }
   fd_model <- new_model_class("fdm", train = train_fdm)
-  new_model_definition(fd_model, !!enquo(formula),
-    order = order, ts_model_fn = ts_model_fn, coherent = coherent, ...
+  new_model_definition(
+    fd_model,
+    !!enquo(formula),
+    order = order,
+    ts_model_fn = ts_model_fn,
+    coherent = coherent,
+    ...
   )
 }
 
@@ -56,7 +66,12 @@ train_fdm <- function(.data, specials, order, ts_model_fn, coherent, ...) {
   measures <- measured_vars(.data)
   measures <- measures[!(measures %in% c(agevar, vvar$population))]
   measures <- measures[1]
-  out <- fdm(.data, order = order, ts_model_fn = ts_model_fn, coherent = coherent)
+  out <- fdm(
+    .data,
+    order = order,
+    ts_model_fn = ts_model_fn,
+    coherent = coherent
+  )
 
   fitted <- out$data |>
     mutate(
@@ -82,8 +97,15 @@ train_fdm <- function(.data, specials, order, ts_model_fn, coherent, ...) {
 #' @export
 
 forecast.FDM <- function(
-    object, new_data = NULL, h = NULL, point_forecast = list(.mean = mean),
-    simulate = FALSE, bootstrap = FALSE, times = 5000, ...) {
+  object,
+  new_data = NULL,
+  h = NULL,
+  point_forecast = list(.mean = mean),
+  simulate = FALSE,
+  bootstrap = FALSE,
+  times = 5000,
+  ...
+) {
   # simulation/bootstrap not actually used here as forecast.mdl_vtl_ts
   # handles this using generate() and forecast.FDM is never called.
   # The arguments are included to avoid a warning message.
@@ -113,9 +135,14 @@ forecast.FDM <- function(
 
 #' @export
 generate.FDM <- function(
-    x, new_data = NULL, h = NULL,
-    bootstrap = FALSE, times = 1,
-    forecast_fn, ...) {
+  x,
+  new_data = NULL,
+  h = NULL,
+  bootstrap = FALSE,
+  times = 1,
+  forecast_fn,
+  ...
+) {
   agevar <- age_var(new_data)
   indexvar <- index_var(new_data)
   if (times != length(unique(new_data$.rep))) {
@@ -187,9 +214,11 @@ model_sum.FDM <- function(x) {
 time_components.FDM <- function(object, ...) {
   modelname <- attributes(object)$model
   object <- object |>
-    mutate(out = purrr::map(object[[modelname]], function(x) {
-      x$fit$model
-    })) |>
+    mutate(
+      out = purrr::map(object[[modelname]], function(x) {
+        x$fit$model
+      })
+    ) |>
     as_tibble()
   object[[modelname]] <- NULL
   index <- index_var(object$out[[1]]$by_t)
@@ -204,9 +233,11 @@ time_components.FDM <- function(object, ...) {
 age_components.FDM <- function(object, ...) {
   modelname <- attributes(object)$model
   object <- object |>
-    mutate(out = purrr::map(object[[modelname]], function(x) {
-      x$fit$model
-    })) |>
+    mutate(
+      out = purrr::map(object[[modelname]], function(x) {
+        x$fit$model
+      })
+    ) |>
     as_tibble()
   object[[modelname]] <- NULL
   object$out <- lapply(object$out, function(x) as_tibble(x$by_x))
@@ -261,7 +292,10 @@ fdm <- function(data, order = 6, ts_model_fn = fable::ARIMA, coherent = NULL) {
   mx <- data |>
     as_tibble() |>
     dplyr::select(all_of(c(indexvar, agevar, measures))) |>
-    tidyr::pivot_wider(values_from = all_of(measures), names_from = all_of(agevar))
+    tidyr::pivot_wider(
+      values_from = all_of(measures),
+      names_from = all_of(agevar)
+    )
   mx[[indexvar]] <- NULL
   mx <- as.matrix(mx)
   mx[mx == -Inf] <- NA
@@ -298,9 +332,12 @@ fdm <- function(data, order = 6, ts_model_fn = fable::ARIMA, coherent = NULL) {
   fits <- purrr::map(ts_coefs, function(x) {
     if (coherent) {
       mod <- by_t |>
-        fabletools::model(fit = ts_model_fn(!!sym(x),
-          order_constraint = (p + q + P + Q <= 6) & (d + D == 0)
-        ))
+        fabletools::model(
+          fit = ts_model_fn(
+            !!sym(x),
+            order_constraint = (p + q + P + Q <= 6) & (d + D == 0)
+          )
+        )
     } else {
       mod <- by_t |>
         fabletools::model(fit = ts_model_fn(!!sym(x)))
@@ -352,8 +389,10 @@ fdpca <- function(X, order = 2, ngrid = 500) {
   colnames(coeff)[1] <- colnames(basis)[1] <- "mean"
   if (order == 0) {
     return(list(
-      basis = basis, coeff = coeff,
-      v = rep(1, n), mean.se = axse
+      basis = basis,
+      coeff = coeff,
+      v = rep(1, n),
+      mean.se = axse
     ))
   }
   # Compute SVD
@@ -367,7 +406,8 @@ fdpca <- function(X, order = 2, ngrid = 500) {
   Phinormngrid <- matrix(NA, ngrid, order)
   delta <- xx[2] - xx[1]
   for (i in seq(order)) {
-    Phinorm[, i] <- stats::approx(xx, Phi[, i], xout = x)$y / delta /
+    Phinorm[, i] <- stats::approx(xx, Phi[, i], xout = x)$y /
+      delta /
       (sqrt(sum((stats::approx(xx, Phi[, i], xout = x)$y / delta)^2)))
     Phinormngrid[, i] <- stats::approx(x, Phinorm[, i], xout = xx)$y
   }
@@ -392,12 +432,14 @@ fdpca <- function(X, order = 2, ngrid = 500) {
 
   # Return results
   return(list(
-    basis = basis, coeff = coeff,
-    varprop = varprop[seq(order)], eigen_value = eigen_value,
-    v = v, mean.se = axse
+    basis = basis,
+    coeff = coeff,
+    varprop = varprop[seq(order)],
+    eigen_value = eigen_value,
+    v = v,
+    mean.se = axse
   ))
 }
-
 
 
 utils::globalVariables(c(".model", "out", "object", ".fitted", ".rep"))

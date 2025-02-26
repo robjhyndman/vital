@@ -80,7 +80,8 @@ collapse_ages <- function(.data, max_age = 100) {
       counts <- NULL
     }
     if (!is.null(pop) & !is.null(counts)) {
-      collapsed[[i]][upper_ages] <- collapsed[[counts]][upper_ages] / collapsed[[pop]][upper_ages]
+      collapsed[[i]][upper_ages] <- collapsed[[counts]][upper_ages] /
+        collapsed[[pop]][upper_ages]
     } else {
       warning("Cannot recompute rates for ", i, ". Using upper age value.")
       tmp <- max_age_values |>
@@ -88,15 +89,23 @@ collapse_ages <- function(.data, max_age = 100) {
       colnames(tmp)[colnames(tmp) == i] <- ".new_rate"
       collapsed <- collapsed |>
         left_join(tmp, by = c(index, keys_noage, age))
-      collapsed[[i]] <- if_else(upper_ages, collapsed[[".new_rate"]], collapsed[[i]])
+      collapsed[[i]] <- if_else(
+        upper_ages,
+        collapsed[[".new_rate"]],
+        collapsed[[i]]
+      )
       collapsed[[".new_rate"]] <- NULL
     }
   }
 
   # Return result
-  return(as_vital(collapsed,
-    .age = age, .sex = sex,
-    .deaths = deaths, .births = births, .population = pop,
+  return(as_vital(
+    collapsed,
+    .age = age,
+    .sex = sex,
+    .deaths = deaths,
+    .births = births,
+    .population = pop,
     reorder = TRUE
   )[, colnames])
 }

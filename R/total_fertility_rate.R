@@ -31,7 +31,11 @@ total_fertility_rate <- function(.data, fertility) {
   }
   col_names <- col_names[col_names != age]
   if (!missing(fertility)) {
-    fertility <- {{ fertility }}
+    fertility <- {
+      {
+        fertility
+      }
+    }
   } else {
     fertility <- find_measure(.data, c("fx", "fertility", "rate"))
   }
@@ -48,7 +52,8 @@ total_fertility_rate <- function(.data, fertility) {
   out |>
     as_tsibble(index = index, key = all_of(keys_noage)) |>
     as_vital(
-      .sex = vital_names$sex, .births = vital_names$births,
+      .sex = vital_names$sex,
+      .births = vital_names$births,
       .population = vital_names$population
     )
 }

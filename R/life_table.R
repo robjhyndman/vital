@@ -37,7 +37,11 @@ life_table <- function(.data, mortality) {
     sex <- "None"
   }
   if (!missing(mortality)) {
-    mortality <- {{ mortality }}
+    mortality <- {
+      {
+        mortality
+      }
+    }
   } else {
     mortality <- find_measure(.data, c("mx", "mortality", "rate"))
   }
@@ -48,9 +52,21 @@ life_table <- function(.data, mortality) {
 
   # Create life table for each sub-tibble and row-bind them.
   if (sex == "None") {
-    out <- purrr::map2(.data[["data"]], "None", lt, age = age, mortality = mortality)
+    out <- purrr::map2(
+      .data[["data"]],
+      "None",
+      lt,
+      age = age,
+      mortality = mortality
+    )
   } else {
-    out <- purrr::map2(.data[["data"]], .data[[sex]], lt, age = age, mortality = mortality)
+    out <- purrr::map2(
+      .data[["data"]],
+      .data[[sex]],
+      lt,
+      age = age,
+      mortality = mortality
+    )
   }
   .data$lt <- out
   .data$data <- NULL
@@ -118,7 +134,8 @@ lt <- function(dt, sex, age, mortality) {
       TRUE ~ 1.3565 + (mx[1] < 0.107) * (0.230 - 2.167 * mx[1])
     )
     ax <- c(a0, a1, rep(2.6, nn - 3L), Inf)
-  } else { # agegroup==5 and startage > 0
+  } else {
+    # agegroup==5 and startage > 0
     ax <- c(rep(2.6, nn - 1), Inf)
     nx[1L] <- agegroup
   }
@@ -147,14 +164,25 @@ lt <- function(dt, sex, age, mortality) {
   }
   if (agegroup == 5L) {
     rx <- c(
-      0, (Lx[1] + Lx[2]) / 5 * lx[1], Lx[3] / (Lx[1] + Lx[2]),
-      Lx[4:(nn - 1)] / Lx[3:(nn - 2)], Tx[nn] / Tx[nn - 1]
+      0,
+      (Lx[1] + Lx[2]) / 5 * lx[1],
+      Lx[3] / (Lx[1] + Lx[2]),
+      Lx[4:(nn - 1)] / Lx[3:(nn - 2)],
+      Tx[nn] / Tx[nn - 1]
     )
   }
   # Return the results in a tibble
-  result <- tsibble::tibble(
-    mx = mx, qx = qx, lx = lx, dx = dx, Lx = Lx, Tx = Tx,
-    ex = ex, rx = rx, nx = nx, ax = ax
+  result <- tibble::tibble(
+    mx = mx,
+    qx = qx,
+    lx = lx,
+    dx = dx,
+    Lx = Lx,
+    Tx = Tx,
+    ex = ex,
+    rx = rx,
+    nx = nx,
+    ax = ax
   ) |>
     mutate(!!age := dt[[age]])
 

@@ -31,9 +31,12 @@
 read_hfd <- function(country, username, password, variables = "asfrRR") {
   data <- list()
   for (i in seq_along(variables)) {
-    data[[i]] <- HMDHFDplus::readHFDweb(country,
+    data[[i]] <- HMDHFDplus::readHFDweb(
+      country,
       item = variables[i],
-      username = username, password = password, fixup = TRUE
+      username = username,
+      password = password,
+      fixup = TRUE
     )
   }
   names(data) <- variables

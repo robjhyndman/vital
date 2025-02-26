@@ -6,7 +6,8 @@
 arrange.fbl_vtl_ts <- function(.data, ...) {
   attr_data <- attributes(.data)
   vvar <- vital_var_list(.data)
-  build_vital_fable(NextMethod(),
+  build_vital_fable(
+    NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
     vitals = vvar
@@ -17,7 +18,8 @@ arrange.fbl_vtl_ts <- function(.data, ...) {
 select.fbl_vtl_ts <- function(.data, ...) {
   attr_data <- attributes(.data)
   vvar <- vital_var_list(.data)
-  build_vital_fable(NextMethod(),
+  build_vital_fable(
+    NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
     vitals = vvar
@@ -28,7 +30,8 @@ select.fbl_vtl_ts <- function(.data, ...) {
 transmute.fbl_vtl_ts <- function(.data, ...) {
   attr_data <- attributes(.data)
   vvar <- vital_var_list(.data)
-  build_vital_fable(NextMethod(),
+  build_vital_fable(
+    NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
     vitals = vvar
@@ -39,7 +42,8 @@ transmute.fbl_vtl_ts <- function(.data, ...) {
 relocate.fbl_vtl_ts <- function(.data, ...) {
   attr_data <- attributes(.data)
   vvar <- vital_var_list(.data)
-  build_vital_fable(NextMethod(),
+  build_vital_fable(
+    NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
     vitals = vvar
@@ -50,7 +54,8 @@ relocate.fbl_vtl_ts <- function(.data, ...) {
 summarise.fbl_vtl_ts <- function(.data, ..., .groups = NULL) {
   attr_data <- attributes(.data)
   vvar <- vital_var_list(.data)
-  build_vital_fable(NextMethod(),
+  build_vital_fable(
+    NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
     vitals = vvar
@@ -61,7 +66,8 @@ summarise.fbl_vtl_ts <- function(.data, ..., .groups = NULL) {
 dplyr_row_slice.fbl_vtl_ts <- function(data, i, ..., preserve = FALSE) {
   attr_data <- attributes(data)
   vvar <- vital_var_list(data)
-  build_vital_fable(NextMethod(),
+  build_vital_fable(
+    NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
     vitals = vvar
@@ -72,7 +78,8 @@ dplyr_row_slice.fbl_vtl_ts <- function(data, i, ..., preserve = FALSE) {
 dplyr_col_modify.fbl_vtl_ts <- function(data, cols) {
   attr_data <- attributes(data)
   vvar <- vital_var_list(data)
-  build_vital_fable(NextMethod(),
+  build_vital_fable(
+    NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
     vitals = vvar
@@ -83,7 +90,8 @@ dplyr_col_modify.fbl_vtl_ts <- function(data, cols) {
 dplyr_reconstruct.fbl_vtl_ts <- function(data, template) {
   attr_data <- attributes(data)
   vvar <- vital_var_list(data)
-  build_vital_fable(NextMethod(),
+  build_vital_fable(
+    NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
     vitals = vvar
@@ -91,18 +99,27 @@ dplyr_reconstruct.fbl_vtl_ts <- function(data, template) {
 }
 
 #' @export
-group_by.fbl_vtl_ts <- function(.data, ..., .add = FALSE,
-                                .drop = group_by_drop_default(.data)) {
+group_by.fbl_vtl_ts <- function(
+  .data,
+  ...,
+  .add = FALSE,
+  .drop = group_by_drop_default(.data)
+) {
   attr_data <- attributes(.data)
   vvar <- vital_var_list(.data)
-  tmp <- build_vital_fable(NextMethod(),
+  tmp <- build_vital_fable(
+    NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
     vitals = vvar
   )
   tmp_class <- class(tmp)
   grouped_classes <- grepl("grouped", tmp_class)
-  class(tmp) <- c("grouped_vital", tmp_class[grouped_classes], tmp_class[!grouped_classes])
+  class(tmp) <- c(
+    "grouped_vital",
+    tmp_class[grouped_classes],
+    tmp_class[!grouped_classes]
+  )
   return(tmp)
 }
 
@@ -110,7 +127,8 @@ group_by.fbl_vtl_ts <- function(.data, ..., .add = FALSE,
 ungroup.grouped_vital <- function(x, ...) {
   attr_data <- attributes(x)
   vvar <- vital_var_list(x)
-  build_vital_fable(NextMethod(),
+  build_vital_fable(
+    NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
     vitals = vvar
@@ -139,7 +157,8 @@ dplyr_col_modify.grouped_vital <- dplyr_col_modify.fbl_vtl_ts
 dplyr_reconstruct.grouped_vital <- function(data, template) {
   attr_data <- attributes(data)
   vvar <- vital_var_list(data)
-  build_vital_fable(NextMethod(),
+  build_vital_fable(
+    NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
     vitals = vvar
@@ -152,7 +171,8 @@ dplyr_reconstruct.grouped_vital <- function(data, template) {
   vvar <- vital_var_list(x)
   res <- NextMethod()
   if (inherits(res, "tbl_ts")) {
-    build_vital_fable(res,
+    build_vital_fable(
+      res,
       response = attr_data$response,
       distribution = attr_data$dist,
       vitals = vvar

@@ -65,9 +65,15 @@ train_fmean <- function(.data, ...) {
 #' @rdname forecast
 #' @export
 forecast.FMEAN <- function(
-    object, new_data = NULL, h = NULL,
-    point_forecast = list(.mean = mean),
-    simulate = FALSE, bootstrap = FALSE, times = 5000, ...) {
+  object,
+  new_data = NULL,
+  h = NULL,
+  point_forecast = list(.mean = mean),
+  simulate = FALSE,
+  bootstrap = FALSE,
+  times = 5000,
+  ...
+) {
   # simulation/bootstrap not actually used here as forecast.mdl_vtl_ts
   # handles this using generate() and forecast.LC is never called.
   # The arguments are included so they show in the docs
@@ -81,8 +87,13 @@ forecast.FMEAN <- function(
 
 #' @export
 generate.FMEAN <- function(
-    x, new_data = NULL, h = NULL,
-    bootstrap = FALSE, times = 1, ...) {
+  x,
+  new_data = NULL,
+  h = NULL,
+  bootstrap = FALSE,
+  times = 1,
+  ...
+) {
   agevar <- age_var(new_data)
   new_data <- new_data |>
     dplyr::left_join(x$model, by = agevar)
@@ -148,9 +159,11 @@ model_sum.FMEAN <- function(x) {
 autoplot.FMEAN <- function(object, age = "Age", ...) {
   modelname <- attributes(object)$model
   object <- object |>
-    mutate(out = purrr::map(object[[modelname]], function(x) {
-      x$fit$model
-    }))
+    mutate(
+      out = purrr::map(object[[modelname]], function(x) {
+        x$fit$model
+      })
+    )
   object[[modelname]] <- NULL
   object <- object |>
     tidyr::unnest("out")
@@ -166,7 +179,10 @@ autoplot.FMEAN <- function(object, age = "Age", ...) {
     geom_line() +
     ggplot2::labs(x = age, y = "Mean")
   if (nk > 1) {
-    p <- p + ggplot2::guides(colour = ggplot2::guide_legend(paste0(keys, collapse = "/")))
+    p <- p +
+      ggplot2::guides(
+        colour = ggplot2::guide_legend(paste0(keys, collapse = "/"))
+      )
   }
   p
 }
@@ -187,9 +203,11 @@ interpolate.FMEAN <- function(object, new_data, specials, ...) {
   missing <- is.na(output[[measure]])
   output[[measure]][missing] <- output$.fitted[missing]
   output$.fitted <- NULL
-  return(vital(output,
+  return(vital(
+    output,
     key = unique(c(keyvar, agevar)),
-    index = timevar, .age = agevar
+    index = timevar,
+    .age = agevar
   ))
 }
 
@@ -197,9 +215,11 @@ interpolate.FMEAN <- function(object, new_data, specials, ...) {
 age_components.FMEAN <- function(object, ...) {
   modelname <- attributes(object)$model
   object <- object |>
-    mutate(out = purrr::map(object[[modelname]], function(x) {
-      x$fit$model
-    })) |>
+    mutate(
+      out = purrr::map(object[[modelname]], function(x) {
+        x$fit$model
+      })
+    ) |>
     as_tibble()
   object[[modelname]] <- NULL
   object |> tidyr::unnest("out")

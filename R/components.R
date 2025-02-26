@@ -34,7 +34,6 @@ age_components <- function(object, ...) {
 #'   dplyr::filter(State == "Victoria", Sex == "female") |>
 #'   model(lee_carter = LC(log(Mortality))) |>
 #'   time_components()
-#'
 #' @export
 time_components <- function(object, ...) {
   UseMethod("time_components")
@@ -59,10 +58,14 @@ time_components <- function(object, ...) {
 cohort_components <- function(object, ...) {
   UseMethod("cohort_components")
 }
+
+
 #' @export
 time_components.mdl_vtl_df <- function(object, ...) {
   if (length(mable_vars(object)) > 1) {
-    stop("Extracting components is only supported for individual models. Please use `dplyr::select()` to choose one model column.")
+    stop(
+      "Extracting components is only supported for individual models. Please use `dplyr::select()` to choose one model column."
+    )
   }
   model <- mable_vars(object)
   class(object) <- c(class(object[[model]][[1]]$fit), class(object)[-1])
@@ -72,7 +75,9 @@ time_components.mdl_vtl_df <- function(object, ...) {
 #' @export
 age_components.mdl_vtl_df <- function(object, ...) {
   if (length(mable_vars(object)) > 1) {
-    stop("Extracting components is only supported for individual models. Please use `dplyr::select()` to choose one model column.")
+    stop(
+      "Extracting components is only supported for individual models. Please use `dplyr::select()` to choose one model column."
+    )
   }
   model <- mable_vars(object)
   class(object) <- c(class(object[[model]][[1]]$fit), class(object))

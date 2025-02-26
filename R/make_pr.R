@@ -71,13 +71,16 @@ make_pr <- function(.data, .var, key = Sex) {
   gm$.gm <- NULL
   .data <- dplyr::bind_rows(.data, gm)
 
-  as_vital(.data,
-    index = index, keys = keys,
+  as_vital(
+    .data,
+    index = index,
+    keys = keys,
     .age = age,
     .population = attr_data$population,
     .sex = attr_data$sex,
     .deaths = attr_data$deaths,
-    .births = attr_data$births, reorder = TRUE
+    .births = attr_data$births,
+    reorder = TRUE
   )
 }
 
@@ -148,12 +151,15 @@ make_sd <- function(.data, .var, key = Sex) {
   gm$.gm <- NULL
   .data <- dplyr::bind_rows(.data, gm)
 
-  as_vital(.data,
-    index = index, keys = keys,
+  as_vital(
+    .data,
+    index = index,
+    keys = keys,
     .age = age,
     .population = attr_data$population,
     .sex = attr_data$sex,
     .deaths = attr_data$deaths,
-    .births = attr_data$births, reorder = TRUE
+    .births = attr_data$births,
+    reorder = TRUE
   )
 }

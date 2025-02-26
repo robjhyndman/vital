@@ -3,24 +3,28 @@
 # The only change is I've removed help file generation.
 
 parse_specials <- function(call = NULL, specials = NULL) {
-  if (!is.null(call)) { # No model specified
+  if (!is.null(call)) {
+    # No model specified
     call <- enexpr(call)
 
     # Don't parse xreg_specials - leave them to the xregs
     nm <- setdiff(names(specials), attr(specials, "xreg_specials"))
 
-    parsed <- traverse_call(!!call,
+    parsed <- traverse_call(
+      !!call,
       .f = function(.x, ...) {
         merge_named_list(.x[[1]], .x[[2]])
       },
       .g = function(.x) {
         map(as.list(get_expr(.x))[-1], expr)
       },
-      .h = function(x) { # Base types
+      .h = function(x) {
+        # Base types
         x <- get_expr(x)
         if (!is_call(x) || !(call_name(x) %in% nm)) {
           list(list(x))
-        } else { # Current call is a special function
+        } else {
+          # Current call is a special function
           set_names(list(list(x)), call_name(x))
         }
       },
@@ -35,12 +39,17 @@ parse_specials <- function(call = NULL, specials = NULL) {
 
   bare_xreg <- names_no_null(parsed) == ""
   if (any(bare_xreg)) {
-    parsed$xreg[[length(parsed$xreg) + 1]] <- expr((!!sym("xreg"))(!!!parsed[[which(bare_xreg)]]))
+    parsed$xreg[[length(parsed$xreg) + 1]] <- expr((!!sym("xreg"))(
+      !!!parsed[[which(bare_xreg)]]
+    ))
     parsed[[which(bare_xreg)]] <- NULL
   }
 
   # Add required_specials
-  missing_specials <- setdiff(attr(specials, "required_specials"), names(parsed))
+  missing_specials <- setdiff(
+    attr(specials, "required_specials"),
+    names(parsed)
+  )
   parsed[missing_specials] <- map(missing_specials, function(x) list(call(x)))
 
   parsed
@@ -132,7 +141,9 @@ parse_model_lhs <- function(model) {
 
   # Traverse call removing all resp() usage
   # This is used to evaluate the response from the input data
-  response_exprs <- lapply(model_lhs, traverse,
+  response_exprs <- lapply(
+    model_lhs,
+    traverse,
     .f = function(x, y) {
       if (is_resp(y)) x[[1]] else call2(call_name(y), !!!x)
     },
@@ -142,10 +153,17 @@ parse_model_lhs <- function(model) {
   )
 
   # Traverse call to parse out AST for transformations
-  traversed_lhs <- lapply(model_lhs, traverse,
+  traversed_lhs <- lapply(
+    model_lhs,
+    traverse,
     .f = function(x, y) {
-      if (any(resp_pos <- map_lgl(x, function(x) any(names(x) %in% "response")))) {
-        if (sum(resp_pos) != 1) abort("The `resp()` function can only be used once per response variable. For multivariate modelling, use `vars()`.")
+      if (
+        any(resp_pos <- map_lgl(x, function(x) any(names(x) %in% "response")))
+      ) {
+        if (sum(resp_pos) != 1)
+          abort(
+            "The `resp()` function can only be used once per response variable. For multivariate modelling, use `vars()`."
+          )
         names(x)[resp_pos] <- "response"
       }
       `attr<-`(x, "call", y[[1]])
@@ -153,7 +171,10 @@ parse_model_lhs <- function(model) {
     .g = function(x) x[-1],
     .h = function(x) {
       if (is_resp(x)) {
-        if (length(x) > 2) abort("The response variable accepts only one input. For multivariate modelling, use `vars()`.")
+        if (length(x) > 2)
+          abort(
+            "The response variable accepts only one input. For multivariate modelling, use `vars()`."
+          )
         list(response = x)
       } else {
         list(x)
@@ -165,14 +186,17 @@ parse_model_lhs <- function(model) {
   # Reduce traversal down to the response
   # If the response is set via resp(), remove all usage of resp() from the traversal
   # If the response is not set via resp(), identify the response by the maximum length object until encountering ties
-  traversed_lhs <- lapply(traversed_lhs, traverse,
+  traversed_lhs <- lapply(
+    traversed_lhs,
+    traverse,
     .f = function(x, y) {
       # Capture parent expression of base case
       cl <- NULL
       if (length(x) == 0) {
         # Multiple length `n` variables found and cannot disambiguate response
         # Start with most disaggregated result of computation as response.
-        x <- if (is.null(attr(y, "call"))) list(y[[1]]) else syms(as_label(attr(y, "call")))
+        x <- if (is.null(attr(y, "call"))) list(y[[1]]) else
+          syms(as_label(attr(y, "call")))
       } else {
         if (is.null(attr(y, "call"))) {
           if (is_resp(x[[1]])) {
@@ -191,7 +215,15 @@ parse_model_lhs <- function(model) {
     .g = function(x) {
       if (all(names(x) != "response") && !is.null(attr(x, "call"))) {
         # parent_len <- length(eval(attr(x, "call") %||% x[[1]], envir = model$data))
-        len <- map_dbl(x, function(y) length(eval(attr(y, "call") %||% y[[1]], envir = model$data, enclos = model$specials)))
+        len <- map_dbl(
+          x,
+          function(y)
+            length(eval(
+              attr(y, "call") %||% y[[1]],
+              envir = model$data,
+              enclos = model$specials
+            ))
+        )
         if (sum(len == max(len)) == 1) {
           names(x)[which.max(len)] <- "response"
         }
@@ -221,7 +253,11 @@ parse_model_lhs <- function(model) {
   # Produce transformation class functions for bt() usage
   make_transforms <- function(exprs, responses) {
     map2(exprs, responses, function(x, response) {
-      new_function(args = set_names(list(missing_arg()), response), x, env = model$env)
+      new_function(
+        args = set_names(list(missing_arg()), response),
+        x,
+        env = model$env
+      )
     })
   }
   transformations <- map2(
@@ -234,20 +270,24 @@ parse_model_lhs <- function(model) {
   comb_trans <- map_lgl(transformations, function(x) {
     length(all.names(body(x))) > length(all.vars(body(x))) + 1
   })
-  map2(transformations[comb_trans], responses[comb_trans], function(trans, resp) {
-    dt <- model$data
-    environment(trans) <- new_environment(dt, get_env(trans))
-    inv <- invert_transformation(trans)
-    environment(inv) <- new_environment(dt, get_env(inv))
-    y <- eval_tidy(rlang::parse_expr(resp), data = dt, env = model$env)
-    valid <- all.equal(y, inv(trans(y)))
-    if (!isTRUE(valid)) {
-      abort(
-        "Could not identify a valid back-transformation for this transformation.
+  map2(
+    transformations[comb_trans],
+    responses[comb_trans],
+    function(trans, resp) {
+      dt <- model$data
+      environment(trans) <- new_environment(dt, get_env(trans))
+      inv <- invert_transformation(trans)
+      environment(inv) <- new_environment(dt, get_env(inv))
+      y <- eval_tidy(rlang::parse_expr(resp), data = dt, env = model$env)
+      valid <- all.equal(y, inv(trans(y)))
+      if (!isTRUE(valid)) {
+        abort(
+          "Could not identify a valid back-transformation for this transformation.
 Please specify a valid form of your transformation using `new_transformation()`."
-      )
+        )
+      }
     }
-  })
+  )
 
   list(
     expressions = response_exprs,

@@ -19,10 +19,23 @@
 #'
 #' @export
 smooth_mortality_law <- function(.data, .var, law = "gompertz", ...) {
-  smooth_vital(.data, {{ .var }}, smooth_fn = smooth_mortality_law_x, law = law, ...)
+  smooth_vital(
+    .data,
+    {{ .var }},
+    smooth_fn = smooth_mortality_law_x,
+    law = law,
+    ...
+  )
 }
 
-smooth_mortality_law_x <- function(data, var, age_spacing = 1, age, pop = NULL, ...) {
+smooth_mortality_law_x <- function(
+  data,
+  var,
+  age_spacing = 1,
+  age,
+  pop = NULL,
+  ...
+) {
   # Get Ex and Dx variables
   Ex <- if (!is.null(pop)) data[[pop]] else NULL
   Dx_name <- vital_vars(data)["deaths"]
@@ -33,8 +46,11 @@ smooth_mortality_law_x <- function(data, var, age_spacing = 1, age, pop = NULL, 
   }
   # Call MortalityLaws
   smooth.fit <- MortalityLaws::MortalityLaw(
-    x = data[[age]], Dx = Dx,
-    Ex = Ex, mx = data[[var]], ...
+    x = data[[age]],
+    Dx = Dx,
+    Ex = Ex,
+    mx = data[[var]],
+    ...
   )
   # Mean squared error
   n <- length(smooth.fit$fitted.values)

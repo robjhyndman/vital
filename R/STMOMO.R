@@ -96,23 +96,41 @@
 #'   dplyr::select(cbd2) |>
 #'   report()
 #' @export
-GAPC <- function(formula, use_weights = TRUE, clip = 0, zeroCohorts = NULL, ...) {
+GAPC <- function(
+  formula,
+  use_weights = TRUE,
+  clip = 0,
+  zeroCohorts = NULL,
+  ...
+) {
   stmomo_model <- new_model_class("stmomo", train = train_stmomo)
-  new_model_definition(stmomo_model, !!enquo(formula),
+  new_model_definition(
+    stmomo_model,
+    !!enquo(formula),
     use_weights = use_weights,
-    clip = clip, zeroCohorts = zeroCohorts, ...
+    clip = clip,
+    zeroCohorts = zeroCohorts,
+    ...
   )
 }
 
 #' @rdname GAPC
 #' @export
-LC2 <- function(formula, link = c("log", "logit"), const = c("sum", "last", "first"),
-                use_weights = TRUE, clip = 0, zeroCohorts = NULL, ...) {
+LC2 <- function(
+  formula,
+  link = c("log", "logit"),
+  const = c("sum", "last", "first"),
+  use_weights = TRUE,
+  clip = 0,
+  zeroCohorts = NULL,
+  ...
+) {
   # Based on StMoMo::lc
   link <- match.arg(link)
   const <- match.arg(const)
   constLC <- function(ax, bx, kt, b0x, gc, wxt, ages) {
-    c1 <- switch(const,
+    c1 <- switch(
+      const,
       sum = mean(kt[1, ], na.rm = TRUE),
       first = kt[1, 1],
       last = tail(kt[1, ], 1)
@@ -125,7 +143,9 @@ LC2 <- function(formula, link = c("log", "logit"), const = c("sum", "last", "fir
     list(ax = ax, bx = bx, kt = kt, b0x = b0x, gc = gc)
   }
   stmomo_model <- new_model_class("stmomo", train = train_stmomo)
-  new_model_definition(stmomo_model, !!enquo(formula),
+  new_model_definition(
+    stmomo_model,
+    !!enquo(formula),
     use_weights = use_weights,
     clip = clip,
     zeroCohorts = zeroCohorts,
@@ -139,12 +159,20 @@ LC2 <- function(formula, link = c("log", "logit"), const = c("sum", "last", "fir
 
 #' @rdname GAPC
 #' @export
-CBD <- function(formula, link = c("log", "logit"),
-                use_weights = TRUE, clip = 0, zeroCohorts = NULL, ...) {
+CBD <- function(
+  formula,
+  link = c("log", "logit"),
+  use_weights = TRUE,
+  clip = 0,
+  zeroCohorts = NULL,
+  ...
+) {
   # Based on StMoMo::cbd
   link <- match.arg(link)
   stmomo_model <- new_model_class("stmomo", train = train_stmomo)
-  new_model_definition(stmomo_model, !!enquo(formula),
+  new_model_definition(
+    stmomo_model,
+    !!enquo(formula),
     use_weights = use_weights,
     clip = clip,
     zeroCohorts = zeroCohorts,
@@ -157,13 +185,29 @@ CBD <- function(formula, link = c("log", "logit"),
 
 #' @rdname GAPC
 #' @export
-RH <- function(formula, link = c("log", "logit"), cohortAgeFun = c("1", "NP"),
-               use_weights = TRUE, clip = 0, zeroCohorts = NULL, ...) {
+RH <- function(
+  formula,
+  link = c("log", "logit"),
+  cohortAgeFun = c("1", "NP"),
+  use_weights = TRUE,
+  clip = 0,
+  zeroCohorts = NULL,
+  ...
+) {
   # Based on StMoMo::rh
   link <- match.arg(link)
   cohortAgeFun <- match.arg(cohortAgeFun)
-  constRHgeneral <- function(ax, bx, kt, b0x, gc, wxt, ages,
-                             cohortAgeFun, approxConst) {
+  constRHgeneral <- function(
+    ax,
+    bx,
+    kt,
+    b0x,
+    gc,
+    wxt,
+    ages,
+    cohortAgeFun,
+    approxConst
+  ) {
     c1 <- mean(kt[1, ], na.rm = TRUE)
     ax <- ax + c1 * bx[, 1]
     kt[1, ] <- kt[1, ] - c1
@@ -182,13 +226,22 @@ RH <- function(formula, link = c("log", "logit"), cohortAgeFun = c("1", "NP"),
   }
   constRH <- function(ax, bx, kt, b0x, gc, wxt, ages) {
     constRHgeneral(
-      ax, bx, kt, b0x, gc, wxt, ages, cohortAgeFun,
+      ax,
+      bx,
+      kt,
+      b0x,
+      gc,
+      wxt,
+      ages,
+      cohortAgeFun,
       FALSE
     )
   }
 
   stmomo_model <- new_model_class("stmomo", train = train_stmomo)
-  new_model_definition(stmomo_model, !!enquo(formula),
+  new_model_definition(
+    stmomo_model,
+    !!enquo(formula),
     use_weights = use_weights,
     clip = clip,
     zeroCohorts = zeroCohorts,
@@ -203,8 +256,14 @@ RH <- function(formula, link = c("log", "logit"), cohortAgeFun = c("1", "NP"),
 
 #' @rdname GAPC
 #' @export
-APC <- function(formula, link = c("log", "logit"),
-                use_weights = TRUE, clip = 0, zeroCohorts = NULL, ...) {
+APC <- function(
+  formula,
+  link = c("log", "logit"),
+  use_weights = TRUE,
+  clip = 0,
+  zeroCohorts = NULL,
+  ...
+) {
   # Based on StMoMo::apc
   link <- match.arg(link)
   constAPC <- function(ax, bx, kt, b0x, gc, wxt, ages) {
@@ -223,7 +282,9 @@ APC <- function(formula, link = c("log", "logit"),
     list(ax = ax, bx = bx, kt = kt, b0x = b0x, gc = gc)
   }
   stmomo_model <- new_model_class("stmomo", train = train_stmomo)
-  new_model_definition(stmomo_model, !!enquo(formula),
+  new_model_definition(
+    stmomo_model,
+    !!enquo(formula),
     use_weights = use_weights,
     clip = clip,
     zeroCohorts = zeroCohorts,
@@ -238,8 +299,14 @@ APC <- function(formula, link = c("log", "logit"),
 
 #' @rdname GAPC
 #' @export
-M7 <- function(formula, link = c("log", "logit"),
-               use_weights = TRUE, clip = 0, zeroCohorts = NULL, ...) {
+M7 <- function(
+  formula,
+  link = c("log", "logit"),
+  use_weights = TRUE,
+  clip = 0,
+  zeroCohorts = NULL,
+  ...
+) {
   # Based on StMoMo::m7
   link <- match.arg(link)
   f1 <- function(x, ages) x - mean(ages)
@@ -260,12 +327,17 @@ M7 <- function(formula, link = c("log", "logit"),
     gc <- gc - phi[1] - phi[2] * c - phi[3] * c^2
     kt[3, ] <- kt[3, ] + phi[3]
     kt[2, ] <- kt[2, ] - phi[2] - 2 * phi[3] * (t - xbar)
-    kt[1, ] <- kt[1, ] + phi[1] + phi[2] * (t - xbar) + phi[3] *
-      ((t - xbar)^2 + s2)
+    kt[1, ] <- kt[1, ] +
+      phi[1] +
+      phi[2] * (t - xbar) +
+      phi[3] *
+        ((t - xbar)^2 + s2)
     list(ax = ax, bx = bx, kt = kt, b0x = b0x, gc = gc)
   }
   stmomo_model <- new_model_class("stmomo", train = train_stmomo)
-  new_model_definition(stmomo_model, !!enquo(formula),
+  new_model_definition(
+    stmomo_model,
+    !!enquo(formula),
     use_weights = use_weights,
     clip = clip,
     zeroCohorts = zeroCohorts,
@@ -280,8 +352,14 @@ M7 <- function(formula, link = c("log", "logit"),
 
 #' @rdname GAPC
 #' @export
-PLAT <- function(formula, link = c("log", "logit"),
-                 use_weights = TRUE, clip = 0, zeroCohorts = NULL, ...) {
+PLAT <- function(
+  formula,
+  link = c("log", "logit"),
+  use_weights = TRUE,
+  clip = 0,
+  zeroCohorts = NULL,
+  ...
+) {
   link <- match.arg(link)
   f2 <- function(x, ages) mean(ages) - x
   constPlat <- function(ax, bx, kt, b0x, gc, wxt, ages) {
@@ -303,7 +381,9 @@ PLAT <- function(formula, link = c("log", "logit"),
     list(ax = ax, bx = bx, kt = kt, b0x = b0x, gc = gc)
   }
   stmomo_model <- new_model_class("stmomo", train = train_stmomo)
-  new_model_definition(stmomo_model, !!enquo(formula),
+  new_model_definition(
+    stmomo_model,
+    !!enquo(formula),
     use_weights = use_weights,
     clip = clip,
     zeroCohorts = zeroCohorts,
@@ -318,8 +398,15 @@ PLAT <- function(formula, link = c("log", "logit"),
 
 # Training function
 
-train_stmomo <- function(.data, sex = NULL, specials,
-                         use_weights = TRUE, clip = 0, zeroCohorts = NULL, ...) {
+train_stmomo <- function(
+  .data,
+  sex = NULL,
+  specials,
+  use_weights = TRUE,
+  clip = 0,
+  zeroCohorts = NULL,
+  ...
+) {
   # Variable names
   indexvar <- index_var(.data)
   vvar <- vital_var_list(.data)
@@ -331,15 +418,18 @@ train_stmomo <- function(.data, sex = NULL, specials,
   model <- StMoMo::StMoMo(...)
   data2 <- vital_to_stmomo(.data)
   if (model$link == "logit" & any(data2$Dxt / data2$Ext > 1)) {
-    stop("Mortality rates must be less than 1 for logit link.
-    Perhaps you need to use initial rather than central population values.")
+    stop(
+      "Mortality rates must be less than 1 for logit link.
+    Perhaps you need to use initial rather than central population values."
+    )
   }
 
   if (use_weights) {
     wxt <- StMoMo::genWeightMat(
       ages = data2$ages,
       years = data2$years,
-      clip = clip, zeroCohorts = zeroCohorts
+      clip = clip,
+      zeroCohorts = zeroCohorts
     )
     miss <- is.na(data2$Dxt / data2$Ext)
     wxt[miss] <- 0
@@ -348,9 +438,14 @@ train_stmomo <- function(.data, sex = NULL, specials,
   } else {
     wxt <- NULL
   }
-  out <- StMoMo::fit(model,
-    Dxt = data2$Dxt, Ext = data2$Ext,
-    ages = data2$ages, years = data2$years, wxt = wxt, verbose = FALSE
+  out <- StMoMo::fit(
+    model,
+    Dxt = data2$Dxt,
+    Ext = data2$Ext,
+    ages = data2$ages,
+    years = data2$years,
+    wxt = wxt,
+    verbose = FALSE
   )
   out$data$series <- sex
   out$data$label <- "vital"
@@ -369,8 +464,15 @@ train_stmomo <- function(.data, sex = NULL, specials,
 #' @export
 
 forecast.GAPC <- function(
-    object, new_data = NULL, h = NULL, point_forecast = list(.mean = mean),
-    simulate = FALSE, bootstrap = FALSE, times = 5000, ...) {
+  object,
+  new_data = NULL,
+  h = NULL,
+  point_forecast = list(.mean = mean),
+  simulate = FALSE,
+  bootstrap = FALSE,
+  times = 5000,
+  ...
+) {
   # Uncertainty does not work here. Users should call with simulate = TRUE for PI
   warning("Use simulate = TRUE to get distributional forecasts")
   indexvar <- index_var(new_data)
@@ -395,8 +497,13 @@ forecast.GAPC <- function(
 
 #' @export
 generate.GAPC <- function(
-    x, new_data = NULL, h = NULL,
-    bootstrap = FALSE, times = 1, ...) {
+  x,
+  new_data = NULL,
+  h = NULL,
+  bootstrap = FALSE,
+  times = 1,
+  ...
+) {
   agevar <- age_var(new_data)
   indexvar <- index_var(new_data)
   h <- length(unique(new_data[[indexvar]]))
@@ -454,9 +561,21 @@ vital_to_stmomo <- function(.data) {
   }
   ages <- sort(unique(.data[[vvar$age]]))
   years <- sort(unique(.data[[indexvar]]))
-  .data <- dplyr::arrange(as_tibble(.data), !!rlang::sym(indexvar), !!rlang::sym(vvar$age))
-  Dxt <- round(matrix(.data[[vvar$deaths]], nrow = length(ages), ncol = length(years)))
-  Ext <- matrix(.data[[vvar$population]], nrow = length(ages), ncol = length(years))
+  .data <- dplyr::arrange(
+    as_tibble(.data),
+    !!rlang::sym(indexvar),
+    !!rlang::sym(vvar$age)
+  )
+  Dxt <- round(matrix(
+    .data[[vvar$deaths]],
+    nrow = length(ages),
+    ncol = length(years)
+  ))
+  Ext <- matrix(
+    .data[[vvar$population]],
+    nrow = length(ages),
+    ncol = length(years)
+  )
   list(Dxt = Dxt, Ext = Ext, ages = ages, years = years)
 }
 
