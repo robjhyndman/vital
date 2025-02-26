@@ -20,7 +20,7 @@ that are indexed by birth year of the cohort.
 }
 \examples{
 aus_mortality |>
-  dplyr::filter(State == "Victoria", Sex == "female") |>
+  dplyr::filter(State == "Victoria", Sex == "female", Age > 50) |>
   model(rh = RH(Mortality)) |>
   cohort_components()
 }
