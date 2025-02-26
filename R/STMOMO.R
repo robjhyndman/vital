@@ -8,6 +8,9 @@
 #' on a GAPC specification. The advantage of this approach over `LC()` is that
 #' it allows for 0 rates in the mortality data. Note that it does not return
 #' identical results to `LC()` because the model formulation is different.
+#' For `LC2()`, do not take logs of the mortality rates because this is handled
+#' with the link function. For `LC()`, you need to take logs of the mortality rates
+#' when calling the function.
 #'
 #' The Renshaw-Haberman (RH) model due to Renshaw and Haberman (2006) is another
 #' special case of a GAPC model, that can be considered an extension of a Lee-Carter
