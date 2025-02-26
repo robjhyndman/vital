@@ -79,6 +79,7 @@ reference:
       - interpolate.mdl_vtl_df
       - age_components
       - time_components
+      - cohort_components
   - title: Graphics
     desc: Plotting functions for visualizing data and models
     contents:
