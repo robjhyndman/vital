@@ -72,8 +72,10 @@ Check that specified model(s) are model definitions.",
   num_key <- n_keys(.data) / n_ages
   num_mdl <- length(models)
   num_est <- num_mdl * num_key
-  p <- progressr::progressor(num_est)
-
+  progress <- requireNamespace("progressr", quietly = TRUE)
+  if (progress) {
+    p <- progressr::progressor(num_est)
+  }
   .data <- nest_keys(.data, "lst_data")
 
   if (.safely) {
@@ -104,7 +106,7 @@ Check that specified model(s) are model definitions.",
       }
     }
     out <- estimate(dt, mdl, sex)
-    p()
+    if (progress) p()
     out
   }
 
