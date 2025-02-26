@@ -8,6 +8,7 @@
 <url><loc>https://pkg.robjhyndman.com/vital/reference/FDM.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/FMEAN.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/FNAIVE.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/GAPC.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/LC.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/age_components.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/as_vital.html</loc></url>
@@ -16,6 +17,7 @@
 <url><loc>https://pkg.robjhyndman.com/vital/reference/autoplot.fbl_vtl_ts.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/autoplot.mdl_vtl_df.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/autoplot.vital.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/cohort_components.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/collapse_ages.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/forecast.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/generate.html</loc></url>
