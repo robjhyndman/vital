@@ -60,10 +60,17 @@ reference:
     desc: Functions for fitting models to vitals
     contents:
       - model.vital
+      - APC
+      - CBD
       - FDM
       - FMEAN
       - FNAIVE
+      - GAPC
       - LC
+      - LC2
+      - M7
+      - PLAT
+      - RH
   - title: Coherent models
     desc: Functions for handling coherent models
     contents:
