@@ -23,6 +23,15 @@
 #' @export
 
 life_table <- function(.data, mortality) {
+  # Mortality variable
+  if (!missing(mortality)) {
+    mortality <- as_name(substitute(mortality))
+  } else {
+    mortality <- find_measure(.data, c("mx", "mortality", "rate"))
+  }
+  if(is.na(mortality) | !(mortality %in% colnames(.data))) {
+    stop("Mortality variable not found in data")
+  }
   # Index variable
   index <- tsibble::index_var(.data)
   # Keys including age
@@ -35,15 +44,6 @@ life_table <- function(.data, mortality) {
   sex <- sex_var(.data)
   if (is.null(sex)) {
     sex <- "None"
-  }
-  if (!missing(mortality)) {
-    mortality <- {
-      {
-        mortality
-      }
-    }
-  } else {
-    mortality <- find_measure(.data, c("mx", "mortality", "rate"))
   }
 
   # Drop Age as a key and nest results
