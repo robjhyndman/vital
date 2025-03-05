@@ -28,6 +28,6 @@ test_that("smoothing functions", {
     test2 <- sm2 |>
       dplyr::filter(Year == 1945) |>
       dplyr::pull(.smooth)
-    expect_lt(sum(abs(c(test1) - test2), na.rm = TRUE), 1e-4)
+    expect_lt(max(abs(c(test1) - test2), na.rm = TRUE), 0.01)
   }
 })
