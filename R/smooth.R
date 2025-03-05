@@ -94,12 +94,15 @@ smooth_mortality_x <- function(
   power = 0.4,
   k = 30
 ) {
-  y <- data[[var]]
   x <- data[[age]]
   x_trans <- x^power
-  y_trans <- log(y + 0.0000001)
   age_grid <- seq(min(data[[age]]), max(data[[age]]), by = age_spacing)
   xgrid <- age_grid^power
+
+  y <- data[[var]]
+  # Replace 0 rates with half of smallest available
+  y[y==0] <- min(y[y>0], na.rm = TRUE) / 2
+  y_trans <- log(y)
 
   weights <- smooth_weights(y, data[[popvar]], lambda = 0)
   smooth.fit <- smooth.monotonic(
