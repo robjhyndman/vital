@@ -42,7 +42,12 @@ smooth_spline <- function(.data, .var, age_spacing = 1, k = -1) {
 
 smooth_spline_x <- function(data, var, age_spacing, age, popvar, k = -1) {
   # smoothing with penalized spline
-  weights <- smooth_weights(data[[var]], data[[popvar]], 1)
+  if(is.null(popvar)) {
+    pop <- rep(1, NROW(data))
+  } else {
+    pop <- data[[popvar]]
+  }
+  weights <- smooth_weights(data[[var]], pop, lambda = 1)
   form <- as.formula(paste(var, "~ s(", age, ",k =", k, ")"))
   fit <- mgcv::gam(form, weights = weights, data = data)
   new_data <- data.frame(
@@ -103,8 +108,12 @@ smooth_mortality_x <- function(
   # Replace 0 rates with half of smallest available
   y[y==0] <- min(y[y>0], na.rm = TRUE) / 2
   y_trans <- log(y)
-
-  weights <- smooth_weights(y, data[[popvar]], lambda = 0)
+  if(is.null(popvar)) {
+    pop <- rep(1, NROW(data))
+  } else {
+    pop <- data[[popvar]]
+  }
+  weights <- smooth_weights(data[[var]], pop, lambda = 0)
   smooth.fit <- smooth.monotonic(
     x_trans,
     y_trans,
@@ -146,7 +155,12 @@ smooth_fertility_x <- function(
   x <- data[[age]]
   y_trans <- log(y + 0.0000001)
   age_grid <- seq(min(data[[age]]), max(data[[age]]), by = age_spacing)
-  weights <- smooth_weights(data[[var]], data[[popvar]], lambda = 0)
+  if(is.null(popvar)) {
+    pop <- rep(1, NROW(data))
+  } else {
+    pop <- data[[popvar]]
+  }
+  weights <- smooth_weights(data[[var]], pop, lambda = 0)
   smooth_y <- fert.curve(x, y_trans, weights, lambda, age_grid)
   out <- tibble(
     age = age_grid,
@@ -168,7 +182,12 @@ smooth_loess_x <- function(data, var, age_spacing, age, popvar, span = 0.2) {
   y <- data[[var]]
   # Avoid small spans when there is insufficient data
   span <- max(span, 12 / length(x))
-  weights <- smooth_weights(data[[var]], data[[popvar]], lambda = 0)
+  if(is.null(popvar)) {
+    pop <- rep(1, NROW(data))
+  } else {
+    pop <- data[[popvar]]
+  }
+  weights <- smooth_weights(data[[var]], pop, lambda = 0)
   fit <- stats::loess(
     y ~ x,
     span = span,
