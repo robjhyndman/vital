@@ -13,7 +13,7 @@ ktdb_html <- read_html("https://www.demogr.mpg.de/cgi-bin/databases/ktdb/datamap
 ktdb_html <- ktdb_html[8:42]
 ktdb <- tibble(
   Country = html_text2(ktdb_html),
-  ktdb_number = html_attr(ktdb_html, "href") |> str_extract("[0-9]*$")
+  ktdb_number = html_attr(ktdb_html, "href") |> stringr::str_extract("[0-9]*$")
 )
 
 # HMD countries ----------------------------------------------------
@@ -102,7 +102,7 @@ get_ktdb_links <- function(id) {
     html_elements(xpath = "/html/body/table") |>
     html_elements("a") |>
     html_attr("href") |>
-    str_remove("/databases/ktdb/")
+    stringr::str_remove("/databases/ktdb/")
 }
 
 # Sometimes errors, even with tryCatch. Not sure why. Just rerun it.
