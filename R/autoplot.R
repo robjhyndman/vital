@@ -167,7 +167,7 @@ age_plot <- function(object, .var, keys) {
   age <- names[grep("age", names, ignore.case = TRUE)]
   object_ts <- tsibble::as_tsibble(
     object,
-    index = sym(age),
+    index = !!sym(age),
     key = all_of(keys[keys != age])
   )
   fabletools::autoplot(object_ts, !!sym(.var)) + ggplot2::xlab(age)
