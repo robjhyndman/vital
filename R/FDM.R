@@ -307,9 +307,9 @@ fdm <- function(data, order = 6, ts_model_fn = fable::ARIMA, coherent = NULL) {
   colnames(fits) <- year
   fits <- fits |>
     dplyr::mutate(Age = ages) |>
-    tidyr::pivot_longer(-Age, names_to = "Year", values_to = ".fitted") |>
-    dplyr::mutate(Year = as.integer(Year))
+    tidyr::pivot_longer(-Age, names_to = "Year", values_to = ".fitted")
   colnames(fits)[1:2] <- c(agevar, indexvar)
+  fits[[indexvar]] <- data[[indexvar]]
 
   # Add fitted values and residuals to original data
   output <- data |>
