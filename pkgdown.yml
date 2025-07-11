@@ -3,7 +3,7 @@ pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   intro: intro.html
-last_built: 2025-06-29T04:08Z
+last_built: 2025-07-11T02:16Z
 urls:
   reference: https://pkg.robjhyndman.com/vital/reference
   article: https://pkg.robjhyndman.com/vital/articles
