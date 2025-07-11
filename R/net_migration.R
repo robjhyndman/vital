@@ -103,6 +103,8 @@ net_migration <- function(deaths, births) {
     0,
     deaths[[popvar]] * (1 - deaths$Lxplus1 / deaths$Lx)
   )
+  miss <- is.na(deaths[[deathsvar]])
+  deaths[[deathsvar]][miss] <- 0
   deaths$Lx <- deaths$Lxplus1 <- deaths$Tx <- deaths$Txminus1 <- NULL
 
   nextpop <- deaths |> select(all_of(popvar))
