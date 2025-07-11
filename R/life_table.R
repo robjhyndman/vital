@@ -29,8 +29,15 @@ life_table <- function(.data, mortality) {
   } else {
     mortality <- find_measure(.data, c("mx", "mortality", "rate"))
   }
-  if(is.na(mortality) | !(mortality %in% colnames(.data))) {
-    stop("Mortality variable not found in data")
+  if (is.na(mortality) | !(mortality %in% colnames(.data))) {
+    vvar <- vital_var_list(.data)
+    if (!is.null(vvar$deaths) & !is.null(vvar$population)) {
+      # Compute Mx from deaths and population
+      .data$Mx <- .data[[vvar$deaths]] / .data[[vvar$population]]
+      mortality <- "Mx"
+    } else {
+      stop("Mortality variable not found in data")
+    }
   }
   # Index variable
   index <- tsibble::index_var(.data)
@@ -152,6 +159,7 @@ lt <- function(dt, sex, age, mortality) {
   # Now Lx, Tx and ex
   Lx <- nx * lx - dx * (nx - ax)
   Lx[nn] <- if_else(mx[nn] == 0, 0, lx[nn] / mx[nn])
+  Lx[is.na(Lx)] <- 0
   Tx <- rev(cumsum(rev(Lx)))
   ex <- Tx / lx
   # Finally compute rx
