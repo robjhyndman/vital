@@ -7,7 +7,9 @@ library(dplyr)
 # KTDB countries ---------------------------------------------------
 # Get names, ids and links for KTDB countries
 
-ktdb_html <- read_html("https://www.demogr.mpg.de/cgi-bin/databases/ktdb/datamap.plx") |>
+ktdb_html <- read_html(
+  "https://www.demogr.mpg.de/cgi-bin/databases/ktdb/datamap.plx"
+) |>
   html_elements(xpath = "/html/body") |>
   html_elements("a")
 ktdb_html <- ktdb_html[8:42]
@@ -41,7 +43,9 @@ hmd <- hmd |>
 
 # STMF countries ----------------------------------------------------
 stmf_html <- read_html("https://www.mortality.org/Data/STMF") |>
-  html_element(xpath = "/html/body/div[1]/div/div/div/div/div[2]/table/tbody") |>
+  html_element(
+    xpath = "/html/body/div[1]/div/div/div/div/div[2]/table/tbody"
+  ) |>
   html_elements("a")
 stmf <- tibble(
   Country = html_text2(stmf_html),
@@ -58,7 +62,8 @@ countries <- hmd |>
   mutate(
     hmd_code = case_when(
       Country == "Czech Republic" ~ hmd$hmd_code[hmd$Country == "Czechia"],
-      Country == "England and Wales" ~ hmd$hmd_code[hmd$Country == "England & Wales"],
+      Country == "England and Wales" ~
+        hmd$hmd_code[hmd$Country == "England & Wales"],
       Country == "Germany East" ~ hmd$hmd_code[hmd$Country == "East Germany"],
       Country == "Germany West" ~ hmd$hmd_code[hmd$Country == "West Germany"],
       Country == "Luxemburg" ~ hmd$hmd_code[hmd$Country == "Luxembourg"],
@@ -68,17 +73,22 @@ countries <- hmd |>
     ),
     stmf_code = case_when(
       Country == "Czechia" ~ stmf$stmf_code[stmf$Country == "Czech Republic"],
-      Country == "England & Wales" ~ stmf$stmf_code[stmf$Country == "England and Wales"],
+      Country == "England & Wales" ~
+        stmf$stmf_code[stmf$Country == "England and Wales"],
       Country == "Luxemburg" ~ stmf$stmf_code[stmf$Country == "Luxembourg"],
-      Country == "Republic of Korea" ~ stmf$stmf_code[stmf$Country == "S.Korea"],
+      Country == "Republic of Korea" ~
+        stmf$stmf_code[stmf$Country == "S.Korea"],
       Country == "U.S.A." ~ stmf$stmf_code[stmf$Country == "USA"],
       TRUE ~ stmf_code
     ),
     ktdb_number = case_when(
       Country == "Czechia" ~ ktdb$ktdb_number[ktdb$Country == "Czech Republic"],
-      Country == "England and Wales" ~ ktdb$ktdb_number[ktdb$Country == "England & Wales"],
-      Country == "East Germany" ~ ktdb$ktdb_number[ktdb$Country == "Germany East"],
-      Country == "West Germany" ~ ktdb$ktdb_number[ktdb$Country == "Germany West"],
+      Country == "England and Wales" ~
+        ktdb$ktdb_number[ktdb$Country == "England & Wales"],
+      Country == "East Germany" ~
+        ktdb$ktdb_number[ktdb$Country == "Germany East"],
+      Country == "West Germany" ~
+        ktdb$ktdb_number[ktdb$Country == "Germany West"],
       Country == "Luxembourg" ~ ktdb$ktdb_number[ktdb$Country == "Luxemburg"],
       Country == "U.S.A." ~ ktdb$ktdb_number[ktdb$Country == "USA"],
       TRUE ~ ktdb_number
@@ -96,7 +106,10 @@ countries <- countries |>
 # This gives occasional errors, so we keep trying the countries until all are found
 
 get_ktdb_links <- function(id) {
-  html <- paste0("https://www.demogr.mpg.de/cgi-bin/databases/ktdb/record.plx?CountryID=", id) |>
+  html <- paste0(
+    "https://www.demogr.mpg.de/cgi-bin/databases/ktdb/record.plx?CountryID=",
+    id
+  ) |>
     read_html()
   html |>
     html_elements(xpath = "/html/body/table") |>

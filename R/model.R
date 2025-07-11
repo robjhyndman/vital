@@ -106,7 +106,9 @@ Check that specified model(s) are model definitions.",
       }
     }
     out <- estimate(dt, mdl, sex)
-    if (progress) p()
+    if (progress) {
+      p()
+    }
     out
   }
 
@@ -138,7 +140,6 @@ Check that specified model(s) are model definitions.",
   }
   fits <- eval_models(models, .data[["lst_data"]], .data[, kv])
   names(fits) <- ifelse(nchar(names(models)), names(models), nm)
-
   # Report errors if estimated safely
   if (.safely) {
     fits <- purrr::imap(fits, function(x, nm) {
@@ -221,8 +222,11 @@ nest_keys <- function(.data, nm = "data") {
         index = idx,
         index2 = idx2,
         ordered = ordered,
-        interval = if (length(i) > 1 && regular)
-          tsibble::interval_pull(out[[idx]]) else tsibble::interval(.data)
+        interval = if (length(i) > 1 && regular) {
+          tsibble::interval_pull(out[[idx]])
+        } else {
+          tsibble::interval(.data)
+        }
       ) |>
         as_vital(
           .age = attr_data$age,

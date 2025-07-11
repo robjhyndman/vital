@@ -160,10 +160,11 @@ parse_model_lhs <- function(model) {
       if (
         any(resp_pos <- map_lgl(x, function(x) any(names(x) %in% "response")))
       ) {
-        if (sum(resp_pos) != 1)
+        if (sum(resp_pos) != 1) {
           abort(
             "The `resp()` function can only be used once per response variable. For multivariate modelling, use `vars()`."
           )
+        }
         names(x)[resp_pos] <- "response"
       }
       `attr<-`(x, "call", y[[1]])
@@ -171,10 +172,11 @@ parse_model_lhs <- function(model) {
     .g = function(x) x[-1],
     .h = function(x) {
       if (is_resp(x)) {
-        if (length(x) > 2)
+        if (length(x) > 2) {
           abort(
             "The response variable accepts only one input. For multivariate modelling, use `vars()`."
           )
+        }
         list(response = x)
       } else {
         list(x)
@@ -195,8 +197,11 @@ parse_model_lhs <- function(model) {
       if (length(x) == 0) {
         # Multiple length `n` variables found and cannot disambiguate response
         # Start with most disaggregated result of computation as response.
-        x <- if (is.null(attr(y, "call"))) list(y[[1]]) else
+        x <- if (is.null(attr(y, "call"))) {
+          list(y[[1]])
+        } else {
           syms(as_label(attr(y, "call")))
+        }
       } else {
         if (is.null(attr(y, "call"))) {
           if (is_resp(x[[1]])) {
@@ -217,12 +222,13 @@ parse_model_lhs <- function(model) {
         # parent_len <- length(eval(attr(x, "call") %||% x[[1]], envir = model$data))
         len <- map_dbl(
           x,
-          function(y)
+          function(y) {
             length(eval(
               attr(y, "call") %||% y[[1]],
               envir = model$data,
               enclos = model$specials
             ))
+          }
         )
         if (sum(len == max(len)) == 1) {
           names(x)[which.max(len)] <- "response"

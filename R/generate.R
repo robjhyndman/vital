@@ -109,8 +109,9 @@ Does your model require extra variables to produce simulations?",
 
   x$model$remove_data()
   x$model$stage <- NULL
-  if (length(x$response) > 1)
+  if (length(x$response) > 1) {
     abort("Generating paths from multivariate models is not yet supported.")
+  }
   .sim <- generate(
     x[["fit"]],
     new_data = new_data,

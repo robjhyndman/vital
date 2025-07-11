@@ -36,9 +36,17 @@ img_cropped <- hex_crop(
 
 ggplot() +
   geom_from_path(aes(0.5, 0.5, path = img_cropped)) +
-  annotate("text",
-    x = 0.3, y = -0.5, label = "vital", family = "firasans", size = 96, colour = "white",
-    angle = 30, hjust = 0, fontface = "bold"
+  annotate(
+    "text",
+    x = 0.3,
+    y = -0.5,
+    label = "vital",
+    family = "firasans",
+    size = 96,
+    colour = "white",
+    angle = 30,
+    hjust = 0,
+    fontface = "bold"
   ) +
   xlim(-1, 2) +
   ylim(-1, 2) +

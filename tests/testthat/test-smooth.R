@@ -1,7 +1,10 @@
 test_that("smoothing functions", {
   sm <- aus_fertility |>
     smooth_fertility(Fertility)
-  expect_identical(colnames(sm), c("Year", "Age", "Fertility", "Exposure", "Births", ".smooth", ".smooth_se"))
+  expect_identical(
+    colnames(sm),
+    c("Year", "Age", "Fertility", "Exposure", "Births", ".smooth", ".smooth_se")
+  )
   sm <- aus_mortality |>
     dplyr::filter(Code == "NSW", Year <= 1910, Sex == "male") |>
     smooth_mortality(Mortality)

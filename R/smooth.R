@@ -42,7 +42,7 @@ smooth_spline <- function(.data, .var, age_spacing = 1, k = -1) {
 
 smooth_spline_x <- function(data, var, age_spacing, age, popvar, k = -1) {
   # smoothing with penalized spline
-  if(is.null(popvar)) {
+  if (is.null(popvar)) {
     pop <- rep(1, NROW(data))
   } else {
     pop <- data[[popvar]]
@@ -106,9 +106,9 @@ smooth_mortality_x <- function(
 
   y <- data[[var]]
   # Replace 0 rates with half of smallest available
-  y[y==0] <- min(y[y>0], na.rm = TRUE) / 2
+  y[y == 0] <- min(y[y > 0], na.rm = TRUE) / 2
   y_trans <- log(y)
-  if(is.null(popvar)) {
+  if (is.null(popvar)) {
     pop <- rep(1, NROW(data))
   } else {
     pop <- data[[popvar]]
@@ -155,7 +155,7 @@ smooth_fertility_x <- function(
   x <- data[[age]]
   y_trans <- log(y + 0.0000001)
   age_grid <- seq(min(data[[age]]), max(data[[age]]), by = age_spacing)
-  if(is.null(popvar)) {
+  if (is.null(popvar)) {
     pop <- rep(1, NROW(data))
   } else {
     pop <- data[[popvar]]
@@ -182,7 +182,7 @@ smooth_loess_x <- function(data, var, age_spacing, age, popvar, span = 0.2) {
   y <- data[[var]]
   # Avoid small spans when there is insufficient data
   span <- max(span, 12 / length(x))
-  if(is.null(popvar)) {
+  if (is.null(popvar)) {
     pop <- rep(1, NROW(data))
   } else {
     pop <- data[[popvar]]
@@ -341,7 +341,7 @@ smooth_vital <- function(.data, .var, age_spacing, smooth_fn, ...) {
   )
   smooth <- purrr::map(
     nested_data[["data"]],
-    \(x)
+    \(x) {
       smooth_fn(
         x,
         var = resp,
@@ -350,6 +350,7 @@ smooth_vital <- function(.data, .var, age_spacing, smooth_fn, ...) {
         pop = pop,
         ...
       )
+    }
   )
   nested_data$sm <- smooth
   nested_data$data <- NULL
