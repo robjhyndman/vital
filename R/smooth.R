@@ -321,6 +321,16 @@ smooth_vital <- function(.data, .var, age_spacing, smooth_fn, ...) {
       "Please specify which variable to smooth. .var is missing with no default."
     )
   }
+  if (".smooth" %in% colnames(.data)) {
+    stop(
+      ".data already contains a variable named '.smooth'. Please rename it or remove it before smoothing."
+    )
+  }
+  if (".smooth_se" %in% colnames(.data)) {
+    stop(
+      ".data already contains a variable named '.smooth_se'. Please rename it or remove it before smoothing."
+    )
+  }
   # Index variable
   index <- tsibble::index_var(.data)
   # Keys including age
@@ -375,10 +385,7 @@ smooth_vital <- function(.data, .var, age_spacing, smooth_fn, ...) {
 smooth_weights <- function(rate, pop, lambda) {
   if (!is.null(pop)) {
     pop <- pop / max(pop, na.rm = TRUE)
-    weight <- pop * rate^(1 - 2 * lambda)
-    if (mean(weight, na.rm = TRUE) < 0) {
-      stop("There's a problem. Do you have negative rates?")
-    }
+    weight <- pop * abs(rate)^(1 - 2 * lambda)
     weight[weight < 0 | is.na(weight) | abs(weight) > 1e50] <- 0
   } else {
     weight <- rep(1, length(rate))
