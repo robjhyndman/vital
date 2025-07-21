@@ -1,0 +1,26 @@
+---
+title: "Stochastic population forecasting"
+author: Rob J Hyndman
+bibliography: refs.bib
+vignette: >
+  %\VignetteIndexEntry{Stochastic population forecasting}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(vital)
+```
+
+Following 
+
+```{r}
+
+```

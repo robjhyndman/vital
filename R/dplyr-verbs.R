@@ -192,3 +192,16 @@ dplyr_reconstruct.grouped_vital <- function(data, template) {
     res
   }
 }
+
+#' @export
+rename.vital <- function(.data, ...) {
+  vvar <- vital_var_list(.data)
+  as_vital(
+    NextMethod(),
+    .age = vvar$age,
+    .sex = vvar$sex,
+    .deaths = vvar$deaths,
+    .births = vvar$births,
+    .population = vvar$population
+  )
+}
