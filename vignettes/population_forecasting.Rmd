@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup, message = FALSE, warning = FALSE}
 library(vital)
 library(fable)
 library(dplyr)
@@ -26,14 +26,14 @@ set.seed(2025)
 
 The vital package can be used for stochastic population forecasting with coherent components. This is based on the papers by @HB08 and @hby. Following @HB08, we use the following demographic growth-balance equations:
 $$
-P_t(x) = P_{t-1}(x) + B_t(x) - D_t(x) + N_t(x) 
+P_t(x) = P_{t-1}(x) + B_t(x) - D_t(x) + G_t(x) 
 $$
 where
 
 * $P_t(x)$ is the population at time $t$ and age $x$,
 * $B_t(x)$ is the number of births at time $t$ and age $x$,
 * $D_t(x)$ is the number of deaths at time $t$ and age $x$, and
-* $N_t(x)$ is the number of net migrants at time $t$ and age $x$.
+* $G_t(x)$ is the number of net migrants at time $t$ and age $x$.
 
 To simulate future births, deaths and net migrants, we develop three functional data models for fertility, mortality and migration. The models for mortality and migration use coherent components, so that the rates for males and females do not diverge over time. 
 
@@ -43,7 +43,7 @@ The following example uses Norwegian data up to 2022, and produces simulated pop
 
 We use a coherent functional data model [@hby] for the log mortality rates. To ensure coherence, we compute the geometric mean of the sex-specific mortality rates and the corresponding ratios, using the `make_pr()` function. The data are smoothed first, and 6 components are used by default in each FDM, although only the first two are plotted here.
 
-```{r}
+```{r, out.width="100%"}
 fit_mortality <- norway_mortality |> 
   filter(Sex != "Total") |>
   smooth_mortality(Mortality) |>
@@ -56,7 +56,7 @@ autoplot(fit_mortality, 2)
 
 For fertility, we use a functional mean model with a square root transformation, applied to the last 13 years of data. The plotted model shows the fitted values on the square root scale.
 
-```{r}
+```{r, out.width="100%"}
 fit_fertility <- norway_fertility |>
   filter(Year > 2010) |>
   smooth_fertility(Fertility) |>
@@ -68,7 +68,7 @@ autoplot(fit_fertility)
 
 For net migration, we use a coherent functional data model. Because net migration values can be positive or negative, we can't take products and ratios. Instead, we need to compute the means and corresponding differences using the `mean_sd()` function.
 
-```{r}
+```{r, out.width="100%"}
 netmig <- net_migration(
   norway_mortality |> filter(Sex != "Total"), 
   norway_births
@@ -76,9 +76,12 @@ netmig <- net_migration(
   make_sd(NetMigration) 
 fit_migration <- netmig |>
   model(fdm = FDM(NetMigration, coherent = TRUE))
+autoplot(fit_migration)
 ```
 
 # Population simulation
+
+The `generate_population()` function takes a starting population, and the three component models, and simulates future age-sex-specific population values. Here we produce ten replicates of the future population.
 
 ```{r}
 pop <- norway_mortality |> 
@@ -89,17 +92,52 @@ future <- generate_population(
   fertility_model = fit_fertility,
   migration_model = fit_migration,
   h = 10,
-  n_reps = 7
+  n_reps = 500
 )
 ```
 
-```{r}
+The first replicate is plotted below, along with the last few years of historical data.
+
+```{r, out.width="100%"}
 future |> 
-  filter(.rep == "3") |> 
+  filter(.rep == "1") |> 
   autoplot(Population) +
   geom_line(
     data = norway_mortality |> filter(Year > 2010, Sex != "Total"), 
-    color = "grey"
-  )
+    color = "grey",
+    mapping = aes(group = Year)
+  ) +
+  geom_line()
 ```
   
+The simulated populations can be used to compute any quantities that can be derived from populations numbers by sex and age. For example, the mean age of the population for the next 10 years
+
+```{r}
+future |> 
+  group_by(Sex, .rep) |>
+  summarise(mean_age = sum(Population * (Age + 0.5)) / sum(Population)) |>
+  group_by(Sex) |>
+  summarise(mean_age = mean(mean_age)) 
+```
+
+We can also plot population pyramids with prediction intervals. Here is the population pyramid for 2032 with a 95% prediction interval.
+
+```{r, out.width="100%"}
+pyramid_2032 <- future |>
+  filter(Year == 2032) |>
+  mutate(Population = if_else(Sex == "Female", -Population, Population)) |>
+  group_by(Age, Sex) |>
+  summarise(
+    lo = quantile(Population, 0.025),
+    med = quantile(Population, 0.5),
+    hi = quantile(Population, 0.975)
+  ) 
+pyramid_2032 |>
+  ggplot(aes(x = Age)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi, colour = NULL), fill = "#c14b14", alpha=0.2) +
+  geom_line(aes(y = med), color = "#c14b14") +
+  facet_grid(. ~ Sex, scales = "free_x") +
+  labs(y = "Population") +
+  coord_flip() +
+  guides(fill = "none", alpha = "none") 
+```
