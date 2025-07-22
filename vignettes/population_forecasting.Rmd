@@ -18,7 +18,10 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(vital)
+library(fable)
 library(dplyr)
+library(ggplot2)
+set.seed(2025)
 ```
 
 The vital package can be used for stochastic population forecasting with coherent components. This is based on the papers by @HB08 and @hby. Following @HB08, we use the following demographic growth-balance equations:
@@ -32,77 +35,71 @@ where
 * $D_t(x)$ is the number of deaths at time $t$ and age $x$, and
 * $N_t(x)$ is the number of net migrants at time $t$ and age $x$.
 
-To simulate future births, deaths and net migrants, we develop three functional data models for fertility, mortality and migration. The models for mortality and migration use coherent components [@hby], so that the rates for males and females do not diverge over time. 
+To simulate future births, deaths and net migrants, we develop three functional data models for fertility, mortality and migration. The models for mortality and migration use coherent components, so that the rates for males and females do not diverge over time. 
 
-The following example uses Norwegian data up to 2022, and simulates ten future years. 
+The following example uses Norwegian data up to 2022, and produces simulated populations for the ten future years. Different models are used for each component to demonstrate the flexibility of the package, but other models can be used as well.
 
 ## Migration model
+
+We use a coherent functional data model [@hby] for the log mortality rates. To ensure coherence, we compute the geometric mean of the sex-specific mortality rates and the corresponding ratios, using the `make_pr()` function. The data are smoothed first, and 6 components are used by default in each FDM, although only the first two are plotted here.
 
 ```{r}
 fit_mortality <- norway_mortality |> 
   filter(Sex != "Total") |>
   smooth_mortality(Mortality) |>
+  make_pr(.smooth) |>
   model(fdm = FDM(log(.smooth), coherent = TRUE))
-future_mortality <- fit_mortality |>
-  generate(h = 10, times = 1000) |>
-  rename(mx = .sim) |>
-  select(-.model)
+autoplot(fit_mortality, 2)
 ```
 
 ## Fertility model
 
+For fertility, we use a functional mean model with a square root transformation, applied to the last 13 years of data. The plotted model shows the fitted values on the square root scale.
+
 ```{r}
 fit_fertility <- norway_fertility |>
+  filter(Year > 2010) |>
   smooth_fertility(Fertility) |>
-  model(fdm = FDM(log(.smooth)))
-future_fertility <- fit_fertility |>
-  generate(h = 10, times = 1000) |>
-  rename(fx = .sim) |>
-  select(-.model)
+  model(fmean = FMEAN(sqrt(.smooth)))
+autoplot(fit_fertility) 
 ```
 
 ## Net migration model
+
+For net migration, we use a coherent functional data model. Because net migration values can be positive or negative, we can't take products and ratios. Instead, we need to compute the means and corresponding differences using the `mean_sd()` function.
 
 ```{r}
 netmig <- net_migration(
   norway_mortality |> filter(Sex != "Total"), 
   norway_births
 ) |>
-  mutate(rate = NetMigration / Population) 
+  make_sd(NetMigration) 
 fit_migration <- netmig |>
-  model(fdm = FDM(rate, coherent = TRUE))
-future_migration <- fit_migration |>
-  generate(h = 10, times = 1000) |>
-  rename(nx = .sim) |>
-  select(-.model)
+  model(fdm = FDM(NetMigration, coherent = TRUE))
 ```
 
 # Population simulation
 
 ```{r}
 pop <- norway_mortality |> 
-  filter(Sex != "Total", Year == max(Year)) |>
-  mutate(Year = Year + 1, Prev_Pop = Population)  |>
-  select(Year, Age, Sex, Prev_Pop)
-future <- as_tibble(pop) |>
-  right_join(as_tibble(future_mortality)) |>
-  left_join(as_tibble(future_fertility) |> mutate(Sex = "Female")) |>
-  left_join(future_migration) |>
-  mutate(fx = tidyr::replace_na(fx, 0))
-yrs <- sort(unique(future$Year))
-for(y in yrs) {
-  cut <- future[future$Year == y,]
-  births <- cut |>
-    group_by(.rep) |> 
-    summarise(
-      Births = sum(fx * Prev_Pop, na.rm = TRUE),
-      .groups = "drop"
-    )
-  
-  cut$Population <- cut$Prev_Pop + 
-    cut$fx * cut$Population - 
-    cut$mx * cut$Population + 
-    cut$nx * cut$Population
-}
+  filter(Sex != "Total", Year == max(Year)) 
+future <- generate_population(
+  starting_population = pop,
+  mortality_model = fit_mortality,
+  fertility_model = fit_fertility,
+  migration_model = fit_migration,
+  h = 10,
+  n_reps = 7
+)
+```
+
+```{r}
+future |> 
+  filter(.rep == "3") |> 
+  autoplot(Population) +
+  geom_line(
+    data = norway_mortality |> filter(Year > 2010, Sex != "Total"), 
+    color = "grey"
+  )
 ```
   
