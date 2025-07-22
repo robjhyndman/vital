@@ -97,13 +97,8 @@ Check that specified model(s) are model definitions.",
       sex <- NULL
     }
     if (!is.null(mdl$extra$coherent)) {
-      if ("geometric_mean" %in% keys & mdl$extra$coherent) {
-        # No need to make the model stationary
-        mdl$extra$coherent <- FALSE
-      } else {
-        # Make model stationary
-        mdl$extra$coherent <- TRUE
-      }
+      mdl$extra$coherent <- !(mdl$extra$coherent &
+        ("geometric_mean" %in% keys | "mean" %in% keys))
     }
     out <- estimate(dt, mdl, sex)
     if (progress) {
