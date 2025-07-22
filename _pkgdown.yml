@@ -19,6 +19,15 @@ authors:
 navbar:
   type: light
 
+figures:
+  dev: ragg::agg_png
+  dpi: 300
+  dev.args: []
+  fig.ext: png
+  fig.width: 7.2
+  fig.height: 4.5
+  fig.asp: 1.618
+
 reference:
   - title: Create vitals
     desc: Functions for creating vital objects
