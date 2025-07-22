@@ -83,6 +83,7 @@ reference:
     contents:
       - forecast.mdl_vtl_df
       - generate.mdl_vtl_df
+      - generate_population
       - interpolate.mdl_vtl_df
       - age_components
       - time_components
