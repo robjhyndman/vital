@@ -82,7 +82,7 @@ with coherent components. This is based on the papers by <span class="citation">
 <span class="citation">Hyndman and Booth (2008)</span>, we use the
 following demographic growth-balance equations:
 <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>P</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><msub><mi>B</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><msub><mi>D</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><msub><mi>G</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
-P_t(x) = P_{t-1}(x) + B_t(x) - D_t(x) + G_t(x) 
+P_t(x) = P_{t-1}(x) + B_t(x) - D_t(x) + G_t(x)
 </annotation></semantics></math> where</p>
 <ul>
 <li>
@@ -111,6 +111,9 @@ is the number of net migrants at time
 and age
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>.</li>
 </ul>
+<p>There are slightly different equations for handling the upper age
+group, and for baby migrants. See <span class="citation">Hyndman and
+Booth (2008)</span> for details.</p>
 <p>To simulate future births, deaths and net migrants, we develop three
 functional data models for fertility, mortality and migration. The
 models for mortality and migration use coherent components, so that the
@@ -119,9 +122,9 @@ rates for males and females do not diverge over time.</p>
 simulated populations for the ten future years. Different models are
 used for each component to demonstrate the flexibility of the package,
 but other models can be used as well.</p>
-<div class="section level3">
-<h3 id="migration-model">Migration model<a class="anchor" aria-label="anchor" href="#migration-model"></a>
-</h3>
+<div class="section level2">
+<h2 id="migration-model">Migration model<a class="anchor" aria-label="anchor" href="#migration-model"></a>
+</h2>
 <p>We use a coherent functional data model <span class="citation">(Hyndman, Booth, and Yasmeen 2013)</span> for the log
 mortality rates. To ensure coherence, we compute the geometric mean of
 the sex-specific mortality rates and the corresponding ratios, using the
@@ -129,7 +132,7 @@ the sex-specific mortality rates and the corresponding ratios, using the
 components are used by default in each FDM, although only the first two
 are plotted here.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit_mortality</span> <span class="op">&lt;-</span> <span class="va">norway_mortality</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">fit_mortality</span> <span class="op">&lt;-</span> <span class="va">norway_mortality</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sex</span> <span class="op">!=</span> <span class="st">"Total"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/smooth_vital.html">smooth_mortality</a></span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/make_pr.html">make_pr</a></span><span class="op">(</span><span class="va">.smooth</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -137,9 +140,9 @@ are plotted here.</p>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">fit_mortality</span>, <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="population_forecasting_files/figure-html/unnamed-chunk-2-1.png" width="100%"></p>
 </div>
-<div class="section level3">
-<h3 id="fertility-model">Fertility model<a class="anchor" aria-label="anchor" href="#fertility-model"></a>
-</h3>
+<div class="section level2">
+<h2 id="fertility-model">Fertility model<a class="anchor" aria-label="anchor" href="#fertility-model"></a>
+</h2>
 <p>For fertility, we use a functional mean model with a square root
 transformation, applied to the last 13 years of data. The plotted model
 shows the fitted values on the square root scale.</p>
@@ -148,22 +151,22 @@ shows the fitted values on the square root scale.</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Year</span> <span class="op">&gt;</span> <span class="fl">2010</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/smooth_vital.html">smooth_fertility</a></span><span class="op">(</span><span class="va">Fertility</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span>fmean <span class="op">=</span> <span class="fu"><a href="../reference/FMEAN.html">FMEAN</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">.smooth</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">fit_fertility</span><span class="op">)</span> </span></code></pre></div>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">fit_fertility</span><span class="op">)</span></span></code></pre></div>
 <p><img src="population_forecasting_files/figure-html/unnamed-chunk-3-1.png" width="100%"></p>
 </div>
-<div class="section level3">
-<h3 id="net-migration-model">Net migration model<a class="anchor" aria-label="anchor" href="#net-migration-model"></a>
-</h3>
+<div class="section level2">
+<h2 id="net-migration-model">Net migration model<a class="anchor" aria-label="anchor" href="#net-migration-model"></a>
+</h2>
 <p>For net migration, we use a coherent functional data model. Because
 net migration values can be positive or negative, we can’t take products
 and ratios. Instead, we need to compute the means and corresponding
 differences using the <code>mean_sd()</code> function.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">netmig</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net_migration.html">net_migration</a></span><span class="op">(</span></span>
-<span>  <span class="va">norway_mortality</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sex</span> <span class="op">!=</span> <span class="st">"Total"</span><span class="op">)</span>, </span>
+<span>  <span class="va">norway_mortality</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sex</span> <span class="op">!=</span> <span class="st">"Total"</span><span class="op">)</span>,</span>
 <span>  <span class="va">norway_births</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/make_sd.html">make_sd</a></span><span class="op">(</span><span class="va">NetMigration</span><span class="op">)</span> </span>
+<span>  <span class="fu"><a href="../reference/make_sd.html">make_sd</a></span><span class="op">(</span><span class="va">NetMigration</span><span class="op">)</span></span>
 <span><span class="va">fit_migration</span> <span class="op">&lt;-</span> <span class="va">netmig</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span>fdm <span class="op">=</span> <span class="fu"><a href="../reference/FDM.html">FDM</a></span><span class="op">(</span><span class="va">NetMigration</span>, coherent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">fit_migration</span><span class="op">)</span></span></code></pre></div>
@@ -177,8 +180,8 @@ population, and the three component models, and simulates future
 age-sex-specific population values. Here we produce ten replicates of
 the future population.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="va">norway_mortality</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sex</span> <span class="op">!=</span> <span class="st">"Total"</span>, <span class="va">Year</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Year</span><span class="op">)</span><span class="op">)</span> </span>
+<code class="sourceCode R"><span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="va">norway_mortality</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sex</span> <span class="op">!=</span> <span class="st">"Total"</span>, <span class="va">Year</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Year</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">future</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_population.html">generate_population</a></span><span class="op">(</span></span>
 <span>  starting_population <span class="op">=</span> <span class="va">pop</span>,</span>
 <span>  mortality_model <span class="op">=</span> <span class="va">fit_mortality</span>,</span>
@@ -190,11 +193,11 @@ the future population.</p>
 <p>The first replicate is plotted below, along with the last few years
 of historical data.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">future</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">.rep</span> <span class="op">==</span> <span class="st">"1"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">future</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">.rep</span> <span class="op">==</span> <span class="st">"1"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">Population</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span></span>
-<span>    data <span class="op">=</span> <span class="va">norway_mortality</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Year</span> <span class="op">&gt;</span> <span class="fl">2010</span>, <span class="va">Sex</span> <span class="op">!=</span> <span class="st">"Total"</span><span class="op">)</span>, </span>
+<span>    data <span class="op">=</span> <span class="va">norway_mortality</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Year</span> <span class="op">&gt;</span> <span class="fl">2010</span>, <span class="va">Sex</span> <span class="op">!=</span> <span class="st">"Total"</span><span class="op">)</span>,</span>
 <span>    color <span class="op">=</span> <span class="st">"grey"</span>,</span>
 <span>    mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>group <span class="op">=</span> <span class="va">Year</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
@@ -204,11 +207,11 @@ of historical data.</p>
 can be derived from populations numbers by sex and age. For example, the
 mean age of the population for the next 10 years</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">future</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">future</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Sex</span>, <span class="va">.rep</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>mean_age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">Population</span> <span class="op">*</span> <span class="op">(</span><span class="va">Age</span> <span class="op">+</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">Population</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Sex</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>mean_age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mean_age</span><span class="op">)</span><span class="op">)</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>mean_age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mean_age</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A vital: 20 x 3 [1Y]</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># Key:     Sex [2]</span></span></span>
 <span><span class="co">#&gt;    Sex     Year mean_age</span></span>
@@ -233,8 +236,9 @@ mean age of the population for the next 10 years</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">18</span> Male    <span style="text-decoration: underline;">2</span>030     42.2</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">19</span> Male    <span style="text-decoration: underline;">2</span>031     42.4</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">20</span> Male    <span style="text-decoration: underline;">2</span>032     42.6</span></span></code></pre></div>
-<p>We can also plot population pyramids with prediction intervals. Here
-is the population pyramid for 2032 with a 95% prediction interval.</p>
+<p>We can also plot population pyramids with prediction intervals. For
+example, here is the population pyramid for 2032 with a 95% prediction
+interval.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pyramid_2032</span> <span class="op">&lt;-</span> <span class="va">future</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Year</span> <span class="op">==</span> <span class="fl">2032</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -244,26 +248,33 @@ is the population pyramid for 2032 with a 95% prediction interval.</p>
 <span>    lo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Population</span>, <span class="fl">0.025</span><span class="op">)</span>,</span>
 <span>    med <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Population</span>, <span class="fl">0.5</span><span class="op">)</span>,</span>
 <span>    hi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Population</span>, <span class="fl">0.975</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> </span>
+<span>  <span class="op">)</span></span>
 <span><span class="va">pyramid_2032</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Age</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">lo</span>, ymax <span class="op">=</span> <span class="va">hi</span>, colour <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>, fill <span class="op">=</span> <span class="st">"#c14b14"</span>, alpha<span class="op">=</span><span class="fl">0.2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">lo</span>, ymax <span class="op">=</span> <span class="va">hi</span>, colour <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>,</span>
+<span>    fill <span class="op">=</span> <span class="st">"#c14b14"</span>, alpha <span class="op">=</span> <span class="fl">0.2</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">med</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"#c14b14"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">Sex</span>, scales <span class="op">=</span> <span class="st">"free_x"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">"Population"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"none"</span>, alpha <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> </span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"none"</span>, alpha <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="population_forecasting_files/figure-html/unnamed-chunk-8-1.png" width="100%"></p>
+</div>
+<div class="section level2 unnumbered">
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
 <div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-HB08" class="csl-entry">
 Hyndman, Rob J, and Heather Booth. 2008. <span>“Stochastic Population
 Forecasts Using Functional Data Models for Mortality, Fertility and
 Migration.”</span> <em>International J Forecasting</em> 24 (3): 323–42.
+<a href="https://robjhyndman.com/publications/stochastic-population-forecasts/" class="external-link">https://robjhyndman.com/publications/stochastic-population-forecasts/</a>.
 </div>
 <div id="ref-hby" class="csl-entry">
 Hyndman, Rob J, Heather Booth, and Farah Yasmeen. 2013. <span>“Coherent
 Mortality Forecasting: The Product-Ratio Method with Functional Time
-Series Models.”</span> <em>Demography</em> 50 (1): 261–83.
+Series Models.”</span> <em>Demography</em> 50 (1): 261–83. <a href="https://robjhyndman.com/publications/coherentfdm/" class="external-link">https://robjhyndman.com/publications/coherentfdm/</a>.
 </div>
 </div>
 </div>
