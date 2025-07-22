@@ -44,7 +44,7 @@ library(ggplot2)
 
 ## vital objects
 
-The basic data object is a `vital`, which is time-indexed tibble that contains vital statistics such as births, deaths, population counts, and mortality and fertility rates. 
+The basic data object is a `vital`, which is time-indexed tibble that contains vital statistics such as births, deaths, population counts, and mortality and fertility rates.
 
 We will use Norwegian data in the following examples. First, let's remove the "Total" Sex category and collapse the upper ages into a final age group of 100+.
 
@@ -55,7 +55,7 @@ nor <- norway_mortality |>
 nor
 ```
 
-This example contains data from `r min(nor$Year)` to `r max(nor$Year)`. There are 101 age groups and 2 Sex categories. 
+This example contains data from `r min(nor$Year)` to `r max(nor$Year)`. There are 101 age groups and 2 Sex categories.
 A vital must have a time "index" variable, and optionally other categorical variables known as "key" variables. Each row must have a unique combination of the index and key variables. Some columns are "vital" variables, such as "Age" and "Sex".
 
 We can use functions to see which variables are index, key or vital:
@@ -107,7 +107,7 @@ nor |>
   geom_line()
 ```
 
-## Smoothing 
+## Smoothing
 
 Several smoothing functions are provided: `smooth_spline()`, `smooth_mortality()`, `smooth_fertility()`, and `smooth_loess()`, each smoothing across the age variable for each year. The methods used in `smooth_mortality()` and `smooth_fertility()` are described in @hu.
 
@@ -167,7 +167,7 @@ The forecasts are returned as a distribution column (here transformed normal bec
 
 ## Functional data models
 
-Functional data models [@hu] can be estimated in a similar way to Lee-Carter models, but with an additional smoothing step, then modelling with `LC` replaced by `FDM`. 
+Functional data models [@hu] can be estimated in a similar way to Lee-Carter models, but with an additional smoothing step, then modelling with `LC` replaced by `FDM`.
 
 ```{r fdm}
 # FDM model
@@ -180,14 +180,14 @@ autoplot(fc_fdm) +
   scale_y_log10()
 ```
 
-Functional data models have multiple principal components, rather than the single factor used in Lee-Carter models. 
+Functional data models have multiple principal components, rather than the single factor used in Lee-Carter models.
 
 ```{r}
 fdm |>
   autoplot(show_order = 3)
 ```
 
-By default, six factors are estimated using `FDM()`. Here we have chosen to plot only the first three. 
+By default, six factors are estimated using `FDM()`. Here we have chosen to plot only the first three.
 
 The components can be extracted.
 
@@ -214,6 +214,6 @@ fc_coherent
 
 Here, `make_pr()` makes the product-ratios, while `undo_pr()` undoes them.
 
-The argument `coherent = TRUE` in `FDM()` ensures that the ARIMA models fitted to the coefficients are stationary when applied to the sex-ratios. 
+The argument `coherent = TRUE` in `FDM()` ensures that the ARIMA models fitted to the coefficients are stationary when applied to the sex-ratios.
 
 ## References

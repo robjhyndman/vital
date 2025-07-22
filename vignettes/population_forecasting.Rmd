@@ -13,10 +13,9 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.align = "center",
-  out.width = "100%",
-  fig.height = 4.5,
-  fig.width = 7.2,
+  fig.width = 8,
+  fig.height = 5,
+  out.width = "100%"
 )
 ```
 
@@ -30,7 +29,7 @@ set.seed(2025)
 
 The vital package can be used for stochastic population forecasting with coherent components. This is based on the papers by @HB08 and @hby. Following @HB08, we use the following demographic growth-balance equations:
 $$
-P_t(x) = P_{t-1}(x) + B_t(x) - D_t(x) + G_t(x) 
+P_t(x) = P_{t-1}(x) + B_t(x) - D_t(x) + G_t(x)
 $$
 where
 
@@ -41,7 +40,7 @@ where
 
 There are slightly different equations for handling the upper age group, and for baby migrants. See @HB08 for details.
 
-To simulate future births, deaths and net migrants, we develop three functional data models for fertility, mortality and migration. The models for mortality and migration use coherent components, so that the rates for males and females do not diverge over time. 
+To simulate future births, deaths and net migrants, we develop three functional data models for fertility, mortality and migration. The models for mortality and migration use coherent components, so that the rates for males and females do not diverge over time.
 
 The following example uses Norwegian data up to 2022, and produces simulated populations for the ten future years. Different models are used for each component to demonstrate the flexibility of the package, but other models can be used as well.
 
@@ -115,7 +114,7 @@ future |>
   ) +
   geom_line()
 ```
-  
+
 The simulated populations can be used to compute any quantities that can be derived from populations numbers by sex and age. For example, the mean age of the population for the next 10 years
 
 ```{r}
