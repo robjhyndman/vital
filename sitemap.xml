@@ -2,6 +2,7 @@
 <url><loc>https://pkg.robjhyndman.com/vital/404.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/articles/index.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/articles/intro.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/articles/population_forecasting.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/authors.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/index.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/news/index.html</loc></url>
@@ -21,6 +22,7 @@
 <url><loc>https://pkg.robjhyndman.com/vital/reference/collapse_ages.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/forecast.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/generate.html</loc></url>
+<url><loc>https://pkg.robjhyndman.com/vital/reference/generate_population.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/index.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/interpolate.html</loc></url>
 <url><loc>https://pkg.robjhyndman.com/vital/reference/life_expectancy.html</loc></url>
