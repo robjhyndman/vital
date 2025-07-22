@@ -11,9 +11,9 @@
 #' @param ts_model_fn Univariate time series modelling function for the coefficients. Any
 #' model that works with the fable package is ok. Default is [fable::ARIMA()].
 #' @param coherent If TRUE, fitted models are stationary, other than for the case of
-#' a key variable taking the value `geometric_mean`. This is designed to work with
-#' vitals produced using \code{\link{make_pr}()}. Default is FALSE. It only works
-#' when `ts_model_fn` is \code{\link[fable]{ARIMA}()}.
+#' a key variable taking the value `geometric_mean` or `mean`. This is designed to work with
+#' vitals produced using \code{\link{make_pr}()} and \code{\link{make_sd}}.
+#' Default is FALSE. It only works when `ts_model_fn` is \code{\link[fable]{ARIMA}()}.
 #' @param ... Not used.
 #'
 #' @references Hyndman, R. J., and Ullah, S. (2007) Robust forecasting of
