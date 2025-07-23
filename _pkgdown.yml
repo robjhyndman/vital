@@ -24,9 +24,8 @@ figures:
   dpi: 300
   dev.args: []
   fig.ext: png
-  fig.width: 7.2
-  fig.height: 4.5
-  fig.asp: 1.618
+  fig.width: 8
+  fig.height: 5
 
 reference:
   - title: Create vitals

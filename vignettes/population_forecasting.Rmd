@@ -105,14 +105,16 @@ The first replicate is plotted below, along with the last few years of historica
 
 ```{r}
 future |>
-  filter(.rep == "1") |>
-  autoplot(Population) +
+  filter(.rep == "100") |>
+  ggplot(aes(x = Age, y = Population, group = Year, color = Year)) +
   geom_line(
     data = norway_mortality |> filter(Year > 2010, Sex != "Total"),
     color = "grey",
     mapping = aes(group = Year)
-  ) +
-  geom_line()
+  )  +
+  geom_line() +
+  scale_color_gradientn(colours = rainbow(10)[1:9]) +
+  facet_grid(. ~ Sex)
 ```
 
 The simulated populations can be used to compute any quantities that can be derived from populations numbers by sex and age. For example, the mean age of the population for the next 10 years
