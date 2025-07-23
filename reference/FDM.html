@@ -72,9 +72,9 @@ model that works with the fable package is ok. Default is <code><a href="https:/
 
 <dt id="arg-coherent">coherent<a class="anchor" aria-label="anchor" href="#arg-coherent"></a></dt>
 <dd><p>If TRUE, fitted models are stationary, other than for the case of
-a key variable taking the value <code>geometric_mean</code>. This is designed to work with
-vitals produced using <code><a href="make_pr.html">make_pr</a>()</code>. Default is FALSE. It only works
-when <code>ts_model_fn</code> is <code><a href="https://fable.tidyverts.org/reference/ARIMA.html" class="external-link">ARIMA</a>()</code>.</p></dd>
+a key variable taking the value <code>geometric_mean</code> or <code>mean</code>. This is designed to work with
+vitals produced using <code><a href="make_pr.html">make_pr</a>()</code> and <code><a href="make_sd.html">make_sd</a></code>.
+Default is FALSE. It only works when <code>ts_model_fn</code> is <code><a href="https://fable.tidyverts.org/reference/ARIMA.html" class="external-link">ARIMA</a>()</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -145,7 +145,7 @@ forecasting: the product-ratio method with functional time series models.
 <span class="r-out co"><span class="r-pr">#&gt;</span> Variance explained</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   32.84 + 27.94 + 19.04 + 14.39 + 2.91 + 1.14 = 98.25%</span>
 <span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">hu</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="FDM-1.png" alt="" width="2160" height="1350"></span>
+<span class="r-plt img"><img src="FDM-1.png" alt="" width="2400" height="1500"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
