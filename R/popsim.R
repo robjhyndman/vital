@@ -93,9 +93,9 @@ generate_population <- function(
   # Simulate from mortality model
   if (!is.null(mortality_model)) {
     future_mortality <- mortality_model |>
-      generate(h = h + 2, times = n_reps) |>
-      dplyr::rename(mx = .sim) |>
-      dplyr::select(-.model)
+      generate(h = h + 2, times = n_reps)
+    future_mortality$mx <- future_mortality$.sim
+    future_mortality <- future_mortality |> dplyr::select(-.sim, -.model)
     if ("geometric_mean" %in% future_mortality[[vvars$sex]]) {
       future_mortality <- undo_pr(future_mortality, "mx", key = vvars$sex)
     }
@@ -106,8 +106,8 @@ generate_population <- function(
       age = unique(pop[[vvars$age]]),
       sex = unique(pop[[vvars$sex]]),
       .rep = seq(n_reps)
-    ) |>
-      mutate(mx = 0)
+    )
+    future_mortality$mx <- 0
     colnames(future_mortality) <- c(
       indexvar,
       vvars$age,
@@ -119,26 +119,33 @@ generate_population <- function(
   # Simulate from fertility model
   if (!is.null(fertility_model)) {
     future_fertility <- fertility_model |>
-      generate(h = h + 2, times = n_reps) |>
-      dplyr::rename(fx = .sim) |>
-      dplyr::select(-.model) |>
-      dplyr::mutate(fx = pmax(fx, 0)) # Ensure no negative fertility rates
+      generate(h = h + 2, times = n_reps)
+    future_fertility$fx <- pmax(future_fertility$.sim, 0) # Ensure no negative fertility rates
+    future_fertility[[vvars$sex]] <- female
+    future_fertility <- future_fertility |> dplyr::select(-.sim, -.model)
   } else {
     # 0 births
     future_fertility <- tidyr::expand_grid(
       year = max(pop[[indexvar]]) + seq(h + 2) - 1,
       age = unique(pop[[vvars$age]]),
       .rep = seq(n_reps)
-    ) |>
-      mutate(fx = 0)
-    colnames(future_fertility) <- c(indexvar, vvars$age, ".rep", "fx")
+    )
+    future_fertility$fx <- 0
+    future_fertility[[vvars$sex]] <- female
+    colnames(future_fertility) <- c(
+      indexvar,
+      vvars$age,
+      vvars$sex,
+      ".rep",
+      "fx"
+    )
   }
   # Simulate from migration model
   if (!is.null(migration_model)) {
     future_migration <- migration_model |>
-      generate(h = h + 2, times = n_reps) |>
-      dplyr::rename(Nx = .sim) |>
-      dplyr::select(-.model)
+      generate(h = h + 2, times = n_reps)
+    future_migration$Nx <- future_migration$.sim
+    future_migration <- future_migration |> dplyr::select(-.sim, -.model)
     if ("mean" %in% future_mortality[[vvars$sex]]) {
       future_migration <- undo_sd(future_migration, "Nx", key = vvars$sex)
     }
@@ -149,8 +156,8 @@ generate_population <- function(
       age = unique(pop[[vvars$age]]),
       sex = unique(pop[[vvars$sex]]),
       .rep = seq(n_reps)
-    ) |>
-      mutate(Nx = 0)
+    )
+    future_migration$Nx <- 0
     colnames(future_migration) <- c(
       indexvar,
       vvars$age,
@@ -166,18 +173,16 @@ generate_population <- function(
       by = c(indexvar, vvars$age, vvars$sex)
     ) |>
     dplyr::left_join(
-      as_tibble(future_fertility) |> mutate(Sex = female),
+      as_tibble(future_fertility),
       by = c(indexvar, vvars$age, vvars$sex, ".rep")
     ) |>
     dplyr::left_join(
       future_migration,
       by = c(indexvar, vvars$age, vvars$sex, ".rep")
-    ) |>
-    dplyr::mutate(
-      fx = tidyr::replace_na(fx, 0),
-      Nx = tidyr::replace_na(Nx, 0),
-      Population = NA_integer_
     )
+  future$fx[is.na(future$fx)] <- 0
+  future$Nx[is.na(future$Nx)] <- 0
+  future$Population <- NA_integer_
   future <- future |>
     dplyr::arrange(
       future[[indexvar]],
@@ -192,20 +197,68 @@ generate_population <- function(
 
   # Split into years
   future <- split(future, future[[indexvar]])
+
+  # Advance the population by one year and combine upper ages. Assume zero births
+  advance <- function(age, x) {
+    # Check age is ordered
+    if (max(diff(age)) != 1 & min(diff(age)) < 0) {
+      stop("Age variable must be ordered and consecutive")
+    }
+    min_age <- age == min(age)
+    max_age <- age == max(age)
+    max_age_1 <- age == max(age) - 1
+    c(rep(0, sum(min_age)), x[!max_age & !max_age_1], x[max_age_1] + x[max_age])
+  }
   for (y in seq(h)) {
     yr <- future[[y]][[indexvar]][1]
-    future[[y]][[vvars$population]] <- pmax(
+    n <- NROW(future[[y]])
+    # Add half migrants to current population
+    future[[y]]$Rx <- pmax(0, future[[y]]$Prev_Pop + 0.5 * future[[y]]$Nx)
+    # Survivorship ratios
+    nsr <- future[[y]] |>
+      as_tsibble(index = indexvar, key = c(vvars$age, vvars$sex, ".rep")) |>
+      as_vital(.sex = "Sex", .age = "Age", .population = "Rx") |>
+      life_table()
+    nsr$nsr <- 1 - nsr$rx
+    nsr <- nsr[, c(indexvar, vvars$age, vvars$sex, ".rep", "nsr")]
+    # Deaths
+    future[[y]] <- future[[y]] |>
+      left_join(nsr, by = c(indexvar, vvars$age, vvars$sex, ".rep"))
+    future[[y]]$cohD <- pmax(0, future[[y]]$nsr * future[[y]]$Rx)
+    future[[y]]$Rx2 <- pmax(
       0,
-      round(future[[y]]$Prev_Pop * (1 - future[[y]]$mx) + future[[y]]$Nx)
+      advance(future[[y]][[vvars$age]], future[[y]]$Rx - future[[y]]$cohD)
     )
-    future[[y]][[vvars$age]] <- future[[y]][[vvars$age]] + 1
-    births <- future[[y]] |>
+    future[[y]]$Ex <- 0.5 * (future[[y]]$Rx + future[[y]]$Rx2)
+    future[[y]]$Dx <- rpois(n, future[[y]]$Ex * future[[y]]$mx)
+    future[[y]]$cohD <- 0.5 *
+      (future[[y]]$Dx + advance(future[[y]][[vvars$age]], future[[y]]$Dx))
+    future[[y]]$Rx2 <- pmax(
+      0,
+      advance(future[[y]][[vvars$age]], future[[y]]$Rx - future[[y]]$cohD)
+    )
+
+    births <- future[[y]][, c(
+      indexvar,
+      vvars$age,
+      vvars$sex,
+      ".rep",
+      "fx",
+      "Rx",
+      "Rx2"
+    )]
+    births$Births <- rpois(n, births$fx * (births$Rx + births$Rx2) / 2)
+    births <- births |>
       group_by(.rep) |>
       summarise(
-        Births = sum(fx * Prev_Pop, na.rm = TRUE),
+        Births = sum(Births, na.rm = TRUE),
         .groups = "drop"
       )
-    births[[male]] <- rbinom(n_reps, round(births$Births), prob = (1.05 / 2.05))
+    births[[male]] <- stats::rbinom(
+      n_reps,
+      round(births$Births),
+      prob = (1.05 / 2.05)
+    )
     births[[female]] <- births$Births - births[[male]]
     births$Births <- NULL
     births <- births |>
@@ -216,8 +269,54 @@ generate_population <- function(
       )
     births[[vvars$age]] <- 0
     births[[indexvar]] <- yr
-    future[[y]] <- future[[y]] |>
-      bind_rows(births)
+
+    # Infant mortality
+    births <- births |>
+      dplyr::left_join(
+        future[[y]][, c(
+          indexvar,
+          vvars$age,
+          vvars$sex,
+          ".rep",
+          "Nx",
+          "mx",
+          "nsr"
+        )],
+        by = c(indexvar, vvars$age, vvars$sex, ".rep")
+      )
+    births$RxB <- births$Population + 0.5 * births$Nx
+    births$cohD <- pmax(0, births$nsr * births$RxB)
+    births$Rx20 <- births$RxB - births$cohD
+    births$Ex0 <- 0.5 * (births$RxB + births$Rx20)
+    births$Dx <- rpois(NROW(births), births$Ex0 * births$mx)
+    births$f0 <- births$cohD / (births$Ex0 * births$mx)
+    births$cohDB <- births$f0 * births$Dx
+    births$Dx0 <- pmax(0, births$Dx - births$cohDB)
+    age0 <- births[, c(
+      indexvar,
+      vvars$age,
+      vvars$sex,
+      ".rep",
+      "RxB",
+      "cohDB",
+      "f0",
+      "Dx0"
+    )] |>
+      left_join(
+        future[[y]][future[[y]][[vvars$age]] == 0, ],
+        by = c(indexvar, vvars$age, vvars$sex, ".rep")
+      )
+    age0$cohD <- (1 - age0$f0) * age0$Dx0 + 0.5 * age0$Dx
+    age0$Rx2 <- age0$RxB - age0$cohDB
+    age0 <- age0[, colnames(future[[y]])]
+    future[[y]] <- bind_rows(
+      age0,
+      future[[y]][future[[y]][[vvars$age]] > 0, ]
+    )
+    future[[y]][[vvars$population]] <- pmax(
+      0,
+      round(future[[y]]$Rx2 + 0.5 * future[[y]]$Nx)
+    )
     future[[y]] <- future[[y]] |>
       dplyr::arrange(
         future[[y]][[indexvar]],
@@ -225,20 +324,16 @@ generate_population <- function(
         future[[y]][[vvars$sex]],
         future[[y]][[".rep"]]
       )
-    max_age <- max(future[[y]][[vvars$age]])
-    last_group <- future[[y]][[vvars$age]] == max_age
-    second_last_group <- future[[y]][[vvars$age]] == max_age - 1
-    future[[y]][[vvars$population]][second_last_group] <-
-      future[[y]][[vvars$population]][second_last_group] +
-      future[[y]][[vvars$population]][last_group]
-    future[[y]] <- future[[y]][
-      future[[y]][[vvars$age]] < max(future[[y]][[vvars$age]]),
-    ]
     if (y < h) {
       future[[y + 1]]$Prev_Pop <- future[[y]][[vvars$population]]
     }
-    future[[y]] <- future[[y]] |>
-      select(indexvar, vvars$age, vvars$sex, ".rep", vvars$population)
+    future[[y]] <- future[[y]][, c(
+      indexvar,
+      vvars$age,
+      vvars$sex,
+      ".rep",
+      vvars$population
+    )]
   }
   future <- bind_rows(future) |>
     as_vital(
@@ -248,3 +343,5 @@ generate_population <- function(
       .age = vvars$age
     )
 }
+
+utils::globalVariables(c("fx", "Nx", "Prev_Pop"))
