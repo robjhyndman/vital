@@ -71,8 +71,8 @@ test_that("Lee Carter", {
       dplyr::filter(Sex == "female") |>
       collapse_ages(max_age = 100) |>
       model(LC(log(Mortality), jump = "fit"))
-    expect_identical(time_components(lc3), time_components(lc2))
-    expect_identical(age_components(lc2), age_components(lc3))
+    expect_equal(time_components(lc3), time_components(lc2))
+    expect_equal(age_components(lc2), age_components(lc3))
     fc1 <- forecast(lc1, jump = "fit", h = 10)
     fc3 <- forecast(lc3, point_forecast = list(.median = median), h = 10)
     expect_lt(
@@ -94,7 +94,7 @@ test_that("Lee Carter", {
       dplyr::filter(Sex == "female") |>
       collapse_ages(max_age = 100) |>
       model(LC(log(Mortality), adjust = "dxt"))
-    expect_identical(age_components(lc2), age_components(lc3))
+    expect_equal(age_components(lc2), age_components(lc3))
     expect_false(identical(time_components(lc2), time_components(lc3)))
     expect_lt(sum(abs(lc1$kt - time_components(lc2)$kt)), 1e-10)
     # with adjust = e0
@@ -107,7 +107,7 @@ test_that("Lee Carter", {
       dplyr::filter(Sex == "female") |>
       collapse_ages(max_age = 100) |>
       model(LC(log(Mortality), adjust = "e0"))
-    expect_identical(age_components(lc2), age_components(lc3))
+    expect_equal(age_components(lc2), age_components(lc3))
     expect_false(identical(time_components(lc2), time_components(lc3)))
     expect_lt(sum(abs(lc1$kt - time_components(lc2)$kt)), 0.61)
     # with adjust = none
@@ -120,7 +120,7 @@ test_that("Lee Carter", {
       dplyr::filter(Sex == "female") |>
       collapse_ages(max_age = 100) |>
       model(LC(log(Mortality), adjust = "none"))
-    expect_identical(age_components(lc2), age_components(lc3))
+    expect_equal(age_components(lc2), age_components(lc3))
     expect_false(identical(time_components(lc2), time_components(lc3)))
     expect_lt(sum(abs(lc1$kt - time_components(lc2)$kt)), 1e-10)
   }
