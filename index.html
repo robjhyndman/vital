@@ -106,20 +106,18 @@
 <p>We can use functions to see which variables are index, key or vital:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://tsibble.tidyverts.org/reference/index-rd.html" class="external-link">index_var</a></span><span class="op">(</span><span class="va">aus_mortality</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Year"</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://tsibble.tidyverts.org/reference/key.html" class="external-link">key_vars</a></span><span class="op">(</span><span class="va">aus_mortality</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Age"   "Sex"   "State" "Code"</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/vital_vars.html">vital_vars</a></span><span class="op">(</span><span class="va">aus_mortality</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Year"</span></span>
+<span><span class="fu"><a href="https://tsibble.tidyverts.org/reference/key.html" class="external-link">key_vars</a></span><span class="op">(</span><span class="va">aus_mortality</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Age"   "Sex"   "State" "Code"</span></span>
+<span><span class="fu"><a href="reference/vital_vars.html">vital_vars</a></span><span class="op">(</span><span class="va">aus_mortality</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        age        sex     deaths population </span></span>
 <span><span class="co">#&gt;      "Age"      "Sex"   "Deaths" "Exposure"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="plots">Plots<a class="anchor" aria-label="anchor" href="#plots"></a>
 </h3>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">aus_mortality</span> <span class="op">|&gt;</span> </span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">aus_mortality</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">State</span> <span class="op">==</span> <span class="st">"Victoria"</span>, <span class="va">Sex</span> <span class="op">!=</span> <span class="st">"total"</span>, <span class="va">Year</span> <span class="op">&lt;</span> <span class="fl">1980</span>, <span class="va">Age</span> <span class="op">&lt;</span> <span class="fl">90</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-autoplot-1.png" width="100%"></p>
@@ -127,7 +125,7 @@
 <div class="section level3">
 <h3 id="life-tables-and-life-expectancy">Life tables and life expectancy<a class="anchor" aria-label="anchor" href="#life-tables-and-life-expectancy"></a>
 </h3>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Life table for Victorian males in 2000</span></span>
 <span><span class="va">aus_mortality</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">State</span> <span class="op">==</span> <span class="st">"Victoria"</span>, <span class="va">Sex</span> <span class="op">==</span> <span class="st">"male"</span>, <span class="va">Year</span> <span class="op">==</span> <span class="fl">2000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -148,7 +146,7 @@
 <span><span class="co">#&gt; 10  2000     9 male  Vict… VIC   1.79e-4 1.79e-4 0.994 1.78e-4 0.993  68.6  69.1</span></span>
 <span><span class="co">#&gt; # ℹ 91 more rows</span></span>
 <span><span class="co">#&gt; # ℹ 3 more variables: rx &lt;dbl&gt;, nx &lt;dbl&gt;, ax &lt;dbl&gt;</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Life expectancy</span></span>
 <span><span class="va">aus_mortality</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">State</span> <span class="op">==</span> <span class="st">"Victoria"</span>, <span class="va">Sex</span> <span class="op">!=</span> <span class="st">"total"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -161,7 +159,7 @@
 <h3 id="smoothing">Smoothing<a class="anchor" aria-label="anchor" href="#smoothing"></a>
 </h3>
 <p>Several smoothing functions are provided: <code><a href="reference/smooth_vital.html">smooth_spline()</a></code>, <code><a href="reference/smooth_vital.html">smooth_mortality()</a></code>, <code><a href="reference/smooth_vital.html">smooth_fertility()</a></code>, and <code><a href="reference/smooth_vital.html">smooth_loess()</a></code>, each smoothing across the age variable for each year.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Smoothed data</span></span>
 <span><span class="va">aus_mortality</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">State</span> <span class="op">==</span> <span class="st">"Victoria"</span>, <span class="va">Sex</span> <span class="op">!=</span> <span class="st">"total"</span>, <span class="va">Year</span> <span class="op">==</span> <span class="fl">1967</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -178,7 +176,7 @@
 <h3 id="mortality-models">Mortality models<a class="anchor" aria-label="anchor" href="#mortality-models"></a>
 </h3>
 <p>Several mortality models are available including variations on Lee-Carter models (Lee &amp; Carter, JASA, 1992), and functional data models (Hyndman &amp; Ullah, CSDA, 2007).</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="va">aus_mortality</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">State</span> <span class="op">==</span> <span class="st">"Victoria"</span>, <span class="va">Sex</span> <span class="op">!=</span> <span class="st">"total"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span></span>
@@ -193,10 +191,10 @@
 <span><span class="co">#&gt; 1 female Victoria VIC         &lt;LC&gt;   &lt;FDM&gt;</span></span>
 <span><span class="co">#&gt; 2 male   Victoria VIC         &lt;LC&gt;   &lt;FDM&gt;</span></span></code></pre></div>
 <p>Models are fitted for all combinations of key variables excluding age.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">|&gt;</span> </span>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">lee_carter</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sex</span> <span class="op">==</span> <span class="st">"female"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sex</span> <span class="op">==</span> <span class="st">"female"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/report.html" class="external-link">report</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Series: Mortality </span></span>
 <span><span class="co">#&gt; Model: LC </span></span>
@@ -231,11 +229,15 @@
 <span><span class="co">#&gt; Time series model: RW w/ drift </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Variance explained: 72.99%</span></span></code></pre></div>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">lee_carter</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">lee_carter</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-lc3-1.png" width="100%"></p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">lee_carter</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/age_components.html">age_components</a></span><span class="op">(</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">lee_carter</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="reference/age_components.html">age_components</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 202 × 6</span></span>
 <span><span class="co">#&gt;    Sex    State    Code    Age    ax     bx</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt; &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;</span></span>
@@ -249,9 +251,10 @@
 <span><span class="co">#&gt;  8 female Victoria VIC       7 -7.73 0.0149</span></span>
 <span><span class="co">#&gt;  9 female Victoria VIC       8 -8.08 0.0178</span></span>
 <span><span class="co">#&gt; 10 female Victoria VIC       9 -7.81 0.0114</span></span>
-<span><span class="co">#&gt; # ℹ 192 more rows</span></span></code></pre></div>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">lee_carter</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/time_components.html">time_components</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # ℹ 192 more rows</span></span>
+<span><span class="va">fit</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">lee_carter</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="reference/time_components.html">time_components</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tsibble: 240 x 5 [1Y]</span></span>
 <span><span class="co">#&gt; # Key:       Sex, State, Code [2]</span></span>
 <span><span class="co">#&gt;    Sex    State    Code   Year    kt</span></span>
@@ -267,8 +270,8 @@
 <span><span class="co">#&gt;  9 female Victoria VIC    1909  89.6</span></span>
 <span><span class="co">#&gt; 10 female Victoria VIC    1910  91.2</span></span>
 <span><span class="co">#&gt; # ℹ 230 more rows</span></span></code></pre></div>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">20</span><span class="op">)</span> </span>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A vital fable: 8,080 x 8 [1Y]</span></span>
 <span><span class="co">#&gt; # Key:           Age x (Sex, State, Code, .model) [101 x 4]</span></span>
 <span><span class="co">#&gt;    Sex    State    Code  .model      Year   Age          Mortality   .mean</span></span>
