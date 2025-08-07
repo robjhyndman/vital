@@ -29,7 +29,7 @@ read_ktdb <- function(country, triangle = 1) {
 
   links <- countries[countries$ktdb_number == country, ]
   # read ktdb data
-  read_ktdb_file(
+  read_ktdb_files(
     male = paste0(
       "https://www.demogr.mpg.de/databases/ktdb/",
       links$ktdb_male[1]
@@ -43,9 +43,9 @@ read_ktdb <- function(country, triangle = 1) {
 
 #'
 #'
-#' #' Read old-age mortality data from files downloaded from K-T database
+#' Read old-age mortality data from files downloaded from K-T database
 #'
-#' `read_ktdb_file` reads old-age mortality data from a file downloaded from
+#' `read_ktdb_files` reads old-age mortality data from files downloaded from
 #' K-T database (<https://www.demogr.mpg.de/cgi-bin/databases/ktdb/datamap.plx>)
 #' and constructs a `vital` object suitable for use in other functions.
 #' If two files are provided, the function will treat them as data for each gender,
@@ -55,17 +55,17 @@ read_ktdb <- function(country, triangle = 1) {
 #' @param male File containing male mortality downloaded from the K-T database.
 #' @param female File containing female mortality downloaded from the K-T database.
 #' @param triangle Lexis triangle number, 1 (default) is lower triangle, 2 is upper triangle.
-#' @return `read_ktdb_file` returns a `vital` object combining the downloaded data.
+#' @return `read_ktdb_files` returns a `vital` object combining the downloaded data.
 #'
 #' @author Sixian Tang
 #' @examples
 #' \dontrun{
 #' # File downloaded from the K-T database
-#' australia_male <- read_ktdb_file("maustl.txt")
+#' australia_male <- read_ktdb_files("maustl.txt")
 #' }
 #'
 #' @export
-read_ktdb_file <- function(male = NULL, female = NULL, triangle = 1) {
+read_ktdb_files <- function(male = NULL, female = NULL, triangle = 1) {
   # Read files
   if (!is.null(male)) {
     data_male <- utils::read.csv(

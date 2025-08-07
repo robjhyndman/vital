@@ -1,8 +1,8 @@
 # Check reading in ktdb files
 
-test_that("read_ktdb_file", {
+test_that("read_ktdb_files", {
   # Read 2 files
-  z <- read_ktdb_file("maustl.txt", "faustl.txt")
+  z <- read_ktdb_files("maustl.txt", "faustl.txt")
   expect_identical(dim(z), c(4794L, 7L))
   expect_identical(
     colnames(z),
@@ -10,7 +10,7 @@ test_that("read_ktdb_file", {
   )
   expect_true(tsibble::is_tsibble(z))
   # Read 1 file
-  z <- read_ktdb_file("maustl.txt")
+  z <- read_ktdb_files("maustl.txt")
   expect_identical(dim(z), c(2397L, 7L))
   expect_identical(
     colnames(z),
@@ -18,8 +18,8 @@ test_that("read_ktdb_file", {
   )
   expect_true(tsibble::is_tsibble(z))
   # Read 0 files
-  expect_error(read_ktdb_file())
+  expect_error(read_ktdb_files())
   # Test different Triangle
-  z <- read_ktdb_file("maustl.txt", "faustl.txt", triangle = 2)
+  z <- read_ktdb_files("maustl.txt", "faustl.txt", triangle = 2)
   expect_true(all(z$Triangle == 2))
 })

@@ -39,10 +39,10 @@ reference:
       - read_hfd
       - read_hfd_files
       - read_stmf
-      - read_stmf_file
+      - read_stmf_files
       - net_migration
       - read_ktdb
-      - read_ktdb_file
+      - read_ktdb_files
   - title: Data
     desc: Data sets included in the package
     contents:
