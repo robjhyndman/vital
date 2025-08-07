@@ -230,7 +230,7 @@ generate_population <- function(
       advance(future[[y]][[vvars$age]], future[[y]]$Rx - future[[y]]$cohD)
     )
     future[[y]]$Ex <- 0.5 * (future[[y]]$Rx + future[[y]]$Rx2)
-    future[[y]]$Dx <- rpois(n, future[[y]]$Ex * future[[y]]$mx)
+    future[[y]]$Dx <- stats::rpois(n, future[[y]]$Ex * future[[y]]$mx)
     future[[y]]$cohD <- 0.5 *
       (future[[y]]$Dx + advance(future[[y]][[vvars$age]], future[[y]]$Dx))
     future[[y]]$Rx2 <- pmax(
@@ -247,7 +247,7 @@ generate_population <- function(
       "Rx",
       "Rx2"
     )]
-    births$Births <- rpois(n, births$fx * (births$Rx + births$Rx2) / 2)
+    births$Births <- stats::rpois(n, births$fx * (births$Rx + births$Rx2) / 2)
     births <- births |>
       group_by(.rep) |>
       summarise(
@@ -288,7 +288,7 @@ generate_population <- function(
     births$cohD <- pmax(0, births$nsr * births$RxB)
     births$Rx20 <- births$RxB - births$cohD
     births$Ex0 <- 0.5 * (births$RxB + births$Rx20)
-    births$Dx <- rpois(NROW(births), births$Ex0 * births$mx)
+    births$Dx <- stats::rpois(NROW(births), births$Ex0 * births$mx)
     births$f0 <- births$cohD / (births$Ex0 * births$mx)
     births$cohDB <- births$f0 * births$Dx
     births$Dx0 <- pmax(0, births$Dx - births$cohDB)
@@ -309,7 +309,7 @@ generate_population <- function(
     age0$cohD <- (1 - age0$f0) * age0$Dx0 + 0.5 * age0$Dx
     age0$Rx2 <- age0$RxB - age0$cohDB
     age0 <- age0[, colnames(future[[y]])]
-    future[[y]] <- bind_rows(
+    future[[y]] <- dplyr::bind_rows(
       age0,
       future[[y]][future[[y]][[vvars$age]] > 0, ]
     )
@@ -335,7 +335,7 @@ generate_population <- function(
       vvars$population
     )]
   }
-  future <- bind_rows(future) |>
+  future <- dplyr::bind_rows(future) |>
     as_vital(
       index = Year,
       key = c(vvars$age, vvars$sex, ".rep"),
