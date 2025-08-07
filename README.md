@@ -71,14 +71,8 @@ We can use functions to see which variables are index, key or vital:
 ``` r
 index_var(aus_mortality)
 #> [1] "Year"
-```
-
-``` r
 key_vars(aus_mortality)
 #> [1] "Age"   "Sex"   "State" "Code"
-```
-
-``` r
 vital_vars(aus_mortality)
 #>        age        sex     deaths population 
 #>      "Age"      "Sex"   "Deaths" "Exposure"
@@ -87,7 +81,7 @@ vital_vars(aus_mortality)
 ### Plots
 
 ``` r
-aus_mortality |> 
+aus_mortality |>
   filter(State == "Victoria", Sex != "total", Year < 1980, Age < 90) |>
   autoplot(Mortality) + scale_y_log10()
 ```
@@ -176,9 +170,9 @@ fit
 Models are fitted for all combinations of key variables excluding age.
 
 ``` r
-fit |> 
+fit |>
   select(lee_carter) |>
-  filter(Sex == "female") |> 
+  filter(Sex == "female") |>
   report()
 #> Series: Mortality 
 #> Model: LC 
@@ -216,13 +210,17 @@ fit |>
 ```
 
 ``` r
-fit |> select(lee_carter) |> autoplot()
+fit |>
+  select(lee_carter) |>
+  autoplot()
 ```
 
 <img src="man/figures/README-lc3-1.png" width="100%" />
 
 ``` r
-fit |> select(lee_carter) |> age_components()
+fit |>
+  select(lee_carter) |>
+  age_components()
 #> # A tibble: 202 × 6
 #>    Sex    State    Code    Age    ax     bx
 #>    <chr>  <chr>    <chr> <int> <dbl>  <dbl>
@@ -237,10 +235,9 @@ fit |> select(lee_carter) |> age_components()
 #>  9 female Victoria VIC       8 -8.08 0.0178
 #> 10 female Victoria VIC       9 -7.81 0.0114
 #> # ℹ 192 more rows
-```
-
-``` r
-fit |> select(lee_carter) |> time_components()
+fit |>
+  select(lee_carter) |>
+  time_components()
 #> # A tsibble: 240 x 5 [1Y]
 #> # Key:       Sex, State, Code [2]
 #>    Sex    State    Code   Year    kt
@@ -259,7 +256,7 @@ fit |> select(lee_carter) |> time_components()
 ```
 
 ``` r
-fit |> forecast(h = 20) 
+fit |> forecast(h = 20)
 #> # A vital fable: 8,080 x 8 [1Y]
 #> # Key:           Age x (Sex, State, Code, .model) [101 x 4]
 #>    Sex    State    Code  .model      Year   Age          Mortality   .mean
