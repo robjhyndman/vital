@@ -12,11 +12,10 @@
 #' function to learn about the available options.
 #' @param ... Additional arguments are passed to \code{\link[MortalityLaws]{MortalityLaw}}.
 #' @return vital with added columns containing smoothed values and their standard errors
-#' @keywords smooth, mortality
+#' @keywords smooth
 #' @author Sixian Tang and Rob J Hyndman
 #' @examples
 #' norway_mortality |> smooth_mortality_law(Mortality)
-#'
 #' @export
 smooth_mortality_law <- function(.data, .var, law = "gompertz", ...) {
   smooth_vital(
