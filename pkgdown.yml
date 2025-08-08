@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   intro: intro.html
   population_forecasting: population_forecasting.html
-last_built: 2025-08-08T00:06Z
+last_built: 2025-08-08T00:11Z
 urls:
   reference: https://pkg.robjhyndman.com/vital/reference
   article: https://pkg.robjhyndman.com/vital/articles
