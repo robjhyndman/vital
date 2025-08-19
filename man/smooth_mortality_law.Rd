@@ -28,10 +28,8 @@ smoothed values, and \code{.smooth_se} containing the corresponding standard err
 }
 \examples{
 norway_mortality |> smooth_mortality_law(Mortality)
-
 }
 \author{
 Sixian Tang and Rob J Hyndman
 }
-\keyword{mortality}
-\keyword{smooth,}
+\keyword{smooth}
