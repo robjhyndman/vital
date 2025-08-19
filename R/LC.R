@@ -39,7 +39,7 @@
 #'
 #' @examples
 #' lc <- norway_mortality |>
-#'   filter(Sex == "Female") |>
+#'   dplyr::filter(Sex == "Female") |>
 #'   model(lee_carter = LC(log(Mortality)))
 #' report(lc)
 #' autoplot(lc)
