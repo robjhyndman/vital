@@ -31,11 +31,7 @@ total_fertility_rate <- function(.data, fertility) {
   }
   col_names <- col_names[col_names != age]
   if (!missing(fertility)) {
-    fertility <- {
-      {
-        fertility
-      }
-    }
+    fertility <- {{ fertility }}
   } else {
     fertility <- find_measure(.data, c("fx", "fertility", "rate"))
   }
@@ -46,18 +42,24 @@ total_fertility_rate <- function(.data, fertility) {
   .data[[age]] <- NULL
 
   # Compute tfr for each sub-tibble
-  out <- purrr::map_dfr(.data[["lst_data"]], tfr, fertility = fertility)
+  out <- purrr::map_dfr(
+    .data[["lst_data"]],
+    tfr,
+    fertility = fertility
+  )
   out[[index]] <- .data[[index]]
-  out <- out[col_names]
   out |>
     as_tsibble(index = index, key = all_of(keys_noage)) |>
     as_vital(
       .sex = vital_names$sex,
       .births = vital_names$births,
-      .population = vital_names$population
+      .population = vital_names$population,
+      reorder = TRUE
     )
 }
 
 tfr <- function(dt, fertility) {
-  dt |> dplyr::summarise(dplyr::across(is.numeric, sum))
+  tibble(
+    tfr = sum(dt[[fertility]], na.rm = TRUE)
+  )
 }
