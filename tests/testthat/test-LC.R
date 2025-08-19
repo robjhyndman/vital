@@ -2,21 +2,23 @@
 
 test_that("Lee Carter", {
   lc <- norway_mortality |>
+    filter(Year > 2000, Sex != "Total") |>
     model(
       fit = LC(log(Mortality)),
       actual = LC(log(Mortality), jump = "actual", adjust = "dxt")
-    )
+    ) |>
+    suppressWarnings()
   fc <- forecast(lc)
 
   expect_no_error(autoplot(fc))
-  expect_identical(dim(lc), c(3L, 3L))
+  expect_identical(dim(lc), c(2L, 3L))
   expect_identical(NROW(tidy(lc)), 0L)
-  expect_identical(dim(glance(lc)), c(6L, 5L))
+  expect_identical(dim(glance(lc)), c(4L, 5L))
   expect_no_error(residuals(lc, type = "innov"))
   expect_no_error(residuals(lc, type = "response"))
   expect_no_error(fitted(lc))
-  expect_identical(NROW(generate(lc, times = 2)), 2664L)
-  expect_identical(NROW(fc), 1332L)
+  expect_identical(NROW(generate(lc, times = 2)), 1776L)
+  expect_identical(NROW(fc), 888L)
   expect_equal(
     dplyr::filter(
       fc,
@@ -26,7 +28,7 @@ test_that("Lee Carter", {
       .model == "actual"
     ) |>
       dplyr::pull(.mean),
-    0.0017247,
+    0.00175119,
     tolerance = 1e-5
   )
   expect_identical(

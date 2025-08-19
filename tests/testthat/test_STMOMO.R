@@ -3,7 +3,7 @@ library(vital)
 library(dplyr)
 
 nor <- norway_mortality |>
-  filter(Sex == "Male", Age > 50) |>
+  filter(Sex == "Male", Age > 50, Year > 2000) |>
   collapse_ages()
 
 mod <- nor |>
@@ -50,7 +50,7 @@ test_that("glance at GAPC models", {
     colnames(gl),
     c("Sex", ".model", "loglik", "deviance", "nobs", "npar")
   )
-  expect_true(all(gl$nobs == 6200L))
+  expect_true(all(gl$nobs == 1150L))
 })
 
 test_that("report a GAPC model", {
@@ -60,7 +60,7 @@ test_that("report a GAPC model", {
 test_that("time_components from GAPC model", {
   tc <- mod |> select(apc) |> time_components()
   expect_equal(colnames(tc), c("Year", "kt"))
-  expect_equal(dim(tc), c(124L, 2L))
+  expect_equal(dim(tc), c(23L, 2L))
   expect_s3_class(tc, "tbl_ts")
 })
 
@@ -73,7 +73,7 @@ test_that("age_components from GAPC model", {
 
 test_that("cohort_components from GAPC model", {
   cohort_comp <- mod |> select(apc) |> cohort_components()
-  expect_equal(dim(cohort_comp), c(173L, 2L))
+  expect_equal(dim(cohort_comp), c(72L, 2L))
   expect_equal(colnames(cohort_comp), c("Birth_Year", "gc"))
   expect_s3_class(cohort_comp, "tbl_ts")
 })

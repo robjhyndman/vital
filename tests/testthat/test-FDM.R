@@ -4,10 +4,11 @@ test_that("Functional data model", {
   if (requireNamespace("feasts", quietly = TRUE)) {
     library(feasts)
     hu <- norway_mortality |>
+      filter(Year > 2000, Sex != "Total") |>
       model(hu = FDM(log(Mortality)))
     fc <- forecast(hu)
     expect_no_error(autoplot(fc))
-    expect_identical(dim(hu), c(3L, 2L))
+    expect_identical(dim(hu), c(2L, 2L))
     expect_identical(NROW(tidy(hu)), 0L)
     expect_identical(
       colnames(glance(hu)),
@@ -16,13 +17,13 @@ test_that("Functional data model", {
     expect_no_error(residuals(hu, type = "innov"))
     expect_no_error(residuals(hu, type = "response"))
     expect_no_error(fitted(hu))
-    expect_identical(NROW(generate(hu, times = 2)), 1332L)
-    expect_identical(NROW(fc), 666L)
+    expect_identical(NROW(generate(hu, times = 2)), 888L)
+    expect_identical(NROW(fc), 444L)
     expect_equal(
       fc |>
         dplyr::filter(Sex == "Female", Age == 0, Year == 2025) |>
         dplyr::pull(.mean),
-      0.00212415,
+      0.001985665,
       tolerance = 1e-5
     )
     expect_identical(

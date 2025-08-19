@@ -30,7 +30,7 @@ all_stationary <- function(object) {
 
 test_that("Coherent functional data model", {
   pr <- norway_mortality |>
-    dplyr::filter(Sex != "Total", Year > 1950) |>
+    dplyr::filter(Sex != "Total", Year > 2000) |>
     make_pr(Mortality)
   pr1 <- pr |>
     model(hu = FDM(log(Mortality), coherent = TRUE))

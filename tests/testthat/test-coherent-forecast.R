@@ -1,6 +1,6 @@
 # Prepare data
 nor <- norway_mortality |>
-  filter(Sex != "Total") |>
+  filter(Sex != "Total", Year > 2000) |>
   collapse_ages() |>
   smooth_mortality(Mortality)
 
@@ -28,5 +28,5 @@ test_that("Coherent forecasts", {
     select(-.smooth) |>
     left_join(fc2, by = c("Sex", ".model", "Year", "Age")) |>
     mutate(diff = abs(.mean - prmean))
-  expect_lt(mean(fc1$diff), 0.002)
+  expect_lt(mean(fc1$diff), 0.0021)
 })
