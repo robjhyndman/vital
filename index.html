@@ -96,8 +96,8 @@
 <span><span class="fu"><a href="https://tsibble.tidyverts.org/reference/key.html" class="external-link">key_vars</a></span><span class="op">(</span><span class="va">norway_mortality</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Age" "Sex"</span></span>
 <span><span class="fu"><a href="reference/vital_vars.html">vital_vars</a></span><span class="op">(</span><span class="va">norway_mortality</span><span class="op">)</span></span>
-<span><span class="co">#&gt;          age          sex   population </span></span>
-<span><span class="co">#&gt;        "Age"        "Sex" "Population"</span></span></code></pre></div>
+<span><span class="co">#&gt;          age          sex       deaths   population </span></span>
+<span><span class="co">#&gt;        "Age"        "Sex"     "Deaths" "Population"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="plots">Plots<a class="anchor" aria-label="anchor" href="#plots"></a>
@@ -124,7 +124,7 @@
 <span><span class="co">#&gt;  2  2000     1 Male  5.93e-4 5.93e-4 0.996 5.90e-4 0.995  75.0  75.3 0.999     1</span></span>
 <span><span class="co">#&gt;  3  2000     2 Male  2.29e-4 2.29e-4 0.995 2.28e-4 0.995  74.0  74.3 1.000     1</span></span>
 <span><span class="co">#&gt;  4  2000     3 Male  1.57e-4 1.57e-4 0.995 1.56e-4 0.995  73.0  73.3 1.000     1</span></span>
-<span><span class="co">#&gt;  5  2000     4 Male  2.21e-4 2.21e-4 0.995 2.20e-4 0.995  72.0  72.4 1.000     1</span></span>
+<span><span class="co">#&gt;  5  2000     4 Male  2.21e-4 2.21e-4 0.995 2.20e-4 0.995  72.0  72.3 1.000     1</span></span>
 <span><span class="co">#&gt;  6  2000     5 Male  1.89e-4 1.89e-4 0.995 1.88e-4 0.994  71.0  71.4 1.000     1</span></span>
 <span><span class="co">#&gt;  7  2000     6 Male  1.28e-4 1.28e-4 0.994 1.27e-4 0.994  70.0  70.4 1.000     1</span></span>
 <span><span class="co">#&gt;  8  2000     7 Male  1.27e-4 1.27e-4 0.994 1.26e-4 0.994  69.0  69.4 1.000     1</span></span>
@@ -153,9 +153,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">.smooth</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"#0072B2"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Mortality rate"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-smoothing-1.png" width="100%"></p>
 </div>
 <div class="section level3">
@@ -194,27 +192,27 @@
 <span><span class="co">#&gt; # A tibble: 101 × 3</span></span>
 <span><span class="co">#&gt;     Age    ax     bx</span></span>
 <span><span class="co">#&gt;   &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1     0 -4.32 0.0154</span></span>
-<span><span class="co">#&gt; 2     1 -6.15 0.0224</span></span>
-<span><span class="co">#&gt; 3     2 -6.76 0.0192</span></span>
-<span><span class="co">#&gt; 4     3 -7.13 0.0187</span></span>
-<span><span class="co">#&gt; 5     4 -7.16 0.0164</span></span>
+<span><span class="co">#&gt; 1     0 -4.33 0.0155</span></span>
+<span><span class="co">#&gt; 2     1 -6.16 0.0223</span></span>
+<span><span class="co">#&gt; 3     2 -6.77 0.0193</span></span>
+<span><span class="co">#&gt; 4     3 -7.14 0.0187</span></span>
+<span><span class="co">#&gt; 5     4 -7.18 0.0165</span></span>
 <span><span class="co">#&gt; # ℹ 96 more rows</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Time coefficients</span></span>
-<span><span class="co">#&gt; # A tsibble: 123 x 2 [1Y]</span></span>
+<span><span class="co">#&gt; # A tsibble: 124 x 2 [1Y]</span></span>
 <span><span class="co">#&gt;    Year    kt</span></span>
 <span><span class="co">#&gt;   &lt;int&gt; &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1  1900  115.</span></span>
 <span><span class="co">#&gt; 2  1901  109.</span></span>
-<span><span class="co">#&gt; 3  1902  107.</span></span>
-<span><span class="co">#&gt; 4  1903  113.</span></span>
-<span><span class="co">#&gt; 5  1904  111.</span></span>
-<span><span class="co">#&gt; # ℹ 118 more rows</span></span>
+<span><span class="co">#&gt; 3  1902  103.</span></span>
+<span><span class="co">#&gt; 4  1903  109.</span></span>
+<span><span class="co">#&gt; 5  1904  106.</span></span>
+<span><span class="co">#&gt; # ℹ 119 more rows</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Time series model: RW w/ drift </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Variance explained: 66.95%</span></span></code></pre></div>
+<span><span class="co">#&gt; Variance explained: 66.33%</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">lee_carter</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -227,51 +225,51 @@
 <span><span class="co">#&gt; # A tibble: 202 × 4</span></span>
 <span><span class="co">#&gt;    Sex      Age    ax     bx</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;  &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 Female     0 -4.32 0.0154</span></span>
-<span><span class="co">#&gt;  2 Female     1 -6.15 0.0224</span></span>
-<span><span class="co">#&gt;  3 Female     2 -6.76 0.0192</span></span>
-<span><span class="co">#&gt;  4 Female     3 -7.13 0.0187</span></span>
-<span><span class="co">#&gt;  5 Female     4 -7.16 0.0164</span></span>
-<span><span class="co">#&gt;  6 Female     5 -7.40 0.0174</span></span>
-<span><span class="co">#&gt;  7 Female     6 -7.43 0.0165</span></span>
-<span><span class="co">#&gt;  8 Female     7 -7.46 0.0153</span></span>
-<span><span class="co">#&gt;  9 Female     8 -7.36 0.0124</span></span>
-<span><span class="co">#&gt; 10 Female     9 -7.37 0.0123</span></span>
+<span><span class="co">#&gt;  1 Female     0 -4.33 0.0155</span></span>
+<span><span class="co">#&gt;  2 Female     1 -6.16 0.0223</span></span>
+<span><span class="co">#&gt;  3 Female     2 -6.77 0.0193</span></span>
+<span><span class="co">#&gt;  4 Female     3 -7.14 0.0187</span></span>
+<span><span class="co">#&gt;  5 Female     4 -7.18 0.0165</span></span>
+<span><span class="co">#&gt;  6 Female     5 -7.41 0.0174</span></span>
+<span><span class="co">#&gt;  7 Female     6 -7.45 0.0165</span></span>
+<span><span class="co">#&gt;  8 Female     7 -7.48 0.0155</span></span>
+<span><span class="co">#&gt;  9 Female     8 -7.37 0.0125</span></span>
+<span><span class="co">#&gt; 10 Female     9 -7.39 0.0124</span></span>
 <span><span class="co">#&gt; # ℹ 192 more rows</span></span>
 <span><span class="va">fit</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">lee_carter</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="reference/time_components.html">time_components</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tsibble: 246 x 3 [1Y]</span></span>
+<span><span class="co">#&gt; # A tsibble: 248 x 3 [1Y]</span></span>
 <span><span class="co">#&gt; # Key:       Sex [2]</span></span>
 <span><span class="co">#&gt;    Sex     Year    kt</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;  &lt;int&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 Female  1900  115.</span></span>
-<span><span class="co">#&gt;  2 Female  1901  109.</span></span>
-<span><span class="co">#&gt;  3 Female  1902  107.</span></span>
-<span><span class="co">#&gt;  4 Female  1903  113.</span></span>
-<span><span class="co">#&gt;  5 Female  1904  111.</span></span>
-<span><span class="co">#&gt;  6 Female  1905  114.</span></span>
-<span><span class="co">#&gt;  7 Female  1906  110.</span></span>
-<span><span class="co">#&gt;  8 Female  1907  111.</span></span>
-<span><span class="co">#&gt;  9 Female  1908  109.</span></span>
-<span><span class="co">#&gt; 10 Female  1909  103.</span></span>
-<span><span class="co">#&gt; # ℹ 236 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt;  1 Female  1900 115. </span></span>
+<span><span class="co">#&gt;  2 Female  1901 109. </span></span>
+<span><span class="co">#&gt;  3 Female  1902 103. </span></span>
+<span><span class="co">#&gt;  4 Female  1903 109. </span></span>
+<span><span class="co">#&gt;  5 Female  1904 106. </span></span>
+<span><span class="co">#&gt;  6 Female  1905 110. </span></span>
+<span><span class="co">#&gt;  7 Female  1906 101. </span></span>
+<span><span class="co">#&gt;  8 Female  1907 106. </span></span>
+<span><span class="co">#&gt;  9 Female  1908 105. </span></span>
+<span><span class="co">#&gt; 10 Female  1909  99.6</span></span>
+<span><span class="co">#&gt; # ℹ 238 more rows</span></span></code></pre></div>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A vital fable: 8,080 x 6 [1Y]</span></span>
 <span><span class="co">#&gt; # Key:           Age x (Sex, .model) [101 x 4]</span></span>
-<span><span class="co">#&gt;    Sex    .model      Year   Age         Mortality   .mean</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;  &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;            &lt;dist&gt;   &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 Female lee_carter  2023     0 t(N(-5.2, 0.033)) 0.00560</span></span>
-<span><span class="co">#&gt;  2 Female lee_carter  2024     0 t(N(-5.2, 0.066)) 0.00557</span></span>
-<span><span class="co">#&gt;  3 Female lee_carter  2025     0 t(N(-5.2, 0.099)) 0.00554</span></span>
-<span><span class="co">#&gt;  4 Female lee_carter  2026     0  t(N(-5.3, 0.13)) 0.00551</span></span>
-<span><span class="co">#&gt;  5 Female lee_carter  2027     0  t(N(-5.3, 0.17)) 0.00548</span></span>
-<span><span class="co">#&gt;  6 Female lee_carter  2028     0   t(N(-5.3, 0.2)) 0.00545</span></span>
-<span><span class="co">#&gt;  7 Female lee_carter  2029     0  t(N(-5.3, 0.24)) 0.00542</span></span>
-<span><span class="co">#&gt;  8 Female lee_carter  2030     0  t(N(-5.4, 0.28)) 0.00539</span></span>
-<span><span class="co">#&gt;  9 Female lee_carter  2031     0  t(N(-5.4, 0.31)) 0.00536</span></span>
-<span><span class="co">#&gt; 10 Female lee_carter  2032     0  t(N(-5.4, 0.35)) 0.00533</span></span>
+<span><span class="co">#&gt;    Sex    .model      Year   Age          Mortality    .mean</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;  &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;             &lt;dist&gt;    &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 Female lee_carter  2024     0 t(N(-6.8, 0.0088)) 0.00110 </span></span>
+<span><span class="co">#&gt;  2 Female lee_carter  2025     0  t(N(-6.9, 0.018)) 0.00106 </span></span>
+<span><span class="co">#&gt;  3 Female lee_carter  2026     0  t(N(-6.9, 0.027)) 0.00103 </span></span>
+<span><span class="co">#&gt;  4 Female lee_carter  2027     0  t(N(-6.9, 0.036)) 0.00100 </span></span>
+<span><span class="co">#&gt;  5 Female lee_carter  2028     0    t(N(-7, 0.045)) 0.000972</span></span>
+<span><span class="co">#&gt;  6 Female lee_carter  2029     0    t(N(-7, 0.055)) 0.000944</span></span>
+<span><span class="co">#&gt;  7 Female lee_carter  2030     0    t(N(-7, 0.064)) 0.000916</span></span>
+<span><span class="co">#&gt;  8 Female lee_carter  2031     0  t(N(-7.1, 0.074)) 0.000889</span></span>
+<span><span class="co">#&gt;  9 Female lee_carter  2032     0  t(N(-7.1, 0.084)) 0.000863</span></span>
+<span><span class="co">#&gt; 10 Female lee_carter  2033     0  t(N(-7.1, 0.094)) 0.000838</span></span>
 <span><span class="co">#&gt; # ℹ 8,070 more rows</span></span></code></pre></div>
 <p>The forecasts are returned as a distribution column (here transformed normal because of the log transformation used in the model). The <code>.mean</code> column gives the point forecasts equal to the mean of the distribution column.</p>
 </div>
