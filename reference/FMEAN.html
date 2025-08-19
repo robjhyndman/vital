@@ -70,27 +70,27 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">fmean</span> <span class="op">&lt;-</span> <span class="va">aus_mortality</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">State</span> <span class="op">==</span> <span class="st">"Victoria"</span>, <span class="va">Sex</span> <span class="op">==</span> <span class="st">"female"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">fmean</span> <span class="op">&lt;-</span> <span class="va">norway_mortality</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sex</span> <span class="op">==</span> <span class="st">"Female"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fu">FMEAN</span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://fabletools.tidyverts.org/reference/report.html" class="external-link">report</a></span><span class="op">(</span><span class="va">fmean</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Series: Mortality </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Model: FMEAN </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 101 × 3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Age     mean    sigma</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     0 0.027<span style="text-decoration: underline;">0</span>   0.026<span style="text-decoration: underline;">3</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     1 0.004<span style="text-decoration: underline;">44</span>  0.005<span style="text-decoration: underline;">59</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     2 0.001<span style="text-decoration: underline;">95</span>  0.002<span style="text-decoration: underline;">19</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     3 0.001<span style="text-decoration: underline;">29</span>  0.001<span style="text-decoration: underline;">41</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     4 0.001<span style="text-decoration: underline;">12</span>  0.001<span style="text-decoration: underline;">18</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     5 0.000<span style="text-decoration: underline;">931</span> 0.001<span style="text-decoration: underline;">00</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     6 0.000<span style="text-decoration: underline;">834</span> 0.000<span style="text-decoration: underline;">870</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     7 0.000<span style="text-decoration: underline;">753</span> 0.000<span style="text-decoration: underline;">809</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     8 0.000<span style="text-decoration: underline;">624</span> 0.000<span style="text-decoration: underline;">681</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     9 0.000<span style="text-decoration: underline;">581</span> 0.000<span style="text-decoration: underline;">590</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 91 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 111 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      Age     mean   sigma</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     0 0.023<span style="text-decoration: underline;">1</span>   0.021<span style="text-decoration: underline;">2</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     1 0.006<span style="text-decoration: underline;">16</span>  0.007<span style="text-decoration: underline;">63</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     2 0.002<span style="text-decoration: underline;">62</span>  0.003<span style="text-decoration: underline;">24</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     3 0.001<span style="text-decoration: underline;">79</span>  0.002<span style="text-decoration: underline;">15</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     4 0.001<span style="text-decoration: underline;">44</span>  0.001<span style="text-decoration: underline;">73</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     5 0.001<span style="text-decoration: underline;">24</span>  0.001<span style="text-decoration: underline;">52</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     6 0.001<span style="text-decoration: underline;">09</span>  0.001<span style="text-decoration: underline;">34</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     7 0.000<span style="text-decoration: underline;">972</span> 0.001<span style="text-decoration: underline;">18</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     8 0.000<span style="text-decoration: underline;">907</span> 0.001<span style="text-decoration: underline;">11</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     9 0.000<span style="text-decoration: underline;">879</span> 0.001<span style="text-decoration: underline;">13</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 101 more rows</span></span>
 <span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">fmean</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="FMEAN-1.png" alt="" width="2400" height="1500"></span>
 </code></pre></div>

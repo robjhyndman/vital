@@ -225,8 +225,8 @@ StMoMo: An R package for stochastic mortality modelling.
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Fit the same CBD model using GAPC() and CBD()</span></span></span>
-<span class="r-in"><span><span class="va">gapc</span> <span class="op">&lt;-</span> <span class="va">aus_mortality</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">State</span> <span class="op">==</span> <span class="st">"Victoria"</span>, <span class="va">Sex</span> <span class="op">==</span> <span class="st">"female"</span>, <span class="va">Age</span> <span class="op">&gt;</span> <span class="fl">50</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span><span class="va">gapc</span> <span class="op">&lt;-</span> <span class="va">norway_mortality</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sex</span> <span class="op">==</span> <span class="st">"Female"</span>, <span class="va">Age</span> <span class="op">&gt;</span> <span class="fl">50</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    cbd1 <span class="op">=</span> <span class="fu">GAPC</span><span class="op">(</span><span class="va">Mortality</span>,</span></span>
 <span class="r-in"><span>      link <span class="op">=</span> <span class="st">"log"</span>,</span></span>
@@ -238,12 +238,16 @@ StMoMo: An R package for stochastic mortality modelling.
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Registered S3 method overwritten by 'quantmod':</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   method            from</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   as.zoo.data.frame zoo </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>StMoMo: 39 data points have </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>                   non-positive exposures and have been zero weighted</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>StMoMo: 39 data points have </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>                   non-positive exposures and have been zero weighted</span>
 <span class="r-in"><span><span class="fu"><a href="https://generics.r-lib.org/reference/glance.html" class="external-link">glance</a></span><span class="op">(</span><span class="va">gapc</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Sex    State    Code  .model  loglik deviance  nobs  npar</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> female Victoria VIC   cbd1   -<span style="color: #BB0000; text-decoration: underline;">26</span><span style="color: #BB0000;">955.</span>   <span style="text-decoration: underline;">14</span>005.  <span style="text-decoration: underline;">5</span>930   240</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> female Victoria VIC   cbd2   -<span style="color: #BB0000; text-decoration: underline;">26</span><span style="color: #BB0000;">955.</span>   <span style="text-decoration: underline;">14</span>005.  <span style="text-decoration: underline;">5</span>930   240</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Sex    .model  loglik deviance  nobs  npar</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Female cbd1   -<span style="color: #BB0000; text-decoration: underline;">31</span><span style="color: #BB0000;">129.</span>   <span style="text-decoration: underline;">15</span>529.  <span style="text-decoration: underline;">6</span>868   248</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Female cbd2   -<span style="color: #BB0000; text-decoration: underline;">31</span><span style="color: #BB0000;">129.</span>   <span style="text-decoration: underline;">15</span>529.  <span style="text-decoration: underline;">6</span>868   248</span>
 <span class="r-in"><span><span class="va">gapc</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">cbd2</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/report.html" class="external-link">report</a></span><span class="op">(</span><span class="op">)</span></span></span>
@@ -256,13 +260,13 @@ StMoMo: An R package for stochastic mortality modelling.
 <span class="r-out co"><span class="r-pr">#&gt;</span> Poisson model with predictor: log m[x,t] = k1[t] + f2[x] k2[t]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Data:  vital</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Series:  female</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Years in fit: 1901 - 2020</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Ages in fit: 51 - 100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Series:  Female</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Years in fit: 1900 - 2023</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ages in fit: 51 - 110 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Log-likelihood:  -26954.67</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Deviance:  14005.39</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of parameters:  240</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Log-likelihood:  -31129.16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Deviance:  15528.54</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of parameters:  248</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
