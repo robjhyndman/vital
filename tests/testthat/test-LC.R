@@ -9,24 +9,24 @@ test_that("Lee Carter", {
   fc <- forecast(lc)
 
   expect_no_error(autoplot(fc))
-  expect_identical(dim(lc), c(3L, 5L))
+  expect_identical(dim(lc), c(3L, 3L))
   expect_identical(NROW(tidy(lc)), 0L)
-  expect_identical(dim(glance(lc)), c(6L, 7L))
+  expect_identical(dim(glance(lc)), c(6L, 5L))
   expect_no_error(residuals(lc, type = "innov"))
   expect_no_error(residuals(lc, type = "response"))
   expect_no_error(fitted(lc))
-  expect_identical(NROW(generate(lc, times = 2)), 2424L)
-  expect_identical(NROW(fc), 1212L)
+  expect_identical(NROW(generate(lc, times = 2)), 2664L)
+  expect_identical(NROW(fc), 1332L)
   expect_equal(
     dplyr::filter(
       fc,
-      Sex == "female",
+      Sex == "Female",
       Age == 0,
-      Year == 2021,
+      Year == 2024,
       .model == "actual"
     ) |>
       dplyr::pull(.mean),
-    0.002446,
+    0.0017247,
     tolerance = 1e-5
   )
   expect_identical(
@@ -39,7 +39,7 @@ test_that("Lee Carter", {
   )
   expect_identical(
     colnames(time_components(lc |> select(fit))),
-    c("Sex", "State", "Code", "Year", "kt")
+    c("Sex", "Year", "kt")
   )
   expect_error(age_components(lc))
 
@@ -126,7 +126,7 @@ test_that("Lee Carter", {
 
   # Test LC on fertility
   expect_no_error(
-    aus_fertility |>
+    norway_fertility |>
       model(LC(log(Fertility))) |>
       autoplot()
   )

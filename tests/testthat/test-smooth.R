@@ -1,21 +1,21 @@
 test_that("smoothing functions", {
-  sm <- aus_fertility |>
+  sm <- norway_fertility |>
     smooth_fertility(Fertility)
   expect_identical(
     colnames(sm),
-    c("Year", "Age", "Fertility", "Exposure", "Births", ".smooth", ".smooth_se")
+    c("Year", "Age", "Fertility", "OpenInterval", ".smooth", ".smooth_se")
   )
   sm <- norway_mortality |>
-    dplyr::filter(Year <= 1910, Sex == "male") |>
+    dplyr::filter(Year <= 1910, Sex == "Male") |>
     smooth_mortality(Mortality)
-  expect_identical(dim(sm), c(1010L, 10L))
+  expect_identical(dim(sm), c(1221L, 9L))
   expect_no_error(autoplot(sm, .smooth) + ggplot2::scale_y_log10())
-  sm <- aus_fertility |>
+  sm <- norway_fertility |>
     smooth_spline(Fertility, k = -1)
   expect_no_error(autoplot(sm, .smooth))
-  sm <- aus_fertility |>
+  sm <- norway_fertility |>
     smooth_loess(Fertility, span = 0.3)
-  expect_identical(NROW(sm), 3010L)
+  expect_identical(NROW(sm), 2464L)
 
   # Check results are similar to demography
   if (requireNamespace("demography", quietly = TRUE)) {

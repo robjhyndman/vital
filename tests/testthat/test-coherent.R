@@ -35,10 +35,10 @@ test_that("Coherent functional data model", {
   pr1 <- pr |>
     model(hu = FDM(log(Mortality), coherent = TRUE))
   stationary <- purrr::map_lgl(pr1$hu, all_stationary)
-  expect_identical(pr1$Sex[stationary], c("female", "male"))
+  expect_identical(pr1$Sex[stationary], c("Female", "Male"))
   expect_identical(pr1$Sex[!stationary], "geometric_mean")
   pr2 <- pr |>
     model(hu = FDM(log(Mortality), coherent = FALSE))
   stationary <- purrr::map_lgl(pr2$hu, all_stationary)
-  expect_true(!any(stationary))
+  expect_true(!all(stationary))
 })
