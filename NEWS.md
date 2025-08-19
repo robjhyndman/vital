@@ -6,6 +6,8 @@
 * New stochastic simulation function: generate_population()
 * Added vignette introducing the package
 * Added vignette on stochastic population forecasting
+* Removed Australian data sets to reduce package size
+* Updated Norwegian data sets
 * Bug fixes and unit tests
 
 # vital 1.1.0
