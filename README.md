@@ -60,8 +60,8 @@ index_var(norway_mortality)
 key_vars(norway_mortality)
 #> [1] "Age" "Sex"
 vital_vars(norway_mortality)
-#>          age          sex   population 
-#>        "Age"        "Sex" "Population"
+#>          age          sex       deaths   population 
+#>        "Age"        "Sex"     "Deaths" "Population"
 ```
 
 ### Plots
@@ -89,7 +89,7 @@ norway_mortality |>
 #>  2  2000     1 Male  5.93e-4 5.93e-4 0.996 5.90e-4 0.995  75.0  75.3 0.999     1
 #>  3  2000     2 Male  2.29e-4 2.29e-4 0.995 2.28e-4 0.995  74.0  74.3 1.000     1
 #>  4  2000     3 Male  1.57e-4 1.57e-4 0.995 1.56e-4 0.995  73.0  73.3 1.000     1
-#>  5  2000     4 Male  2.21e-4 2.21e-4 0.995 2.20e-4 0.995  72.0  72.4 1.000     1
+#>  5  2000     4 Male  2.21e-4 2.21e-4 0.995 2.20e-4 0.995  72.0  72.3 1.000     1
 #>  6  2000     5 Male  1.89e-4 1.89e-4 0.995 1.88e-4 0.994  71.0  71.4 1.000     1
 #>  7  2000     6 Male  1.28e-4 1.28e-4 0.994 1.27e-4 0.994  70.0  70.4 1.000     1
 #>  8  2000     7 Male  1.27e-4 1.27e-4 0.994 1.26e-4 0.994  69.0  69.4 1.000     1
@@ -125,8 +125,6 @@ norway_mortality |>
   geom_line(aes(y = .smooth), col = "#0072B2") +
   ylab("Mortality rate") +
   scale_y_log10()
-#> Warning: Removed 1 row containing missing values or values outside the scale range
-#> (`geom_line()`).
 ```
 
 <img src="man/figures/README-smoothing-1.png" width="100%" />
@@ -172,27 +170,27 @@ fit |>
 #> # A tibble: 101 × 3
 #>     Age    ax     bx
 #>   <int> <dbl>  <dbl>
-#> 1     0 -4.32 0.0154
-#> 2     1 -6.15 0.0224
-#> 3     2 -6.76 0.0192
-#> 4     3 -7.13 0.0187
-#> 5     4 -7.16 0.0164
+#> 1     0 -4.33 0.0155
+#> 2     1 -6.16 0.0223
+#> 3     2 -6.77 0.0193
+#> 4     3 -7.14 0.0187
+#> 5     4 -7.18 0.0165
 #> # ℹ 96 more rows
 #> 
 #> Time coefficients
-#> # A tsibble: 123 x 2 [1Y]
+#> # A tsibble: 124 x 2 [1Y]
 #>    Year    kt
 #>   <int> <dbl>
 #> 1  1900  115.
 #> 2  1901  109.
-#> 3  1902  107.
-#> 4  1903  113.
-#> 5  1904  111.
-#> # ℹ 118 more rows
+#> 3  1902  103.
+#> 4  1903  109.
+#> 5  1904  106.
+#> # ℹ 119 more rows
 #> 
 #> Time series model: RW w/ drift 
 #> 
-#> Variance explained: 66.95%
+#> Variance explained: 66.33%
 ```
 
 ``` r
@@ -210,53 +208,53 @@ fit |>
 #> # A tibble: 202 × 4
 #>    Sex      Age    ax     bx
 #>    <chr>  <int> <dbl>  <dbl>
-#>  1 Female     0 -4.32 0.0154
-#>  2 Female     1 -6.15 0.0224
-#>  3 Female     2 -6.76 0.0192
-#>  4 Female     3 -7.13 0.0187
-#>  5 Female     4 -7.16 0.0164
-#>  6 Female     5 -7.40 0.0174
-#>  7 Female     6 -7.43 0.0165
-#>  8 Female     7 -7.46 0.0153
-#>  9 Female     8 -7.36 0.0124
-#> 10 Female     9 -7.37 0.0123
+#>  1 Female     0 -4.33 0.0155
+#>  2 Female     1 -6.16 0.0223
+#>  3 Female     2 -6.77 0.0193
+#>  4 Female     3 -7.14 0.0187
+#>  5 Female     4 -7.18 0.0165
+#>  6 Female     5 -7.41 0.0174
+#>  7 Female     6 -7.45 0.0165
+#>  8 Female     7 -7.48 0.0155
+#>  9 Female     8 -7.37 0.0125
+#> 10 Female     9 -7.39 0.0124
 #> # ℹ 192 more rows
 fit |>
   select(lee_carter) |>
   time_components()
-#> # A tsibble: 246 x 3 [1Y]
+#> # A tsibble: 248 x 3 [1Y]
 #> # Key:       Sex [2]
 #>    Sex     Year    kt
 #>    <chr>  <int> <dbl>
-#>  1 Female  1900  115.
-#>  2 Female  1901  109.
-#>  3 Female  1902  107.
-#>  4 Female  1903  113.
-#>  5 Female  1904  111.
-#>  6 Female  1905  114.
-#>  7 Female  1906  110.
-#>  8 Female  1907  111.
-#>  9 Female  1908  109.
-#> 10 Female  1909  103.
-#> # ℹ 236 more rows
+#>  1 Female  1900 115. 
+#>  2 Female  1901 109. 
+#>  3 Female  1902 103. 
+#>  4 Female  1903 109. 
+#>  5 Female  1904 106. 
+#>  6 Female  1905 110. 
+#>  7 Female  1906 101. 
+#>  8 Female  1907 106. 
+#>  9 Female  1908 105. 
+#> 10 Female  1909  99.6
+#> # ℹ 238 more rows
 ```
 
 ``` r
 fit |> forecast(h = 20)
 #> # A vital fable: 8,080 x 6 [1Y]
 #> # Key:           Age x (Sex, .model) [101 x 4]
-#>    Sex    .model      Year   Age         Mortality   .mean
-#>    <chr>  <chr>      <dbl> <int>            <dist>   <dbl>
-#>  1 Female lee_carter  2023     0 t(N(-5.2, 0.033)) 0.00560
-#>  2 Female lee_carter  2024     0 t(N(-5.2, 0.066)) 0.00557
-#>  3 Female lee_carter  2025     0 t(N(-5.2, 0.099)) 0.00554
-#>  4 Female lee_carter  2026     0  t(N(-5.3, 0.13)) 0.00551
-#>  5 Female lee_carter  2027     0  t(N(-5.3, 0.17)) 0.00548
-#>  6 Female lee_carter  2028     0   t(N(-5.3, 0.2)) 0.00545
-#>  7 Female lee_carter  2029     0  t(N(-5.3, 0.24)) 0.00542
-#>  8 Female lee_carter  2030     0  t(N(-5.4, 0.28)) 0.00539
-#>  9 Female lee_carter  2031     0  t(N(-5.4, 0.31)) 0.00536
-#> 10 Female lee_carter  2032     0  t(N(-5.4, 0.35)) 0.00533
+#>    Sex    .model      Year   Age          Mortality    .mean
+#>    <chr>  <chr>      <dbl> <int>             <dist>    <dbl>
+#>  1 Female lee_carter  2024     0 t(N(-6.8, 0.0088)) 0.00110 
+#>  2 Female lee_carter  2025     0  t(N(-6.9, 0.018)) 0.00106 
+#>  3 Female lee_carter  2026     0  t(N(-6.9, 0.027)) 0.00103 
+#>  4 Female lee_carter  2027     0  t(N(-6.9, 0.036)) 0.00100 
+#>  5 Female lee_carter  2028     0    t(N(-7, 0.045)) 0.000972
+#>  6 Female lee_carter  2029     0    t(N(-7, 0.055)) 0.000944
+#>  7 Female lee_carter  2030     0    t(N(-7, 0.064)) 0.000916
+#>  8 Female lee_carter  2031     0  t(N(-7.1, 0.074)) 0.000889
+#>  9 Female lee_carter  2032     0  t(N(-7.1, 0.084)) 0.000863
+#> 10 Female lee_carter  2033     0  t(N(-7.1, 0.094)) 0.000838
 #> # ℹ 8,070 more rows
 ```
 
