@@ -18,6 +18,6 @@ identifying the age, sex, deaths, births and population variables.
 \code{vital_vars()} returns a character vector the names of the vital variables.
 }
 \examples{
-vital_vars(aus_mortality)
+vital_vars(norway_mortality)
 
 }

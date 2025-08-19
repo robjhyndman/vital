@@ -19,8 +19,8 @@ For a mable with a single model column, return the model components
 that are indexed by age.
 }
 \examples{
-aus_mortality |>
-  dplyr::filter(State == "Victoria", Sex == "female") |>
+norway_mortality |>
+  dplyr::filter(Sex == "Female") |>
   model(lee_carter = LC(log(Mortality))) |>
   age_components()
 

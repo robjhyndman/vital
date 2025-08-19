@@ -1,7 +1,7 @@
 test_that("Coherent calculatons", {
   # Product/ratio
-  orig_data <- aus_mortality |>
-    dplyr::filter(Year > 2015, Sex != "total", Code == "NSW")
+  orig_data <- norway_mortality |>
+    dplyr::filter(Year > 2015, Sex != "Total")
   pr <- orig_data |>
     make_pr(Mortality) |>
     undo_pr(Mortality)
@@ -29,8 +29,8 @@ all_stationary <- function(object) {
 }
 
 test_that("Coherent functional data model", {
-  pr <- aus_mortality |>
-    dplyr::filter(State == "Victoria", Sex != "total", Year > 1950) |>
+  pr <- norway_mortality |>
+    dplyr::filter(Sex != "Total", Year > 1950) |>
     make_pr(Mortality)
   pr1 <- pr |>
     model(hu = FDM(log(Mortality), coherent = TRUE))

@@ -3,8 +3,7 @@
 test_that("Functional data model", {
   if (requireNamespace("feasts", quietly = TRUE)) {
     library(feasts)
-    hu <- aus_mortality |>
-      dplyr::filter(State == "Victoria") |>
+    hu <- norway_mortality |>
       model(hu = FDM(log(Mortality)))
     fc <- forecast(hu)
     expect_no_error(autoplot(fc))
@@ -21,7 +20,7 @@ test_that("Functional data model", {
     expect_identical(NROW(fc), 606L)
     expect_equal(
       fc |>
-        dplyr::filter(Sex == "female", Code == "VIC", Age == 0, Year == 2021) |>
+        dplyr::filter(Sex == "Female", Age == 0, Year == 2021) |>
         dplyr::pull(.mean),
       0.00246,
       tolerance = 1e-5

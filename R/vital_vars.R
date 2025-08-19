@@ -7,7 +7,7 @@
 #' @param x A tsibble object.
 #' @return A character vector of the names of the vital variables.
 #' @examples
-#' vital_vars(aus_mortality)
+#' vital_vars(norway_mortality)
 #'
 #' @export
 vital_vars <- function(x) {

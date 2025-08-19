@@ -45,8 +45,8 @@ default, although many other options are available. Missing rates are set to
 the geometric mean rate for the relevant age.
 }
 \examples{
-lc <- aus_mortality |>
-  dplyr::filter(State == "Victoria", Sex == "female") |>
+lc <- norway_mortality |>
+  filter(Sex == "Female") |>
   model(lee_carter = LC(log(Mortality)))
 report(lc)
 autoplot(lc)

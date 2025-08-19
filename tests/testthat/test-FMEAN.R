@@ -1,8 +1,7 @@
 # Check FMEAN models
 
 test_that("Functional mean", {
-  fm <- aus_mortality |>
-    dplyr::filter(State == "Victoria") |>
+  fm <- norway_mortality |>
     model(fm = FMEAN(Mortality))
   fc <- forecast(fm)
   expect_no_error(autoplot(fc))

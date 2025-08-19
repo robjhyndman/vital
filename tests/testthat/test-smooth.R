@@ -5,8 +5,8 @@ test_that("smoothing functions", {
     colnames(sm),
     c("Year", "Age", "Fertility", "Exposure", "Births", ".smooth", ".smooth_se")
   )
-  sm <- aus_mortality |>
-    dplyr::filter(Code == "NSW", Year <= 1910, Sex == "male") |>
+  sm <- norway_mortality |>
+    dplyr::filter(Year <= 1910, Sex == "male") |>
     smooth_mortality(Mortality)
   expect_identical(dim(sm), c(1010L, 10L))
   expect_no_error(autoplot(sm, .smooth) + ggplot2::scale_y_log10())

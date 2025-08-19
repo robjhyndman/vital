@@ -15,8 +15,8 @@
 #' ages collapsed into a single age group.
 #' @author Rob J Hyndman
 #' @examples
-#' aus_mortality |>
-#'   dplyr::filter(State == "Victoria", Sex == "female") |>
+#' norway_mortality |>
+#'   dplyr::filter(Sex == "Female") |>
 #'   collapse_ages(max_age = 85)
 #' @export
 

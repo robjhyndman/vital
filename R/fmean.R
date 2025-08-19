@@ -12,8 +12,8 @@
 #'
 #' @author Rob J Hyndman
 #' @examples
-#' fmean <- aus_mortality |>
-#'   dplyr::filter(State == "Victoria", Sex == "female") |>
+#' fmean <- norway_mortality |>
+#'   dplyr::filter(Sex == "Female") |>
 #'   model(mean = FMEAN(Mortality))
 #' report(fmean)
 #' autoplot(fmean) + ggplot2::scale_y_log10()

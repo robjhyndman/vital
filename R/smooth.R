@@ -29,10 +29,10 @@
 #' @author Rob J Hyndman
 #' @examples
 #' library(dplyr)
-#' aus_mortality |>
-#'   filter(State == "Victoria", Sex == "female", Year > 2000) |>
+#' norway_mortality |>
+#'   filter(Sex == "Female", Year > 2000) |>
 #'   smooth_mortality(Mortality)
-#' aus_fertility |>
+#' norway_fertility |>
 #'   filter(Year > 2000) |>
 #'   smooth_fertility(Fertility)
 #' @export

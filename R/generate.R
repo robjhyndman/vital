@@ -16,8 +16,7 @@
 #' @return A vital object with simulated values.
 #' @rdname generate
 #' @examples
-#' aus_mortality |>
-#'   dplyr::filter(State == "Victoria") |>
+#' norway_mortality |>
 #'   model(lc = LC(Mortality)) |>
 #'   generate(times = 3, bootstrap = TRUE)
 #'

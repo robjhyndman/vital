@@ -85,8 +85,8 @@
 #'
 #' @examples
 #' # Fit the same CBD model using GAPC() and CBD()
-#' gapc <- aus_mortality |>
-#'   dplyr::filter(State == "Victoria", Sex == "female", Age > 50) |>
+#' gapc <- norway_mortality |>
+#'   dplyr::filter(Sex == "Female", Age > 50) |>
 #'   model(
 #'     cbd1 = GAPC(Mortality,
 #'       link = "log",

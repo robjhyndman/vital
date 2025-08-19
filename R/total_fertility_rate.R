@@ -9,8 +9,8 @@
 #' @return A vital object with total fertility in column `tfr`.
 #'
 #' @examples
-#' # Compute Australian total fertility rates over time
-#' aus_fertility |>
+#' # Compute Norwegian total fertility rates over time
+#' norway_fertility |>
 #'   total_fertility_rate()
 #' @author Rob J Hyndman
 #' @export

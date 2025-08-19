@@ -28,11 +28,11 @@ When a measured variable takes value 0, it is set to 10^-6 to avoid
 infinite values in the ratio.
 }
 \examples{
-pr <- aus_mortality |>
-  dplyr::filter(Year > 2015, Sex != "total") |>
+pr <- norway_mortality |>
+  dplyr::filter(Year > 2015, Sex != "Total") |>
   make_pr(Mortality)
 pr |>
-  dplyr::filter(Sex == "geometric_mean", Code == "VIC") |>
+  dplyr::filter(Sex == "geometric_mean") |>
   autoplot(Mortality) +
   ggplot2::scale_y_log10()
 }

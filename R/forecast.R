@@ -27,8 +27,8 @@
 #' - All columns in `new_data`, excluding those whose names conflict with the
 #'   above.
 #' @examples
-#' aus_mortality |>
-#'   dplyr::filter(State == "Victoria", Sex == "female") |>
+#' norway_mortality |>
+#'   dplyr::filter(Sex == "Female") |>
 #'   model(naive = FNAIVE(Mortality)) |>
 #'   forecast(h = 10)
 #'

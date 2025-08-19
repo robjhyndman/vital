@@ -16,11 +16,11 @@
 #' mortality forecasting: the product-ratio method with functional time series
 #' models. *Demography*, 50(1), 261-283.
 #' @examples
-#' pr <- aus_mortality |>
-#'   dplyr::filter(Year > 2015, Sex != "total") |>
+#' pr <- norway_mortality |>
+#'   dplyr::filter(Year > 2015, Sex != "Total") |>
 #'   make_pr(Mortality)
 #' pr |>
-#'   dplyr::filter(Sex == "geometric_mean", Code == "VIC") |>
+#'   dplyr::filter(Sex == "geometric_mean") |>
 #'   autoplot(Mortality) +
 #'   ggplot2::scale_y_log10()
 #' @export

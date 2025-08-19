@@ -9,8 +9,8 @@
 #' @return vital object containing the age components from the model.
 #'
 #' @examples
-#' aus_mortality |>
-#'   dplyr::filter(State == "Victoria", Sex == "female") |>
+#' norway_mortality |>
+#'   dplyr::filter(Sex == "Female") |>
 #'   model(lee_carter = LC(log(Mortality))) |>
 #'   age_components()
 #'
@@ -30,8 +30,8 @@ age_components <- function(object, ...) {
 #' @return tsibble object containing the time components from the model.
 #'
 #' @examples
-#' aus_mortality |>
-#'   dplyr::filter(State == "Victoria", Sex == "female") |>
+#' norway_mortality |>
+#'   dplyr::filter(Sex == "Female") |>
 #'   model(lee_carter = LC(log(Mortality))) |>
 #'   time_components()
 #' @export
@@ -50,8 +50,8 @@ time_components <- function(object, ...) {
 #' @return tsibble object containing the cohort components from the model.
 #'
 #' @examples
-#' aus_mortality |>
-#'   dplyr::filter(State == "Victoria", Sex == "male", Age > 50) |>
+#' norway_mortality |>
+#'   dplyr::filter(Sex == "Male", Age > 50) |>
 #'   model(apc = APC(Mortality)) |>
 #'   cohort_components()
 #' @export

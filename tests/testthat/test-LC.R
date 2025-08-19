@@ -1,8 +1,7 @@
 # Check Lee-Carter models
 
 test_that("Lee Carter", {
-  lc <- aus_mortality |>
-    dplyr::filter(State == "Victoria") |>
+  lc <- norway_mortality |>
     model(
       fit = LC(log(Mortality)),
       actual = LC(log(Mortality), jump = "actual", adjust = "dxt")

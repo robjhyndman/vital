@@ -2,10 +2,10 @@ library(testthat)
 library(vital)
 library(dplyr)
 
-aus <- aus_mortality %>%
-  filter(State == "Victoria", Sex == "male", Age > 50)
+nor <- norway_mortality %>%
+  filter(Sex == "Male", Age > 50)
 
-mod <- aus |>
+mod <- nor |>
   model(
     gapc = GAPC(
       Mortality,

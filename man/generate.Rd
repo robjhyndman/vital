@@ -31,8 +31,7 @@ Innovations are sampled by the model's assumed error distribution.
 If \code{bootstrap} is \code{TRUE}, innovations will be sampled from the model's residuals.
 }
 \examples{
-aus_mortality |>
-  dplyr::filter(State == "Victoria") |>
+norway_mortality |>
   model(lc = LC(Mortality)) |>
   generate(times = 3, bootstrap = TRUE)
 

@@ -19,8 +19,8 @@ A model specification.
 \code{FNAIVE()} returns an random walk functional model applied to the formula's response variable as a function of age.
 }
 \examples{
-fnaive <- aus_mortality |>
-  dplyr::filter(State == "Victoria", Sex == "female") |>
+fnaive <- norway_mortality |>
+  dplyr::filter(Sex == "Female") |>
   model(fit = FNAIVE(Mortality))
 report(fnaive)
 autoplot(fnaive) + ggplot2::scale_y_log10()

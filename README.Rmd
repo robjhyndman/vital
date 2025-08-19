@@ -61,56 +61,57 @@ library(ggplot2)
 
 ### vital objects
 
-The basic data object is a `vital`, which is time-indexed tibble that contains vital statistics such as births, deaths, population counts, and mortality and fertility rates. 
+The basic data object is a `vital`, which is time-indexed tibble that contains vital statistics such as births, deaths, population counts, and mortality and fertility rates.
 
-Here is an example of a `vital` object containing mortality data for Australia.
+Here is an example of a `vital` object containing mortality data for Norway.
 
 ```{r aus}
-aus_mortality
+norway_mortality <- norway_mortality |>
+  collapse_ages(max_age = 100)
 ```
 
 We can use functions to see which variables are index, key or vital:
 
 ```{r vars}
-index_var(aus_mortality)
-key_vars(aus_mortality)
-vital_vars(aus_mortality)
+index_var(norway_mortality)
+key_vars(norway_mortality)
+vital_vars(norway_mortality)
 ```
 
 ### Plots
 
 ```{r autoplot, warning = FALSE}
-aus_mortality |>
-  filter(State == "Victoria", Sex != "total", Year < 1980, Age < 90) |>
+norway_mortality |>
+  filter(Sex != "Total", Year < 1980, Age < 90) |>
   autoplot(Mortality) + scale_y_log10()
 ```
 
 ### Life tables and life expectancy
 
 ```{r lifetable}
-# Life table for Victorian males in 2000
-aus_mortality |>
-  filter(State == "Victoria", Sex == "male", Year == 2000) |>
+# Life table for Norwegian males in 2000
+norway_mortality |>
+  filter(Sex == "Male", Year == 2000) |>
   life_table()
 ```
 
 ```{r e0}
 # Life expectancy
-aus_mortality |>
-  filter(State == "Victoria", Sex != "total") |>
+norway_mortality |>
+  filter(Sex != "Total") |>
   life_expectancy() |>
   ggplot(aes(x = Year, y = ex, color = Sex)) +
   geom_line()
 ```
 
-### Smoothing 
+### Smoothing
 
 Several smoothing functions are provided: `smooth_spline()`, `smooth_mortality()`, `smooth_fertility()`, and `smooth_loess()`, each smoothing across the age variable for each year.
 
 ```{r smoothing}
 # Smoothed data
-aus_mortality |>
-  filter(State == "Victoria", Sex != "total", Year == 1967) |>
+norway_mortality |>
+  filter(Sex != "Total", Year == 1967) |>
   smooth_mortality(Mortality) |>
   autoplot(Mortality) +
   geom_line(aes(y = .smooth), col = "#0072B2") +
@@ -120,11 +121,11 @@ aus_mortality |>
 
 ### Mortality models
 
-Several mortality models are available including variations on Lee-Carter models (Lee & Carter, JASA, 1992), and functional data models (Hyndman & Ullah, CSDA, 2007).  
+Several mortality models are available including variations on Lee-Carter models (Lee & Carter, JASA, 1992), and functional data models (Hyndman & Ullah, CSDA, 2007).
 
 ```{r lc}
-fit <- aus_mortality |>
-  filter(State == "Victoria", Sex != "total") |>
+fit <- norway_mortality |>
+  filter(Sex != "Total") |>
   model(
     lee_carter = LC(log(Mortality)),
     fdm = FDM(log(Mortality))
@@ -132,12 +133,12 @@ fit <- aus_mortality |>
 fit
 ```
 
-Models are fitted for all combinations of key variables excluding age. 
+Models are fitted for all combinations of key variables excluding age.
 
 ```{r lc2}
 fit |>
   select(lee_carter) |>
-  filter(Sex == "female") |>
+  filter(Sex == "Female") |>
   report()
 ```
 
@@ -162,4 +163,3 @@ fit |> forecast(h = 20)
 ```
 
 The forecasts are returned as a distribution column (here transformed normal because of the log transformation used in the model). The `.mean` column gives the point forecasts equal to the mean of the distribution column.
-

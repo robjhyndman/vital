@@ -46,8 +46,8 @@ reported can be controlled using the \code{progressr} package.
 }
 
 \examples{
-aus_mortality |>
-  dplyr::filter(State == "Victoria", Sex == "female") |>
+norway_mortality |>
+  dplyr::filter(Sex == "Female") |>
   model(
     naive = FNAIVE(Mortality),
     mean = FMEAN(Mortality)

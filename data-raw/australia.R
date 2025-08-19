@@ -1,3 +1,5 @@
+# No longer used (from v2.0.0)
+
 library(tidyverse)
 library(vital)
 library(tsibble)
@@ -13,7 +15,7 @@ aus_fertility <- as_vital(addb::aus.fertility) |>
     .population = "Exposure",
     reorder = TRUE
   )
-usethis::use_data(aus_fertility, overwrite = TRUE)
+#usethis::use_data(aus_fertility, overwrite = TRUE)
 
 aus_mortality <- bind_rows(
   as_vital(addb::nsw) |>
@@ -140,4 +142,4 @@ aus_mortality <- aus_mortality |>
   ) |>
   collapse_ages()
 
-usethis::use_data(aus_mortality, overwrite = TRUE)
+#usethis::use_data(aus_mortality, overwrite = TRUE)

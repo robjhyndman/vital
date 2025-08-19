@@ -114,8 +114,8 @@ model, where the response is a function of age.
 The forecasts returned contain both point forecasts and their distribution.
 }
 \examples{
-aus_mortality |>
-  dplyr::filter(State == "Victoria", Sex == "female") |>
+norway_mortality |>
+  dplyr::filter(Sex == "Female") |>
   model(naive = FNAIVE(Mortality)) |>
   forecast(h = 10)
 

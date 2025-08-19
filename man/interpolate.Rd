@@ -20,11 +20,11 @@ A vital object with missing values interpolated.
 Uses a fitted vital model to interpolate missing values from a dataset.
 }
 \examples{
-act_female <- aus_mortality |>
-  dplyr::filter(Code == "ACTOT", Sex == "female")
-act_female |>
+nor_female <- norway_mortality |>
+  dplyr::filter(Sex == "Female")
+nor_female |>
   model(mean = FMEAN(Mortality)) |>
-  interpolate(act_female)
+  interpolate(nor_female)
 }
 \author{
 Rob J Hyndman

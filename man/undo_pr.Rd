@@ -33,8 +33,8 @@ in the case that the original data was 0.
 }
 \examples{
 # Make products and ratios
-orig_data <- aus_mortality |>
-  dplyr::filter(Year > 2015, Sex != "total", Code == "NSW")
+orig_data <- norway_mortality |>
+  dplyr::filter(Year > 2015, Sex != "Total")
 pr <- orig_data |>
   make_pr(Mortality)
 # Compare original data with product/ratio version

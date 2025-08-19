@@ -4,8 +4,8 @@ template:
   theme: tango
   bootswatch: flatly
   bslib:
-    base_font: {google: "Fira Sans"}
-    heading_font: {google: "Fira Sans"}
+    base_font: { google: "Fira Sans" }
+    heading_font: { google: "Fira Sans" }
     code_font: "Hack, mono"
     primary: "#234460"
     link-color: "#234460"
@@ -46,8 +46,6 @@ reference:
   - title: Data
     desc: Data sets included in the package
     contents:
-      - aus_mortality
-      - aus_fertility
       - norway_births
   - title: Computing with vitals
     desc: Functions for computing on vital objects

@@ -16,7 +16,7 @@
 #' @return A ggplot2 object.
 #'
 #' @examples
-#' autoplot(aus_fertility, Fertility)
+#' autoplot(norway_fertility, Fertility)
 #' @export
 autoplot.vital <- function(object, .vars = NULL, age = age_var(object), ...) {
   quo_vars <- enquo(.vars)
@@ -106,8 +106,7 @@ autoplot.vital <- function(object, .vars = NULL, age = age_var(object), ...) {
 #'
 #' @examples
 #' library(ggplot2)
-#' aus_mortality |>
-#'   dplyr::filter(State == "Victoria") |>
+#' norway_mortality |>
 #'   model(ave = FMEAN(Mortality)) |>
 #'   forecast(h = 10) |>
 #'   autoplot() + scale_y_log10()
@@ -140,8 +139,7 @@ autoplot.fbl_vtl_ts <- function(object, ...) {
 #'
 #' @examples
 #' library(ggplot2)
-#' aus_mortality |>
-#'   dplyr::filter(State == "Victoria") |>
+#' norway_mortality |>
 #'   model(ave = FMEAN(Mortality)) |>
 #'   autoplot() + scale_y_log10()
 #'

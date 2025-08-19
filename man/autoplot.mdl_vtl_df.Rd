@@ -21,8 +21,7 @@ If there are multiple keys, separate models will be identified by colour.
 }
 \examples{
 library(ggplot2)
-aus_mortality |>
-  dplyr::filter(State == "Victoria") |>
+norway_mortality |>
   model(ave = FMEAN(Mortality)) |>
   autoplot() + scale_y_log10()
 

@@ -12,8 +12,8 @@
 #'
 #' @author Rob J Hyndman
 #' @examples
-#' fnaive <- aus_mortality |>
-#'   dplyr::filter(State == "Victoria", Sex == "female") |>
+#' fnaive <- norway_mortality |>
+#'   dplyr::filter(Sex == "Female") |>
 #'   model(fit = FNAIVE(Mortality))
 #' report(fnaive)
 #' autoplot(fnaive) + ggplot2::scale_y_log10()

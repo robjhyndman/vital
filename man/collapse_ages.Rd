@@ -28,8 +28,8 @@ mortality rates but not deaths and population, then the last rate remains
 unchanged (and a warning is generated).
 }
 \examples{
-aus_mortality |>
-  dplyr::filter(State == "Victoria", Sex == "female") |>
+norway_mortality |>
+  dplyr::filter(Sex == "Female") |>
   collapse_ages(max_age = 85)
 }
 \author{

@@ -19,8 +19,8 @@ For a mable with a single model column, return the model components
 that are indexed by birth year of the cohort.
 }
 \examples{
-aus_mortality |>
-  dplyr::filter(State == "Victoria", Sex == "male", Age > 50) |>
+norway_mortality |>
+  dplyr::filter(Sex == "Male", Age > 50) |>
   model(apc = APC(Mortality)) |>
   cohort_components()
 }

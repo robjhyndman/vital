@@ -19,8 +19,8 @@ Total fertility rate is the expected number of babies per woman in a life-time
 given the fertility rate at each age of a woman's life.
 }
 \examples{
-# Compute Australian total fertility rates over time
-aus_fertility |>
+# Compute Norwegian total fertility rates over time
+norway_fertility |>
   total_fertility_rate()
 }
 \author{

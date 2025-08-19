@@ -23,7 +23,7 @@ Produce rainbow plot (coloured by time index) of demographic variable against
 against age.
 }
 \examples{
-autoplot(aus_fertility, Fertility)
+autoplot(norway_fertility, Fertility)
 }
 \references{
 Hyndman, Rob J & Shang, Han Lin (2010) Rainbow plots, bagplots,

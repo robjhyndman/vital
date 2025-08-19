@@ -1,8 +1,7 @@
 # Check FNAIVE models
 
 test_that("Functional naive", {
-  fnaive <- aus_mortality |>
-    dplyr::filter(State == "Victoria") |>
+  fnaive <- norway_mortality |>
     model(fnaive = FNAIVE(Mortality))
   fc <- forecast(fnaive)
   expect_no_error(autoplot(fc))
