@@ -1,7 +1,7 @@
 #' Norwegian mortality and births data
 #'
-#' `norway_births` is an annual `vital` object covering the years 1900-2022, as provided
-#' by the Human Mortality Database on 21 April 2024.
+#' `norway_births` is an annual `vital` object covering the years 1900-2023, as provided
+#' by the Human Mortality Database on 19 August 2025.
 #' @source
 #' Human Mortality Database <https://mortality.org>
 #'
@@ -29,8 +29,8 @@ NULL
 
 #' Norwegian fertility data
 #'
-#' `norway_fertality` is an annual `vital` covering the years 1967-2022, as provided
-#' by the Human Fertility Database on 21 April 2024.
+#' `norway_fertility` is an annual `vital` covering the years 1967-2022, as provided
+#' by the Human Fertility Database on 19 August 2025.
 #' @source Human Fertility Database <https://www.humanfertility.org>
 #'
 #' @name norway_fertility
@@ -40,8 +40,8 @@ NULL
 
 #' Norwegian mortality data
 #'
-#' `norway_mortality` is an annual `vital` covering the years 1900-2022, as provided
-#' by the Human Mortality Database on 21 April 2024.
+#' `norway_mortality` is an annual `vital` covering the years 1900-2023, as provided
+#' by the Human Mortality Database on 19 August 2025.
 #'
 #' @name norway_mortality
 #' @rdname norway_births

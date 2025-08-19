@@ -14,14 +14,14 @@ Human Mortality Database \url{https://mortality.org}
 Human Fertility Database \url{https://www.humanfertility.org}
 }
 \description{
-\code{norway_births} is an annual \code{vital} object covering the years 1900-2022, as provided
-by the Human Mortality Database on 21 April 2024.
+\code{norway_births} is an annual \code{vital} object covering the years 1900-2023, as provided
+by the Human Mortality Database on 19 August 2025.
 
-\code{norway_fertality} is an annual \code{vital} covering the years 1967-2022, as provided
-by the Human Fertility Database on 21 April 2024.
+\code{norway_fertility} is an annual \code{vital} covering the years 1967-2022, as provided
+by the Human Fertility Database on 19 August 2025.
 
-\code{norway_mortality} is an annual \code{vital} covering the years 1900-2022, as provided
-by the Human Mortality Database on 21 April 2024.
+\code{norway_mortality} is an annual \code{vital} covering the years 1900-2023, as provided
+by the Human Mortality Database on 19 August 2025.
 }
 \examples{
 library(ggplot2)
