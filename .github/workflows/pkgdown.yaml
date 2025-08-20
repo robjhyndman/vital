@@ -11,6 +11,9 @@ on:
 
 name: pkgdown
 
+env:
+  VIGNETTES: compile
+
 jobs:
   pkgdown:
     runs-on: ubuntu-latest
