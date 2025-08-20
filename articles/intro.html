@@ -84,9 +84,9 @@ the <a href="https://tidyverts.org" class="external-link">tidyverts</a> packages
 <div class="section level2">
 <h2 id="vital-objects">vital objects<a class="anchor" aria-label="anchor" href="#vital-objects"></a>
 </h2>
-<p>The basic data object is a <code>vital</code>, which is time-indexed
-tibble that contains vital statistics such as births, deaths, population
-counts, and mortality and fertility rates.</p>
+<p>The basic data object is a <code>vital</code>, which is a
+time-indexed tibble that contains vital statistics such as births,
+deaths, population counts, and mortality and fertility rates.</p>
 <p>We will use Norwegian data in the following examples. First, let’s
 remove the “Total” Sex category and collapse the upper ages into a final
 age group of 100+.</p>
@@ -137,11 +137,7 @@ age.</p>
 <code class="sourceCode R"><span><span class="va">nor</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="intro_files/figure-html/autoplot-1.png" alt="Rainbow plot of mortality rates in Norway." width="100%"><p class="caption">
-Rainbow plot of mortality rates in Norway.
-</p>
-</div>
+<p><img src="intro_files/figure-html/autoplot-1.png" alt="Rainbow plot of mortality rates in Norway." width="100%"></p>
 <p>We can use standard ggplot functions to modify the plot as desired.
 For example, here are population pyramids for all years.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -150,11 +146,7 @@ For example, here are population pyramids for all years.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">Population</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">Sex</span>, scales <span class="op">=</span> <span class="st">"free_x"</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="intro_files/figure-html/pyramid-1.png" alt="Population pyramids for Norway." width="100%"><p class="caption">
-Population pyramids for Norway.
-</p>
-</div>
+<p><img src="intro_files/figure-html/pyramid-1.png" alt="Population pyramids for Norway." width="100%"></p>
 </div>
 <div class="section level2">
 <h2 id="life-tables-and-life-expectancy">Life tables and life expectancy<a class="anchor" aria-label="anchor" href="#life-tables-and-life-expectancy"></a>
@@ -195,11 +187,7 @@ by default) is computed using <code><a href="../reference/life_expectancy.html">
 <span>  <span class="fu"><a href="../reference/life_expectancy.html">life_expectancy</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Year</span>, y <span class="op">=</span> <span class="va">ex</span>, color <span class="op">=</span> <span class="va">Sex</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="intro_files/figure-html/e0-1.png" alt="Life expectancy at birth in Norway." width="100%"><p class="caption">
-Life expectancy at birth in Norway.
-</p>
-</div>
+<p><img src="intro_files/figure-html/e0-1.png" alt="Life expectancy at birth in Norway." width="100%"></p>
 </div>
 <div class="section level2">
 <h2 id="smoothing">Smoothing<a class="anchor" aria-label="anchor" href="#smoothing"></a>
@@ -219,11 +207,7 @@ described in <span class="citation">Hyndman and Ullah (2007)</span>.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">.smooth</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"#0072B2"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Mortality rate"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="intro_files/figure-html/smoothing-1.png" alt="Smoothed mortality rates in Norway for 1967." width="100%"><p class="caption">
-Smoothed mortality rates in Norway for 1967.
-</p>
-</div>
+<p><img src="intro_files/figure-html/smoothing-1.png" alt="Smoothed mortality rates in Norway for 1967." width="100%"></p>
 </div>
 <div class="section level2">
 <h2 id="lee-carter-models">Lee-Carter models<a class="anchor" aria-label="anchor" href="#lee-carter-models"></a>
@@ -285,11 +269,7 @@ age. To see the details for a specific model, use the
 <p>The results can be plotted.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">lc</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="intro_files/figure-html/lc3-1.png" alt="Components from Lee-Carter model." width="100%"><p class="caption">
-Components from Lee-Carter model.
-</p>
-</div>
+<p><img src="intro_files/figure-html/lc3-1.png" alt="Components from Lee-Carter model." width="100%"></p>
 <p>The components can be extracted.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/age_components.html">age_components</a></span><span class="op">(</span><span class="va">lc</span><span class="op">)</span></span>
@@ -364,22 +344,13 @@ replaced by <code>FDM</code>.</p>
 <span>  <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">fc_fdm</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="intro_files/figure-html/fdm-1.png" alt="First few components from functional data model for mortality in Norway." width="100%"><p class="caption">
-First few components from functional data model for mortality in Norway.
-</p>
-</div>
+<p><img src="intro_files/figure-html/fdm-1.png" alt="First few components from functional data model for mortality in Norway." width="100%"></p>
 <p>Functional data models have multiple principal components, rather
 than the single factor used in Lee-Carter models.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fdm</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span>show_order <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="intro_files/figure-html/fdmplot-1.png" alt="First three components from functional data model for mortality in Norway." width="100%"><p class="caption">
-First three components from functional data model for mortality in
-Norway.
-</p>
-</div>
+<p><img src="intro_files/figure-html/fdmplot-1.png" alt="First three components from functional data model for mortality in Norway." width="100%"></p>
 <p>By default, six factors are estimated using <code><a href="../reference/FDM.html">FDM()</a></code>. Here
 we have chosen to plot only the first three.</p>
 <p>The components can be extracted.</p>
