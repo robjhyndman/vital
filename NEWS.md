@@ -1,3 +1,5 @@
+# vital (development version)
+
 # vital 2.0.0
 
 * New data functions: read_ktdb(), read_ktdb_files(), read_stmf(), read_stmf_files()
