@@ -51,7 +51,7 @@ time_components <- function(object, ...) {
 #'
 #' @examples
 #' norway_mortality |>
-#'   dplyr::filter(Sex == "Male", Age > 50) |>
+#'   dplyr::filter(Sex == "Male", Age > 50, Year > 1960) |>
 #'   model(apc = APC(Mortality)) |>
 #'   cohort_components()
 #' @export

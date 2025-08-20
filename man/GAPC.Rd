@@ -136,7 +136,7 @@ All other arguments are passed to \code{\link[StMoMo]{StMoMo}}.
 \examples{
 # Fit the same CBD model using GAPC() and CBD()
 gapc <- norway_mortality |>
-  dplyr::filter(Sex == "Female", Age > 50) |>
+  dplyr::filter(Sex == "Female", Age > 50, Year > 2000) |>
   model(
     cbd1 = GAPC(Mortality,
       link = "log",
