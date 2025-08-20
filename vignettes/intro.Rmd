@@ -38,7 +38,7 @@ library(ggplot2)
 
 ## vital objects
 
-The basic data object is a `vital`, which is time-indexed tibble that contains vital statistics such as births, deaths, population counts, and mortality and fertility rates.
+The basic data object is a `vital`, which is a time-indexed tibble that contains vital statistics such as births, deaths, population counts, and mortality and fertility rates.
 
 We will use Norwegian data in the following examples. First, let's remove the "Total" Sex category and collapse the upper ages into a final age group of 100+.
 
