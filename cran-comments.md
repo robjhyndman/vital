@@ -1,4 +1,5 @@
 Fixed current CRAN check results as requested.
+Reduced time for vignettes and tests to run.
 
 ## Test environments
 
