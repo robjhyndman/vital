@@ -52,8 +52,8 @@ autoplot(fit_mortality, 2)
 ```
 
 <div class="figure">
-<img src="figure/mortality-1.png" alt="plot of chunk mortality" width="100%" />
-<p class="caption">plot of chunk mortality</p>
+<img src="figure/mortality-1.png" alt="First two components of the functional data model for mortality rates." width="100%" />
+<p class="caption">First two components of the functional data model for mortality rates.</p>
 </div>
 
 ## Fertility model
@@ -70,8 +70,8 @@ autoplot(fit_fertility)
 ```
 
 <div class="figure">
-<img src="figure/fertility-1.png" alt="plot of chunk fertility" width="100%" />
-<p class="caption">plot of chunk fertility</p>
+<img src="figure/fertility-1.png" alt="Fitted values of the functional mean model for fertility rates." width="100%" />
+<p class="caption">Fitted values of the functional mean model for fertility rates.</p>
 </div>
 
 ## Net migration model
@@ -91,8 +91,8 @@ autoplot(fit_migration)
 ```
 
 <div class="figure">
-<img src="figure/migration-1.png" alt="plot of chunk migration" width="100%" />
-<p class="caption">plot of chunk migration</p>
+<img src="figure/migration-1.png" alt="First two components of the functional data model for net migration." width="100%" />
+<p class="caption">First two components of the functional data model for net migration.</p>
 </div>
 
 ## Population simulation
@@ -131,8 +131,8 @@ future |>
 ```
 
 <div class="figure">
-<img src="figure/population_plot-1.png" alt="plot of chunk population_plot" width="100%" />
-<p class="caption">plot of chunk population_plot</p>
+<img src="figure/population_plot-1.png" alt="Simulated population for the first replicate." width="100%" />
+<p class="caption">Simulated population for the first replicate.</p>
 </div>
 
 The simulated populations can be used to compute any quantities that can be derived from populations numbers by sex and age. For example, the mean age of the population for the next 10 years
@@ -196,8 +196,8 @@ pyramid_2032 |>
 ```
 
 <div class="figure">
-<img src="figure/population_pyramid-1.png" alt="plot of chunk population_pyramid" width="100%" />
-<p class="caption">plot of chunk population_pyramid</p>
+<img src="figure/population_pyramid-1.png" alt="Population pyramid for 2032 with 95% prediction intervals." width="100%" />
+<p class="caption">Population pyramid for 2032 with 95% prediction intervals.</p>
 </div>
 
 ## References

@@ -70,7 +70,7 @@ vital_vars(nor)
 
 There are `autoplot()` functions for plotting `vital` objects. These produce rainbow plots [@rainbow] where each line represents data for one year, and the variable is plotted against age.
 
-```{r autoplot, warning = FALSE}
+```{r autoplot, warning = FALSE, fig.cap="Rainbow plot of mortality rates in Norway."}
 nor |>
   autoplot(Mortality) +
   scale_y_log10()
@@ -78,7 +78,7 @@ nor |>
 
 We can use standard ggplot functions to modify the plot as desired. For example, here are population pyramids for all years.
 
-```{r pyramid}
+```{r pyramid, fig.cap="Population pyramids for Norway."}
 nor |>
   mutate(Population = if_else(Sex == "Female", -Population, Population)) |>
   autoplot(Population) +
@@ -99,7 +99,7 @@ nor |>
 
 Life expectancy ($e_x$ with $x=0$ by default) is computed using `life_expectancy()`:
 
-```{r e0}
+```{r e0, fig.cap="Life expectancy at birth in Norway."}
 # Life expectancy for males and females in Norway
 nor |>
   life_expectancy() |>
@@ -111,7 +111,7 @@ nor |>
 
 Several smoothing functions are provided: `smooth_spline()`, `smooth_mortality()`, `smooth_fertility()`, and `smooth_loess()`, each smoothing across the age variable for each year. The methods used in `smooth_mortality()` and `smooth_fertility()` are described in @hu.
 
-```{r smoothing}
+```{r smoothing, fig.cap="Smoothed mortality rates in Norway for 1967."}
 # Smoothed data
 nor |>
   filter(Year == 1967) |>
@@ -143,7 +143,7 @@ lc |>
 
 The results can be plotted.
 
-```{r lc3}
+```{r lc3, fig.cap="Components from Lee-Carter model."}
 autoplot(lc)
 ```
 
@@ -169,7 +169,7 @@ The forecasts are returned as a distribution column (here transformed normal bec
 
 Functional data models [@hu] can be estimated in a similar way to Lee-Carter models, but with an additional smoothing step, then modelling with `LC` replaced by `FDM`.
 
-```{r fdm}
+```{r fdm, fig.cap="First few components from functional data model for mortality in Norway."}
 # FDM model
 fdm <- nor |>
   smooth_mortality(Mortality) |>
@@ -182,7 +182,7 @@ autoplot(fc_fdm) +
 
 Functional data models have multiple principal components, rather than the single factor used in Lee-Carter models.
 
-```{r fdmplot}
+```{r fdmplot, fig.cap="First three components from functional data model for mortality in Norway."}
 fdm |>
   autoplot(show_order = 3)
 ```

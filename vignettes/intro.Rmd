@@ -79,8 +79,8 @@ nor |>
 ```
 
 <div class="figure">
-<img src="figure/autoplot-1.png" alt="plot of chunk autoplot" width="100%" />
-<p class="caption">plot of chunk autoplot</p>
+<img src="figure/autoplot-1.png" alt="Rainbow plot of mortality rates in Norway." width="100%" />
+<p class="caption">Rainbow plot of mortality rates in Norway.</p>
 </div>
 
 We can use standard ggplot functions to modify the plot as desired. For example, here are population pyramids for all years.
@@ -95,8 +95,8 @@ nor |>
 ```
 
 <div class="figure">
-<img src="figure/pyramid-1.png" alt="plot of chunk pyramid" width="100%" />
-<p class="caption">plot of chunk pyramid</p>
+<img src="figure/pyramid-1.png" alt="Population pyramids for Norway." width="100%" />
+<p class="caption">Population pyramids for Norway.</p>
 </div>
 
 ## Life tables and life expectancy
@@ -138,8 +138,8 @@ nor |>
 ```
 
 <div class="figure">
-<img src="figure/e0-1.png" alt="plot of chunk e0" width="100%" />
-<p class="caption">plot of chunk e0</p>
+<img src="figure/e0-1.png" alt="Life expectancy at birth in Norway." width="100%" />
+<p class="caption">Life expectancy at birth in Norway.</p>
 </div>
 
 ## Smoothing
@@ -159,8 +159,8 @@ nor |>
 ```
 
 <div class="figure">
-<img src="figure/smoothing-1.png" alt="plot of chunk smoothing" width="100%" />
-<p class="caption">plot of chunk smoothing</p>
+<img src="figure/smoothing-1.png" alt="Smoothed mortality rates in Norway for 1967." width="100%" />
+<p class="caption">Smoothed mortality rates in Norway for 1967.</p>
 </div>
 
 ## Lee-Carter models
@@ -231,8 +231,8 @@ autoplot(lc)
 ```
 
 <div class="figure">
-<img src="figure/lc3-1.png" alt="plot of chunk lc3" width="100%" />
-<p class="caption">plot of chunk lc3</p>
+<img src="figure/lc3-1.png" alt="Components from Lee-Carter model." width="100%" />
+<p class="caption">Components from Lee-Carter model.</p>
 </div>
 
 The components can be extracted.
@@ -316,8 +316,8 @@ autoplot(fc_fdm) +
 ```
 
 <div class="figure">
-<img src="figure/fdm-1.png" alt="plot of chunk fdm" width="100%" />
-<p class="caption">plot of chunk fdm</p>
+<img src="figure/fdm-1.png" alt="First few components from functional data model for mortality in Norway." width="100%" />
+<p class="caption">First few components from functional data model for mortality in Norway.</p>
 </div>
 
 Functional data models have multiple principal components, rather than the single factor used in Lee-Carter models.
@@ -329,8 +329,8 @@ fdm |>
 ```
 
 <div class="figure">
-<img src="figure/fdmplot-1.png" alt="plot of chunk fdmplot" width="100%" />
-<p class="caption">plot of chunk fdmplot</p>
+<img src="figure/fdmplot-1.png" alt="First three components from functional data model for mortality in Norway." width="100%" />
+<p class="caption">First three components from functional data model for mortality in Norway.</p>
 </div>
 
 By default, six factors are estimated using `FDM()`. Here we have chosen to plot only the first three.
