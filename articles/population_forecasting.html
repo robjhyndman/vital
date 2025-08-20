@@ -139,7 +139,7 @@ are plotted here.</p>
 <span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span>fdm <span class="op">=</span> <span class="fu"><a href="../reference/FDM.html">FDM</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">.smooth</span><span class="op">)</span>, coherent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">fit_mortality</span>, <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="figure/mortality-1.png" alt="First two components of the functional data model for mortality rates." width="100%"><p class="caption">
+<img src="population_forecasting_files/figure-html/mortality-1.png" alt="First two components of the functional data model for mortality rates." width="100%"><p class="caption">
 First two components of the functional data model for mortality rates.
 </p>
 </div>
@@ -157,7 +157,7 @@ shows the fitted values on the square root scale.</p>
 <span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span>fmean <span class="op">=</span> <span class="fu"><a href="../reference/FMEAN.html">FMEAN</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">.smooth</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">fit_fertility</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="figure/fertility-1.png" alt="Fitted values of the functional mean model for fertility rates." width="100%"><p class="caption">
+<img src="population_forecasting_files/figure-html/fertility-1.png" alt="Fitted values of the functional mean model for fertility rates." width="100%"><p class="caption">
 Fitted values of the functional mean model for fertility rates.
 </p>
 </div>
@@ -179,7 +179,7 @@ differences using the <code>mean_sd()</code> function.</p>
 <span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span>fdm <span class="op">=</span> <span class="fu"><a href="../reference/FDM.html">FDM</a></span><span class="op">(</span><span class="va">NetMigration</span>, coherent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">fit_migration</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="figure/migration-1.png" alt="First two components of the functional data model for net migration." width="100%"><p class="caption">
+<img src="population_forecasting_files/figure-html/migration-1.png" alt="First two components of the functional data model for net migration." width="100%"><p class="caption">
 First two components of the functional data model for net migration.
 </p>
 </div>
@@ -217,7 +217,7 @@ of historical data.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_color_gradientn</a></span><span class="op">(</span>colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">9</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">Sex</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="figure/population_plot-1.png" alt="Simulated population for the first replicate." width="100%"><p class="caption">
+<img src="population_forecasting_files/figure-html/population_plot-1.png" alt="Simulated population for the first replicate." width="100%"><p class="caption">
 Simulated population for the first replicate.
 </p>
 </div>
@@ -230,30 +230,30 @@ mean age of the population for the next 10 years</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>mean_age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">Population</span> <span class="op">*</span> <span class="op">(</span><span class="va">Age</span> <span class="op">+</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">Population</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Sex</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>mean_age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mean_age</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A vital: 20 x 3 [1Y]</span></span>
-<span><span class="co">#&gt; # Key:     Sex [2]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A vital: 20 x 3 [1Y]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Key:     Sex [2]</span></span></span>
 <span><span class="co">#&gt;    Sex     Year mean_age</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;  &lt;dbl&gt;    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 Female  2024     42.0</span></span>
-<span><span class="co">#&gt;  2 Female  2025     42.3</span></span>
-<span><span class="co">#&gt;  3 Female  2026     42.5</span></span>
-<span><span class="co">#&gt;  4 Female  2027     42.7</span></span>
-<span><span class="co">#&gt;  5 Female  2028     42.9</span></span>
-<span><span class="co">#&gt;  6 Female  2029     43.1</span></span>
-<span><span class="co">#&gt;  7 Female  2030     43.4</span></span>
-<span><span class="co">#&gt;  8 Female  2031     43.6</span></span>
-<span><span class="co">#&gt;  9 Female  2032     43.8</span></span>
-<span><span class="co">#&gt; 10 Female  2033     44.0</span></span>
-<span><span class="co">#&gt; 11 Male    2024     40.7</span></span>
-<span><span class="co">#&gt; 12 Male    2025     40.9</span></span>
-<span><span class="co">#&gt; 13 Male    2026     41.2</span></span>
-<span><span class="co">#&gt; 14 Male    2027     41.4</span></span>
-<span><span class="co">#&gt; 15 Male    2028     41.6</span></span>
-<span><span class="co">#&gt; 16 Male    2029     41.9</span></span>
-<span><span class="co">#&gt; 17 Male    2030     42.1</span></span>
-<span><span class="co">#&gt; 18 Male    2031     42.3</span></span>
-<span><span class="co">#&gt; 19 Male    2032     42.5</span></span>
-<span><span class="co">#&gt; 20 Male    2033     42.7</span></span></code></pre></div>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Female  <span style="text-decoration: underline;">2</span>024     42.0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Female  <span style="text-decoration: underline;">2</span>025     42.3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Female  <span style="text-decoration: underline;">2</span>026     42.5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Female  <span style="text-decoration: underline;">2</span>027     42.7</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Female  <span style="text-decoration: underline;">2</span>028     42.9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Female  <span style="text-decoration: underline;">2</span>029     43.1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Female  <span style="text-decoration: underline;">2</span>030     43.4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Female  <span style="text-decoration: underline;">2</span>031     43.6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Female  <span style="text-decoration: underline;">2</span>032     43.8</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Female  <span style="text-decoration: underline;">2</span>033     44.0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> Male    <span style="text-decoration: underline;">2</span>024     40.7</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> Male    <span style="text-decoration: underline;">2</span>025     40.9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> Male    <span style="text-decoration: underline;">2</span>026     41.2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> Male    <span style="text-decoration: underline;">2</span>027     41.4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> Male    <span style="text-decoration: underline;">2</span>028     41.6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> Male    <span style="text-decoration: underline;">2</span>029     41.9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">17</span> Male    <span style="text-decoration: underline;">2</span>030     42.1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">18</span> Male    <span style="text-decoration: underline;">2</span>031     42.3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">19</span> Male    <span style="text-decoration: underline;">2</span>032     42.5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">20</span> Male    <span style="text-decoration: underline;">2</span>033     42.7</span></span></code></pre></div>
 <p>We can also plot population pyramids with prediction intervals. For
 example, here is the population pyramid for 2032 with a 95% prediction
 interval.</p>
@@ -278,7 +278,7 @@ interval.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"none"</span>, alpha <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="figure/population_pyramid-1.png" alt="Population pyramid for 2032 with 95% prediction intervals." width="100%"><p class="caption">
+<img src="population_forecasting_files/figure-html/population_pyramid-1.png" alt="Population pyramid for 2032 with 95% prediction intervals." width="100%"><p class="caption">
 Population pyramid for 2032 with 95% prediction intervals.
 </p>
 </div>
