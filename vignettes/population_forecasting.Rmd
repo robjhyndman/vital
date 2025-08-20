@@ -18,6 +18,11 @@ knitr::opts_chunk$set(
   fig.height = 5,
   out.width = "100%"
 )
+# Okabe-Ito colours for discrete scales
+options(
+  ggplot2.discrete.colour = c("#D55E00", "#0072B2", "#009E73", "#CC79A7", "#E69F00", "#56B4E9", "#F0E442"),
+  ggplot2.discrete.fill = c("#D55E00", "#0072B2", "#009E73", "#CC79A7", "#E69F00", "#56B4E9", "#F0E442")
+)
 ```
 
 ```{r setup, message = FALSE, warning = FALSE}
