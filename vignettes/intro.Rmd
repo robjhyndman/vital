@@ -49,7 +49,7 @@ The basic data object is a `vital`, which is time-indexed tibble that contains v
 
 We will use Norwegian data in the following examples. First, let's remove the "Total" Sex category and collapse the upper ages into a final age group of 100+.
 
-```{r example}
+```{r example, eval = TRUE}
 nor <- norway_mortality |>
   filter(Sex != "Total") |>
   collapse_ages(max_age = 100)
