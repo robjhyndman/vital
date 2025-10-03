@@ -21,7 +21,7 @@ Imports:
   fable,
   fabletools (>= 0.3.3),
   ggplot2,
-  HMDHFDplus (>= 2.0.3),
+  HMDHFDplus (>= 2.0.8),
   mgcv,
   MortalityLaws,
   patchwork,
