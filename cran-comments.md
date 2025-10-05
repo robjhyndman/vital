@@ -1,9 +1,6 @@
-Fixed current CRAN check results as requested.
-Reduced time for vignettes and tests to run.
-
 ## Test environments
 
-* KDE Neon based on Ubuntu 24.04 (local): R 4.5.1
+* PopOS!24.04 based on Ubuntu 24.04 (local): R 4.5.1
 * macOS (on GitHub Actions): release
 * windows (on GitHub Actions): release
 * ubuntu 24.04.2 (on GitHub Actions): devel, release, oldrel
