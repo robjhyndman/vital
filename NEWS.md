@@ -1,3 +1,5 @@
+# vital (development version)
+
 # vital 2.0.1
 
 * Updated HMDHFDplus dependency to v2.08+
