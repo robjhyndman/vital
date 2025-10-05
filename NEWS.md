@@ -1,5 +1,7 @@
 # vital (development version)
 
+* Updated HMDHFDplus dependency to v2.08+
+
 # vital 2.0.0
 
 * New data functions: read_ktdb(), read_ktdb_files(), read_stmf(), read_stmf_files()
