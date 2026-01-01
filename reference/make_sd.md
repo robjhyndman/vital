@@ -1,0 +1,49 @@
+# Do a sum/difference transformation
+
+Make a new vital containing means and differences of a measured variable
+by a key variable. The most common use case of this function is for
+migration numbers by sex. That is, we want to compute the age-specific
+mean migration, along with the difference of migration to the mean for
+each sex. The latter are equal to half the male/female and female/male
+differences of migration numbers.
+
+## Usage
+
+``` r
+make_sd(.data, .var, key = Sex)
+```
+
+## Arguments
+
+- .data:
+
+  A vital object
+
+- .var:
+
+  A bare variable name of the measured variable to use.
+
+- key:
+
+  A bare variable name specifying the key variable to use.
+
+## Value
+
+A vital object
+
+## References
+
+Hyndman, R.J., Booth, H., & Yasmeen, F. (2013). Coherent mortality
+forecasting: the product-ratio method with functional time series
+models. *Demography*, 50(1), 261-283.
+
+## Examples
+
+``` r
+mig <- net_migration(norway_mortality, norway_births) |>
+  dplyr::filter(Sex != "Total")
+sd <- mig |>
+  make_sd(NetMigration)
+sd |>
+  autoplot(NetMigration)
+```
