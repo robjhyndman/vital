@@ -3,6 +3,7 @@ library(tibble)
 library(ggplot2)
 library(ggpath)
 library(showtext)
+library(magick)
 
 # choose a font from Google Fonts
 font_add_google("Fira Sans", "firasans")
@@ -54,3 +55,9 @@ ggplot() +
   coord_fixed()
 
 ggsave("./man/figures/vital-hex.png", height = 6, width = 6)
+
+# Trim transparent edges
+img <- image_read("./man/figures/vital-hex.png")
+img_trim <- image_trim(img)
+
+image_write(img_trim, "./man/figures/vital-hex.png")
