@@ -1,5 +1,7 @@
 # vital (development version)
 
+* Fixed to work with dplyr v1.2.0
+
 # vital 2.0.1
 
 * Updated HMDHFDplus dependency to v2.08+
