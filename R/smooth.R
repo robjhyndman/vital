@@ -124,8 +124,8 @@ smooth_mortality_x <- function(
   )
   out <- tibble(
     age = age_grid,
-    .smooth = exp(smooth.fit$fit), #* (1 + 0.5 * smooth.fit$se.fit^2),
-    .smooth_se = .smooth * smooth.fit$se.fit
+    .smooth = exp(as.vector(smooth.fit$fit)), #* (1 + 0.5 * smooth.fit$se.fit^2),
+    .smooth_se = .smooth * as.vector(smooth.fit$se.fit)
   )
   colnames(out)[1] <- age
   return(out)
