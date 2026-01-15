@@ -72,7 +72,7 @@ norway_mortality |>
   autoplot(Mortality) + scale_y_log10()
 ```
 
-<img src="man/figures/README-autoplot-1.png" width="100%" />
+<img src="man/figures/README-autoplot-1.png" alt="" width="100%" />
 
 ### Life tables and life expectancy
 
@@ -108,7 +108,7 @@ norway_mortality |>
   geom_line()
 ```
 
-<img src="man/figures/README-e0-1.png" width="100%" />
+<img src="man/figures/README-e0-1.png" alt="" width="100%" />
 
 ### Smoothing
 
@@ -127,7 +127,7 @@ norway_mortality |>
   scale_y_log10()
 ```
 
-<img src="man/figures/README-smoothing-1.png" width="100%" />
+<img src="man/figures/README-smoothing-1.png" alt="" width="100%" />
 
 ### Mortality models
 
@@ -199,7 +199,7 @@ fit |>
   autoplot()
 ```
 
-<img src="man/figures/README-lc3-1.png" width="100%" />
+<img src="man/figures/README-lc3-1.png" alt="" width="100%" />
 
 ``` r
 fit |>
