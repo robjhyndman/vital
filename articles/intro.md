@@ -1,9 +1,8 @@
 # Introduction to the vital package
 
 The goal of vital is to allow analysis of demographic data using tidy
-tools. It works with other [tidyverse
-packages](https://www.tidyverse.org) such as
-[dplyr](https://dplyr.tidyverse.org) and
+tools. It works with other [tidyverse packages](https://tidyverse.org)
+such as [dplyr](https://dplyr.tidyverse.org) and
 [ggplot2](https://ggplot2.tidyverse.org). It also works with the
 [tidyverts](https://tidyverts.org) packages,
 [tsibble](https://tsibble.tidyverts.org) and
