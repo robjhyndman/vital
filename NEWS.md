@@ -1,4 +1,4 @@
-# vital (development version)
+# vital 2.0.2
 
 * Fixed to work with dplyr v1.2.0
 
