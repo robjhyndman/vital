@@ -19,13 +19,13 @@ Source:
 [`DESCRIPTION`](https://github.com/robjhyndman/vital/blob/main/DESCRIPTION)
 
 Hyndman R, Tang S (2026). *vital: Tidy Analysis Tools for Mortality,
-Fertility, Migration and Population Data*. R package version 2.0.1.9000,
+Fertility, Migration and Population Data*. R package version 2.0.2,
 <https://pkg.robjhyndman.com/vital/>.
 
     @Manual{,
       title = {vital: Tidy Analysis Tools for Mortality, Fertility, Migration and Population Data},
       author = {Rob Hyndman and Sixian Tang},
       year = {2026},
-      note = {R package version 2.0.1.9000},
+      note = {R package version 2.0.2},
       url = {https://pkg.robjhyndman.com/vital/},
     }
