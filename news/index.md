@@ -4,6 +4,8 @@
 
 ## vital 2.0.2
 
+CRAN release: 2026-01-18
+
 - Fixed to work with dplyr v1.2.0
 
 ## vital 2.0.1

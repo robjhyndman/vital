@@ -401,14 +401,14 @@ fc_coherent
 #>    <dbl> <dbl> <chr>  <chr>        <dist>     <dbl>
 #>  1  2024     0 Female hby    sample[2000] 0.00202  
 #>  2  2024     1 Female hby    sample[2000] 0.000274 
-#>  3  2024     2 Female hby    sample[2000] 0.000164 
-#>  4  2024     3 Female hby    sample[2000] 0.000128 
-#>  5  2024     4 Female hby    sample[2000] 0.000112 
-#>  6  2024     5 Female hby    sample[2000] 0.000103 
-#>  7  2024     6 Female hby    sample[2000] 0.0000980
-#>  8  2024     7 Female hby    sample[2000] 0.0000956
-#>  9  2024     8 Female hby    sample[2000] 0.0000973
-#> 10  2024     9 Female hby    sample[2000] 0.000101 
+#>  3  2024     2 Female hby    sample[2000] 0.000163 
+#>  4  2024     3 Female hby    sample[2000] 0.000126 
+#>  5  2024     4 Female hby    sample[2000] 0.000109 
+#>  6  2024     5 Female hby    sample[2000] 0.0000991
+#>  7  2024     6 Female hby    sample[2000] 0.0000938
+#>  8  2024     7 Female hby    sample[2000] 0.0000911
+#>  9  2024     8 Female hby    sample[2000] 0.0000923
+#> 10  2024     9 Female hby    sample[2000] 0.0000955
 #> # ℹ 4,030 more rows
 ```
 

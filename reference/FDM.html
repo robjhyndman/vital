@@ -50,7 +50,14 @@ variable as a function of age.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">FDM</span><span class="op">(</span><span class="va">formula</span>, order <span class="op">=</span> <span class="fl">6</span>, ts_model_fn <span class="op">=</span> <span class="fu">fable</span><span class="fu">::</span><span class="va"><a href="https://fable.tidyverts.org/reference/ARIMA.html" class="external-link">ARIMA</a></span>, coherent <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">FDM</span><span class="op">(</span></span>
+<span>  <span class="va">formula</span>,</span>
+<span>  order <span class="op">=</span> <span class="fl">6</span>,</span>
+<span>  ts_model_fn <span class="op">=</span> <span class="fu">fable</span><span class="fu">::</span><span class="va"><a href="https://fable.tidyverts.org/reference/ARIMA.html" class="external-link">ARIMA</a></span>,</span>
+<span>  coherent <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  coherent_ts_model_fn <span class="op">=</span> <span class="fu">fable</span><span class="fu">::</span><span class="va"><a href="https://fable.tidyverts.org/reference/ARFIMA.html" class="external-link">ARFIMA</a></span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -74,7 +81,13 @@ model that works with the fable package is ok. Default is <code><a href="https:/
 <dd><p>If TRUE, fitted models are stationary, other than for the case of
 a key variable taking the value <code>geometric_mean</code> or <code>mean</code>. This is designed to work with
 vitals produced using <code><a href="make_pr.html">make_pr()</a></code> and <code><a href="make_sd.html">make_sd</a></code>.
-Default is FALSE. It only works when <code>ts_model_fn</code> is <code><a href="https://fable.tidyverts.org/reference/ARIMA.html" class="external-link">ARIMA()</a></code>.</p></dd>
+Default is FALSE.</p></dd>
+
+
+<dt id="arg-coherent-ts-model-fn">coherent_ts_model_fn<a class="anchor" aria-label="anchor" href="#arg-coherent-ts-model-fn"></a></dt>
+<dd><p>Time series modelling function to be used for coherent fitting.
+<code>ts_model_fn</code> will be used for the <code>geometric_mean</code> or <code>mean</code> variables, with the
+other variables being modelled using <code>coherent_ts_model_fn</code>. Default is <code><a href="https://fable.tidyverts.org/reference/ARFIMA.html" class="external-link">fable::ARFIMA()</a></code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

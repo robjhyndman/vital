@@ -7,7 +7,14 @@ response variable as a function of age.
 ## Usage
 
 ``` r
-FDM(formula, order = 6, ts_model_fn = fable::ARIMA, coherent = FALSE, ...)
+FDM(
+  formula,
+  order = 6,
+  ts_model_fn = fable::ARIMA,
+  coherent = FALSE,
+  coherent_ts_model_fn = fable::ARFIMA,
+  ...
+)
 ```
 
 ## Arguments
@@ -34,8 +41,15 @@ FDM(formula, order = 6, ts_model_fn = fable::ARIMA, coherent = FALSE, ...)
   [`make_pr()`](https://pkg.robjhyndman.com/vital/reference/make_pr.md)
   and
   [`make_sd`](https://pkg.robjhyndman.com/vital/reference/make_sd.md).
-  Default is FALSE. It only works when `ts_model_fn` is
-  [`ARIMA()`](https://fable.tidyverts.org/reference/ARIMA.html).
+  Default is FALSE.
+
+- coherent_ts_model_fn:
+
+  Time series modelling function to be used for coherent fitting.
+  `ts_model_fn` will be used for the `geometric_mean` or `mean`
+  variables, with the other variables being modelled using
+  `coherent_ts_model_fn`. Default is
+  [`fable::ARFIMA()`](https://fable.tidyverts.org/reference/ARFIMA.html).
 
 - ...:
 
