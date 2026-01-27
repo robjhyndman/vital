@@ -13,7 +13,10 @@
 #' @param coherent If TRUE, fitted models are stationary, other than for the case of
 #' a key variable taking the value `geometric_mean` or `mean`. This is designed to work with
 #' vitals produced using \code{\link{make_pr}()} and \code{\link{make_sd}}.
-#' Default is FALSE. It only works when `ts_model_fn` is \code{\link[fable]{ARIMA}()}.
+#' Default is FALSE.
+#' @param coherent_ts_model_fn Time series modelling function to be used for coherent fitting.
+#' `ts_model_fn` will be used for the `geometric_mean` or `mean` variables, with the
+#' other variables being modelled using `coherent_ts_model_fn`. Default is [fable::ARFIMA()].
 #' @param ... Not used.
 #'
 #' @references Hyndman, R. J., and Ullah, S. (2007) Robust forecasting of
@@ -40,10 +43,15 @@ FDM <- function(
   order = 6,
   ts_model_fn = fable::ARIMA,
   coherent = FALSE,
+  coherent_ts_model_fn = fable::ARFIMA,
   ...
 ) {
-  if (coherent & !identical(ts_model_fn, fable::ARIMA)) {
-    stop("coherent = TRUE only works with ts_model_fn = fable::ARIMA")
+  if (
+    coherent &
+      !(identical(ts_model_fn, fable::ARIMA) ||
+        identical(ts_model_fn, fable::ARFIMA))
+  ) {
+    stop("coherent = TRUE only works with ARIMA or ARFIMA models")
   }
   if (!coherent) {
     coherent <- NULL
@@ -55,11 +63,20 @@ FDM <- function(
     order = order,
     ts_model_fn = ts_model_fn,
     coherent = coherent,
+    coherent_ts_model_fn = coherent_ts_model_fn,
     ...
   )
 }
 
-train_fdm <- function(.data, specials, order, ts_model_fn, coherent, ...) {
+train_fdm <- function(
+  .data,
+  specials,
+  order,
+  ts_model_fn,
+  coherent,
+  coherent_ts_model_fn,
+  ...
+) {
   indexvar <- index_var(.data)
   vvar <- vital_var_list(.data)
   agevar <- vvar$age
@@ -70,7 +87,8 @@ train_fdm <- function(.data, specials, order, ts_model_fn, coherent, ...) {
     .data,
     order = order,
     ts_model_fn = ts_model_fn,
-    coherent = coherent
+    coherent = coherent,
+    coherent_ts_model_fn = coherent_ts_model_fn
   )
 
   fitted <- out$data |>
@@ -274,7 +292,13 @@ autoplot.FDM <- function(object, show_order = 2, ...) {
 # Function based on demography::fdm() and ftsa::ftsm()
 # But assumes transformation already done
 
-fdm <- function(data, order = 6, ts_model_fn = fable::ARIMA, coherent = NULL) {
+fdm <- function(
+  data,
+  order = 6,
+  ts_model_fn = fable::ARIMA,
+  coherent = NULL,
+  coherent_ts_model_fn = fable::ARFIMA
+) {
   if (is.null(coherent)) {
     coherent <- FALSE
   }
@@ -331,13 +355,29 @@ fdm <- function(data, order = 6, ts_model_fn = fable::ARIMA, coherent = NULL) {
   ts_coefs <- ts_coefs[grepl("beta", ts_coefs)]
   fits <- purrr::map(ts_coefs, function(x) {
     if (coherent) {
-      mod <- by_t |>
-        fabletools::model(
-          fit = ts_model_fn(
-            !!sym(x),
-            order_constraint = (p + q + P + Q <= 6) & (d + D == 0)
+      if (identical(coherent_ts_model_fn, fable::ARIMA)) {
+        mod <- by_t |>
+          fabletools::model(
+            fit = coherent_ts_model_fn(
+              !!sym(x),
+              order_constraint = (p + q + P + Q <= 6) & (d + D == 0)
+            )
           )
+      } else if (identical(coherent_ts_model_fn, fable::ARFIMA)) {
+        # ARFIMA
+        mod <- by_t |>
+          fabletools::model(
+            fit = coherent_ts_model_fn(
+              !!sym(x),
+              order_constraint = (p + q <= 6)
+            )
+          ) |>
+          suppressWarnings()
+      } else {
+        stop(
+          "Only ARIMA and ARFIMA models are allowed for coherent time series"
         )
+      }
     } else {
       mod <- by_t |>
         fabletools::model(fit = ts_model_fn(!!sym(x)))
