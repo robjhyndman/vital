@@ -163,24 +163,42 @@ age_plot <- function(object, .var, keys) {
   names <- colnames(object)[!(colnames(object) %in% c(keys, .var))]
   age <- names[grep("age", names, ignore.case = TRUE)]
   kv_noage <- all_of(keys[keys != age])
-  ggplot2::ggplot(object) +
-    ggplot2::aes(
-      x = !!sym(age),
-      y = !!sym(.var),
-      col = !!sym(kv_noage),
-      group = !!sym(kv_noage)
-    ) +
-    ggplot2::geom_line()
+  p <- ggplot2::ggplot(object)
+  if (length(kv_noage) == 0) {
+    p <- p +
+      ggplot2::aes(
+        x = !!sym(age),
+        y = !!sym(.var)
+      )
+  } else {
+    p <- p +
+      ggplot2::aes(
+        x = !!sym(age),
+        y = !!sym(.var),
+        col = !!sym(kv_noage),
+        group = !!sym(kv_noage)
+      )
+  }
+  p + ggplot2::geom_line()
 }
 
 # Plot a variable against time by key
 time_plot <- function(object, .var, keys) {
-  ggplot2::ggplot(object) +
-    ggplot2::aes(
-      x = !!sym(tsibble::index_var(object)),
-      y = !!sym(.var),
-      col = !!sym(keys),
-      group = !!sym(keys)
-    ) +
-    ggplot2::geom_line()
+  p <- ggplot2::ggplot(object)
+  if (length(keys) == 0) {
+    p <- p +
+      ggplot2::aes(
+        x = !!sym(tsibble::index_var(object)),
+        y = !!sym(.var)
+      )
+  } else {
+    p <- p +
+      ggplot2::aes(
+        x = !!sym(tsibble::index_var(object)),
+        y = !!sym(.var),
+        col = !!sym(keys),
+        group = !!sym(keys)
+      )
+  }
+  p + ggplot2::geom_line()
 }
