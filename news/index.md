@@ -2,6 +2,8 @@
 
 ## vital (development version)
 
+## vital 2.0.3
+
 - Added default ARFIMA modelling for coherent FDM
 - Fixed to work with fabletools v0.6.0+
 
