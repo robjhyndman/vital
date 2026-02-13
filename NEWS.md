@@ -1,5 +1,8 @@
 # vital (development version)
 
+* Added default ARFIMA modelling for coherent FDM
+* Fixed to work with fabletools v0.6.0+
+
 # vital 2.0.2
 
 * Fixed to work with dplyr v1.2.0
