@@ -160,20 +160,27 @@ autoplot.mdl_vtl_df <- function(object, ...) {
 
 # Plot a variable against age by key
 age_plot <- function(object, .var, keys) {
-  # Convert age to time and use fabletools::autoplot.tbl_ts
   names <- colnames(object)[!(colnames(object) %in% c(keys, .var))]
   age <- names[grep("age", names, ignore.case = TRUE)]
-  object_ts <- tsibble::as_tsibble(
-    object,
-    index = !!sym(age),
-    key = all_of(keys[keys != age])
-  )
-  fabletools::autoplot(object_ts, !!sym(.var)) + ggplot2::xlab(age)
+  kv_noage <- all_of(keys[keys != age])
+  ggplot2::ggplot(object) +
+    ggplot2::aes(
+      x = !!sym(age),
+      y = !!sym(.var),
+      col = !!sym(kv_noage),
+      group = !!sym(kv_noage)
+    ) +
+    ggplot2::geom_line()
 }
 
 # Plot a variable against time by key
 time_plot <- function(object, .var, keys) {
-  # Just use fabletools::autoplot.tbl_ts
-  fabletools::autoplot(object, !!sym(.var)) +
-    ggplot2::xlab(tsibble::index_var(object))
+  ggplot2::ggplot(object) +
+    ggplot2::aes(
+      x = !!sym(tsibble::index_var(object)),
+      y = !!sym(.var),
+      col = !!sym(keys),
+      group = !!sym(keys)
+    ) +
+    ggplot2::geom_line()
 }
