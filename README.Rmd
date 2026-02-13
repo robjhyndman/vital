@@ -123,7 +123,7 @@ norway_mortality |>
 
 Several mortality models are available including variations on Lee-Carter models (Lee & Carter, JASA, 1992), and functional data models (Hyndman & Ullah, CSDA, 2007).
 
-```{r lc}
+```{r lc, message = FALSE}
 fit <- norway_mortality |>
   filter(Sex != "Total") |>
   model(
