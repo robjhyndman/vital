@@ -16,7 +16,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/robjhyndman/vital/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/robjhyndman/vital/blob/v2.0.2.9000/DESCRIPTION)
 
 Hyndman R, Tang S (2026). *vital: Tidy Analysis Tools for Mortality,
 Fertility, Migration and Population Data*. R package version 2.0.2.9000,
