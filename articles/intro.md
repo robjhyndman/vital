@@ -318,6 +318,14 @@ then modelling with `LC` replaced by `FDM`.
 fdm <- nor |>
   smooth_mortality(Mortality) |>
   model(hu = FDM(log(.smooth)))
+#> Registered S3 methods overwritten by 'ggtime':
+#>   method           from      
+#>   autolayer.fbl_ts fabletools
+#>   autolayer.tbl_ts fabletools
+#>   autoplot.dcmp_ts fabletools
+#>   autoplot.fbl_ts  fabletools
+#>   autoplot.tbl_ts  fabletools
+#>   fortify.fbl_ts   fabletools
 fc_fdm <- fdm |>
   forecast(h = 20)
 autoplot(fc_fdm) +

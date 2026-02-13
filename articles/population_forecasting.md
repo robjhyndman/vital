@@ -48,6 +48,14 @@ fit_mortality <- norway_mortality |>
   smooth_mortality(Mortality) |>
   make_pr(.smooth) |>
   model(fdm = FDM(log(.smooth), coherent = TRUE))
+#> Registered S3 methods overwritten by 'ggtime':
+#>   method           from      
+#>   autolayer.fbl_ts fabletools
+#>   autolayer.tbl_ts fabletools
+#>   autoplot.dcmp_ts fabletools
+#>   autoplot.fbl_ts  fabletools
+#>   autoplot.tbl_ts  fabletools
+#>   fortify.fbl_ts   fabletools
 autoplot(fit_mortality, 2)
 ```
 

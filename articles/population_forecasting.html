@@ -137,6 +137,14 @@ are plotted here.</p>
 <span>  <span class="fu"><a href="../reference/smooth_vital.html">smooth_mortality</a></span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/make_pr.html">make_pr</a></span><span class="op">(</span><span class="va">.smooth</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span>fdm <span class="op">=</span> <span class="fu"><a href="../reference/FDM.html">FDM</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">.smooth</span><span class="op">)</span>, coherent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Registered S3 methods overwritten by 'ggtime':</span></span>
+<span><span class="co">#&gt;   method           from      </span></span>
+<span><span class="co">#&gt;   autolayer.fbl_ts fabletools</span></span>
+<span><span class="co">#&gt;   autolayer.tbl_ts fabletools</span></span>
+<span><span class="co">#&gt;   autoplot.dcmp_ts fabletools</span></span>
+<span><span class="co">#&gt;   autoplot.fbl_ts  fabletools</span></span>
+<span><span class="co">#&gt;   autoplot.tbl_ts  fabletools</span></span>
+<span><span class="co">#&gt;   fortify.fbl_ts   fabletools</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">fit_mortality</span>, <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="population_forecasting_files/figure-html/mortality-1.png" class="r-plt" alt="First two components of the functional data model for mortality rates." width="100%"></p>
 </div>

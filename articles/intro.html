@@ -340,6 +340,14 @@ replaced by <code>FDM</code>.</p>
 <span><span class="va">fdm</span> <span class="op">&lt;-</span> <span class="va">nor</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/smooth_vital.html">smooth_mortality</a></span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span>hu <span class="op">=</span> <span class="fu"><a href="../reference/FDM.html">FDM</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">.smooth</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Registered S3 methods overwritten by 'ggtime':</span></span>
+<span><span class="co">#&gt;   method           from      </span></span>
+<span><span class="co">#&gt;   autolayer.fbl_ts fabletools</span></span>
+<span><span class="co">#&gt;   autolayer.tbl_ts fabletools</span></span>
+<span><span class="co">#&gt;   autoplot.dcmp_ts fabletools</span></span>
+<span><span class="co">#&gt;   autoplot.fbl_ts  fabletools</span></span>
+<span><span class="co">#&gt;   autoplot.tbl_ts  fabletools</span></span>
+<span><span class="co">#&gt;   fortify.fbl_ts   fabletools</span></span>
 <span><span class="va">fc_fdm</span> <span class="op">&lt;-</span> <span class="va">fdm</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">fc_fdm</span><span class="op">)</span> <span class="op">+</span></span>
