@@ -609,7 +609,7 @@ autoplot.LC <- function(object, age = "Age", ...) {
   p[[1]] <- age_plot(obj_x, "ax", keys) + ggplot2::ylab("ax")
   p[[2]] <- age_plot(obj_x, "bx", keys) + ggplot2::ylab("bx")
   p[[3]] <- patchwork::guide_area()
-  p[[4]] <- time_plot(obj_time, "kt") + ggplot2::labs(x = index, y = "kt")
+  p[[4]] <- time_plot(obj_time, "kt", keys) + ggplot2::labs(x = index, y = "kt")
   patchwork::wrap_plots(p) +
     patchwork::plot_layout(ncol = 2, nrow = 2, guides = "collect")
 }
