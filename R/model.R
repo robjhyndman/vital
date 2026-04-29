@@ -238,7 +238,7 @@ nest_keys <- function(.data, nm = "data") {
 }
 
 list_of_models <- function(x = list()) {
-  vctrs::new_vctr(x, class = "lst_mdl")
+  vctrs::new_vctr(x, class = "mdl_lst")
 }
 
 #' @export
