@@ -19,7 +19,7 @@ Imports:
   distributional,
   dplyr,
   fable,
-  fabletools (>= 0.3.3),
+  fabletools (>= 0.7.0),
   ggplot2,
   HMDHFDplus (>= 2.0.8),
   mgcv,
