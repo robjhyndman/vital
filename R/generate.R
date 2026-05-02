@@ -34,13 +34,9 @@ generate.mdl_vtl_df <- function(
     x <- bind_new_data(x, new_data)
   }
   kv <- c(key_vars(x), ".model")
-  x <- tidyr::pivot_longer(
-    as_tibble(x),
-    all_of(mdls),
-    names_to = ".model",
-    values_to = ".sim"
-  )
-
+  x <- as_tibble(x) |>
+    mutate(dplyr::across(all_of(mdls), as.list)) |>
+    pivot_longer(all_of(mdls), names_to = ".model", values_to = ".sim")
   # Evaluate simulations
   x[[".sim"]] <- map2(
     x[[".sim"]],
