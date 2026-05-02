@@ -2,6 +2,8 @@
 
 ## vital (development version)
 
+- Updated to work with fabletools v0.7.0+
+
 ## vital 2.0.3
 
 CRAN release: 2026-02-13
