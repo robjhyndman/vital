@@ -38,7 +38,7 @@ as_vital(x, ...)
 \arguments{
 \item{x}{Object to be coerced to a vital format.}
 
-\item{...}{Other arguments passed to \code{\link[tsibble:as-tsibble]{tsibble::as_tsibble()}}}
+\item{...}{Other arguments passed to \code{\link[tsibble:as_tsibble]{tsibble::as_tsibble()}}}
 
 \item{sex_groups}{Logical variable indicating if the groups denote sexes}
 

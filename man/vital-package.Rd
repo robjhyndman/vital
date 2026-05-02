@@ -21,6 +21,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Rob Hyndman \email{Rob.Hyndman@monash.edu} (\href{https://orcid.org/0000-0002-2140-5352}{ORCID}) [copyright holder]
   \item Sixian Tang (\href{https://orcid.org/0000-0002-7292-462X}{ORCID})
 }
 
