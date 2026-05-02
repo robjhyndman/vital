@@ -22,6 +22,9 @@ Useful links:
 
 Authors:
 
+- Rob Hyndman <Rob.Hyndman@monash.edu>
+  ([ORCID](https://orcid.org/0000-0002-2140-5352)) \[copyright holder\]
+
 - Sixian Tang ([ORCID](https://orcid.org/0000-0002-7292-462X))
 
 Other contributors:

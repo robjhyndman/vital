@@ -211,9 +211,6 @@ gapc <- norway_mortality |>
     ),
     cbd2 = CBD(Mortality)
   )
-#> Registered S3 method overwritten by 'quantmod':
-#>   method            from
-#>   as.zoo.data.frame zoo 
 #> Warning: StMoMo: 8 data points have 
 #>                   non-positive exposures and have been zero weighted
 #> Warning: StMoMo: 8 data points have 

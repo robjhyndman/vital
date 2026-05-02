@@ -1,6 +1,7 @@
 # Stochastic population forecasting
 
 ``` r
+
 library(vital)
 library(fable)
 library(dplyr)
@@ -10,14 +11,17 @@ set.seed(2025)
 
 The vital package can be used for stochastic population forecasting with
 coherent components. This is based on the papers by Hyndman and Booth
-(2008) and Hyndman, Booth, and Yasmeen (2013). Following Hyndman and
-Booth (2008), we use the following demographic growth-balance equations:
-$$P_{t}(x) = P_{t - 1}(x) + B_{t}(x) - D_{t}(x) + G_{t}(x)$$ where
+(2008) and Hyndman et al. (2013). Following Hyndman and Booth (2008), we
+use the following demographic growth-balance equations:
+``` math
+P_t(x) = P_{t-1}(x) + B_t(x) - D_t(x) + G_t(x)
+```
+where
 
-- $P_{t}(x)$ is the population at time $t$ and age $x$,
-- $B_{t}(x)$ is the number of births at time $t$ and age $x$,
-- $D_{t}(x)$ is the number of deaths at time $t$ and age $x$, and
-- $G_{t}(x)$ is the number of net migrants at time $t$ and age $x$.
+- $`P_t(x)`$ is the population at time $`t`$ and age $`x`$,
+- $`B_t(x)`$ is the number of births at time $`t`$ and age $`x`$,
+- $`D_t(x)`$ is the number of deaths at time $`t`$ and age $`x`$, and
+- $`G_t(x)`$ is the number of net migrants at time $`t`$ and age $`x`$.
 
 There are slightly different equations for handling the upper age group,
 and for baby migrants. See Hyndman and Booth (2008) for details.
@@ -34,28 +38,21 @@ but other models can be used as well.
 
 ## Mortality model
 
-We use a coherent functional data model (Hyndman, Booth, and Yasmeen
-2013) for the log mortality rates. To ensure coherence, we compute the
-geometric mean of the sex-specific mortality rates and the corresponding
-ratios, using the
+We use a coherent functional data model (Hyndman et al. 2013) for the
+log mortality rates. To ensure coherence, we compute the geometric mean
+of the sex-specific mortality rates and the corresponding ratios, using
+the
 [`make_pr()`](https://pkg.robjhyndman.com/vital/reference/make_pr.md)
 function. The data are smoothed first, and 6 components are used by
 default in each FDM, although only the first two are plotted here.
 
 ``` r
+
 fit_mortality <- norway_mortality |>
   filter(Sex != "Total") |>
   smooth_mortality(Mortality) |>
   make_pr(.smooth) |>
   model(fdm = FDM(log(.smooth), coherent = TRUE))
-#> Registered S3 methods overwritten by 'ggtime':
-#>   method           from      
-#>   autolayer.fbl_ts fabletools
-#>   autolayer.tbl_ts fabletools
-#>   autoplot.dcmp_ts fabletools
-#>   autoplot.fbl_ts  fabletools
-#>   autoplot.tbl_ts  fabletools
-#>   fortify.fbl_ts   fabletools
 autoplot(fit_mortality, 2)
 ```
 
@@ -69,6 +66,7 @@ transformation, applied to the last 13 years of data. The plotted model
 shows the fitted values on the square root scale.
 
 ``` r
+
 fit_fertility <- norway_fertility |>
   filter(Year > 2010) |>
   smooth_fertility(Fertility) |>
@@ -87,6 +85,7 @@ ratios. Instead, we need to compute the means and corresponding
 differences using the `mean_sd()` function.
 
 ``` r
+
 netmig <- net_migration(
   norway_mortality |> filter(Sex != "Total"),
   norway_births
@@ -109,6 +108,7 @@ and simulates future age-sex-specific population values. Here we produce
 ten replicates of the future population.
 
 ``` r
+
 pop <- norway_mortality |>
   filter(Sex != "Total", Year == max(Year))
 future <- generate_population(
@@ -125,6 +125,7 @@ The first replicate is plotted below, along with the last few years of
 historical data.
 
 ``` r
+
 future |>
   filter(.rep == "100") |>
   ggplot(aes(x = Age, y = Population, group = Year, color = Year)) +
@@ -146,6 +147,7 @@ be derived from populations numbers by sex and age. For example, the
 mean age of the population for the next 10 years
 
 ``` r
+
 future |>
   group_by(Sex, .rep) |>
   summarise(mean_age = sum(Population * (Age + 0.5)) / sum(Population)) |>
@@ -182,6 +184,7 @@ example, here is the population pyramid for 2032 with a 95% prediction
 interval.
 
 ``` r
+
 pyramid_2032 <- future |>
   filter(Year == 2032) |>
   mutate(Population = if_else(Sex == "Female", -Population, Population)) |>

@@ -78,34 +78,33 @@ Hyndman</h4>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2025</span><span class="op">)</span></span></code></pre></div>
 <p>The vital package can be used for stochastic population forecasting
-with coherent components. This is based on the papers by <span class="citation">Hyndman and Booth (2008)</span> and <span class="citation">Hyndman, Booth, and Yasmeen (2013)</span>. Following
-<span class="citation">Hyndman and Booth (2008)</span>, we use the
-following demographic growth-balance equations:
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>P</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><msub><mi>B</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><msub><mi>D</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><msub><mi>G</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+with coherent components. This is based on the papers by <span class="citation">Hyndman and Booth (2008)</span> and <span class="citation">Hyndman et al. (2013)</span>. Following <span class="citation">Hyndman and Booth (2008)</span>, we use the following
+demographic growth-balance equations:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>P</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>B</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msub><mi>D</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>G</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">
 P_t(x) = P_{t-1}(x) + B_t(x) - D_t(x) + G_t(x)
 </annotation></semantics></math> where</p>
 <ul>
 <li>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">P_t(x)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">P_t(x)</annotation></semantics></math>
 is the population at time
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
 and age
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>,</li>
 <li>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">B_t(x)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">B_t(x)</annotation></semantics></math>
 is the number of births at time
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
 and age
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>,</li>
 <li>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">D_t(x)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">D_t(x)</annotation></semantics></math>
 is the number of deaths at time
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
 and age
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>,
 and</li>
 <li>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>G</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">G_t(x)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>G</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">G_t(x)</annotation></semantics></math>
 is the number of net migrants at time
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
 and age
@@ -125,9 +124,9 @@ but other models can be used as well.</p>
 <div class="section level2">
 <h2 id="mortality-model">Mortality model<a class="anchor" aria-label="anchor" href="#mortality-model"></a>
 </h2>
-<p>We use a coherent functional data model <span class="citation">(Hyndman, Booth, and Yasmeen 2013)</span> for the log
-mortality rates. To ensure coherence, we compute the geometric mean of
-the sex-specific mortality rates and the corresponding ratios, using the
+<p>We use a coherent functional data model <span class="citation">(Hyndman et al. 2013)</span> for the log mortality
+rates. To ensure coherence, we compute the geometric mean of the
+sex-specific mortality rates and the corresponding ratios, using the
 <code><a href="../reference/make_pr.html">make_pr()</a></code> function. The data are smoothed first, and 6
 components are used by default in each FDM, although only the first two
 are plotted here.</p>
@@ -137,14 +136,6 @@ are plotted here.</p>
 <span>  <span class="fu"><a href="../reference/smooth_vital.html">smooth_mortality</a></span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/make_pr.html">make_pr</a></span><span class="op">(</span><span class="va">.smooth</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span>fdm <span class="op">=</span> <span class="fu"><a href="../reference/FDM.html">FDM</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">.smooth</span><span class="op">)</span>, coherent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Registered S3 methods overwritten by 'ggtime':</span></span>
-<span><span class="co">#&gt;   method           from      </span></span>
-<span><span class="co">#&gt;   autolayer.fbl_ts fabletools</span></span>
-<span><span class="co">#&gt;   autolayer.tbl_ts fabletools</span></span>
-<span><span class="co">#&gt;   autoplot.dcmp_ts fabletools</span></span>
-<span><span class="co">#&gt;   autoplot.fbl_ts  fabletools</span></span>
-<span><span class="co">#&gt;   autoplot.tbl_ts  fabletools</span></span>
-<span><span class="co">#&gt;   fortify.fbl_ts   fabletools</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">fit_mortality</span>, <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="population_forecasting_files/figure-html/mortality-1.png" class="r-plt" alt="First two components of the functional data model for mortality rates." width="100%"></p>
 </div>
@@ -274,7 +265,7 @@ interval.</p>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-HB08" class="csl-entry">
 Hyndman, Rob J, and Heather Booth. 2008. <span>“Stochastic Population
 Forecasts Using Functional Data Models for Mortality, Fertility and

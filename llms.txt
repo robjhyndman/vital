@@ -9,6 +9,7 @@ You can install the **stable** version from
 [CRAN](https://cran.r-project.org/package=vital):
 
 ``` r
+
 pak::pak("vital")
 ```
 
@@ -16,6 +17,7 @@ You can install the **development** version from
 [Github](https://github.com/robjhyndman/vital):
 
 ``` r
+
 pak::pak("robjhyndman/vital")
 ```
 
@@ -24,6 +26,7 @@ pak::pak("robjhyndman/vital")
 First load the necessary packages.
 
 ``` r
+
 library(vital)
 library(tsibble)
 library(dplyr)
@@ -40,6 +43,7 @@ Here is an example of a `vital` object containing mortality data for
 Norway.
 
 ``` r
+
 norway_mortality <- norway_mortality |>
   collapse_ages(max_age = 100)
 ```
@@ -47,6 +51,7 @@ norway_mortality <- norway_mortality |>
 We can use functions to see which variables are index, key or vital:
 
 ``` r
+
 index_var(norway_mortality)
 #> [1] "Year"
 key_vars(norway_mortality)
@@ -59,6 +64,7 @@ vital_vars(norway_mortality)
 ### Plots
 
 ``` r
+
 norway_mortality |>
   filter(Sex != "Total", Year < 1980, Age < 90) |>
   autoplot(Mortality) + scale_y_log10()
@@ -69,6 +75,7 @@ norway_mortality |>
 ### Life tables and life expectancy
 
 ``` r
+
 # Life table for Norwegian males in 2000
 norway_mortality |>
   filter(Sex == "Male", Year == 2000) |>
@@ -92,6 +99,7 @@ norway_mortality |>
 ```
 
 ``` r
+
 # Life expectancy
 norway_mortality |>
   filter(Sex != "Total") |>
@@ -113,6 +121,7 @@ and
 each smoothing across the age variable for each year.
 
 ``` r
+
 # Smoothed data
 norway_mortality |>
   filter(Sex != "Total", Year == 1967) |>
@@ -132,6 +141,7 @@ Lee-Carter models (Lee & Carter, JASA, 1992), and functional data models
 (Hyndman & Ullah, CSDA, 2007).
 
 ``` r
+
 fit <- norway_mortality |>
   filter(Sex != "Total") |>
   model(
@@ -150,6 +160,7 @@ fit
 Models are fitted for all combinations of key variables excluding age.
 
 ``` r
+
 fit |>
   select(lee_carter) |>
   filter(Sex == "Female") |>
@@ -190,6 +201,7 @@ fit |>
 ```
 
 ``` r
+
 fit |>
   select(lee_carter) |>
   autoplot()
@@ -198,6 +210,7 @@ fit |>
 ![](reference/figures/README-lc3-1.png)
 
 ``` r
+
 fit |>
   select(lee_carter) |>
   age_components()
@@ -236,6 +249,7 @@ fit |>
 ```
 
 ``` r
+
 fit |> forecast(h = 20)
 #> # A vital fable: 8,080 x 6 [1Y]
 #> # Key:           Age x (Sex, .model) [101 x 4]

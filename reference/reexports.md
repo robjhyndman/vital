@@ -5,16 +5,16 @@ to see their documentation.
 
 - fabletools:
 
-  [`augment`](https://fabletools.tidyverts.org/reference/reexports.html),
-  [`estimate`](https://fabletools.tidyverts.org/reference/estimate.html),
-  [`forecast`](https://fabletools.tidyverts.org/reference/reexports.html),
-  [`generate`](https://fabletools.tidyverts.org/reference/reexports.html),
-  [`glance`](https://fabletools.tidyverts.org/reference/reexports.html),
-  [`interpolate`](https://fabletools.tidyverts.org/reference/reexports.html),
-  [`model`](https://fabletools.tidyverts.org/reference/model.html),
-  [`report`](https://fabletools.tidyverts.org/reference/report.html),
-  [`tidy`](https://fabletools.tidyverts.org/reference/reexports.html)
+  [`augment`](https://generics.r-lib.org/reference/augment.html),
+  [`estimate()`](https://fabletools.tidyverts.org/reference/estimate.html),
+  [`forecast`](https://generics.r-lib.org/reference/forecast.html),
+  [`generate`](https://generics.r-lib.org/reference/generate.html),
+  [`glance`](https://generics.r-lib.org/reference/glance.html),
+  [`interpolate`](https://generics.r-lib.org/reference/interpolate.html),
+  [`model()`](https://fabletools.tidyverts.org/reference/model.html),
+  [`report()`](https://fabletools.tidyverts.org/reference/report.html),
+  [`tidy`](https://generics.r-lib.org/reference/tidy.html)
 
 - ggplot2:
 
-  [`autoplot`](https://ggplot2.tidyverse.org/reference/autoplot.html)
+  [`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)

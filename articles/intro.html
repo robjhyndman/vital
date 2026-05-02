@@ -340,14 +340,6 @@ replaced by <code>FDM</code>.</p>
 <span><span class="va">fdm</span> <span class="op">&lt;-</span> <span class="va">nor</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/smooth_vital.html">smooth_mortality</a></span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span>hu <span class="op">=</span> <span class="fu"><a href="../reference/FDM.html">FDM</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">.smooth</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Registered S3 methods overwritten by 'ggtime':</span></span>
-<span><span class="co">#&gt;   method           from      </span></span>
-<span><span class="co">#&gt;   autolayer.fbl_ts fabletools</span></span>
-<span><span class="co">#&gt;   autolayer.tbl_ts fabletools</span></span>
-<span><span class="co">#&gt;   autoplot.dcmp_ts fabletools</span></span>
-<span><span class="co">#&gt;   autoplot.fbl_ts  fabletools</span></span>
-<span><span class="co">#&gt;   autoplot.tbl_ts  fabletools</span></span>
-<span><span class="co">#&gt;   fortify.fbl_ts   fabletools</span></span>
 <span><span class="va">fc_fdm</span> <span class="op">&lt;-</span> <span class="va">fdm</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">fc_fdm</span><span class="op">)</span> <span class="op">+</span></span>
@@ -398,12 +390,12 @@ we have chosen to plot only the first three.</p>
 <div class="section level2">
 <h2 id="coherent-functional-data-models">Coherent functional data models<a class="anchor" aria-label="anchor" href="#coherent-functional-data-models"></a>
 </h2>
-<p>A coherent functional data model <span class="citation">(Hyndman,
-Booth, and Yasmeen 2013)</span>, is obtained by first computing the
-sex-products and sex-ratios of the smoothed mortality data. Then a
-functional data model is fitted to the smoothed data, forecasts are
-obtained, and the product/ratio transformation is reversed. The
-following code shows the steps.</p>
+<p>A coherent functional data model <span class="citation">(Hyndman et
+al. 2013)</span>, is obtained by first computing the sex-products and
+sex-ratios of the smoothed mortality data. Then a functional data model
+is fitted to the smoothed data, forecasts are obtained, and the
+product/ratio transformation is reversed. The following code shows the
+steps.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fdm_coherent</span> <span class="op">&lt;-</span> <span class="va">nor</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/smooth_vital.html">smooth_mortality</a></span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -437,10 +429,10 @@ when applied to the sex-ratios.</p>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-chiang" class="csl-entry">
 Chiang, Chin Long. 1984. <em>The Life Table and Its Applications</em>.
-Malabar: Robert E Krieger Publishing Company.
+Robert E Krieger Publishing Company.
 </div>
 <div id="ref-hby" class="csl-entry">
 Hyndman, Rob J, Heather Booth, and Farah Yasmeen. 2013. <span>“Coherent

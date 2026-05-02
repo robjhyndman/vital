@@ -82,14 +82,6 @@ hu <- norway_mortality |>
   dplyr::filter(Sex == "Female", Year > 2010) |>
   smooth_mortality(Mortality) |>
   model(hyndman_ullah = FDM(log(.smooth)))
-#> Registered S3 methods overwritten by 'ggtime':
-#>   method           from      
-#>   autolayer.fbl_ts fabletools
-#>   autolayer.tbl_ts fabletools
-#>   autoplot.dcmp_ts fabletools
-#>   autoplot.fbl_ts  fabletools
-#>   autoplot.tbl_ts  fabletools
-#>   fortify.fbl_ts   fabletools
 report(hu)
 #> Series: .smooth 
 #> Model: FDM 

@@ -9,6 +9,7 @@ such as [dplyr](https://dplyr.tidyverse.org) and
 [fable](https://fable.tidyverts.org).
 
 ``` r
+
 library(vital)
 library(tsibble)
 library(dplyr)
@@ -26,6 +27,7 @@ remove the “Total” Sex category and collapse the upper ages into a final
 age group of 100+.
 
 ``` r
+
 nor <- norway_mortality |>
   filter(Sex != "Total") |>
   collapse_ages(max_age = 100)
@@ -56,6 +58,7 @@ columns are “vital” variables, such as “Age” and “Sex”.
 We can use functions to see which variables are index, key or vital:
 
 ``` r
+
 index_var(nor)
 #> [1] "Year"
 key_vars(nor)
@@ -74,6 +77,7 @@ functions for plotting `vital` objects. These produce rainbow plots
 and the variable is plotted against age.
 
 ``` r
+
 nor |>
   autoplot(Mortality) +
   scale_y_log10()
@@ -86,6 +90,7 @@ We can use standard ggplot functions to modify the plot as desired. For
 example, here are population pyramids for all years.
 
 ``` r
+
 nor |>
   mutate(Population = if_else(Sex == "Female", -Population, Population)) |>
   autoplot(Population) +
@@ -104,6 +109,7 @@ function. It will produce life tables for each unique combination of the
 index and key variables other than age.
 
 ``` r
+
 # Life tables for males and females in Norway in 2000
 nor |>
   filter(Year == 2000) |>
@@ -126,10 +132,11 @@ nor |>
 #> # ℹ 1 more variable: ax <dbl>
 ```
 
-Life expectancy ($e_{x}$ with $x = 0$ by default) is computed using
+Life expectancy ($`e_x`$ with $`x=0`$ by default) is computed using
 [`life_expectancy()`](https://pkg.robjhyndman.com/vital/reference/life_expectancy.md):
 
 ``` r
+
 # Life expectancy for males and females in Norway
 nor |>
   life_expectancy() |>
@@ -155,6 +162,7 @@ and
 are described in Hyndman and Ullah (2007).
 
 ``` r
+
 # Smoothed data
 nor |>
   filter(Year == 1967) |>
@@ -177,6 +185,7 @@ which must be called within a
 function:
 
 ``` r
+
 # Lee-Carter model
 lc <- nor |>
   model(lee_carter = LC(log(Mortality)))
@@ -195,6 +204,7 @@ To see the details for a specific model, use the
 function.
 
 ``` r
+
 lc |>
   filter(Sex == "Female") |>
   report()
@@ -236,6 +246,7 @@ lc |>
 The results can be plotted.
 
 ``` r
+
 autoplot(lc)
 ```
 
@@ -244,6 +255,7 @@ autoplot(lc)
 The components can be extracted.
 
 ``` r
+
 age_components(lc)
 #> # A tibble: 202 × 4
 #>    Sex      Age    ax     bx
@@ -282,6 +294,7 @@ Forecasts are obtained using the
 function
 
 ``` r
+
 # Forecasts from Lee-Carter model
 lc |>
   forecast(h = 20)
@@ -314,18 +327,11 @@ similar way to Lee-Carter models, but with an additional smoothing step,
 then modelling with `LC` replaced by `FDM`.
 
 ``` r
+
 # FDM model
 fdm <- nor |>
   smooth_mortality(Mortality) |>
   model(hu = FDM(log(.smooth)))
-#> Registered S3 methods overwritten by 'ggtime':
-#>   method           from      
-#>   autolayer.fbl_ts fabletools
-#>   autolayer.tbl_ts fabletools
-#>   autoplot.dcmp_ts fabletools
-#>   autoplot.fbl_ts  fabletools
-#>   autoplot.tbl_ts  fabletools
-#>   fortify.fbl_ts   fabletools
 fc_fdm <- fdm |>
   forecast(h = 20)
 autoplot(fc_fdm) +
@@ -339,6 +345,7 @@ Functional data models have multiple principal components, rather than
 the single factor used in Lee-Carter models.
 
 ``` r
+
 fdm |>
   autoplot(show_order = 3)
 ```
@@ -353,6 +360,7 @@ have chosen to plot only the first three.
 The components can be extracted.
 
 ``` r
+
 age_components(fdm)
 #> # A tibble: 202 × 9
 #>    Sex      Age  mean  phi1     phi2     phi3    phi4     phi5    phi6
@@ -388,13 +396,14 @@ time_components(fdm)
 
 ## Coherent functional data models
 
-A coherent functional data model (Hyndman, Booth, and Yasmeen 2013), is
-obtained by first computing the sex-products and sex-ratios of the
-smoothed mortality data. Then a functional data model is fitted to the
-smoothed data, forecasts are obtained, and the product/ratio
-transformation is reversed. The following code shows the steps.
+A coherent functional data model (Hyndman et al. 2013), is obtained by
+first computing the sex-products and sex-ratios of the smoothed
+mortality data. Then a functional data model is fitted to the smoothed
+data, forecasts are obtained, and the product/ratio transformation is
+reversed. The following code shows the steps.
 
 ``` r
+
 fdm_coherent <- nor |>
   smooth_mortality(Mortality) |>
   make_pr(.smooth) |>
@@ -433,8 +442,8 @@ applied to the sex-ratios.
 
 ## References
 
-Chiang, Chin Long. 1984. *The Life Table and Its Applications*. Malabar:
-Robert E Krieger Publishing Company.
+Chiang, Chin Long. 1984. *The Life Table and Its Applications*. Robert E
+Krieger Publishing Company.
 
 Hyndman, Rob J, Heather Booth, and Farah Yasmeen. 2013. “Coherent
 Mortality Forecasting: The Product-Ratio Method with Functional Time
