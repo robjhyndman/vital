@@ -1,15 +1,19 @@
 ---
-output: github_document
+format: gfm
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- README.md is generated from README.qmd. Please edit that file -->
 
-```{r, include = FALSE}
+```{r}
+#| label: setup
+#| include: false
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%"
+  out.width = "100%",
+  dev = "ragg_png",
+  dpi = 200
 )
 
 # Okabe-Ito colours for discrete scales
@@ -24,10 +28,13 @@ ggplot2::theme_set(
 )
 ```
 
-# vital  <img src="man/figures/vital-hex.png" align="right" width = 150 />
+# vital <img src="man/figures/vital-hex.png" align="right" width = 150 />
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/robjhyndman/vital/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/robjhyndman/vital/actions/workflows/R-CMD-check.yaml)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/vital)](https://cran.r-project.org/package=vital)
+[![Downloads](https://cranlogs.r-pkg.org/badges/vital)](https://cran.r-project.org/package=vital)
+[![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 <!-- badges: end -->
 
 The goal of vital is to allow analysis of demographic data using tidy tools.
@@ -42,7 +49,7 @@ pak::pak("vital")
 ```
 
 You can install the **development** version from
-[Github](https://github.com/robjhyndman/vital):
+[GitHub](https://github.com/robjhyndman/vital):
 
 ``` r
 pak::pak("robjhyndman/vital")
@@ -80,7 +87,9 @@ vital_vars(norway_mortality)
 
 ### Plots
 
-```{r autoplot, warning = FALSE}
+```{r}
+#| label: autoplot
+#| warning: false
 norway_mortality |>
   filter(Sex != "Total", Year < 1980, Age < 90) |>
   autoplot(Mortality) + scale_y_log10()
@@ -88,7 +97,8 @@ norway_mortality |>
 
 ### Life tables and life expectancy
 
-```{r lifetable}
+```{r}
+#| label: lifetable
 # Life table for Norwegian males in 2000
 norway_mortality |>
   filter(Sex == "Male", Year == 2000) |>
@@ -123,7 +133,9 @@ norway_mortality |>
 
 Several mortality models are available including variations on Lee-Carter models (Lee & Carter, JASA, 1992), and functional data models (Hyndman & Ullah, CSDA, 2007).
 
-```{r lc, message = FALSE}
+```{r}
+#| label: lc
+#| message: false
 fit <- norway_mortality |>
   filter(Sex != "Total") |>
   model(
