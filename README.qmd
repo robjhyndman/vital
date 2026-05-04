@@ -32,7 +32,7 @@ ggplot2::theme_set(
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/robjhyndman/vital/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/robjhyndman/vital/actions/workflows/R-CMD-check.yaml)
-[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/vital)](https://cran.r-project.org/package=vital)
+[![CRAN status](https://www.r-pkg.org/badges/version/vital)](https://CRAN.R-project.org/package=vital)
 [![Downloads](https://cranlogs.r-pkg.org/badges/vital)](https://cran.r-project.org/package=vital)
 [![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 <!-- badges: end -->
