@@ -35,6 +35,7 @@
 - `arrange()` on a mable of vital models no longer duplicates the `mdl_vtl_df` class
 - Fixed `life_table()` treating abridged ages (0, 1, 5, 10, ...) as single years, and 5-year ages as abridged
 - `total_fertility_rate()` now accepts a bare variable name for `fertility`
+- Fixed bootstrapped simulations from `FNAIVE()` models containing missing values
 
 # vital 2.0.3
 

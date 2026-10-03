@@ -127,7 +127,8 @@ generate.FNAIVE <- function(
     out <- setup |>
       dplyr::group_modify(function(x, ...) {
         measure <- colnames(x)[[2]]
-        innov <- sample(x$.innov, size = h, replace = TRUE)
+        innov <- x$.innov[!is.na(x$.innov)]
+        innov <- innov[sample.int(length(innov), size = h, replace = TRUE)]
         tibble(horizon = seq(h), .sim = tail(x[[measure]], 1) + cumsum(innov))
       })
   } else {

@@ -34,3 +34,12 @@ test_that("Functional naive", {
   )
   expect_identical(generate(fnaive, times = 3) |> dim(), c(1332L, 6L))
 })
+
+test_that("FNAIVE bootstrap simulations have no missing values", {
+  set.seed(1)
+  sim <- norway_mortality |>
+    filter(Year > 2000, Sex == "Female") |>
+    model(fnaive = FNAIVE(Mortality)) |>
+    generate(h = 5, times = 10, bootstrap = TRUE)
+  expect_false(anyNA(sim$.sim))
+})
