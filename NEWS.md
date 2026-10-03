@@ -52,6 +52,7 @@
 - `interpolate()` now works for `FNAIVE()`, `LC()` and `FDM()` models, as well as `FMEAN()`
 - Errors reported by `model()` now include their underlying cause
 - Fixed coherent `FDM()` models failing when estimated in parallel with `future`
+- `FDM()` now requires `order` to be a positive integer, rather than failing at forecast time when `order = 0`
 
 # vital 2.0.3
 

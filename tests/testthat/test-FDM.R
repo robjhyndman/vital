@@ -79,3 +79,14 @@ test_that("coherent FDM definitions pass the model by name to workers", {
     "must be fable::ARIMA or fable::ARFIMA"
   )
 })
+
+test_that("FDM requires at least one principal component", {
+  expect_error(FDM(log(Mortality), order = 0), "positive integer")
+  expect_error(FDM(log(Mortality), order = 1.5), "positive integer")
+  expect_error(FDM(log(Mortality), order = c(1, 2)), "positive integer")
+  fc <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 2000) |>
+    model(fdm = FDM(log(Mortality), order = 1)) |>
+    forecast(h = 1)
+  expect_false(anyNA(fc$.mean))
+})

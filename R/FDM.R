@@ -7,7 +7,7 @@
 #' @aliases report.FDM
 #'
 #' @param formula Model specification.
-#' @param order Number of principal components to fit.
+#' @param order Number of principal components to fit. Must be at least 1.
 #' @param ts_model_fn Univariate time series modelling function for the coefficients. Any
 #' model that works with the fable package is ok. Default is [fable::ARIMA()].
 #' @param coherent If TRUE, fitted models are stationary, other than for the case of
@@ -46,6 +46,11 @@ FDM <- function(
   coherent_ts_model_fn = fable::ARFIMA,
   ...
 ) {
+  if (
+    !is.numeric(order) || length(order) != 1L || order < 1 || order %% 1 != 0
+  ) {
+    stop("order must be a positive integer")
+  }
   # Identify the coherent model here, as functions passed to parallel workers
   # may no longer be identical to those in the fable namespace
   coherent_ts_model <- if (identical(coherent_ts_model_fn, fable::ARIMA)) {
@@ -381,8 +386,8 @@ fdpca <- function(X, order = 2, ngrid = 500) {
   y <- t(X)
   x <- seq(NCOL(X))
   n <- NCOL(y)
-  if (order < 0) {
-    stop("Order must be at least 0")
+  if (order < 1) {
+    stop("Order must be at least 1")
   }
   if (ngrid < NCOL(X)) {
     stop("Grid should be larger than number of observations per time period.")
@@ -398,13 +403,10 @@ fdpca <- function(X, order = 2, ngrid = 500) {
   ax <- rowMeans(yy, na.rm = TRUE)
   # Centre data
   yy <- sweep(yy, 1, ax)
-  # Set up coeff and basis for order 0
+  # Mean term
   coeff <- matrix(1, nrow = n, ncol = 1)
   basis <- matrix(stats::approx(xx, ax, xout = x)$y, ncol = 1)
   colnames(coeff)[1] <- colnames(basis)[1] <- "mean"
-  if (order == 0) {
-    return(list(basis = basis, coeff = coeff))
-  }
   # Compute SVD
   s <- La.svd(t(yy))
   # Eigenvectors and eigenvalues

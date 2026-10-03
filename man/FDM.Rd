@@ -17,7 +17,7 @@ FDM(
 \arguments{
 \item{formula}{Model specification.}
 
-\item{order}{Number of principal components to fit.}
+\item{order}{Number of principal components to fit. Must be at least 1.}
 
 \item{ts_model_fn}{Univariate time series modelling function for the coefficients. Any
 model that works with the fable package is ok. Default is \code{\link[fable:ARIMA]{fable::ARIMA()}}.}
