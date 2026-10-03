@@ -28,6 +28,15 @@ structure. Rows of the data identify different series within the data, and
 each model column contains all models from that model definition. Each cell
 in the mable identifies a single model.
 }
+\section{Parallel}{
+
+
+It is possible to estimate models in parallel using the
+\href{https://cran.r-project.org/package=future}{future} package. By specifying a
+\code{\link[future:plan]{future::plan()}} before estimating the models, they will be computed
+according to that plan.
+}
+
 \section{Progress}{
 
 

@@ -26,7 +26,7 @@ Imports:
   MortalityLaws,
   patchwork,
   purrr,
-  rlang,
+  rlang (>= 1.0.0),
   StMoMo,
   tibble,
   tidyr,
@@ -36,6 +36,8 @@ Imports:
 Suggests:
   demography,
   feasts,
+  future,
+  future.apply,
   knitr,
   progressr,
   rmarkdown,

@@ -19,6 +19,13 @@
 #' a [NULL model][fabletools::null_model()] will be returned instead. This allows for an error
 #' to occur when computing many models, without losing the results of the successful models.
 #'
+#' @section Parallel:
+#'
+#' It is possible to estimate models in parallel using the
+#' [future](https://cran.r-project.org/package=future) package. By specifying a
+#' [`future::plan()`] before estimating the models, they will be computed
+#' according to that plan.
+#'
 #' @section Progress:
 #'
 #' Progress on model estimation can be obtained by wrapping the code with
@@ -100,14 +107,34 @@ Check that specified model(s) are model definitions.",
     out
   }
 
-  eval_models <- function(models, lst_data, keyvars) {
-    keyvars <- keyvars |>
+  # Each element of key_list contains the key values for one series
+  key_list <- function(keyvars) {
+    keyvars |>
       t() |>
       as.data.frame() |>
-      as_tibble()
-    purrr::map(models, function(model) {
-      purrr::map2(lst_data, keyvars, estimate_progress, model)
-    })
+      as.list() |>
+      unname()
+  }
+  if (rlang::is_attached("package:future")) {
+    rlang::check_installed("future.apply")
+    eval_models <- function(models, lst_data, keyvars) {
+      out <- future.apply::future_mapply(
+        rep(lst_data, length(models)),
+        rep(key_list(keyvars), length(models)),
+        rep(models, each = length(lst_data)),
+        FUN = estimate_progress,
+        SIMPLIFY = FALSE,
+        future.globals = FALSE,
+        future.seed = TRUE
+      )
+      unname(split(out, rep(seq_along(models), each = length(lst_data))))
+    }
+  } else {
+    eval_models <- function(models, lst_data, keyvars) {
+      purrr::map(models, function(model) {
+        purrr::map2(lst_data, key_list(keyvars), estimate_progress, model)
+      })
+    }
   }
   fits <- eval_models(models, .data[["lst_data"]], .data[, kv])
   names(fits) <- ifelse(nchar(names(models)), names(models), nm)
