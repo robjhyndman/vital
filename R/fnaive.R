@@ -119,31 +119,44 @@ generate.FNAIVE <- function(
   agevar <- age_var(new_data)
   indexvar <- index_var(x$fitted)
   h <- length(unique(new_data[[indexvar]]))
-  reps <- length(unique(new_data[[".rep"]]))
-  if (times != reps) {
+  reps <- unique(new_data[[".rep"]])
+  if (times != length(reps)) {
     stop("`times` must equal the number of replicates (`.rep`) in `new_data`")
   }
   measure <- colnames(x$fitted)[3]
-  setup <- x$fitted[, c(indexvar, agevar, measure, ".innov")] |>
-    left_join(x$model, by = agevar) |>
-    tidyr::expand_grid(.rep = unique(new_data$.rep)) |>
-    group_by(!!sym(agevar), .rep)
-  if (bootstrap) {
-    out <- setup |>
-      dplyr::group_modify(function(x, ...) {
-        measure <- colnames(x)[[2]]
-        innov <- x$.innov[!is.na(x$.innov)]
-        innov <- innov[sample.int(length(innov), size = h, replace = TRUE)]
-        tibble(horizon = seq(h), .sim = tail(x[[measure]], 1) + cumsum(innov))
-      })
-  } else {
-    out <- setup |>
-      dplyr::group_modify(function(x, ...) {
-        measure <- colnames(x)[[2]]
-        innov <- stats::rnorm(n = h, sd = x$sigma[1])
-        tibble(horizon = seq(h), .sim = tail(x[[measure]], 1) + cumsum(innov))
-      })
+  fitted <- as_tibble(x$fitted)
+  # Random walks start from the last observation for each age
+  last <- fitted[fitted[[indexvar]] == max(fitted[[indexvar]]), ]
+  ages <- last[[agevar]]
+  sigma <- x$model$sigma[match(ages, x$model[[agevar]])]
+  # Innovations for each age, ordered by horizon within replicate
+  n <- h * times
+  innov <- vapply(
+    seq_along(ages),
+    function(i) {
+      if (!bootstrap) {
+        return(stats::rnorm(n, sd = sigma[i]))
+      }
+      pool <- fitted$.innov[fitted[[agevar]] == ages[i]]
+      pool <- pool[!is.na(pool)]
+      if (length(pool) == 0L) {
+        return(rep(NA_real_, n))
+      }
+      pool[sample.int(length(pool), size = n, replace = TRUE)]
+    },
+    numeric(n)
+  )
+  # Cumulate innovations over the horizon for each path
+  paths <- matrix(innov, nrow = h)
+  for (j in seq_len(h)[-1]) {
+    paths[j, ] <- paths[j - 1, ] + paths[j, ]
   }
+  out <- tibble(
+    !!agevar := rep(ages, each = n),
+    .rep = rep(rep(reps, each = h), length(ages)),
+    horizon = rep(seq_len(h), times * length(ages)),
+    .sim = c(paths) + rep(last[[measure]], each = n)
+  )
   new_data$horizon <- match(
     new_data[[indexvar]],
     sort(unique(new_data[[indexvar]]))

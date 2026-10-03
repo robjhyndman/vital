@@ -59,3 +59,17 @@ test_that("FNAIVE works with non-annual data", {
   sim <- generate(fit, h = 2, times = 2)
   expect_false(anyNA(sim$.sim))
 })
+
+test_that("FNAIVE simulations are random walks from the last observation", {
+  set.seed(1)
+  fit <- norway_mortality |>
+    filter(Year > 2000, Sex == "Female", Age == 60) |>
+    model(fnaive = FNAIVE(Mortality))
+  sim <- generate(fit, h = 2, times = 4000) |>
+    tibble::as_tibble() |>
+    dplyr::summarise(mean = mean(.sim), sd = sd(.sim), .by = Year)
+  mdl <- fit$fnaive[[1]]$fit
+  last <- mdl$fitted$Mortality[mdl$fitted$Year == max(mdl$fitted$Year)]
+  expect_equal(sim$mean, rep(last, 2), tolerance = 0.02)
+  expect_equal(sim$sd, mdl$model$sigma * sqrt(1:2), tolerance = 0.05)
+})

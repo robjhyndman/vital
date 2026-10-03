@@ -40,6 +40,7 @@
 - `generate()` for `LC()` models, and hence `forecast(simulate = TRUE)` and `generate_population()`, now uses the actual rates as the jump-off when `jump_choice = "actual"`
 - Fixed `generate_population()` returning missing populations at age 0 when mortality rates are zero (including when `mortality_model` is NULL)
 - `as_vital()` now works for `demogdata` objects containing only rates or only population
+- `generate()` for `FNAIVE()` models is much faster
 
 # vital 2.0.3
 
