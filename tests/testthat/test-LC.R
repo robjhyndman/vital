@@ -191,3 +191,20 @@ test_that("LC simulations use the actual jump-off when requested", {
   jump <- innov$.innov[match(sim_actual$Age, innov$Age)]
   expect_equal(log(sim_actual$.sim) - log(sim_fit$.sim), jump)
 })
+
+test_that("LC and FDM plots work with several non-age keys", {
+  two_keys <- norway_mortality |>
+    dplyr::filter(Year > 2000, Sex != "Total") |>
+    dplyr::mutate(Region = "Norway") |>
+    as_vital(index = Year, key = c(Age, Sex, Region))
+  fit <- two_keys |>
+    model(lc = LC(log(Mortality)), fdm = FDM(log(Mortality), order = 2))
+  draw <- function(p) {
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(p)
+  }
+  expect_no_error(draw(autoplot(dplyr::select(fit, lc))))
+  expect_no_error(draw(autoplot(dplyr::select(fit, fdm))))
+  expect_no_error(draw(autoplot(dplyr::filter(fit, Sex == "Female") |> dplyr::select(lc))))
+})

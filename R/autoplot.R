@@ -155,42 +155,30 @@ age_plot <- function(object, .var, keys) {
   names <- colnames(object)[!(colnames(object) %in% c(keys, .var))]
   age <- names[grep("age", names, ignore.case = TRUE)]
   kv_noage <- keys[keys != age]
-  p <- ggplot2::ggplot(object)
-  if (length(kv_noage) == 0) {
-    p <- p +
-      ggplot2::aes(
-        x = !!sym(age),
-        y = !!sym(.var)
-      )
-  } else {
-    p <- p +
-      ggplot2::aes(
-        x = !!sym(age),
-        y = !!sym(.var),
-        col = !!sym(kv_noage),
-        group = !!sym(kv_noage)
-      )
-  }
-  p + ggplot2::geom_line()
+  key_plot(object, sym(age), .var, kv_noage)
 }
 
 # Plot a variable against time by key
 time_plot <- function(object, .var, keys) {
-  p <- ggplot2::ggplot(object)
-  if (length(keys) == 0) {
-    p <- p +
-      ggplot2::aes(
-        x = !!sym(tsibble::index_var(object)),
-        y = !!sym(.var)
-      )
-  } else {
-    p <- p +
-      ggplot2::aes(
-        x = !!sym(tsibble::index_var(object)),
-        y = !!sym(.var),
-        col = !!sym(keys),
-        group = !!sym(keys)
-      )
+  key_plot(object, sym(tsibble::index_var(object)), .var, keys)
+}
+
+# Line plot of .var against x, with a coloured line for each combination of keys
+key_plot <- function(object, x, .var, keys) {
+  aes_spec <- list(x = x, y = sym(.var))
+  if (length(keys) > 0) {
+    col <- if (length(keys) == 1) {
+      sym(keys)
+    } else {
+      expr(interaction(!!!syms(keys), sep = "/"))
+    }
+    aes_spec$colour <- col
+    aes_spec$group <- col
   }
-  p + ggplot2::geom_line()
+  p <- ggplot2::ggplot(object, ggplot2::aes(!!!aes_spec)) +
+    ggplot2::geom_line()
+  if (length(keys) > 1) {
+    p <- p + ggplot2::labs(colour = paste(keys, collapse = "/"))
+  }
+  p
 }
