@@ -10,7 +10,7 @@ find_key <- function(.data, names, return_error = TRUE) {
     }
   }
   if (return_error) {
-    stop(paste("No key variable found with name in:", names))
+    stop(paste("No key variable found with name in:", comma(names)))
   } else {
     return("None")
   }
