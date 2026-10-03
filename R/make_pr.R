@@ -130,7 +130,7 @@ make_centred <- function(.data, .var, key, centre, deviation, label) {
   as_vital(
     .data,
     index = v$index,
-    keys = all_of(v$keys),
+    key = all_of(v$keys),
     .age = v$attr_data$age,
     .population = v$attr_data$population,
     .sex = v$attr_data$sex,

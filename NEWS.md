@@ -41,6 +41,7 @@
 - Fixed `generate_population()` returning missing populations at age 0 when mortality rates are zero (including when `mortality_model` is NULL)
 - `as_vital()` now works for `demogdata` objects containing only rates or only population
 - `generate()` for `FNAIVE()` models is much faster
+- `as_vital()` on a vital object now accepts `key` (it previously ignored it), and keeps the existing vital variables unless they are given
 
 # vital 2.0.3
 

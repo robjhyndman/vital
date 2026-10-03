@@ -60,16 +60,29 @@ vital <- function(
     )
 }
 
-# This rebuilds a vital when index or keys are given,
-# otherwise it just reattaches the vital attributes
+# This rebuilds a vital when index or key are given,
+# otherwise it just reattaches the vital attributes.
+# Vital variables not given in ... are kept from x.
 #' @export
-as_vital.vital <- function(x, index, keys, ...) {
-  if (missing(index) && missing(keys)) {
+as_vital.vital <- function(x, index, key, ...) {
+  if (missing(index) && missing(key)) {
     return(as_vital.tbl_ts(x, ...))
   }
-  as_tibble(x) |>
-    as_tsibble(index = !!enquo(index), key = !!enquo(keys)) |>
-    as_vital(...)
+  index <- if (missing(index)) sym(index_var(x)) else enquo(index)
+  key <- if (missing(key)) key_vars(x) else enquo(key)
+  vvar <- vital_var_list(x)
+  dots <- list2(...)
+  vital_args <- list(
+    .age = vvar$age,
+    .sex = vvar$sex,
+    .deaths = vvar$deaths,
+    .births = vvar$births,
+    .population = vvar$population
+  )
+  dots <- c(dots, vital_args[setdiff(names(vital_args), names(dots))])
+  out <- as_tibble(x) |>
+    as_tsibble(index = !!index, key = !!key)
+  exec(as_vital, out, !!!dots)
 }
 
 #' Coerce to a vital object
