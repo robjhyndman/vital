@@ -188,7 +188,12 @@ model_sum.FNAIVE <- function(x) {
 }
 
 #' @export
-autoplot.FNAIVE <- function(object, age = "Age", ...) {
+autoplot.FNAIVE <- function(
+  object,
+  age = age_var(first_fit(object)$data),
+  ...
+) {
+  force(age)
   modelname <- attributes(object)$model
   object <- object |>
     mutate(

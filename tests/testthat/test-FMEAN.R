@@ -74,3 +74,17 @@ test_that("mable methods keep the vital variables of the data", {
   expect_identical(vital_var_list(augment(fit))$sex, "Sex")
   expect_identical(vital_var_list(interpolate(fit, nor))$sex, "Sex")
 })
+
+test_that("FMEAN and FNAIVE plots find the age variable", {
+  nor <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 2010) |>
+    dplyr::rename(age = Age)
+  fit <- nor |> model(mean = FMEAN(Mortality), naive = FNAIVE(Mortality))
+  # Call the methods directly so that age is not supplied
+  for (m in c("mean", "naive")) {
+    mbl <- dplyr::select(fit, dplyr::all_of(m))
+    class(mbl) <- c(class(mbl[[m]][[1]]$fit), class(mbl)[-1])
+    p <- autoplot(mbl)
+    expect_identical(rlang::as_label(p$mapping$x), "age")
+  }
+})
