@@ -193,36 +193,7 @@ autoplot.FNAIVE <- function(
   age = NULL,
   ...
 ) {
-  if (is.null(age)) {
-    age <- age_var(first_fit(object)$data)
-  }
-  modelname <- attributes(object)$model
-  object <- object |>
-    mutate(
-      out = purrr::map(object[[modelname]], function(x) {
-        x$fit$model
-      })
-    )
-  object[[modelname]] <- NULL
-  object <- object |>
-    tidyr::unnest("out")
-  keys <- colnames(object)
-  keys <- keys[!(keys %in% c("sigma", age))]
-  nk <- length(keys)
-  aes_spec <- list(x = sym(age), y = expr(sigma))
-  if (nk > 0) {
-    aes_spec[["colour"]] <- expr(interaction(!!!syms(keys), sep = "/"))
-  }
-  p <- ggplot(object, eval_tidy(expr(aes(!!!aes_spec)))) +
-    geom_line() +
-    ggplot2::labs(x = age, y = "Sigma")
-  if (nk > 1) {
-    p <- p +
-      ggplot2::guides(
-        colour = ggplot2::guide_legend(paste0(keys, collapse = "/"))
-      )
-  }
-  p
+  model_component_plot(object, age, "sigma") + ggplot2::ylab("Sigma")
 }
 
 #' @export

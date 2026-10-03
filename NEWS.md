@@ -69,6 +69,7 @@
 - Subsetting a mable of vital models with `[` no longer labels the result as a mable when it contains no models
 - `LC(jump_choice = "actual")` now uses fitted rates, with a warning, as the jump-off for ages whose rate is zero or missing in the final year, rather than giving missing forecasts
 - Clearer error messages from `model()` when there is no age variable, `FDM()` when `order` is too large for the number of years, and `total_fertility_rate()` when no fertility variable is found
+- Plots of `FMEAN()` and `FNAIVE()` models now title the legend with the key name rather than an `interaction()` call
 
 # vital 2.0.3
 

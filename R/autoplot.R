@@ -149,6 +149,17 @@ autoplot.mdl_vtl_df <- function(object, ...) {
   p
 }
 
+# Plot a column of the model component of each fit in a single-model mable
+# against age, with a coloured line for each combination of keys
+model_component_plot <- function(object, age, .var) {
+  if (is.null(age)) {
+    age <- age_var(first_fit(object)$data)
+  }
+  keys <- setdiff(colnames(as_tibble(object)), attributes(object)$model)
+  p <- key_plot(unnest_components(object, identity), sym(age), .var, keys)
+  p + ggplot2::xlab(age)
+}
+
 # Plot a variable against age by key
 age_plot <- function(object, .var, keys) {
   names <- colnames(object)[!(colnames(object) %in% c(keys, .var))]
