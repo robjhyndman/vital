@@ -7,7 +7,7 @@ against against age.
 
 ``` r
 # S3 method for class 'vital'
-autoplot(object, .vars = NULL, age = age_var(object), ...)
+autoplot(object, .vars = NULL, age = NULL, ...)
 ```
 
 ## Arguments

@@ -91,6 +91,40 @@
 <code><a href="../reference/LC.html">LC()</a></code> and the GAPC models (<code><a href="../reference/GAPC.html">APC()</a></code>, <code><a href="../reference/GAPC.html">CBD()</a></code>, etc.) now give an error, rather than misaligned fits, when some age and time combinations are missing</li>
 <li>
 <code><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange()</a></code> on a mable of vital models no longer duplicates the <code>mdl_vtl_df</code> class</li>
+<li>Fixed <code><a href="../reference/life_table.html">life_table()</a></code> treating abridged ages (0, 1, 5, 10, …) as single years, and 5-year ages as abridged</li>
+<li>
+<code><a href="../reference/total_fertility_rate.html">total_fertility_rate()</a></code> now accepts a bare variable name for <code>fertility</code>
+</li>
+<li>Fixed bootstrapped simulations from <code><a href="../reference/FNAIVE.html">FNAIVE()</a></code> models containing missing values</li>
+<li>
+<code><a href="../reference/FNAIVE.html">FNAIVE()</a></code> models now work with data observed at intervals other than one time unit</li>
+<li>
+<code><a href="https://generics.r-lib.org/reference/generate.html" class="external-link">generate()</a></code> for <code><a href="../reference/LC.html">LC()</a></code> models, and hence <code>forecast(simulate = TRUE)</code> and <code><a href="../reference/generate_population.html">generate_population()</a></code>, now uses the actual rates as the jump-off when <code>jump_choice = "actual"</code>
+</li>
+<li>Fixed <code><a href="../reference/generate_population.html">generate_population()</a></code> returning missing populations at age 0 when mortality rates are zero (including when <code>mortality_model</code> is NULL)</li>
+<li>
+<code><a href="../reference/as_vital.html">as_vital()</a></code> now works for <code>demogdata</code> objects containing only rates or only population</li>
+<li>
+<code><a href="https://generics.r-lib.org/reference/generate.html" class="external-link">generate()</a></code> for <code><a href="../reference/FNAIVE.html">FNAIVE()</a></code> models is much faster</li>
+<li>
+<code><a href="../reference/as_vital.html">as_vital()</a></code> on a vital object now accepts <code>key</code> (it previously ignored it), and keeps the existing vital variables unless they are given</li>
+<li>
+<code><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast()</a></code>, <code><a href="https://generics.r-lib.org/reference/generate.html" class="external-link">generate()</a></code>, <code><a href="https://generics.r-lib.org/reference/augment.html" class="external-link">augment()</a></code> and <code><a href="https://generics.r-lib.org/reference/interpolate.html" class="external-link">interpolate()</a></code> now keep the sex and other vital variables of the data, not just age</li>
+<li>
+<code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> of <code><a href="../reference/LC.html">LC()</a></code> and <code><a href="../reference/FDM.html">FDM()</a></code> models now works when there is more than one key other than age</li>
+<li>
+<code><a href="../reference/collapse_ages.html">collapse_ages()</a></code> no longer drops the open interval flag when <code>max_age</code> is the oldest age in the data</li>
+<li>
+<code><a href="../reference/LC.html">LC()</a></code> now defaults to <code>adjust = "none"</code> when the data have no deaths or population (e.g. fertility), gives an error if <code>adjust = "dt"</code> or <code>"dxt"</code> is requested for such data, and reports missing deviances rather than zero</li>
+<li>
+<code><a href="../reference/life_expectancy.html">life_expectancy()</a></code> now returns only the index, keys and <code>ex</code>, without the <code>rx</code>, <code>nx</code> and <code>ax</code> columns of the life table</li>
+<li>
+<code><a href="../reference/generate_population.html">generate_population()</a></code> now gives an error unless the starting population has consecutive single-year ages</li>
+<li>
+<code><a href="../reference/collapse_ages.html">collapse_ages()</a></code> now sums all numeric variables other than age keys and constants, rather than truncating any variable that changes linearly with age</li>
+<li>
+<code><a href="https://generics.r-lib.org/reference/interpolate.html" class="external-link">interpolate()</a></code> now works for <code><a href="../reference/FNAIVE.html">FNAIVE()</a></code>, <code><a href="../reference/LC.html">LC()</a></code> and <code><a href="../reference/FDM.html">FDM()</a></code> models, as well as <code><a href="../reference/FMEAN.html">FMEAN()</a></code>
+</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.0.3" id="vital-203">vital 2.0.3<a class="anchor" aria-label="anchor" href="#vital-203"></a></h2><p class="text-muted">CRAN release: 2026-02-13</p>

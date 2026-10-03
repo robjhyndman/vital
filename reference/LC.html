@@ -80,7 +80,9 @@ Possibilities are
 <code>"dt"</code> (Lee-Carter method, the default),
 <code>"dxt"</code> (BMS method),
 <code>"e0"</code> (Lee-Miller method based on life expectancy) and
-<code>"none"</code>.</p></dd>
+<code>"none"</code>. If omitted, <code>"dt"</code> is used when the data contain deaths and
+population (see <code><a href="vital_vars.html">vital_vars()</a></code>), and <code>"none"</code> otherwise. The <code>"dt"</code> and
+<code>"dxt"</code> methods require deaths and population.</p></dd>
 
 
 <dt id="arg-jump-choice">jump_choice<a class="anchor" aria-label="anchor" href="#arg-jump-choice"></a></dt>
