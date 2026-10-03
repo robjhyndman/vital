@@ -31,6 +31,9 @@ collapse_ages <- function(.data, max_age = 100) {
   # Keys including age
   keys <- tsibble::key_vars(.data)
   age <- attr_data$age
+  if (!(max_age %in% .data[[age]])) {
+    stop("max_age must be one of the ages in .data")
+  }
   keys_noage <- non_age_keys(.data)
 
   # Identify other columns
@@ -127,7 +130,9 @@ collapse_age_vector <- function(x, ages, max_age, is_age = FALSE) {
   } else if (is.character(x)) {
     # Probably AgeGroup. Add + to upper group
     out <- x[ages <= max_age]
-    out[length(out)] <- paste0(out[length(out)], "+")
+    if (!endsWith(out[length(out)], "+")) {
+      out[length(out)] <- paste0(out[length(out)], "+")
+    }
   } else if (is.logical(x)) {
     # Perhaps OpenInterval variable
     out <- c(x[ages < max_age], any(x[ages >= max_age]))

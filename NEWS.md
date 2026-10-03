@@ -65,6 +65,7 @@
 - Fixed `forecast()` for GAPC models (`LC2()`, `CBD()`, etc.) failing when `h = 1`
 - `LC()` deviances reported by `glance()` are no longer `NaN` when some ages have zero population
 - `autoplot()` for `FDM()` models no longer fails when `show_order` is larger than the number of fitted components (e.g. `order = 1`)
+- `collapse_ages()` now gives an informative error when `max_age` is not one of the ages, and no longer adds a second `+` to age group labels that already end in `+`
 
 # vital 2.0.3
 

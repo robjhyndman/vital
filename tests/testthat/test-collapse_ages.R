@@ -59,3 +59,23 @@ test_that("collapse_ages sums counts that change linearly with age", {
   )
   expect_equal(unique(out$Constant), 7)
 })
+
+test_that("collapse_ages() checks max_age and labels open groups once", {
+  nf <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 2015)
+  expect_error(collapse_ages(nf, max_age = 120), "max_age must be one of")
+  expect_error(
+    collapse_ages(dplyr::filter(nf, Age %in% c(0, 5, 10)), max_age = 7),
+    "max_age must be one of"
+  )
+  labelled <- nf |>
+    dplyr::mutate(AG = dplyr::if_else(Age == 110, "110+", as.character(Age)))
+  expect_identical(
+    unique(collapse_ages(labelled, max_age = 110)$AG[nf$Age == 110]),
+    "110+"
+  )
+  expect_identical(
+    unique(collapse_ages(labelled, max_age = 100)$AG),
+    c(as.character(0:99), "100+")
+  )
+})
