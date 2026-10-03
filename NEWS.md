@@ -21,6 +21,7 @@
 * `generate_population()` now correctly checks that each mable contains only one model
 * `forecast()` and `generate()` for GAPC models now work when the index and age variables are not called `Year` and `Age`
 * GAPC models with `link = "logit"` no longer fail when the data contain missing values
+* `net_migration()` now works when births are stored as a population variable
 
 # vital 2.0.3
 

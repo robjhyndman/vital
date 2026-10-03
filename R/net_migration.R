@@ -59,12 +59,12 @@ net_migration <- function(deaths, births) {
     births[[birth_idx]] >= min(deaths[[death_idx]]) &
       births[[birth_idx]] <= max(deaths[[death_idx]]),
   ]
-  if (birthsvar %in% colnames(births)) {
+  if (!is.null(birthsvar) && birthsvar %in% colnames(births)) {
     births[[popvar]] <- births[[birthsvar]]
-  } else if (bpopvar != colnames(births)) {
-    stop("Births or Population variable not found in births object")
-  } else {
+  } else if (!is.null(bpopvar) && bpopvar %in% colnames(births)) {
     births[[popvar]] <- births[[bpopvar]]
+  } else {
+    stop("Births or Population variable not found in births object")
   }
   births <- births |>
     select(all_of(unique(c(birth_idx, birth_keys, agevar, popvar))))
