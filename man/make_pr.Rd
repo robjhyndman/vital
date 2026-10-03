@@ -24,7 +24,7 @@ with the ratio of mortality to the geometric mean for each sex. The latter
 are equal to the male/female and female/male ratios of mortality rates.
 }
 \details{
-When a measured variable takes value 0, it is set to 10^-6 to avoid
+When a measured variable takes value 0, it is set to 10^-5 to avoid
 infinite values in the ratio.
 }
 \examples{

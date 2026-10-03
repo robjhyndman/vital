@@ -5,7 +5,7 @@
 #' That is, we want to compute the geometric mean of age-specific mortality rates, along
 #' with the ratio of mortality to the geometric mean for each sex. The latter
 #' are equal to the male/female and female/male ratios of mortality rates.
-#' @details When a measured variable takes value 0, it is set to 10^-6 to avoid
+#' @details When a measured variable takes value 0, it is set to 10^-5 to avoid
 #' infinite values in the ratio.
 #'
 #' @param .data A vital object
@@ -26,61 +26,13 @@
 #' @export
 
 make_pr <- function(.data, .var, key = Sex) {
-  if (!inherits(.data, "vital")) {
-    stop(".data needs to be a vital object")
-  }
-  if (missing(.var)) {
-    stop("Missing .var. Please specify which variable to use.")
-  }
-  # Character strings for variable and key
-  varname <- names(eval_select(enquo(.var), data = .data))
-  key <- names(eval_select(enquo(key), data = .data))
-  # Index variable
-  index <- tsibble::index_var(.data)
-  # Key variables
-  keys <- tsibble::key_vars(.data)
-  attr_data <- vital_var_list(.data)
-  age <- attr_data$age
-  keys_noage <- keys[!(keys %in% c(age, "Age", "AgeGroup", "Age_Group"))]
-  if (key %in% c(age, "Age", "AgeGroup", "Age_Group")) {
-    stop("key cannot be an age variable")
-  } else if (!(key %in% keys_noage)) {
-    stop("key not found in data set")
-  } else {
-    # All keys other than the key argument
-    keys_nokey <- keys[!keys %in% key]
-  }
-
-  # Compute geometric means
-  # Avoid zeros by replacing them with 1e-5
-  gm <- .data
-  gm[[varname]] <- pmax(gm[[varname]], 1e-5)
-  gm <- gm |>
-    as_tibble() |>
-    dplyr::group_by_at(dplyr::vars(c(index, keys_nokey))) |>
-    summarise(.gm = exp(mean(log({{ .var }})))) |>
-    ungroup()
-  # Compute ratios of the variable to the geometric mean
-  .data <- .data |>
-    left_join(gm, by = c(index, keys_nokey))
-  .data[[varname]] <- .data[[varname]] / .data$.gm
-  .data$.gm <- NULL
-  # Now add the geometric mean to the data set
-  gm[[key]] <- "geometric_mean"
-  gm[[varname]] <- gm$.gm
-  gm$.gm <- NULL
-  .data <- dplyr::bind_rows(.data, gm)
-
-  as_vital(
+  make_centred(
     .data,
-    index = index,
-    keys = keys,
-    .age = age,
-    .population = attr_data$population,
-    .sex = attr_data$sex,
-    .deaths = attr_data$deaths,
-    .births = attr_data$births,
-    reorder = TRUE
+    enquo(.var),
+    enquo(key),
+    centre = function(x) exp(mean(log(pmax(x, 1e-5)))),
+    deviation = `/`,
+    label = "geometric_mean"
   )
 }
 
@@ -109,57 +61,81 @@ make_pr <- function(.data, .var, key = Sex) {
 #' @export
 
 make_sd <- function(.data, .var, key = Sex) {
-  if (!inherits(.data, "vital")) {
-    stop(".data needs to be a vital object")
-  }
-  if (missing(.var)) {
+  make_centred(
+    .data,
+    enquo(.var),
+    enquo(key),
+    centre = mean,
+    deviation = `-`,
+    label = "mean"
+  )
+}
+
+# Check inputs to make_pr(), make_sd(), undo_pr() and undo_sd(),
+# and return the variable names needed
+centred_vars <- function(.data, .var, key) {
+  if (rlang::quo_is_missing(.var)) {
     stop("Missing .var. Please specify which variable to use.")
   }
   # Character strings for variable and key
-  varname <- names(eval_select(enquo(.var), data = .data))
-  key <- names(eval_select(enquo(key), data = .data))
-  # Index variable
-  index <- tsibble::index_var(.data)
+  varname <- names(eval_select(.var, data = .data))
+  key <- names(eval_select(key, data = .data))
   # Key variables
   keys <- tsibble::key_vars(.data)
   attr_data <- vital_var_list(.data)
-  age <- attr_data$age
-  keys_noage <- keys[!(keys %in% c(age, "Age", "AgeGroup", "Age_Group"))]
-  if (key %in% c(age, "Age", "AgeGroup", "Age_Group")) {
+  age_names <- c(attr_data$age, "Age", "AgeGroup", "Age_Group")
+  keys_noage <- keys[!(keys %in% age_names)]
+  if (key %in% age_names) {
     stop("key cannot be an age variable")
   } else if (!(key %in% keys_noage)) {
     stop("key not found in data set")
-  } else {
-    # All keys other than the key argument
-    keys_nokey <- keys[!keys %in% key]
   }
+  list(
+    varname = varname,
+    key = key,
+    index = tsibble::index_var(.data),
+    keys = keys,
+    keys_noage = keys_noage,
+    # All keys other than the key argument
+    keys_nokey = keys[!keys %in% key],
+    attr_data = attr_data
+  )
+}
 
-  # Compute means
+# Add a centre (labelled in the key) and replace the variable by its
+# deviations from the centre
+make_centred <- function(.data, .var, key, centre, deviation, label) {
+  if (!inherits(.data, "vital")) {
+    stop(".data needs to be a vital object")
+  }
+  v <- centred_vars(.data, .var, key)
+  varname <- v$varname
+  # Compute centres
   gm <- .data |>
     as_tibble() |>
-    dplyr::group_by_at(dplyr::vars(c(index, keys_nokey))) |>
-    summarise(.gm = mean({{ .var }})) |>
+    group_by(across(all_of(c(v$index, v$keys_nokey)))) |>
+    summarise(.gm = centre(.data[[varname]])) |>
     ungroup()
-  # Compute ratios of the variable to the geometric mean
+  # Compute deviations of the variable from the centre
   .data <- .data |>
-    left_join(gm, by = c(index, keys_nokey))
-  .data[[varname]] <- .data[[varname]] - .data$.gm
+    left_join(gm, by = c(v$index, v$keys_nokey))
+  .data[[varname]] <- deviation(.data[[varname]], .data$.gm)
   .data$.gm <- NULL
-  # Now add the mean to the data set
-  gm[[key]] <- "mean"
+  # Now add the centre to the data set
+  gm[[v$key]] <- label
   gm[[varname]] <- gm$.gm
   gm$.gm <- NULL
   .data <- dplyr::bind_rows(.data, gm)
 
   as_vital(
     .data,
-    index = index,
-    keys = keys,
-    .age = age,
-    .population = attr_data$population,
-    .sex = attr_data$sex,
-    .deaths = attr_data$deaths,
-    .births = attr_data$births,
+    index = v$index,
+    keys = v$keys,
+    .age = v$attr_data$age,
+    .population = v$attr_data$population,
+    .sex = v$attr_data$sex,
+    .deaths = v$attr_data$deaths,
+    .births = v$attr_data$births,
     reorder = TRUE
   )
 }

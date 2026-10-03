@@ -12,9 +12,9 @@ undo_sd(.data, .var, key = Sex, times = 2000)
 \item{.var}{A bare variable name of the measured variable to use.}
 
 \item{key}{A bare variable name specifying the key variable to use. This key
-variable must include the value \code{geometric_mean}.}
+variable must include the value \code{mean}.}
 
-\item{times}{When the variable is a distribution, the product must be computed
+\item{times}{When the variable is a distribution, the sum must be computed
 by simulation. This argument specifies the number of simulations to use.}
 }
 \value{
@@ -31,7 +31,7 @@ mig <- net_migration(norway_mortality, norway_births) |>
   dplyr::filter(Sex != "Total")
 sd <- mig |>
   make_sd(NetMigration)
-# Undo products and ratios
+# Undo means and differences
 sd |> undo_sd(NetMigration)
 }
 \references{
