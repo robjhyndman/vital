@@ -117,6 +117,9 @@
 <li>
 <code><a href="../reference/LC.html">LC()</a></code> now defaults to <code>adjust = "none"</code> when the data have no deaths or population (e.g. fertility), gives an error if <code>adjust = "dt"</code> or <code>"dxt"</code> is requested for such data, and reports missing deviances rather than zero</li>
 <li>
+<code><a href="../reference/LC.html">LC()</a></code> no longer adjusts to deaths by default when fitted to product-ratios from <code><a href="../reference/make_pr.html">make_pr()</a></code>
+</li>
+<li>
 <code><a href="../reference/life_expectancy.html">life_expectancy()</a></code> now returns only the index, keys and <code>ex</code>, without the <code>rx</code>, <code>nx</code> and <code>ax</code> columns of the life table</li>
 <li>
 <code><a href="../reference/generate_population.html">generate_population()</a></code> now gives an error unless the starting population has consecutive single-year ages</li>
@@ -128,6 +131,14 @@
 <li>Errors reported by <code><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model()</a></code> now include their underlying cause</li>
 <li>Fixed coherent <code><a href="../reference/FDM.html">FDM()</a></code> models failing when estimated in parallel with <code>future</code>
 </li>
+<li>
+<code><a href="../reference/FDM.html">FDM()</a></code> now requires <code>order</code> to be a positive integer, rather than failing at forecast time when <code>order = 0</code>
+</li>
+<li>
+<code><a href="../reference/FDM.html">FDM()</a></code> now uses the actual ages, rather than assuming they are equally spaced, so it handles abridged ages (0, 1, 5, 10, …) correctly. Results for single-year ages are unchanged</li>
+<li>Fixed <code><a href="../reference/FDM.html">FDM()</a></code> misaligning years with missing values at the oldest (or youngest) ages, such as zero rates on the log scale. Such years are now extrapolated linearly from their last observed ages</li>
+<li>
+<code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> now plots the age, period and cohort components of GAPC models (<code><a href="../reference/GAPC.html">GAPC()</a></code>, <code><a href="../reference/GAPC.html">LC2()</a></code>, <code><a href="../reference/GAPC.html">CBD()</a></code>, <code><a href="../reference/GAPC.html">APC()</a></code>, <code><a href="../reference/GAPC.html">RH()</a></code>, <code><a href="../reference/GAPC.html">M7()</a></code> and <code><a href="../reference/GAPC.html">PLAT()</a></code>)</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.0.3" id="vital-203">vital 2.0.3<a class="anchor" aria-label="anchor" href="#vital-203"></a></h2><p class="text-muted">CRAN release: 2026-02-13</p>

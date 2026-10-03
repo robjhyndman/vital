@@ -33,8 +33,9 @@ LC(
   omitted, `"dt"` is used when the data contain deaths and population
   (see
   [`vital_vars()`](https://pkg.robjhyndman.com/vital/reference/vital_vars.md)),
-  and `"none"` otherwise. The `"dt"` and `"dxt"` methods require deaths
-  and population.
+  and `"none"` otherwise, or when the data contain product-ratios from
+  [`make_pr()`](https://pkg.robjhyndman.com/vital/reference/make_pr.md).
+  The `"dt"` and `"dxt"` methods require deaths and population.
 
 - jump_choice:
 

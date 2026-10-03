@@ -179,7 +179,8 @@ age effect, giving the M7 model.</p>
 <p>Plat (2009) combined the CBD model with some features of the Lee-Carter model
 to produce a model that is suitable for full age ranges and captures the cohort effect.</p>
 <p>Each of these functions returns a GAPC model applied to the formula's response
-variable as a function of age.
+variable as a function of age. Use <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> on the fitted models to plot
+their age, period and cohort components.
 The model will optionally call <code><a href="https://rdrr.io/pkg/StMoMo/man/genWeightMat.html" class="external-link">genWeightMat</a></code> with arguments <code>clip</code> and <code>zeroCohorts</code>.
 All other arguments are passed to <code><a href="https://rdrr.io/pkg/StMoMo/man/StMoMo.html" class="external-link">StMoMo</a></code>.</p>
     </div>
@@ -264,6 +265,10 @@ StMoMo: An R package for stochastic mortality modelling.
 <span class="r-out co"><span class="r-pr">#&gt;</span> Log-likelihood:  -7765.57</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Deviance:  6055.75</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of parameters:  46</span>
+<span class="r-in"><span><span class="va">gapc</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">cbd2</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="GAPC-1.png" alt="" width="2400" height="1500"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

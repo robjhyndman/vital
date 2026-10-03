@@ -150,7 +150,10 @@ model to produce a model that is suitable for full age ranges and
 captures the cohort effect.
 
 Each of these functions returns a GAPC model applied to the formula's
-response variable as a function of age. The model will optionally call
+response variable as a function of age. Use
+[`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html) on
+the fitted models to plot their age, period and cohort components. The
+model will optionally call
 [`genWeightMat`](https://rdrr.io/pkg/StMoMo/man/genWeightMat.html) with
 arguments `clip` and `zeroCohorts`. All other arguments are passed to
 [`StMoMo`](https://rdrr.io/pkg/StMoMo/man/StMoMo.html).
@@ -240,4 +243,7 @@ gapc |>
 #> Log-likelihood:  -7765.57
 #> Deviance:  6055.75
 #> Number of parameters:  46
+gapc |>
+  dplyr::select(cbd2) |>
+  autoplot()
 ```

@@ -25,7 +25,7 @@ FDM(
 
 - order:
 
-  Number of principal components to fit.
+  Number of principal components to fit. Must be at least 1.
 
 - ts_model_fn:
 

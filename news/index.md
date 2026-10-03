@@ -148,6 +148,9 @@
   population (e.g. fertility), gives an error if `adjust = "dt"` or
   `"dxt"` is requested for such data, and reports missing deviances
   rather than zero
+- [`LC()`](https://pkg.robjhyndman.com/vital/reference/LC.md) no longer
+  adjusts to deaths by default when fitted to product-ratios from
+  [`make_pr()`](https://pkg.robjhyndman.com/vital/reference/make_pr.md)
 - [`life_expectancy()`](https://pkg.robjhyndman.com/vital/reference/life_expectancy.md)
   now returns only the index, keys and `ex`, without the `rx`, `nx` and
   `ax` columns of the life table
@@ -170,6 +173,26 @@
 - Fixed coherent
   [`FDM()`](https://pkg.robjhyndman.com/vital/reference/FDM.md) models
   failing when estimated in parallel with `future`
+- [`FDM()`](https://pkg.robjhyndman.com/vital/reference/FDM.md) now
+  requires `order` to be a positive integer, rather than failing at
+  forecast time when `order = 0`
+- [`FDM()`](https://pkg.robjhyndman.com/vital/reference/FDM.md) now uses
+  the actual ages, rather than assuming they are equally spaced, so it
+  handles abridged ages (0, 1, 5, 10, …) correctly. Results for
+  single-year ages are unchanged
+- Fixed [`FDM()`](https://pkg.robjhyndman.com/vital/reference/FDM.md)
+  misaligning years with missing values at the oldest (or youngest)
+  ages, such as zero rates on the log scale. Such years are now
+  extrapolated linearly from their last observed ages
+- [`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
+  now plots the age, period and cohort components of GAPC models
+  ([`GAPC()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+  [`LC2()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+  [`CBD()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+  [`APC()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+  [`RH()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+  [`M7()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md) and
+  [`PLAT()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md))
 
 ## vital 2.0.3
 
