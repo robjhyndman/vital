@@ -98,7 +98,7 @@ generate.FMEAN <- function(
   new_data <- new_data |>
     dplyr::left_join(x$model, by = agevar)
   if (times != length(unique(new_data$.rep))) {
-    stop("We have a problem")
+    stop("`times` must equal the number of replicates (`.rep`) in `new_data`")
   }
 
   if (!(".innov" %in% names(new_data))) {

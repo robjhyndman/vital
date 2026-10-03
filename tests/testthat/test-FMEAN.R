@@ -51,3 +51,16 @@ test_that("Functional mean", {
     7L
   )
 })
+
+test_that("generate checks times against the replicates in new_data", {
+  fm <- norway_mortality |>
+    filter(Year > 2015, Sex == "Female") |>
+    model(fm = FMEAN(Mortality))
+  mdl <- fm$fm[[1]]
+  new_data <- make_future_data(mdl$data, h = 1) |>
+    dplyr::mutate(.rep = "1")
+  expect_error(
+    generate(mdl$fit, new_data = new_data, times = 2),
+    "must equal the number of replicates"
+  )
+})

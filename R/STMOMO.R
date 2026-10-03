@@ -512,7 +512,7 @@ generate.GAPC <- function(
   indexvar <- index_var(new_data)
   h <- length(unique(new_data[[indexvar]]))
   if (times != length(unique(new_data$.rep))) {
-    stop("We have a problem")
+    stop("`times` must equal the number of replicates (`.rep`) in `new_data`")
   }
   pred <- stats::simulate(x$model, nsim = times, h = max(2, h))
   df <- as.data.frame(pred$rates) |>

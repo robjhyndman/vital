@@ -177,7 +177,7 @@ generate.LC <- function(
   agevar <- age_var(new_data)
   indexvar <- index_var(new_data)
   if (times != length(unique(new_data$.rep))) {
-    stop("We have a problem")
+    stop("`times` must equal the number of replicates (`.rep`) in `new_data`")
   }
 
   # Forecast kt series using random walk with drift term

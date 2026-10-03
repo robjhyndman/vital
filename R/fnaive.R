@@ -116,7 +116,7 @@ generate.FNAIVE <- function(
   h <- length(unique(new_data[[indexvar]]))
   reps <- length(unique(new_data[[".rep"]]))
   if (times != reps) {
-    stop("We have a problem")
+    stop("`times` must equal the number of replicates (`.rep`) in `new_data`")
   }
   measure <- colnames(x$fitted)[3]
   setup <- x$fitted[, c(indexvar, agevar, measure, ".innov")] |>
