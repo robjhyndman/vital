@@ -44,3 +44,25 @@ test_that("generate_population accepts a female argument", {
     "female must be one of"
   )
 })
+
+test_that("generate_population works without mortality or migration models", {
+  set.seed(1)
+  no_deaths <- generate_population(
+    pop,
+    fertility_model = fert,
+    migration_model = mig,
+    h = 2,
+    n_reps = 3
+  ) |>
+    suppressWarnings()
+  expect_s3_class(no_deaths, "vital")
+  no_migrants <- generate_population(
+    pop,
+    mortality_model = mort,
+    fertility_model = fert,
+    h = 2,
+    n_reps = 3
+  ) |>
+    suppressWarnings()
+  expect_s3_class(no_migrants, "vital")
+})

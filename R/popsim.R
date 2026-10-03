@@ -107,7 +107,7 @@ generate_population <- function(
       year = max(pop[[indexvar]]) + seq(h + 2) - 1,
       age = unique(pop[[vvars$age]]),
       sex = unique(pop[[vvars$sex]]),
-      .rep = seq(n_reps)
+      .rep = as.character(seq(n_reps))
     )
     future_mortality$mx <- 0
     colnames(future_mortality) <- c(
@@ -130,7 +130,7 @@ generate_population <- function(
     future_fertility <- tidyr::expand_grid(
       year = max(pop[[indexvar]]) + seq(h + 2) - 1,
       age = unique(pop[[vvars$age]]),
-      .rep = seq(n_reps)
+      .rep = as.character(seq(n_reps))
     )
     future_fertility$fx <- 0
     future_fertility[[vvars$sex]] <- female
@@ -157,7 +157,7 @@ generate_population <- function(
       year = max(pop[[indexvar]]) + seq(h + 2) - 1,
       age = unique(pop[[vvars$age]]),
       sex = unique(pop[[vvars$sex]]),
-      .rep = seq(n_reps)
+      .rep = as.character(seq(n_reps))
     )
     future_migration$Nx <- 0
     colnames(future_migration) <- c(
