@@ -46,3 +46,22 @@ test_that("classes", {
     "vital"
   )
 })
+
+test_that("fable classes", {
+  fc <- nor_mortality |>
+    filter(Sex == "Female") |>
+    model(naive = FNAIVE(Mortality)) |>
+    forecast(h = 2)
+  grouped <- fc |> group_by(Age)
+  expect_s3_class(grouped, c("grouped_fbl_vtl", "grouped_ts"))
+  expect_s3_class(grouped, "fbl_vtl_ts")
+  expect_s3_class(grouped |> filter(Year == 1904), "grouped_fbl_vtl")
+  expect_s3_class(grouped |> mutate(z = .mean), "grouped_fbl_vtl")
+  expect_s3_class(grouped |> arrange(Year), "grouped_fbl_vtl")
+  expect_s3_class(grouped |> ungroup(), "fbl_vtl_ts")
+  expect_false(inherits(grouped |> ungroup(), "grouped_df"))
+  expect_s3_class(grouped |> filter(Year == 1904) |> ungroup(), "fbl_vtl_ts")
+  # Removing the distribution leaves a tsibble, as in fabletools
+  expect_false(inherits(fc |> summarise(m = mean(.mean)), "fbl_ts"))
+  expect_false(inherits(grouped |> summarise(m = mean(.mean)), "fbl_ts"))
+})

@@ -107,24 +107,16 @@ group_by.fbl_vtl_ts <- function(
 ) {
   attr_data <- attributes(.data)
   vvar <- vital_var_list(.data)
-  tmp <- build_vital_fable(
+  build_vital_fable(
     NextMethod(),
     response = attr_data$response,
     distribution = attr_data$dist,
     vitals = vvar
   )
-  tmp_class <- class(tmp)
-  grouped_classes <- grepl("grouped", tmp_class)
-  class(tmp) <- c(
-    "grouped_vital",
-    tmp_class[grouped_classes],
-    tmp_class[!grouped_classes]
-  )
-  return(tmp)
 }
 
 #' @export
-ungroup.grouped_vital <- function(x, ...) {
+ungroup.grouped_fbl_vtl <- function(x, ...) {
   attr_data <- attributes(x)
   vvar <- vital_var_list(x)
   build_vital_fable(
@@ -136,25 +128,25 @@ ungroup.grouped_vital <- function(x, ...) {
 }
 
 #' @export
-arrange.grouped_vital <- arrange.fbl_vtl_ts
+arrange.grouped_fbl_vtl <- arrange.fbl_vtl_ts
 
 #' @export
-select.grouped_vital <- select.fbl_vtl_ts
+select.grouped_fbl_vtl <- select.fbl_vtl_ts
 
 #' @export
-transmute.grouped_vital <- transmute.fbl_vtl_ts
+transmute.grouped_fbl_vtl <- transmute.fbl_vtl_ts
 
 #' @export
-summarise.grouped_vital <- summarise.fbl_vtl_ts
+summarise.grouped_fbl_vtl <- summarise.fbl_vtl_ts
 
 #' @exportS3Method dplyr::dplyr_row_slice
-dplyr_row_slice.grouped_vital <- dplyr_row_slice.fbl_vtl_ts
+dplyr_row_slice.grouped_fbl_vtl <- dplyr_row_slice.fbl_vtl_ts
 
 #' @exportS3Method dplyr::dplyr_col_modify
-dplyr_col_modify.grouped_vital <- dplyr_col_modify.fbl_vtl_ts
+dplyr_col_modify.grouped_fbl_vtl <- dplyr_col_modify.fbl_vtl_ts
 
 #' @exportS3Method dplyr::dplyr_reconstruct
-dplyr_reconstruct.grouped_vital <- function(data, template) {
+dplyr_reconstruct.grouped_fbl_vtl <- function(data, template) {
   attr_data <- attributes(data)
   vvar <- vital_var_list(data)
   build_vital_fable(
@@ -181,3 +173,6 @@ dplyr_reconstruct.grouped_vital <- function(data, template) {
     res
   }
 }
+
+#' @export
+`[.grouped_fbl_vtl` <- `[.fbl_vtl_ts`

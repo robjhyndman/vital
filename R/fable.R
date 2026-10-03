@@ -7,10 +7,24 @@ build_vital_fable <- function(
   vitals = NULL,
   reorder = FALSE
 ) {
+  # Without a distribution column (e.g. after summarise) it is no longer a fable
+  if (!(distribution %in% colnames(x))) {
+    return(x)
+  }
   final <- as_fable(x, response = !!response, distribution = !!distribution) |>
     suppressWarnings()
   attr(final, "vital") <- vitals[vitals %in% colnames(x)]
-  class(final) <- c("fbl_vtl_ts", "fbl_ts", "vital", class(final)[-1])
+  # Keep grouping classes first so grouped methods dispatch before fable ones
+  cls <- setdiff(class(final), c("grouped_fbl", "fbl_ts"))
+  grouped <- grepl("^grouped", cls)
+  class(final) <- c(
+    if (any(grouped)) "grouped_fbl_vtl",
+    cls[grouped],
+    "fbl_vtl_ts",
+    "fbl_ts",
+    "vital",
+    cls[!grouped]
+  )
   return(final)
 }
 
