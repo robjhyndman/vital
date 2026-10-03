@@ -115,9 +115,6 @@ parse_model <- function(model) {
 # @inheritParams parse_model
 # @keywords internal
 parse_model_rhs <- function(model) {
-  # if(length(model$specials) == 0){
-  #   return(list(specials = NULL))
-  # }
   rhs <- model_rhs(model)
   specials <- parse_specials(rhs, specials = model$specials)
   map(specials, function(.x) {
@@ -148,7 +145,6 @@ parse_model_lhs <- function(model) {
       if (is_resp(y)) x[[1]] else call2(call_name(y), !!!x)
     },
     .g = function(x) x[-1],
-    # .h = function(x) if(is_resp(x)) x[[length(x)]] else x,
     base = function(x) is_syntactic_literal(x) || is_symbol(x)
   )
 
@@ -219,7 +215,6 @@ parse_model_lhs <- function(model) {
     },
     .g = function(x) {
       if (all(names(x) != "response") && !is.null(attr(x, "call"))) {
-        # parent_len <- length(eval(attr(x, "call") %||% x[[1]], envir = model$data))
         len <- map_dbl(
           x,
           function(y) {

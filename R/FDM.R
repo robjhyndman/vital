@@ -377,7 +377,6 @@ fdpca <- function(X, order = 2, ngrid = 500) {
   y <- t(X)
   x <- seq(NCOL(X))
   n <- NCOL(y)
-  m <- length(x)
   if (order < 0) {
     stop("Order must be at least 0")
   }
@@ -395,26 +394,18 @@ fdpca <- function(X, order = 2, ngrid = 500) {
   ax <- rowMeans(yy, na.rm = TRUE)
   # Centre data
   yy <- sweep(yy, 1, ax)
-  # Standard error in mean estimate
-  axse <- stats::approx(xx, sqrt(apply(yy, 1, stats::var) / n), xout = x)$y
   # Set up coeff and basis for order 0
   coeff <- matrix(1, nrow = n, ncol = 1)
   basis <- matrix(stats::approx(xx, ax, xout = x)$y, ncol = 1)
   colnames(coeff)[1] <- colnames(basis)[1] <- "mean"
   if (order == 0) {
-    return(list(
-      basis = basis,
-      coeff = coeff,
-      v = rep(1, n),
-      mean.se = axse
-    ))
+    return(list(basis = basis, coeff = coeff))
   }
   # Compute SVD
   s <- La.svd(t(yy))
   # Eigenvectors and eigenvalues
   Phi <- as.matrix(t(s$vt)[, seq(order)])
-  eigen_value <- varprop <- s$d^2
-  varprop <- varprop / sum(s$d^2)
+  varprop <- s$d^2 / sum(s$d^2)
   # Normalize eigenvectors
   Phinorm <- matrix(NA, length(x), order)
   Phinormngrid <- matrix(NA, ngrid, order)
@@ -427,7 +418,6 @@ fdpca <- function(X, order = 2, ngrid = 500) {
   }
   # Extract coeff and basis matrices
   B <- t(yy) %*% Phinormngrid
-  v <- colSums((yy - Phinormngrid %*% t(B))^2) * delta
   colnames(B) <- paste0("beta", seq(order))
   coeffdummy <- B * delta
   colmeanrm <- matrix(colMeans(coeffdummy), dim(B)[2], 1)
@@ -448,13 +438,10 @@ fdpca <- function(X, order = 2, ngrid = 500) {
   return(list(
     basis = basis,
     coeff = coeff,
-    varprop = varprop[seq(order)],
-    eigen_value = eigen_value,
-    v = v,
-    mean.se = axse
+    varprop = varprop[seq(order)]
   ))
 }
 
 
 utils::globalVariables(c(".model", "out", "object", ".fitted", ".rep"))
-utils::globalVariables(c("p", "P", "d", "D", "q", "Q", "constant"))
+utils::globalVariables(c("p", "P", "d", "D", "q", "Q"))

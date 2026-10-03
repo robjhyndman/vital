@@ -75,7 +75,7 @@ forecast.FNAIVE <- function(
   ...
 ) {
   # simulation/bootstrap not actually used here as forecast.mdl_vtl_ts
-  # handles this using generate() and forecast.LC is never called.
+  # handles this using generate() and forecast.FNAIVE is never called.
   # The arguments are included so they show in the docs
   # Similarly for h and point_forecast
   agevar <- age_var(new_data)
@@ -226,12 +226,4 @@ time_components.FNAIVE <- function(object, ...) {
   stop("FNAIVE objects have no time components")
 }
 
-globalVariables(c(
-  ".resid",
-  "sigma",
-  "std.error",
-  "stat",
-  ".innov",
-  "fit",
-  "horizon"
-))
+globalVariables(c("fit", "horizon"))

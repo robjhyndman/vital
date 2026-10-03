@@ -22,14 +22,12 @@ total_fertility_rate <- function(.data, fertility) {
   keys <- tsibble::key_vars(.data)
   # vital_names
   vital_names <- vital_var_list(.data)
-  col_names <- colnames(.data)
 
   # Find age and fertility columns
   age <- vital_names$age
   if (is.null(age)) {
     stop("No age variable identified")
   }
-  col_names <- col_names[col_names != age]
   fertility_quo <- enquo(fertility)
   if (!quo_is_missing(fertility_quo)) {
     fertility <- as_name(fertility_quo)
@@ -40,7 +38,6 @@ total_fertility_rate <- function(.data, fertility) {
   # Drop Age as a key and nest results
   keys_noage <- keys[keys != age]
   .data <- tidyr::nest(.data, lst_data = -all_of(c(index, keys_noage)))
-  .data[[age]] <- NULL
 
   # Compute tfr for each sub-tibble
   out <- purrr::map_dfr(

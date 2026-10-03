@@ -124,7 +124,7 @@ smooth_mortality_x <- function(
   )
   out <- tibble(
     age = age_grid,
-    .smooth = exp(as.vector(smooth.fit$fit)), #* (1 + 0.5 * smooth.fit$se.fit^2),
+    .smooth = exp(as.vector(smooth.fit$fit)),
     .smooth_se = .smooth * as.vector(smooth.fit$se.fit)
   )
   colnames(out)[1] <- age
@@ -258,7 +258,6 @@ smooth.monotonic <- function(x, y, b, k = -1, w = NULL, newx = x) {
     w <- w[!miss]
     w <- w / sum(w) * length(w)
     f.ug <- mgcv::gam(yy ~ s(xx, k = k), weights = w)
-    #        assign("w",w,pos=1)
   } else {
     f.ug <- mgcv::gam(yy ~ s(xx, k = k))
   }
@@ -297,9 +296,6 @@ smooth.monotonic <- function(x, y, b, k = -1, w = NULL, newx = x) {
   # setting coefficiants of polynomial part of term
   G$p[k - 1] <- -mean(0.1 * xx) # must ensure that gam side conditions are
   # met so that sum of smooth over x's is zero
-  #    G$p <- rep(0,k+1)
-  #    G$p[k+1] <- 0.1
-  #    G$p[k] <- -mean(0.1*xx)
   G$y <- yy
   G$off <- G$off - 1 # indexing inconsistency between pcls and internal gam
   G$C <- matrix(0, 0, 0) # fixed constraint matrix (there are none)

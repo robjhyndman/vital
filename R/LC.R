@@ -240,15 +240,6 @@ model_sum.LC <- function(x) {
   paste0("LC")
 }
 
-# @examples
-# # Compute Lee-Carter model for Norwegian females, males and total
-# lc <- norway_mortality |>
-#   lee_carter()
-# lc
-# autoplot(lc) +
-#   patchwork::plot_annotation("Lee Carter components for Norway")
-# autoplot(lc$time, kt)
-
 # Based on demography::lca()
 # But assumes any log transformation has already occurred
 

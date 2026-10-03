@@ -49,7 +49,6 @@ autoplot.vital <- function(object, .vars = NULL, age = age_var(object), ...) {
       mv[pos[1]]
     ))
     y <- sym(mv[pos[1]])
-    .vars <- as_quosures(list(y), env = empty_env())
   } else if (possibly(compose(is_quosures, eval_tidy), FALSE)(.vars)) {
     .vars <- eval_tidy(.vars)
     response_names <- map_chr(.vars, quo_name)
@@ -65,7 +64,6 @@ autoplot.vital <- function(object, .vars = NULL, age = age_var(object), ...) {
     y <- sym("value")
   } else {
     y <- quo_vars
-    .vars <- list(y)
   }
 
   nyears <- length(unique(object[[index]]))

@@ -52,7 +52,6 @@ map(
       .x,
       function(operation, target, result) {
         args <- call_args(operation)
-        target_pos <- match(list(target), args)
         if (length(args) == 1) {
           expr(exp(!!result))
         } else {
@@ -67,8 +66,6 @@ inverse_table$add(
   "base",
   "log10",
   function(operation, target, result) {
-    args <- call_args(operation)
-    target_pos <- match(list(target), args)
     expr(10^!!result)
   }
 )
@@ -77,8 +74,6 @@ inverse_table$add(
   "base",
   "log2",
   function(operation, target, result) {
-    args <- call_args(operation)
-    target_pos <- match(list(target), args)
     expr(2^!!result)
   }
 )
@@ -87,8 +82,6 @@ inverse_table$add(
   "base",
   "log1p",
   function(operation, target, result) {
-    args <- call_args(operation)
-    target_pos <- match(list(target), args)
     expr(expm1(!!result))
   }
 )
@@ -97,8 +90,6 @@ inverse_table$add(
   "base",
   "expm1",
   function(operation, target, result) {
-    args <- call_args(operation)
-    target_pos <- match(list(target), args)
     expr(log1p(!!result))
   }
 )

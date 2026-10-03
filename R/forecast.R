@@ -285,4 +285,4 @@ calc <- function(f, ...) {
   f(...)
 }
 
-globalVariables(c("agedf", "timedf", ".mean", "Year", "Mortality", "fc"))
+globalVariables(c(".mean", "Year", "Mortality", "fc"))
