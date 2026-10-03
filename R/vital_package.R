@@ -56,7 +56,3 @@ fabletools::estimate
 #' @export
 fabletools::glance
 
-.onAttach <- function(...) {
-  loadNamespace("fabletools")
-}
-
