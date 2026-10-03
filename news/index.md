@@ -164,6 +164,9 @@
   [`FDM()`](https://pkg.robjhyndman.com/vital/reference/FDM.md) models,
   as well as
   [`FMEAN()`](https://pkg.robjhyndman.com/vital/reference/FMEAN.md)
+- Errors reported by
+  [`model()`](https://fabletools.tidyverts.org/reference/model.html) now
+  include their underlying cause
 
 ## vital 2.0.3
 
