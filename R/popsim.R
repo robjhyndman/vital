@@ -96,7 +96,7 @@ generate_population <- function(
   if (!is.null(mortality_model)) {
     future_mortality <- mortality_model |>
       generate(h = h + 2, times = n_reps)
-    future_mortality$mx <- future_mortality$.sim
+    future_mortality$mx <- pmax(future_mortality$.sim, 0) # Ensure no negative mortality rates
     future_mortality <- future_mortality |> dplyr::select(-.sim, -.model)
     if ("geometric_mean" %in% future_mortality[[vvars$sex]]) {
       future_mortality <- undo_pr(future_mortality, "mx", key = vvars$sex)
@@ -222,6 +222,9 @@ generate_population <- function(
       as_vital(.sex = vvars$sex, .age = vvars$age, .population = "Rx") |>
       life_table()
     nsr$nsr <- 1 - nsr$rx
+    # No survivors where the life table has run out of lives
+    nsr$nsr[!is.finite(nsr$nsr)] <- 1
+    nsr$nsr <- pmin(pmax(nsr$nsr, 0), 1)
     nsr <- nsr[, c(indexvar, vvars$age, vvars$sex, ".rep", "nsr")]
     # Deaths
     future[[y]] <- future[[y]] |>

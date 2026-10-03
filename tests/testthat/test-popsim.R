@@ -128,3 +128,18 @@ test_that("generate_population requires one model per mable", {
     "migration_model must contain only one model"
   )
 })
+
+test_that("generate_population gives no missing populations", {
+  set.seed(1)
+  expect_no_warning(
+    out <- generate_population(
+      pop,
+      mortality_model = mort,
+      fertility_model = fert,
+      migration_model = mig,
+      h = 3,
+      n_reps = 5
+    )
+  )
+  expect_false(anyNA(out$Population))
+})

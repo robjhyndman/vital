@@ -24,6 +24,7 @@
 * `net_migration()` now works when births are stored as a population variable
 * Fixed `read_ktdb()` ignoring the `triangle` argument
 * Grouped vital objects now stay `grouped_vital` after `mutate()`, `filter()`, `arrange()`, `rename()`, `relocate()`, `slice()` and `[`
+* Fixed `generate_population()` producing missing populations at the oldest ages from negative simulated mortality rates and undefined survivorship ratios
 
 # vital 2.0.3
 
