@@ -63,19 +63,3 @@ dplyr_reconstruct.mdl_vtl_df <- function(data, template) {
   class(out) <- c("mdl_vtl_df", class(out))
   out
 }
-
-# filtering and selecting of mdl_vtl_df objects
-
-#' @exportS3Method dplyr::dplyr_row_slice
-dplyr_row_slice.mdl_vtl_df <- function(data, i, ..., preserve = FALSE) {
-  out <- NextMethod()
-  class(out) <- c("mdl_vtl_df", class(out))
-  out
-}
-
-#' @exportS3Method dplyr::dplyr_col_modify
-dplyr_col_modify.mdl_vtl_df <- function(data, cols) {
-  out <- NextMethod()
-  class(out) <- c("mdl_vtl_df", class(out))
-  out
-}
