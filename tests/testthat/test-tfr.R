@@ -1,0 +1,9 @@
+test_that("total_fertility_rate accepts bare and quoted variable names", {
+  nor <- norway_fertility |>
+    dplyr::filter(Year > 2010) |>
+    dplyr::mutate(fx2 = Fertility * 2)
+  default <- total_fertility_rate(nor)
+  expect_equal(total_fertility_rate(nor, Fertility)$tfr, default$tfr)
+  expect_equal(total_fertility_rate(nor, "Fertility")$tfr, default$tfr)
+  expect_equal(total_fertility_rate(nor, fx2)$tfr, 2 * default$tfr)
+})

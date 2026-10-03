@@ -30,8 +30,9 @@ total_fertility_rate <- function(.data, fertility) {
     stop("No age variable identified")
   }
   col_names <- col_names[col_names != age]
-  if (!missing(fertility)) {
-    fertility <- {{ fertility }}
+  fertility_quo <- enquo(fertility)
+  if (!quo_is_missing(fertility_quo)) {
+    fertility <- as_name(fertility_quo)
   } else {
     fertility <- find_measure(.data, c("fx", "fertility", "rate"))
   }
