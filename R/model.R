@@ -97,8 +97,10 @@ Check that specified model(s) are model definitions.",
       sex <- NULL
     }
     if (!is.null(mdl$extra$coherent)) {
-      mdl$extra$coherent <- !(mdl$extra$coherent &
-        ("geometric_mean" %in% keys | "mean" %in% keys))
+      # Model definitions are R6 objects, so copy before changing for this series
+      mdl <- mdl$clone()
+      mdl$extra$coherent <- mdl$extra$coherent &&
+        !any(c("geometric_mean", "mean") %in% keys)
     }
     out <- estimate(dt, mdl, sex)
     if (progress) {

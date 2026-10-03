@@ -42,3 +42,33 @@ test_that("Coherent functional data model", {
   stationary <- purrr::map_lgl(pr2$hu, all_stationary)
   expect_true(!all(stationary))
 })
+
+test_that("coherent flag is set separately for each series", {
+  nor <- norway_mortality |>
+    dplyr::filter(Year > 2000, Age < 90, Sex != "Total") |>
+    tibble::as_tibble()
+  two <- dplyr::bind_rows(
+    dplyr::mutate(nor, Country = "A"),
+    dplyr::mutate(nor, Country = "B")
+  ) |>
+    as_vital(
+      index = Year,
+      key = c(Age, Sex, Country),
+      .age = "Age",
+      .sex = "Sex",
+      .deaths = "Deaths",
+      .population = "Population"
+    ) |>
+    make_pr(Mortality)
+  fit <- two |>
+    model(fdm = FDM(log(Mortality), coherent = TRUE)) |>
+    suppressWarnings()
+  flags <- vapply(fit$fdm, function(x) x$model$extra$coherent, logical(1))
+  expect_identical(flags, fit$Sex != "geometric_mean")
+  ts_models <- vapply(
+    fit$fdm,
+    function(x) model_sum(x$fit$ts_models[[1]]$fit[[1]]),
+    character(1)
+  )
+  expect_true(all(grepl("^ARIMA", ts_models[fit$Sex == "geometric_mean"])))
+})

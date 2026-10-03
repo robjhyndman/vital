@@ -27,6 +27,7 @@
 * Fixed `generate_population()` producing missing populations at the oldest ages from negative simulated mortality rates and undefined survivorship ratios
 * `generate_population()` now returns the index and age variables with the same types as `starting_population`
 * `model()` now estimates models in parallel when the `future` package is attached, as in fabletools (the previous implementation never ran)
+* Fixed coherent `FDM()` models fitting a second `geometric_mean` or `mean` series coherently when there are several such series (e.g. with keys other than sex)
 * `arrange()` on a mable of vital models no longer duplicates the `mdl_vtl_df` class
 
 # vital 2.0.3
