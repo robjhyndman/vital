@@ -8,6 +8,15 @@ test_that("Functional mean", {
   expect_no_error(autoplot(fc))
   expect_identical(dim(fm), c(2L, 2L))
   expect_identical(dim(tidy(fm)), c(222L, 8L))
+  # Standard errors use the number of years for each age
+  tidy_age0 <- tidy(fm) |> filter(Sex == "Female", Age == 0)
+  rates_age0 <- norway_mortality |>
+    filter(Year > 2000, Sex == "Female", Age == 0) |>
+    pull(Mortality)
+  expect_equal(
+    tidy_age0$std.error,
+    sd(rates_age0) / sqrt(length(rates_age0))
+  )
   expect_identical(
     colnames(glance(fm)),
     c("Sex", ".model", "sigma2")

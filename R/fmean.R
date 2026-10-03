@@ -133,15 +133,21 @@ glance.FMEAN <- function(x, ...) {
 
 #' @export
 tidy.FMEAN <- function(x, ...) {
+  agevar <- colnames(x$model)[1]
+  # Number of observations for each age
+  nobs <- as_tibble(x$fitted) |>
+    group_by(across(all_of(agevar))) |>
+    summarise(.n = sum(!is.na(.resid)))
   x$model |>
+    left_join(nobs, by = agevar) |>
     mutate(
       term = "mean",
       estimate = mean,
-      std.error = sigma / sqrt(x$nobs),
+      std.error = sigma / sqrt(.n),
       stat = mean / std.error,
-      p.value = 2 * stats::pt(abs(stat), x$nobs - 1, lower.tail = FALSE)
+      p.value = 2 * stats::pt(abs(stat), .n - 1, lower.tail = FALSE)
     ) |>
-    select(-mean, -sigma)
+    select(-mean, -sigma, -.n)
 }
 
 #' @export
@@ -229,4 +235,4 @@ age_components.FMEAN <- function(object, ...) {
 time_components.FMEAN <- function(object, ...) {
   stop("FMEAN objects have no time components")
 }
-globalVariables(c(".resid", "sigma", "std.error", "stat", ".innov"))
+globalVariables(c(".resid", "sigma", "std.error", "stat", ".innov", ".n"))

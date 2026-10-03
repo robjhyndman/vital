@@ -4,6 +4,7 @@
 * Fixed `generate()` for LC models, which back-transformed simulations twice
 * Fixed `LC()` treating zero rates as log rates of 0 rather than as missing
 * Fixed `generate()` for FMEAN models using the wrong standard deviation for each age
+* Fixed `tidy()` for FMEAN models, which understated standard errors
 
 # vital 2.0.3
 
