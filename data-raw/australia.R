@@ -102,9 +102,9 @@ state_names <- aus_mortality |>
   distinct() |>
   bind_rows(
     tribble(
-      ~State,
-      ~Code,
-      "Australian Capital Territory",
+      ~State                         ,
+      ~Code                          ,
+      "Australian Capital Territory" ,
       "ACT"
     )
   )

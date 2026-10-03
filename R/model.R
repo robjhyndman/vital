@@ -323,7 +323,11 @@ check_complete_grid <- function(data, age, index) {
   n_times <- length(unique(data[[index]]))
   if (NROW(data) != n_ages * n_times) {
     abort(paste0(
-      "The data must contain every combination of ", age, " and ", index, ". ",
+      "The data must contain every combination of ",
+      age,
+      " and ",
+      index,
+      ". ",
       "Use `tsibble::fill_gaps()` to make missing values explicit."
     ))
   }

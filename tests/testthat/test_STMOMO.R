@@ -89,9 +89,13 @@ test_that("GAPC forecasts work with any index and age names", {
   nor <- norway_mortality |>
     dplyr::filter(Sex == "Female", Year > 2000, Age < 90)
   nor2 <- nor |> dplyr::rename(year = Year, age = Age)
-  fc <- nor |> model(apc = APC(Mortality)) |> forecast(h = 2) |>
+  fc <- nor |>
+    model(apc = APC(Mortality)) |>
+    forecast(h = 2) |>
     suppressWarnings()
-  fc2 <- nor2 |> model(apc = APC(Mortality)) |> forecast(h = 2) |>
+  fc2 <- nor2 |>
+    model(apc = APC(Mortality)) |>
+    forecast(h = 2) |>
     suppressWarnings()
   expect_equal(fc2$.mean, fc$.mean)
   set.seed(1)

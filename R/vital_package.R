@@ -55,4 +55,3 @@ fabletools::estimate
 
 #' @export
 fabletools::glance
-
