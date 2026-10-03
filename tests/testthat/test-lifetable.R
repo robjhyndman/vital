@@ -8,3 +8,22 @@ test_that("normortality", {
     life_table()
   expect_lt(abs(lt$ex[10] - 63.97662), 1e-3)
 })
+
+test_that("life_expectancy uses the mortality argument", {
+  nor <- norway_mortality |>
+    dplyr::filter(Year == 2000) |>
+    dplyr::mutate(mx2 = Mortality * 2)
+  e_double <- life_expectancy(nor, mortality = mx2)
+  expect_equal(
+    e_double$ex,
+    life_expectancy(nor |> dplyr::mutate(Mortality = mx2))$ex
+  )
+  expect_equal(
+    life_expectancy(nor, mortality = "mx2")$ex,
+    e_double$ex
+  )
+  expect_equal(
+    life_table(nor, mortality = mx2)$ex,
+    life_table(nor |> dplyr::mutate(Mortality = mx2))$ex
+  )
+})

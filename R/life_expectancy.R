@@ -26,7 +26,7 @@
 #' @export
 
 life_expectancy <- function(.data, from_age = 0, mortality) {
-  life_table(.data = .data, mortality = mortality) |>
+  life_table(.data = .data, mortality = {{ mortality }}) |>
     # Keep only relevant ages
     dplyr::filter(Age %in% from_age) |>
     # Keep only ex column plus index and keys

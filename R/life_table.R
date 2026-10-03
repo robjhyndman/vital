@@ -24,8 +24,9 @@
 
 life_table <- function(.data, mortality) {
   # Mortality variable
-  if (!missing(mortality)) {
-    mortality <- as_name(substitute(mortality))
+  mortality_quo <- enquo(mortality)
+  if (!quo_is_missing(mortality_quo)) {
+    mortality <- as_name(mortality_quo)
   } else {
     mortality <- find_measure(.data, c("mx", "mortality", "rate"))
   }
