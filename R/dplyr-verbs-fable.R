@@ -64,8 +64,9 @@ dplyr_col_modify.fbl_vtl_ts <- function(data, cols) {
 
 #' @exportS3Method dplyr::dplyr_reconstruct
 dplyr_reconstruct.fbl_vtl_ts <- function(data, template) {
-  attr_data <- attributes(data)
-  vvar <- vital_var_list(data)
+  # data is often a bare data frame, so take the attributes from template
+  attr_data <- attributes(template)
+  vvar <- vital_var_list(template)
   restore_vital_fable(NextMethod(), attr_data, vvar)
 }
 

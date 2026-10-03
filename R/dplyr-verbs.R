@@ -82,7 +82,8 @@ dplyr_col_modify.vital <- function(data, cols) {
 
 #' @exportS3Method dplyr::dplyr_reconstruct
 dplyr_reconstruct.vital <- function(data, template) {
-  vvar <- vital_var_list(data)
+  # data is often a bare data frame, so take the vital variables from template
+  vvar <- vital_var_list(template)
   restore_vital(NextMethod(), vvar)
 }
 

@@ -12,6 +12,7 @@ build_vital_fable <- function(
   }
   final <- as_fable(x, response = !!response, distribution = !!distribution) |>
     suppressWarnings()
+  vitals <- unlist(vitals)
   attr(final, "vital") <- vitals[vitals %in% colnames(x)]
   # Keep grouping classes first so grouped methods dispatch before fable ones
   cls <- setdiff(class(final), c("grouped_fbl", "fbl_ts"))

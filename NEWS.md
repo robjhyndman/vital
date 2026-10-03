@@ -58,6 +58,7 @@
 - Fixed `FDM()` misaligning years with missing values at the oldest (or youngest) ages, such as zero rates on the log scale. Such years are now extrapolated linearly from their last observed ages
 - `autoplot()` now plots the age, period and cohort components of GAPC models (`GAPC()`, `LC2()`, `CBD()`, `APC()`, `RH()`, `M7()` and `PLAT()`)
 - Fixed model formulas using `vars()`, and the error message for transformations that cannot be inverted, which failed with "could not find function"
+- Joins such as `left_join()` on vital objects and vital fables no longer drop the vital variables (age, sex, etc.), and `read_hmd()` keeps them when combining age-specific and other data
 
 # vital 2.0.3
 

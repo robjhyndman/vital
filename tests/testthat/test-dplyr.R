@@ -143,3 +143,25 @@ test_that("fill_gaps() keeps vital attributes", {
   expect_identical(vital_vars(filled), vital_vars(nor))
   expect_identical(NROW(filled), NROW(nor) + 1L)
 })
+
+test_that("joins keep vital attributes", {
+  nor <- norway_mortality |> dplyr::filter(Sex == "Female", Year > 2015)
+  joined <- left_join(nor, tibble::tibble(Year = 2020L, z = 1), by = "Year")
+  expect_s3_class(joined, "vital")
+  expect_identical(vital_vars(joined), vital_vars(nor))
+  fc <- nor |>
+    model(FMEAN(Mortality)) |>
+    forecast(h = 2)
+  fc_joined <- left_join(fc, tibble::tibble(Year = 2024, z = 1), by = "Year")
+  expect_s3_class(fc_joined, "fbl_vtl_ts")
+  expect_identical(vital_vars(fc_joined), vital_vars(fc))
+})
+
+test_that("dplyr verbs keep the vital variables of fables as a character vector", {
+  fc <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 2015) |>
+    model(FMEAN(Mortality)) |>
+    forecast(h = 2)
+  expect_identical(vital_vars(filter(fc, Age < 50)), vital_vars(fc))
+  expect_type(vital_vars(filter(fc, Age < 50)), "character")
+})

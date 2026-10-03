@@ -195,7 +195,16 @@ hmd_to_vital <- function(object) {
   if (!is.null(data1) & !is.null(data2)) {
     # Join age-specific and age-non-specific data by Year and Sex
     warning("Duplicating non-age-specific data for each age group")
-    return(left_join(data1, data2, by = c("Year", sex)))
+    return(
+      left_join(data1, data2, by = c("Year", sex)) |>
+        as_vital(
+          .age = "Age",
+          .sex = sex,
+          .deaths = deaths,
+          .population = population,
+          .births = births
+        )
+    )
   } else if (!is.null(data1)) {
     return(data1)
   } else {
