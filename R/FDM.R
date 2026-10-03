@@ -46,11 +46,16 @@ FDM <- function(
   coherent_ts_model_fn = fable::ARFIMA,
   ...
 ) {
-  if (
-    coherent &
-      !(identical(coherent_ts_model_fn, fable::ARIMA) ||
-        identical(coherent_ts_model_fn, fable::ARFIMA))
-  ) {
+  # Identify the coherent model here, as functions passed to parallel workers
+  # may no longer be identical to those in the fable namespace
+  coherent_ts_model <- if (identical(coherent_ts_model_fn, fable::ARIMA)) {
+    "ARIMA"
+  } else if (identical(coherent_ts_model_fn, fable::ARFIMA)) {
+    "ARFIMA"
+  } else {
+    NULL
+  }
+  if (coherent && is.null(coherent_ts_model)) {
     stop("coherent_ts_model_fn must be fable::ARIMA or fable::ARFIMA")
   }
   if (!coherent) {
@@ -63,7 +68,7 @@ FDM <- function(
     order = order,
     ts_model_fn = ts_model_fn,
     coherent = coherent,
-    coherent_ts_model_fn = coherent_ts_model_fn,
+    coherent_ts_model = coherent_ts_model,
     ...
   )
 }
@@ -74,7 +79,7 @@ train_fdm <- function(
   order,
   ts_model_fn,
   coherent,
-  coherent_ts_model_fn,
+  coherent_ts_model,
   ...
 ) {
   indexvar <- index_var(.data)
@@ -88,7 +93,7 @@ train_fdm <- function(
     order = order,
     ts_model_fn = ts_model_fn,
     coherent = coherent,
-    coherent_ts_model_fn = coherent_ts_model_fn
+    coherent_ts_model = coherent_ts_model
   )
 
   fitted <- out$data |>
@@ -271,7 +276,7 @@ fdm <- function(
   order = 6,
   ts_model_fn = fable::ARIMA,
   coherent = NULL,
-  coherent_ts_model_fn = fable::ARFIMA
+  coherent_ts_model = "ARFIMA"
 ) {
   if (is.null(coherent)) {
     coherent <- FALSE
@@ -329,19 +334,18 @@ fdm <- function(
   ts_coefs <- ts_coefs[grepl("beta", ts_coefs)]
   fits <- purrr::map(ts_coefs, function(x) {
     if (coherent) {
-      if (identical(coherent_ts_model_fn, fable::ARIMA)) {
+      if (identical(coherent_ts_model, "ARIMA")) {
         mod <- by_t |>
           fabletools::model(
-            fit = coherent_ts_model_fn(
+            fit = fable::ARIMA(
               !!sym(x),
               order_constraint = (p + q + P + Q <= 6) & (d + D == 0)
             )
           )
-      } else if (identical(coherent_ts_model_fn, fable::ARFIMA)) {
-        # ARFIMA
+      } else if (identical(coherent_ts_model, "ARFIMA")) {
         mod <- by_t |>
           fabletools::model(
-            fit = coherent_ts_model_fn(
+            fit = fable::ARFIMA(
               !!sym(x),
               order_constraint = (p + q <= 6)
             )

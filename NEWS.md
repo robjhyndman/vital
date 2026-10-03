@@ -51,6 +51,7 @@
 - `collapse_ages()` now sums all numeric variables other than age keys and constants, rather than truncating any variable that changes linearly with age
 - `interpolate()` now works for `FNAIVE()`, `LC()` and `FDM()` models, as well as `FMEAN()`
 - Errors reported by `model()` now include their underlying cause
+- Fixed coherent `FDM()` models failing when estimated in parallel with `future`
 
 # vital 2.0.3
 

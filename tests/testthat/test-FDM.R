@@ -63,3 +63,19 @@ test_that("fdpca compares the grid size with the number of ages", {
   many_ages <- matrix(rnorm(5 * 600), nrow = 5, ncol = 600)
   expect_error(fdpca(many_ages, order = 2, ngrid = 500), "Grid should be larger")
 })
+
+test_that("coherent FDM definitions pass the model by name to workers", {
+  arfima <- FDM(log(Mortality), coherent = TRUE)
+  expect_identical(arfima$extra$coherent_ts_model, "ARFIMA")
+  expect_null(arfima$extra$coherent_ts_model_fn)
+  arima <- FDM(
+    log(Mortality),
+    coherent = TRUE,
+    coherent_ts_model_fn = fable::ARIMA
+  )
+  expect_identical(arima$extra$coherent_ts_model, "ARIMA")
+  expect_error(
+    FDM(log(Mortality), coherent = TRUE, coherent_ts_model_fn = fable::ETS),
+    "must be fable::ARIMA or fable::ARFIMA"
+  )
+})
