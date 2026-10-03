@@ -560,36 +560,13 @@ newroot <- function(FUN, guess, ...) {
 
 #' @export
 time_components.LC <- function(object, ...) {
-  modelname <- attributes(object)$model
-  object <- object |>
-    mutate(
-      out = purrr::map(object[[modelname]], function(x) {
-        x$fit$model
-      })
-    ) |>
-    as_tibble()
-  object[[modelname]] <- NULL
-  index <- index_var(object$out[[1]]$by_t)
-  keys <- head(colnames(object), -1)
-  object$out <- lapply(object$out, function(x) as_tibble(x$by_t))
-  object |>
-    tidyr::unnest("out") |>
-    as_tsibble(index = index, key = all_of(keys))
+  index <- index_var(first_fit(object)$fit$model$by_t)
+  unnest_time_components(object, function(x) as_tibble(x$by_t), index)
 }
 
 #' @export
 age_components.LC <- function(object, ...) {
-  modelname <- attributes(object)$model
-  object <- object |>
-    mutate(
-      out = purrr::map(object[[modelname]], function(x) {
-        x$fit$model
-      })
-    ) |>
-    as_tibble()
-  object[[modelname]] <- NULL
-  object$out <- lapply(object$out, function(x) as_tibble(x$by_x))
-  object |> tidyr::unnest("out")
+  unnest_components(object, function(x) as_tibble(x$by_x))
 }
 
 #' @export

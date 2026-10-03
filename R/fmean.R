@@ -218,16 +218,7 @@ interpolate.FMEAN <- function(object, new_data, specials, ...) {
 
 #' @export
 age_components.FMEAN <- function(object, ...) {
-  modelname <- attributes(object)$model
-  object <- object |>
-    mutate(
-      out = purrr::map(object[[modelname]], function(x) {
-        x$fit$model
-      })
-    ) |>
-    as_tibble()
-  object[[modelname]] <- NULL
-  object |> tidyr::unnest("out")
+  unnest_components(object, identity)
 }
 
 #' @export

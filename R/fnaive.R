@@ -197,18 +197,7 @@ autoplot.FNAIVE <- function(object, age = "Age", ...) {
 }
 
 #' @export
-age_components.FNAIVE <- function(object, ...) {
-  modelname <- attributes(object)$model
-  object <- object |>
-    mutate(
-      out = purrr::map(object[[modelname]], function(x) {
-        x$fit$model
-      })
-    ) |>
-    as_tibble()
-  object[[modelname]] <- NULL
-  object |> tidyr::unnest("out")
-}
+age_components.FNAIVE <- age_components.FMEAN
 
 #' @export
 time_components.FNAIVE <- function(object, ...) {

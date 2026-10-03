@@ -586,47 +586,29 @@ vital_to_stmomo <- function(.data) {
 
 #' @export
 time_components.GAPC <- function(object, ...) {
-  modelname <- attributes(object)$model
-  index <- index_var(object[[modelname]][[1]]$data)
-  object <- object |>
-    mutate(
-      out = purrr::map(object[[modelname]], function(x) {
-        x$fit$model
-      })
-    ) |>
-    as_tibble()
-  object[[modelname]] <- NULL
-  keys <- head(colnames(object), -1)
-  object$out <- lapply(object$out, function(x) {
-    kt <- t(x$kt)
-    if (NCOL(kt) > 1) {
-      colnames(kt) <- paste0("k", seq(NCOL(kt)), "t")
-    } else {
-      colnames(kt) <- "kt"
-    }
-    yr <- tibble(Year = x$years)
-    colnames(yr) <- index
-    dplyr::bind_cols(yr, kt)
-  })
-  object |>
-    tidyr::unnest("out") |>
-    as_tsibble(index = index, key = all_of(keys))
+  index <- index_var(first_fit(object)$data)
+  unnest_time_components(
+    object,
+    function(x) {
+      kt <- t(x$kt)
+      if (NCOL(kt) > 1) {
+        colnames(kt) <- paste0("k", seq(NCOL(kt)), "t")
+      } else {
+        colnames(kt) <- "kt"
+      }
+      yr <- tibble(Year = x$years)
+      colnames(yr) <- index
+      dplyr::bind_cols(yr, kt)
+    },
+    index
+  )
 }
 
 
 #' @export
 age_components.GAPC <- function(object, ...) {
-  modelname <- attributes(object)$model
-  agevar <- age_var(object[[modelname]][[1]]$data)
-  object <- object |>
-    mutate(
-      out = purrr::map(object[[modelname]], function(x) {
-        x$fit$model
-      })
-    ) |>
-    as_tibble()
-  object[[modelname]] <- NULL
-  object$out <- lapply(object$out, function(x) {
+  agevar <- age_var(first_fit(object)$data)
+  unnest_components(object, function(x) {
     bx <- x$bx
     if (NCOL(bx) > 1 | !is.null(x$b0x)) {
       colnames(bx) <- paste0("b", seq(NCOL(bx)), "x")
@@ -637,28 +619,15 @@ age_components.GAPC <- function(object, ...) {
     colnames(ax)[1] <- agevar
     dplyr::bind_cols(ax, bx)
   })
-  object |>
-    tidyr::unnest("out")
 }
 
 #' @export
 cohort_components.GAPC <- function(object, ...) {
-  modelname <- attributes(object)$model
-  object <- object |>
-    mutate(
-      out = purrr::map(object[[modelname]], function(x) {
-        x$fit$model
-      })
-    ) |>
-    as_tibble()
-  object[[modelname]] <- NULL
-  keys <- head(colnames(object), -1)
-  object$out <- lapply(object$out, function(x) {
-    tibble(Birth_Year = as.integer(names(x$gc)), gc = x$gc)
-  })
-  object |>
-    tidyr::unnest("out") |>
-    as_tsibble(index = Birth_Year, key = all_of(keys))
+  unnest_time_components(
+    object,
+    function(x) tibble(Birth_Year = as.integer(names(x$gc)), gc = x$gc),
+    "Birth_Year"
+  )
 }
 
 

@@ -95,3 +95,25 @@ cohort_components.mdl_vtl_df <- function(object, ...) {
   class(object) <- c(class(object[[model]][[1]]$fit), class(object)[-1])
   cohort_components(object, ...)
 }
+
+# The first fitted model in a single-model mable
+first_fit <- function(object) {
+  object[[attributes(object)$model]][[1]]
+}
+
+# Apply extract to the model component of each fit in a single-model mable,
+# and unnest the resulting tibbles alongside the keys
+unnest_components <- function(object, extract) {
+  modelname <- attributes(object)$model
+  object <- as_tibble(object)
+  object$out <- lapply(object[[modelname]], function(x) extract(x$fit$model))
+  object[[modelname]] <- NULL
+  tidyr::unnest(object, "out")
+}
+
+# As unnest_components(), but return a tsibble with the given index
+unnest_time_components <- function(object, extract, index) {
+  keys <- setdiff(colnames(as_tibble(object)), attributes(object)$model)
+  unnest_components(object, extract) |>
+    as_tsibble(index = index, key = all_of(keys))
+}
