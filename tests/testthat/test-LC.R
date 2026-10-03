@@ -225,3 +225,19 @@ test_that("LC only adjusts to deaths when deaths and population are available", 
     "dt"
   )
 })
+
+test_that("LC does not adjust product-ratios to deaths by default", {
+  pr <- norway_mortality |>
+    dplyr::filter(Year > 2000, Age < 90, Sex != "Total") |>
+    make_pr(Mortality)
+  expect_no_warning(fit <- pr |> model(lc = LC(log(Mortality))))
+  expect_identical(
+    vapply(fit$lc, function(m) m$fit$model$adjust, character(1)),
+    rep("none", 3)
+  )
+  # An explicit choice is respected
+  explicit <- pr |>
+    model(lc = LC(log(Mortality), adjust = "dt")) |>
+    suppressWarnings()
+  expect_identical(explicit$lc[[1]]$fit$model$adjust, "dt")
+})

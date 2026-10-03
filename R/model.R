@@ -77,6 +77,12 @@ Check that specified model(s) are model definitions.",
     p <- progressr::progressor(num_est)
   }
   .data <- nest_keys(.data, "lst_data")
+  # Product-ratio data (e.g. from make_pr()) contain a geometric_mean series
+  product_ratio <- any(vapply(
+    .data[kv],
+    function(x) "geometric_mean" %in% x,
+    logical(1L)
+  ))
 
   if (.safely) {
     estimate <- function(dt, mdl, sex) {
@@ -103,6 +109,16 @@ Check that specified model(s) are model definitions.",
       mdl <- mdl$clone()
       mdl$extra$coherent <- mdl$extra$coherent &&
         !any(c("geometric_mean", "mean") %in% keys)
+    }
+    if (
+      product_ratio &&
+        "adjust" %in% names(mdl$extra) &&
+        is.null(mdl$extra$adjust)
+    ) {
+      # LC() was called without adjust, but adjusting ratios to deaths is
+      # not meaningful, so do not adjust
+      mdl <- mdl$clone()
+      mdl$extra$adjust <- "none"
     }
     out <- estimate(dt, mdl, sex)
     if (progress) {

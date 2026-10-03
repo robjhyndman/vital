@@ -15,7 +15,8 @@
 #'   `"dxt"` (BMS method),
 #'   `"e0"` (Lee-Miller method based on life expectancy) and
 #'   `"none"`. If omitted, `"dt"` is used when the data contain deaths and
-#'   population (see [vital_vars()]), and `"none"` otherwise. The `"dt"` and
+#'   population (see [vital_vars()]), and `"none"` otherwise, or when the data
+#'   contain product-ratios from [make_pr()]. The `"dt"` and
 #'   `"dxt"` methods require deaths and population.
 #' @param jump_choice Method used for computation of jump-off point for forecasts.
 #' Possibilities: `"actual"` (use actual rates from final year) and
