@@ -117,3 +117,19 @@ test_that("grouped verbs keep grouped_vital first", {
     expect_identical(sum(class(res) == "vital"), 1L)
   }
 })
+
+test_that("dplyr verbs on mables keep a single mdl_vtl_df class", {
+  fit <- norway_mortality |>
+    dplyr::filter(Year > 2015, Sex != "Total") |>
+    model(m = FMEAN(Mortality))
+  results <- list(
+    dplyr::arrange(fit, Sex),
+    dplyr::filter(fit, Sex == "Male"),
+    dplyr::mutate(fit, n = m),
+    dplyr::select(fit, Sex, m),
+    fit[1, ]
+  )
+  for (res in results) {
+    expect_identical(sum(class(res) == "mdl_vtl_df"), 1L)
+  }
+})
