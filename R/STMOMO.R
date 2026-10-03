@@ -421,7 +421,7 @@ train_stmomo <- function(
   # Compute StMoMo model
   model <- StMoMo::StMoMo(...)
   data2 <- vital_to_stmomo(.data)
-  if (model$link == "logit" & any(data2$Dxt / data2$Ext > 1)) {
+  if (model$link == "logit" && any(data2$Dxt / data2$Ext > 1, na.rm = TRUE)) {
     stop(
       "Mortality rates must be less than 1 for logit link.
     Perhaps you need to use initial rather than central population values."

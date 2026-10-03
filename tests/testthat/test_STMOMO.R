@@ -98,3 +98,11 @@ test_that("GAPC forecasts work with any index and age names", {
   sim2 <- nor2 |> model(apc = APC(Mortality)) |> generate(h = 2, times = 2)
   expect_false(anyNA(sim2$.sim))
 })
+
+test_that("logit link works with missing values", {
+  nor <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 2000, Age >= 50, Age < 90) |>
+    dplyr::mutate(Deaths = dplyr::if_else(Age == 60 & Year == 2010, NA, Deaths))
+  fit <- nor |> model(cbd = CBD(Mortality, link = "logit"))
+  expect_s3_class(fit$cbd[[1]]$fit, "GAPC")
+})
