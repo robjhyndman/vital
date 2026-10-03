@@ -101,3 +101,10 @@ test_that("life_table rejects 5-year age groups without an infant group", {
     dplyr::filter(Year == 2000, Sex == "Female")
   expect_error(life_table(group_ages(nor, seq(0, 100, by = 5))), "separate")
 })
+
+test_that("life_expectancy returns only the index, keys and ex", {
+  e0 <- norway_mortality |>
+    dplyr::filter(Year == 2000) |>
+    life_expectancy()
+  expect_identical(colnames(e0), c("Year", "Age", "Sex", "ex"))
+})
