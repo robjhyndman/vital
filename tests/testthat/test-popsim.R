@@ -113,3 +113,18 @@ test_that("generate_population uses the vital variable names", {
     c(age = "age", sex = "sex", population = "Exposure")
   )
 })
+
+test_that("generate_population requires one model per mable", {
+  fert2 <- norway_fertility |>
+    dplyr::filter(Year > 2015) |>
+    model(m = FMEAN(Fertility), n = FNAIVE(Fertility))
+  expect_error(
+    generate_population(pop, fertility_model = fert2),
+    "fertility_model must contain only one model"
+  )
+  mig2 <- mig |> dplyr::mutate(n = m)
+  expect_error(
+    generate_population(pop, migration_model = mig2),
+    "migration_model must contain only one model"
+  )
+})

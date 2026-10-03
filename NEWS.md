@@ -18,6 +18,7 @@
 * Fixed `generate_population()` failing when `mortality_model` or `migration_model` is NULL
 * Fixed `generate_population()` failing when `fertility_model` is NULL
 * `generate_population()` now works with any names for the index, age, sex and population variables
+* `generate_population()` now correctly checks that each mable contains only one model
 
 # vital 2.0.3
 

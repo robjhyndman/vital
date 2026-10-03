@@ -37,7 +37,7 @@ generate_population <- function(
     if (!inherits(mortality_model, "mdl_vtl_df")) {
       stop("mortality_model must be a mable object")
     }
-    if (NCOL(mortality_model) > 2) {
+    if (length(mable_vars(mortality_model)) > 1) {
       stop("mortality_model must contain only one model")
     }
   }
@@ -45,7 +45,7 @@ generate_population <- function(
     if (!inherits(fertility_model, "mdl_vtl_df")) {
       stop("fertility_model must be a mable object")
     }
-    if (NCOL(fertility_model) > 2) {
+    if (length(mable_vars(fertility_model)) > 1) {
       stop("fertility_model must contain only one model")
     }
   }
@@ -53,8 +53,8 @@ generate_population <- function(
     if (!inherits(migration_model, "mdl_vtl_df")) {
       stop("migration_model must be a mable object")
     }
-    if (NCOL(migration_model) > 2) {
-      stop("mortality_model must contain only one model")
+    if (length(mable_vars(migration_model)) > 1) {
+      stop("migration_model must contain only one model")
     }
   }
   if (!is.numeric(h) || h <= 0) {
