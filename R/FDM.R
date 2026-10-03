@@ -130,7 +130,7 @@ forecast.FDM <- function(
 
   # Forecast all beta series using stored models
   h <- length(unique(new_data[[index_var(new_data)]]))
-  fc <- purrr::map(object$ts_model, function(x) {
+  fc <- purrr::map(object$ts_models, function(x) {
     forecast(x, h = h) |>
       select(-.mean, -.model) |>
       as_tibble()
@@ -144,7 +144,7 @@ forecast.FDM <- function(
     left_join(object$model$by_x, by = agevar) |>
     left_join(fc, by = indexvar)
   fc$out <- fc$mean
-  for (i in seq_along(object$ts_model)) {
+  for (i in seq_along(object$ts_models)) {
     fc$out <- fc$out + fc[[paste0("beta", i)]] * fc[[paste0("phi", i)]]
   }
   fc |>
@@ -214,7 +214,7 @@ report.FDM <- function(object, ...) {
   models <- names(object$ts_models)
   for (i in seq_along(object$ts_models)) {
     cat("  ", models[i], ": ")
-    cat(model_sum(object$ts_model[[i]]$fit[[1]]), "\n")
+    cat(model_sum(object$ts_models[[i]]$fit[[1]]), "\n")
   }
   cat("\nVariance explained\n  ")
   cat(paste(round(object$model$varprop * 100, 2), collapse = " + "))

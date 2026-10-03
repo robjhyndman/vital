@@ -357,7 +357,7 @@ smooth_vital <- function(.data, .var, age_spacing, smooth_fn, ...) {
         var = resp,
         age_spacing = age_spacing,
         age = age,
-        pop = pop,
+        popvar = pop,
         ...
       )
     }

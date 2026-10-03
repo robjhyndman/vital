@@ -35,16 +35,16 @@ smooth_mortality_law_x <- function(
   var,
   age_spacing = 1,
   age,
-  pop = NULL,
+  popvar = NULL,
   deaths = NULL,
   ...
 ) {
   # Call MortalityLaws, using Dx and Ex if both are available
-  if (!is.null(deaths) && !is.null(pop)) {
+  if (!is.null(deaths) && !is.null(popvar)) {
     smooth.fit <- MortalityLaws::MortalityLaw(
       x = data[[age]],
       Dx = data[[deaths]],
-      Ex = data[[pop]],
+      Ex = data[[popvar]],
       ...
     )
   } else {

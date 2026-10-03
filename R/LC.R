@@ -319,7 +319,7 @@ lca <- function(
         weights = weight
       ) |>
         suppressWarnings()
-      ktadj[i] <- yearglm$coef[1]
+      ktadj[i] <- yearglm$coefficients[1]
     }
   } else if (adjust == "dt") {
     # Fit to total deaths
@@ -469,7 +469,7 @@ fitmx <- function(kt, ax, bx, transform = FALSE) {
   }
 }
 
-findroot <- function(FUN, guess, margin, try = 1, ...) {
+findroot <- function(FUN, guess, margin, attempt = 1, ...) {
   # First try in successively larger intervals around best guess
   for (i in 1:5) {
     rooti <- try(
@@ -490,14 +490,14 @@ findroot <- function(FUN, guess, margin, try = 1, ...) {
   }
 
   # Still no luck. Try guessing root using quadratic approximation
-  if (try < 3) {
+  if (attempt < 3) {
     root <- try(quadroot(FUN, guess, 10 * margin, ...), silent = TRUE)
     if (!(inherits(root, "try-error"))) {
-      return(findroot(FUN, root, margin, try + 1, ...))
+      return(findroot(FUN, root, margin, attempt + 1, ...))
     }
     root <- try(quadroot(FUN, guess, 20 * margin, ...), silent = TRUE)
     if (!(inherits(root, "try-error"))) {
-      return(findroot(FUN, root, margin, try + 1, ...))
+      return(findroot(FUN, root, margin, attempt + 1, ...))
     }
   }
 
