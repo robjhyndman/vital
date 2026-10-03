@@ -154,3 +154,12 @@ test_that("spline_extrapolate continues linearly beyond the data", {
   y <- 2 + 3 * x
   expect_equal(spline_extrapolate(x, y, c(-2, 5, 12)), 2 + 3 * c(-2, 5, 12))
 })
+
+test_that("autoplot shows no more components than were fitted", {
+  fit <- norway_mortality |>
+    filter(Sex == "Female", Year > 2000, Age < 90) |>
+    model(FDM(log(Mortality), order = 1))
+  p <- autoplot(fit)
+  expect_s3_class(p, "patchwork")
+  expect_length(p$patches$plots, 3L)
+})

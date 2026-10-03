@@ -258,6 +258,8 @@ autoplot.FDM <- function(object, show_order = 2, ...) {
   tmp <- colnames(obj_x)
   agevar <- tmp[grepl("phi", tmp)]
   keys <- head(colnames(object), -1)
+  # Cannot show more components than were fitted
+  show_order <- min(show_order, length(agevar))
 
   # Set up list of plots
   p <- list()
