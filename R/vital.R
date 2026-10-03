@@ -60,9 +60,13 @@ vital <- function(
     )
 }
 
-# This rebuilds a vital, usually just to reattach vital attributes
+# This rebuilds a vital when index or keys are given,
+# otherwise it just reattaches the vital attributes
 #' @export
 as_vital.vital <- function(x, index, keys, ...) {
+  if (missing(index) && missing(keys)) {
+    return(as_vital.tbl_ts(x, ...))
+  }
   as_tibble(x) |>
     as_tsibble(index = !!enquo(index), key = !!enquo(keys)) |>
     as_vital(...)
@@ -264,7 +268,9 @@ as_vital.tbl_ts <- function(
     population = .population
   )
   # Add additional class
-  class(x) <- c("vital", class(x))
+  if (!inherits(x, "vital")) {
+    class(x) <- c("vital", class(x))
+  }
   # Check class of variables
   if (!is.null(.age)) {
     if (!is.numeric(x[[.age]])) {

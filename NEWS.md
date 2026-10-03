@@ -11,6 +11,7 @@
 * `smooth_mortality_law()` now fits to deaths and population when available, as intended
 * Fixed `generate_population()` not adding back the mean for coherent migration models
 * `FDM(coherent = TRUE)` now validates `coherent_ts_model_fn` rather than `ts_model_fn`
+* Fixed `group_by()` with no variables failing on vital objects
 
 # vital 2.0.3
 

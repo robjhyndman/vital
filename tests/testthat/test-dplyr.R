@@ -75,3 +75,13 @@ test_that("fable classes", {
   expect_false(inherits(fc |> summarise(m = mean(.mean)), "fbl_ts"))
   expect_false(inherits(grouped |> summarise(m = mean(.mean)), "fbl_ts"))
 })
+
+test_that("group_by() with no variables keeps an ungrouped vital", {
+  nor <- norway_mortality |> dplyr::filter(Year == 2000)
+  ungrouped <- dplyr::group_by(nor)
+  expect_identical(class(ungrouped), class(nor))
+  expect_identical(vital_vars(ungrouped), vital_vars(nor))
+  grouped <- dplyr::group_by(nor, Sex) |> dplyr::group_by(Age, .add = TRUE)
+  expect_identical(sum(class(grouped) == "grouped_vital"), 1L)
+  expect_identical(sum(class(grouped) == "vital"), 1L)
+})

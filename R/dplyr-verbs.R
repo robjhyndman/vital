@@ -136,13 +136,16 @@ group_by.vital <- function(
     .births = vvar$births,
     .population = vvar$population
   )
+  if (!is_grouped_ts(tmp)) {
+    return(tmp)
+  }
   tmp_class <- class(tmp)
   grouped_classes <- grepl("grouped", tmp_class)
-  class(tmp) <- c(
+  class(tmp) <- unique(c(
     "grouped_vital",
     tmp_class[grouped_classes],
     tmp_class[!grouped_classes]
-  )
+  ))
   return(tmp)
 }
 
