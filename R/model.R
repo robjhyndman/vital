@@ -19,13 +19,6 @@
 #' a [NULL model][fabletools::null_model()] will be returned instead. This allows for an error
 #' to occur when computing many models, without losing the results of the successful models.
 #'
-#' @section Parallel:
-#'
-#' It is possible to estimate models in parallel using the
-#' [future](https://cran.r-project.org/package=future) package. By specifying a
-#' [`future::plan()`] before estimating the models, they will be computed
-#' according to that plan.
-#'
 #' @section Progress:
 #'
 #' Progress on model estimation can be obtained by wrapping the code with
@@ -107,31 +100,14 @@ Check that specified model(s) are model definitions.",
     out
   }
 
-  if (is_attached("package:future")) {
-    require_package("future.apply")
-    stop("Not implemented")
-    eval_models <- function(models, lst_data, keyvars) {
-      out <- future.apply::future_mapply(
-        rep(lst_data, length(models)),
-        rep(sex, length(models)),
-        rep(models, each = length(lst_data)),
-        FUN = estimate_progress,
-        SIMPLIFY = FALSE,
-        future.globals = FALSE
-      )
-      unname(split(out, rep(seq_len(num_mdl), each = num_key)))
-    }
-  } else {
-    eval_models <- function(models, lst_data, keyvars) {
-      vars <- colnames(keyvars)
-      keyvars <- keyvars |>
-        t() |>
-        as.data.frame() |>
-        as_tibble()
-      purrr::map(models, function(model) {
-        purrr::map2(lst_data, keyvars, estimate_progress, model)
-      })
-    }
+  eval_models <- function(models, lst_data, keyvars) {
+    keyvars <- keyvars |>
+      t() |>
+      as.data.frame() |>
+      as_tibble()
+    purrr::map(models, function(model) {
+      purrr::map2(lst_data, keyvars, estimate_progress, model)
+    })
   }
   fits <- eval_models(models, .data[["lst_data"]], .data[, kv])
   names(fits) <- ifelse(nchar(names(models)), names(models), nm)
@@ -168,16 +144,6 @@ Check that specified model(s) are model definitions.",
     fabletools::as_mable(key = !!kv, model = names(fits))
   class(final) <- c("mdl_vtl_df", class(final))
   return(final)
-}
-
-require_package <- function(pkg) {
-  if (!requireNamespace(pkg, quietly = TRUE)) {
-    abort(sprintf(
-      "The `%s` package must be installed to use this functionality. It can be installed with install.packages(\"%s\")",
-      pkg,
-      pkg
-    ))
-  }
 }
 
 nest_keys <- function(.data, nm = "data") {

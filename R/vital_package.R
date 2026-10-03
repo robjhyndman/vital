@@ -60,7 +60,3 @@ fabletools::glance
   loadNamespace("fabletools")
 }
 
-
-is_attached <- function(x) {
-  paste0("package:", x) %in% search()
-}

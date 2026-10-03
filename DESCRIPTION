@@ -36,8 +36,6 @@ Imports:
 Suggests:
   demography,
   feasts,
-  future,
-  future.apply,
   knitr,
   progressr,
   rmarkdown,
