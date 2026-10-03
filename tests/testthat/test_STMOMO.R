@@ -77,3 +77,10 @@ test_that("cohort_components from GAPC model", {
   expect_equal(colnames(cohort_comp), c("Birth_Year", "gc"))
   expect_s3_class(cohort_comp, "tbl_ts")
 })
+
+test_that("autoplot of a GAPC mable gives an error, not infinite recursion", {
+  fit <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 2000, Age < 90) |>
+    model(apc = APC(Mortality))
+  expect_error(autoplot(fit), "not supported")
+})

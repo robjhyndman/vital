@@ -12,6 +12,7 @@
 * Fixed `generate_population()` not adding back the mean for coherent migration models
 * `FDM(coherent = TRUE)` now validates `coherent_ts_model_fn` rather than `ts_model_fn`
 * Fixed `group_by()` with no variables failing on vital objects
+* `autoplot()` on a mable of GAPC models (APC, CBD, etc.) now gives an error instead of infinite recursion
 
 # vital 2.0.3
 

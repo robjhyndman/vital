@@ -151,7 +151,7 @@ autoplot.mdl_vtl_df <- function(object, ...) {
     )
   } else {
     model <- mable_vars(object)
-    class(object) <- c(class(object[[model]][[1]]$fit), class(object))
+    class(object) <- c(class(object[[model]][[1]]$fit), class(object)[-1])
     agevar <- age_var(object[[model]][[1]]$fit$fitted)
     p <- autoplot(object, age = agevar, ...)
   }
