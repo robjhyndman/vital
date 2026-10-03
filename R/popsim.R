@@ -146,7 +146,7 @@ generate_population <- function(
       generate(h = h + 2, times = n_reps)
     future_migration$Nx <- future_migration$.sim
     future_migration <- future_migration |> dplyr::select(-.sim, -.model)
-    if ("mean" %in% future_mortality[[vvars$sex]]) {
+    if ("mean" %in% future_migration[[vvars$sex]]) {
       future_migration <- undo_sd(future_migration, "Nx", key = vvars$sex)
     }
   } else {

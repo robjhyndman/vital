@@ -9,6 +9,7 @@
 * Fixed `life_expectancy()` failing when the age variable is not called `Age`
 * `life_table()` now uses sex-specific infant separation factors when sex is capitalised (e.g. "Female")
 * `smooth_mortality_law()` now fits to deaths and population when available, as intended
+* Fixed `generate_population()` not adding back the mean for coherent migration models
 
 # vital 2.0.3
 
