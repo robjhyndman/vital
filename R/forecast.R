@@ -127,7 +127,7 @@ forecast.mdl_vtl_ts <- function(
     return(build_vital_fable(
       new_data,
       response = resp_vars,
-      distribution = !!sym(dist_col),
+      distribution = dist_col,
       vitals = vital_vars(object$data)
     ))
   }
