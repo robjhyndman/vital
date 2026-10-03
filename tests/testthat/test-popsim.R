@@ -146,3 +146,11 @@ test_that("generate_population gives no missing populations", {
   expect_type(out$Year, "integer")
   expect_type(out$Age, "integer")
 })
+
+test_that("generate_population requires single-year ages", {
+  gappy <- pop |> dplyr::filter(Age %% 5 == 0)
+  expect_error(
+    generate_population(gappy, h = 2, n_reps = 3),
+    "consecutive single-year ages"
+  )
+})

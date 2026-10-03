@@ -65,6 +65,11 @@ generate_population <- function(
   }
   indexvar <- index_var(starting_population)
   vvars <- vital_var_list(starting_population)
+  # Populations are advanced one year of age per year
+  ages <- sort(unique(starting_population[[vvars$age]]))
+  if (any(diff(ages) != 1)) {
+    stop("starting_population must have consecutive single-year ages")
+  }
   sexes <- unique(starting_population[[vvars$sex]])
   if (length(sexes) != 2) {
     stop("starting_population must contain exactly 2 sexes")
@@ -210,10 +215,6 @@ generate_population <- function(
 
   # Advance the population by one year and combine upper ages. Assume zero births
   advance <- function(age, x) {
-    # Check age is ordered
-    if (max(diff(age)) != 1 & min(diff(age)) < 0) {
-      stop("Age variable must be ordered and consecutive")
-    }
     min_age <- age == min(age)
     max_age <- age == max(age)
     max_age_1 <- age == max(age) - 1

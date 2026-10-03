@@ -47,6 +47,7 @@
 - `collapse_ages()` no longer drops the open interval flag when `max_age` is the oldest age in the data
 - `LC()` now defaults to `adjust = "none"` when the data have no deaths or population (e.g. fertility), gives an error if `adjust = "dt"` or `"dxt"` is requested for such data, and reports missing deviances rather than zero
 - `life_expectancy()` now returns only the index, keys and `ex`, without the `rx`, `nx` and `ax` columns of the life table
+- `generate_population()` now gives an error unless the starting population has consecutive single-year ages
 
 # vital 2.0.3
 
