@@ -23,3 +23,10 @@ test_that("read_ktdb_files", {
   z <- read_ktdb_files("maustl.txt", "faustl.txt", triangle = 2)
   expect_true(all(z$Triangle == 2))
 })
+
+test_that("read_ktdb passes triangle to read_ktdb_files", {
+  local_mocked_bindings(read_ktdb_files = function(male, female, triangle) {
+    triangle
+  })
+  expect_identical(read_ktdb(1, triangle = 2), 2)
+})

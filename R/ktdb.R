@@ -37,7 +37,8 @@ read_ktdb <- function(country, triangle = 1) {
     female = paste0(
       "https://www.demogr.mpg.de/databases/ktdb/",
       links$ktdb_female[1]
-    )
+    ),
+    triangle = triangle
   )
 }
 
