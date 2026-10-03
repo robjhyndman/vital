@@ -2,7 +2,8 @@
 #'
 #' All available years and ages are included in the tables.
 #' $qx = mx/(1 + ((1-ax) * mx))$ as per Chiang (1984).
-#' Warning: the code has only been tested for data based on single-year age groups.
+#' Ages can be single years, abridged (0, 1, 5, 10, ...), or 5-year groups
+#' starting at age 5 or above.
 #'
 #' @param .data A `vital` including an age variable and a variable containing mortality rates.
 #' @param mortality Variable in `.data` containing Mortality rates (mx). If omitted, the variable with name  `mx`, `Mortality` or `Rate` will be used (not case sensitive).
@@ -95,15 +96,26 @@ lt <- function(dt, sex, age, mortality) {
   sex <- tolower(sex[1])
   ages <- sort(round(unique(dt[[age]])))
   startage <- ages[1]
-  agegroup <- ages[2] - ages[1]
+  widths <- diff(ages)
+  # Abridged ages are 0, 1, 5, 10, ...
+  abridged <- length(ages) > 2 &&
+    identical(ages[1:3], c(0, 1, 5)) &&
+    all(widths[-(1:2)] == 5)
 
   # Check we can proceed
-  if (agegroup == 5L & startage > 0L & startage < 5L) {
-    stop("0 < startage < 5 not supported for 5-year age groups")
-  } else if (startage < 0L) {
+  if (startage < 0L) {
     stop("startage must be non-negative")
-  } else if (agegroup != 1L & agegroup != 5L) {
+  } else if (all(widths == 1)) {
+    agegroup <- 1L
+  } else if (abridged || all(widths == 5)) {
+    agegroup <- 5L
+  } else {
     stop("Only 1-year and 5-year agegroups handled")
+  }
+  if (agegroup == 5L && !abridged && startage < 5L) {
+    stop(
+      "5-year age groups starting below age 5 must have separate groups for ages 0 and 1-4"
+    )
   }
 
   # Set a0
@@ -119,10 +131,7 @@ lt <- function(dt, sex, age, mortality) {
 
   # Compute width of each age group
   nn <- NROW(dt)
-  nx <- c(1L, rep(agegroup, nn - 2), Inf)
-  if (agegroup == 5L) {
-    nx[2] <- 4L
-  }
+  nx <- c(widths, Inf)
 
   # Set NA values to 0.5
   mx[is.na(mx)] <- 0.5
@@ -134,7 +143,7 @@ lt <- function(dt, sex, age, mortality) {
     } else {
       ax <- Inf
     }
-  } else if (agegroup == 5L & startage == 0) {
+  } else if (abridged) {
     a1 <- dplyr::case_when(
       sex == "female" ~ 1.361 + (mx[1] < 0.107) * (0.161 - 1.518 * mx[1]),
       sex == "male" ~ 1.352 + (mx[1] < 0.107) * (0.299 - 2.816 * mx[1]),
@@ -142,9 +151,8 @@ lt <- function(dt, sex, age, mortality) {
     )
     ax <- c(a0, a1, rep(2.6, nn - 3L), Inf)
   } else {
-    # agegroup==5 and startage > 0
+    # agegroup==5 and startage >= 5
     ax <- c(rep(2.6, nn - 1), Inf)
-    nx[1L] <- agegroup
   }
   # Find qx
   qx <- nx * mx / (1 + (nx - ax) * mx)
@@ -170,7 +178,7 @@ lt <- function(dt, sex, age, mortality) {
   } else {
     rx <- c(Lx[1] / lx[1])
   }
-  if (agegroup == 5L) {
+  if (abridged) {
     rx <- c(
       0,
       (Lx[1] + Lx[2]) / 5 * lx[1],

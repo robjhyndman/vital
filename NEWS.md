@@ -33,6 +33,7 @@
 - `tsibble::fill_gaps()` now keeps vital objects and their attributes
 - `LC()` and the GAPC models (`APC()`, `CBD()`, etc.) now give an error, rather than misaligned fits, when some age and time combinations are missing
 - `arrange()` on a mable of vital models no longer duplicates the `mdl_vtl_df` class
+- Fixed `life_table()` treating abridged ages (0, 1, 5, 10, ...) as single years, and 5-year ages as abridged
 
 # vital 2.0.3
 

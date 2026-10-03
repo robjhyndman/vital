@@ -17,7 +17,8 @@ A vital object containing the index, keys, and the new life table variables \cod
 \description{
 All available years and ages are included in the tables.
 $qx = mx/(1 + ((1-ax) * mx))$ as per Chiang (1984).
-Warning: the code has only been tested for data based on single-year age groups.
+Ages can be single years, abridged (0, 1, 5, 10, ...), or 5-year groups
+starting at age 5 or above.
 }
 \examples{
 # Compute Norwegian life table for females in 2003

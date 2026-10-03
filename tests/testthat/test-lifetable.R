@@ -55,3 +55,49 @@ test_that("life_table uses sex-specific a0 regardless of case", {
     dplyr::mutate(Sex = tolower(Sex))
   expect_equal(life_table(nor)$ax, life_table(nor_lower)$ax)
 })
+
+# Aggregate single-year Norwegian data into the given age groups
+group_ages <- function(data, groups) {
+  data |>
+    tibble::as_tibble() |>
+    dplyr::mutate(Age = groups[findInterval(Age, groups)]) |>
+    dplyr::summarise(
+      Deaths = sum(Deaths),
+      Population = sum(Population),
+      .by = c(Year, Sex, Age)
+    ) |>
+    dplyr::mutate(Mortality = Deaths / Population) |>
+    as_vital(
+      index = Year,
+      key = c(Age, Sex),
+      .age = "Age",
+      .sex = "Sex",
+      .deaths = "Deaths",
+      .population = "Population"
+    )
+}
+
+test_that("life_table handles abridged age groups", {
+  nor <- norway_mortality |>
+    dplyr::filter(Year == 2000, Sex == "Female")
+  abridged <- group_ages(nor, c(0, 1, seq(5, 100, by = 5)))
+  lt <- life_table(abridged)
+  expect_equal(lt$nx, c(1, 4, rep(5, 19), Inf))
+  # Close to the single-year life expectancy
+  expect_lt(abs(lt$ex[1] - life_table(nor)$ex[1]), 0.2)
+})
+
+test_that("life_table handles 5-year age groups above age 5", {
+  nor <- norway_mortality |>
+    dplyr::filter(Year == 2000, Sex == "Female", Age >= 20)
+  lt <- life_table(group_ages(nor, seq(20, 100, by = 5)))
+  expect_equal(lt$nx, c(rep(5, 16), Inf))
+  expect_equal(lt$ax, c(rep(2.6, 16), Inf))
+  expect_lt(abs(lt$ex[1] - life_table(nor)$ex[1]), 0.2)
+})
+
+test_that("life_table rejects 5-year age groups without an infant group", {
+  nor <- norway_mortality |>
+    dplyr::filter(Year == 2000, Sex == "Female")
+  expect_error(life_table(group_ages(nor, seq(0, 100, by = 5))), "separate")
+})
