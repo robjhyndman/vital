@@ -58,3 +58,18 @@ test_that("model() gives the same fits when future is attached", {
     }
   )
 })
+
+test_that("model() estimates without .safely", {
+  dat <- norway_mortality |>
+    dplyr::filter(Year > 2000, Sex == "Female")
+  safe <- dat |> model(mean = FMEAN(Mortality))
+  unsafe <- dat |> model(mean = FMEAN(Mortality), .safely = FALSE)
+  expect_equal(
+    safe$mean[[1]]$fit$model,
+    unsafe$mean[[1]]$fit$model
+  )
+  expect_error(
+    dat |> model(bad = LC(Mortality), .safely = FALSE),
+    "Lee-Carter models require a log transformation"
+  )
+})

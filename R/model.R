@@ -88,6 +88,8 @@ Check that specified model(s) are model definitions.",
       }
       out
     }
+  } else {
+    estimate <- estimate.vital
   }
 
   estimate_progress <- function(dt, keys, mdl) {
