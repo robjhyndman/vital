@@ -316,3 +316,15 @@ new_model <- function(fit = NULL, model, data, response, transformation) {
 }
 
 globalVariables(c(".rows", "data", "calc", "sex"))
+
+# Models that reshape the data into an age x time matrix need every combination
+check_complete_grid <- function(data, age, index) {
+  n_ages <- length(unique(data[[age]]))
+  n_times <- length(unique(data[[index]]))
+  if (NROW(data) != n_ages * n_times) {
+    abort(paste0(
+      "The data must contain every combination of ", age, " and ", index, ". ",
+      "Use `tsibble::fill_gaps()` to make missing values explicit."
+    ))
+  }
+}

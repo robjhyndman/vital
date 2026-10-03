@@ -265,6 +265,7 @@ lca <- function(
   ages <- sort(unique(data[[age]]))
   n <- length(ages)
   m <- length(year)
+  check_complete_grid(data, age, index)
 
   logrates <- t(matrix(data[[rates]], nrow = n, ncol = m, byrow = TRUE))
   logrates[logrates == -Inf] <- NA

@@ -152,3 +152,24 @@ test_that("Lee Carter", {
       autoplot()
   )
 })
+
+test_that("LC and GAPC models require a complete age by time grid", {
+  gappy <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 2010, Age < 90) |>
+    dplyr::filter(!(Age == 50 & Year == 2015))
+  expect_warning(
+    model(gappy, lc = LC(log(Mortality))),
+    "every combination of Age and Year"
+  )
+  expect_warning(
+    model(gappy, apc = APC(Mortality)),
+    "every combination of Age and Year"
+  )
+  filled <- model(
+    tsibble::fill_gaps(gappy),
+    lc = LC(log(Mortality)),
+    apc = APC(Mortality)
+  )
+  expect_s3_class(filled$lc[[1]]$fit, "LC")
+  expect_s3_class(filled$apc[[1]]$fit, "GAPC")
+})

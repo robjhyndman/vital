@@ -565,6 +565,7 @@ vital_to_stmomo <- function(.data) {
   }
   ages <- sort(unique(.data[[vvar$age]]))
   years <- sort(unique(.data[[indexvar]]))
+  check_complete_grid(.data, vvar$age, indexvar)
   .data <- dplyr::arrange(
     as_tibble(.data),
     !!rlang::sym(indexvar),

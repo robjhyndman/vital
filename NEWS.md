@@ -31,6 +31,7 @@
 * Removed uses of deprecated and superseded tidyverse functions, which gave tidyselect deprecation warnings
 * Fixed `collapse_ages()` summing the age variable when age groups are unequal (e.g. 0, 1, 5, 10, ...)
 * `tsibble::fill_gaps()` now keeps vital objects and their attributes
+* `LC()` and the GAPC models (`APC()`, `CBD()`, etc.) now give an error, rather than misaligned fits, when some age and time combinations are missing
 * `arrange()` on a mable of vital models no longer duplicates the `mdl_vtl_df` class
 
 # vital 2.0.3
