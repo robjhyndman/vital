@@ -25,6 +25,14 @@ test_that("Functional mean", {
     0.002341783,
     tolerance = 1e-7
   )
+  # Simulated innovations should use the sigma for each age
+  set.seed(1)
+  sim_sd <- generate(fm |> filter(Sex == "Female"), h = 3, times = 200) |>
+    as_tibble() |>
+    group_by(Age) |>
+    summarise(sim_sd = sd(.sim))
+  sigma <- fm$fm[[1]]$fit$model
+  expect_gt(cor(sim_sd$sim_sd, sigma$sigma[match(sim_sd$Age, sigma$Age)]), 0.99)
   expect_identical(
     forecast(fm, bootstrap = TRUE, times = 7L) |>
       head(1) |>

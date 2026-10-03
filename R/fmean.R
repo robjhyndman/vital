@@ -119,7 +119,7 @@ generate.FMEAN <- function(
       new_data <- new_data |>
         left_join(innov, by = c(agevar, ".rep"))
     } else {
-      new_data$.innov <- stats::rnorm(NROW(new_data), sd = x$model$sigma)
+      new_data$.innov <- stats::rnorm(NROW(new_data), sd = new_data$sigma)
     }
   }
 
