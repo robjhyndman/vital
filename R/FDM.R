@@ -383,6 +383,18 @@ fdm <- function(
 
 # Functional PCA
 
+# Interpolating spline through (x, y) evaluated at xout, extrapolated linearly
+# beyond the range of x using the slope of the spline at its ends
+spline_extrapolate <- function(x, y, xout) {
+  f <- stats::splinefun(x, y, method = "fmm")
+  out <- f(xout)
+  below <- xout < min(x)
+  above <- xout > max(x)
+  out[below] <- f(min(x)) + f(min(x), deriv = 1) * (xout[below] - min(x))
+  out[above] <- f(max(x)) + f(max(x), deriv = 1) * (xout[above] - max(x))
+  out
+}
+
 # X is a time by age matrix, and x contains the ages of its columns
 fdpca <- function(X, x = seq(NCOL(X)), order = 2, ngrid = 500) {
   y <- t(X)
@@ -393,13 +405,13 @@ fdpca <- function(X, x = seq(NCOL(X)), order = 2, ngrid = 500) {
   if (ngrid < NCOL(X)) {
     stop("Grid should be larger than number of observations per time period.")
   }
-  # Interpolate data onto grid using interpolating splines
+  # Interpolate data onto a common grid using interpolating splines
+  xx <- seq(min(x), max(x), l = ngrid)
   yy <- matrix(NA, nrow = ngrid, ncol = n)
   for (i in seq(n)) {
     miss <- is.na(y[, i])
-    yy[, i] <- stats::spline(x[!miss], y[!miss, i], n = ngrid)$y
+    yy[, i] <- spline_extrapolate(x[!miss], y[!miss, i], xx)
   }
-  xx <- seq(min(x), max(x), l = ngrid)
   # Compute smooth means
   ax <- rowMeans(yy, na.rm = TRUE)
   # Centre data

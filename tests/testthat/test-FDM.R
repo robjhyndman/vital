@@ -23,7 +23,7 @@ test_that("Functional data model", {
       fc |>
         dplyr::filter(Sex == "Female", Age == 0, Year == 2025) |>
         dplyr::pull(.mean),
-      0.001985665,
+      0.001695867,
       tolerance = 1e-5
     )
     expect_identical(
@@ -132,4 +132,25 @@ test_that("FDM works with abridged ages", {
   expect_identical(ages$Age, c(0, 1, seq(5, 100, by = 5)))
   fits <- augment(fit)
   expect_lt(median(abs(log(fits$.fitted / fits$.response))), 0.1)
+})
+
+test_that("fdpca aligns years with missing values at the oldest ages", {
+  # Data that are linear in age, so linear extrapolation is exact and
+  # dropping the oldest ages in some years should not change the fit
+  ages <- 0:100
+  kt <- seq(-1, 1, length.out = 20)
+  X <- outer(rep(1, 20), -9 + 0.08 * ages) + outer(kt, 0.01 * ages)
+  gappy <- X
+  gappy[c(3, 7, 12), 96:101] <- NA
+  fit <- function(M) {
+    pca <- fdpca(M, x = ages, order = 1)
+    pca$coeff %*% t(pca$basis)
+  }
+  expect_equal(fit(gappy), fit(X))
+})
+
+test_that("spline_extrapolate continues linearly beyond the data", {
+  x <- 0:10
+  y <- 2 + 3 * x
+  expect_equal(spline_extrapolate(x, y, c(-2, 5, 12)), 2 + 3 * c(-2, 5, 12))
 })

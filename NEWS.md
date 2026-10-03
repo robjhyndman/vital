@@ -55,6 +55,7 @@
 - Fixed coherent `FDM()` models failing when estimated in parallel with `future`
 - `FDM()` now requires `order` to be a positive integer, rather than failing at forecast time when `order = 0`
 - `FDM()` now uses the actual ages, rather than assuming they are equally spaced, so it handles abridged ages (0, 1, 5, 10, ...) correctly. Results for single-year ages are unchanged
+- Fixed `FDM()` misaligning years with missing values at the oldest (or youngest) ages, such as zero rates on the log scale. Such years are now extrapolated linearly from their last observed ages
 
 # vital 2.0.3
 
