@@ -38,7 +38,7 @@ A vital object
 ## Details
 
 Note that when a measured variable takes value 0, the geometric mean is
-set to 10^-6 to avoid infinite values in the ratio. Therefore, when the
+set to 10^-5 to avoid infinite values in the ratio. Therefore, when the
 transformation is undone, the results will not be identical to the
 original in the case that the original data was 0.
 

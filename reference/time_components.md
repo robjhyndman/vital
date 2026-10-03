@@ -34,15 +34,15 @@ norway_mortality |>
 #> # Key:       Sex [1]
 #>    Sex     Year    kt
 #>    <chr>  <int> <dbl>
-#>  1 Female  1900  117.
-#>  2 Female  1901  111.
-#>  3 Female  1902  105.
-#>  4 Female  1903  110.
-#>  5 Female  1904  108.
-#>  6 Female  1905  112.
-#>  7 Female  1906  103.
-#>  8 Female  1907  108.
-#>  9 Female  1908  107.
-#> 10 Female  1909  101.
+#>  1 Female  1900  121.
+#>  2 Female  1901  114.
+#>  3 Female  1902  108.
+#>  4 Female  1903  114.
+#>  5 Female  1904  111.
+#>  6 Female  1905  115.
+#>  7 Female  1906  106.
+#>  8 Female  1907  111.
+#>  9 Female  1908  110.
+#> 10 Female  1909  104.
 #> # ℹ 114 more rows
 ```

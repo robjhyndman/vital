@@ -33,15 +33,15 @@ norway_mortality |>
 #> # A tibble: 111 × 4
 #>    Sex      Age    ax     bx
 #>    <chr>  <int> <dbl>  <dbl>
-#>  1 Female     0 -4.33 0.0152
-#>  2 Female     1 -6.16 0.0219
-#>  3 Female     2 -6.77 0.0189
-#>  4 Female     3 -7.14 0.0184
-#>  5 Female     4 -7.18 0.0162
-#>  6 Female     5 -7.41 0.0171
-#>  7 Female     6 -7.45 0.0162
-#>  8 Female     7 -7.48 0.0152
-#>  9 Female     8 -7.37 0.0122
-#> 10 Female     9 -7.39 0.0122
+#>  1 Female     0 -4.33 0.0148
+#>  2 Female     1 -6.16 0.0213
+#>  3 Female     2 -6.88 0.0193
+#>  4 Female     3 -7.20 0.0186
+#>  5 Female     4 -7.35 0.0173
+#>  6 Female     5 -7.53 0.0175
+#>  7 Female     6 -7.63 0.0173
+#>  8 Female     7 -7.73 0.0169
+#>  9 Female     8 -7.75 0.0160
+#> 10 Female     9 -7.83 0.0164
 #> # ℹ 101 more rows
 ```

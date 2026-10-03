@@ -220,27 +220,27 @@ lc |>
 #> # A tibble: 101 × 3
 #>     Age    ax     bx
 #>   <int> <dbl>  <dbl>
-#> 1     0 -4.33 0.0155
-#> 2     1 -6.16 0.0223
-#> 3     2 -6.77 0.0193
-#> 4     3 -7.14 0.0187
-#> 5     4 -7.18 0.0165
+#> 1     0 -4.33 0.0151
+#> 2     1 -6.16 0.0218
+#> 3     2 -6.88 0.0197
+#> 4     3 -7.20 0.0190
+#> 5     4 -7.35 0.0177
 #> # ℹ 96 more rows
 #> 
 #> Time coefficients
 #> # A tsibble: 124 x 2 [1Y]
 #>    Year    kt
 #>   <int> <dbl>
-#> 1  1900  115.
-#> 2  1901  109.
-#> 3  1902  103.
-#> 4  1903  109.
-#> 5  1904  106.
+#> 1  1900  118.
+#> 2  1901  112.
+#> 3  1902  105.
+#> 4  1903  111.
+#> 5  1904  109.
 #> # ℹ 119 more rows
 #> 
 #> Time series model: RW w/ drift 
 #> 
-#> Variance explained: 66.33%
+#> Variance explained: 92.39%
 ```
 
 The results can be plotted.
@@ -260,32 +260,32 @@ age_components(lc)
 #> # A tibble: 202 × 4
 #>    Sex      Age    ax     bx
 #>    <chr>  <int> <dbl>  <dbl>
-#>  1 Female     0 -4.33 0.0155
-#>  2 Female     1 -6.16 0.0223
-#>  3 Female     2 -6.77 0.0193
-#>  4 Female     3 -7.14 0.0187
-#>  5 Female     4 -7.18 0.0165
-#>  6 Female     5 -7.41 0.0174
-#>  7 Female     6 -7.45 0.0165
-#>  8 Female     7 -7.48 0.0155
-#>  9 Female     8 -7.37 0.0125
-#> 10 Female     9 -7.39 0.0124
+#>  1 Female     0 -4.33 0.0151
+#>  2 Female     1 -6.16 0.0218
+#>  3 Female     2 -6.88 0.0197
+#>  4 Female     3 -7.20 0.0190
+#>  5 Female     4 -7.35 0.0177
+#>  6 Female     5 -7.53 0.0179
+#>  7 Female     6 -7.63 0.0177
+#>  8 Female     7 -7.73 0.0173
+#>  9 Female     8 -7.75 0.0163
+#> 10 Female     9 -7.83 0.0168
 #> # ℹ 192 more rows
 time_components(lc)
 #> # A tsibble: 248 x 3 [1Y]
 #> # Key:       Sex [2]
 #>    Sex     Year    kt
 #>    <chr>  <int> <dbl>
-#>  1 Female  1900 115. 
-#>  2 Female  1901 109. 
-#>  3 Female  1902 103. 
-#>  4 Female  1903 109. 
-#>  5 Female  1904 106. 
-#>  6 Female  1905 110. 
-#>  7 Female  1906 101. 
-#>  8 Female  1907 106. 
-#>  9 Female  1908 105. 
-#> 10 Female  1909  99.6
+#>  1 Female  1900  118.
+#>  2 Female  1901  112.
+#>  3 Female  1902  105.
+#>  4 Female  1903  111.
+#>  5 Female  1904  109.
+#>  6 Female  1905  113.
+#>  7 Female  1906  104.
+#>  8 Female  1907  108.
+#>  9 Female  1908  108.
+#> 10 Female  1909  102.
 #> # ℹ 238 more rows
 ```
 
@@ -302,16 +302,16 @@ lc |>
 #> # Key:           Age x (Sex, .model) [101 x 2]
 #>    Sex    .model      Year   Age          Mortality    .mean
 #>    <chr>  <chr>      <dbl> <int>             <dist>    <dbl>
-#>  1 Female lee_carter  2024     0 t(N(-6.8, 0.0088)) 0.00110 
-#>  2 Female lee_carter  2025     0  t(N(-6.9, 0.018)) 0.00106 
-#>  3 Female lee_carter  2026     0  t(N(-6.9, 0.027)) 0.00103 
-#>  4 Female lee_carter  2027     0  t(N(-6.9, 0.036)) 0.00100 
-#>  5 Female lee_carter  2028     0    t(N(-7, 0.045)) 0.000972
-#>  6 Female lee_carter  2029     0    t(N(-7, 0.055)) 0.000944
-#>  7 Female lee_carter  2030     0    t(N(-7, 0.064)) 0.000916
-#>  8 Female lee_carter  2031     0  t(N(-7.1, 0.074)) 0.000889
-#>  9 Female lee_carter  2032     0  t(N(-7.1, 0.084)) 0.000863
-#> 10 Female lee_carter  2033     0  t(N(-7.1, 0.094)) 0.000838
+#>  1 Female lee_carter  2024     0 t(N(-6.8, 0.0087)) 0.00113 
+#>  2 Female lee_carter  2025     0  t(N(-6.8, 0.017)) 0.00110 
+#>  3 Female lee_carter  2026     0  t(N(-6.9, 0.026)) 0.00106 
+#>  4 Female lee_carter  2027     0  t(N(-6.9, 0.035)) 0.00103 
+#>  5 Female lee_carter  2028     0  t(N(-6.9, 0.045)) 0.00100 
+#>  6 Female lee_carter  2029     0    t(N(-7, 0.054)) 0.000973
+#>  7 Female lee_carter  2030     0    t(N(-7, 0.064)) 0.000944
+#>  8 Female lee_carter  2031     0    t(N(-7, 0.073)) 0.000917
+#>  9 Female lee_carter  2032     0  t(N(-7.1, 0.083)) 0.000890
+#> 10 Female lee_carter  2033     0  t(N(-7.1, 0.093)) 0.000864
 #> # ℹ 4,030 more rows
 ```
 

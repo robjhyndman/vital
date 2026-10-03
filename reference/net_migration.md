@@ -44,8 +44,8 @@ net_migration(norway_mortality, norway_births)
 #> # Key:     Age x Sex [111 x 3]
 #>     Year   Age Sex    Population Deaths NetMigration
 #>    <dbl> <dbl> <chr>       <dbl>  <dbl>        <dbl>
-#>  1  1900    -1 Female      32150 1745.        248.  
-#>  2  1900     0 Female      30070 1035.        -86.2 
+#>  1  1900    -1 Female      32150 1726.        229.  
+#>  2  1900     0 Female      30070 1054.        -66.6 
 #>  3  1900     1 Female      28960  594.        222.  
 #>  4  1900     2 Female      28043  281.         57.3 
 #>  5  1900     3 Female      27019  190.         26.8 

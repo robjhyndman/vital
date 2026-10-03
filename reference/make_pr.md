@@ -33,7 +33,7 @@ A vital object
 
 ## Details
 
-When a measured variable takes value 0, it is set to 10^-6 to avoid
+When a measured variable takes value 0, it is set to 10^-5 to avoid
 infinite values in the ratio.
 
 ## References

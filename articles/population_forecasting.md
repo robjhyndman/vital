@@ -156,27 +156,27 @@ future |>
 #> # A vital: 20 x 3 [1Y]
 #> # Key:     Sex [2]
 #>    Sex     Year mean_age
-#>    <chr>  <dbl>    <dbl>
-#>  1 Female  2024     42.0
-#>  2 Female  2025     42.2
-#>  3 Female  2026     42.4
-#>  4 Female  2027     42.7
-#>  5 Female  2028     42.9
-#>  6 Female  2029     43.1
-#>  7 Female  2030     43.3
-#>  8 Female  2031     43.5
-#>  9 Female  2032     43.8
-#> 10 Female  2033     44.0
-#> 11 Male    2024     40.7
-#> 12 Male    2025     40.9
-#> 13 Male    2026     41.2
-#> 14 Male    2027     41.4
-#> 15 Male    2028     41.7
-#> 16 Male    2029     41.9
-#> 17 Male    2030     42.1
-#> 18 Male    2031     42.4
-#> 19 Male    2032     42.6
-#> 20 Male    2033     42.8
+#>    <chr>  <int>    <dbl>
+#>  1 Female  2024     41.9
+#>  2 Female  2025     42.0
+#>  3 Female  2026     42.1
+#>  4 Female  2027     42.2
+#>  5 Female  2028     42.3
+#>  6 Female  2029     42.4
+#>  7 Female  2030     42.5
+#>  8 Female  2031     42.6
+#>  9 Female  2032     42.7
+#> 10 Female  2033     42.8
+#> 11 Male    2024     40.6
+#> 12 Male    2025     40.7
+#> 13 Male    2026     40.9
+#> 14 Male    2027     41.0
+#> 15 Male    2028     41.1
+#> 16 Male    2029     41.3
+#> 17 Male    2030     41.4
+#> 18 Male    2031     41.5
+#> 19 Male    2032     41.6
+#> 20 Male    2033     41.7
 ```
 
 We can also plot population pyramids with prediction intervals. For

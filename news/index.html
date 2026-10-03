@@ -40,6 +40,57 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="vital-development-version">vital (development version)<a class="anchor" aria-label="anchor" href="#vital-development-version"></a></h2>
 <ul><li>Updated to work with fabletools v0.7.0+</li>
+<li>Fixed <code><a href="https://generics.r-lib.org/reference/generate.html" class="external-link">generate()</a></code> for LC models, which back-transformed simulations twice</li>
+<li>Fixed <code><a href="../reference/LC.html">LC()</a></code> treating zero rates as log rates of 0 rather than as missing</li>
+<li>Fixed <code><a href="https://generics.r-lib.org/reference/generate.html" class="external-link">generate()</a></code> for FMEAN models using the wrong standard deviation for each age</li>
+<li>Fixed <code><a href="https://generics.r-lib.org/reference/tidy.html" class="external-link">tidy()</a></code> for FMEAN models, which understated standard errors</li>
+<li>Fixed <code><a href="../reference/life_expectancy.html">life_expectancy()</a></code> ignoring the <code>mortality</code> argument</li>
+<li>Fixed <code><a href="../reference/life_expectancy.html">life_expectancy()</a></code> failing when the age variable is not called <code>Age</code>
+</li>
+<li>
+<code><a href="../reference/life_table.html">life_table()</a></code> now uses sex-specific infant separation factors when sex is capitalised (e.g. “Female”)</li>
+<li>
+<code><a href="../reference/smooth_mortality_law.html">smooth_mortality_law()</a></code> now fits to deaths and population when available, as intended</li>
+<li>Fixed <code><a href="../reference/generate_population.html">generate_population()</a></code> not adding back the mean for coherent migration models</li>
+<li>
+<code>FDM(coherent = TRUE)</code> now validates <code>coherent_ts_model_fn</code> rather than <code>ts_model_fn</code>
+</li>
+<li>Fixed <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by()</a></code> with no variables failing on vital objects</li>
+<li>
+<code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> on a mable of GAPC models (APC, CBD, etc.) now gives an error instead of infinite recursion</li>
+<li>
+<code><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename()</a></code> and <code><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select()</a></code> now keep vital variables (age, sex, etc.) that are renamed</li>
+<li>Fixed <code><a href="../reference/generate_population.html">generate_population()</a></code> failing when <code>female</code> is supplied</li>
+<li>Fixed <code><a href="../reference/generate_population.html">generate_population()</a></code> failing when <code>mortality_model</code> or <code>migration_model</code> is NULL</li>
+<li>Fixed <code><a href="../reference/generate_population.html">generate_population()</a></code> failing when <code>fertility_model</code> is NULL</li>
+<li>
+<code><a href="../reference/generate_population.html">generate_population()</a></code> now works with any names for the index, age, sex and population variables</li>
+<li>
+<code><a href="../reference/generate_population.html">generate_population()</a></code> now correctly checks that each mable contains only one model</li>
+<li>
+<code><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast()</a></code> and <code><a href="https://generics.r-lib.org/reference/generate.html" class="external-link">generate()</a></code> for GAPC models now work when the index and age variables are not called <code>Year</code> and <code>Age</code>
+</li>
+<li>GAPC models with <code>link = "logit"</code> no longer fail when the data contain missing values</li>
+<li>
+<code><a href="../reference/net_migration.html">net_migration()</a></code> now works when births are stored as a population variable</li>
+<li>Fixed <code><a href="../reference/read_ktdb.html">read_ktdb()</a></code> ignoring the <code>triangle</code> argument</li>
+<li>Grouped vital objects now stay <code>grouped_vital</code> after <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/relocate.html" class="external-link">relocate()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice()</a></code> and <code>[</code>
+</li>
+<li>Fixed <code><a href="../reference/generate_population.html">generate_population()</a></code> producing missing populations at the oldest ages from negative simulated mortality rates and undefined survivorship ratios</li>
+<li>
+<code><a href="../reference/generate_population.html">generate_population()</a></code> now returns the index and age variables with the same types as <code>starting_population</code>
+</li>
+<li>
+<code><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model()</a></code> now estimates models in parallel when the <code>future</code> package is attached, as in fabletools (the previous implementation never ran)</li>
+<li>Fixed coherent <code><a href="../reference/FDM.html">FDM()</a></code> models fitting a second <code>geometric_mean</code> or <code>mean</code> series coherently when there are several such series (e.g. with keys other than sex)</li>
+<li>Removed uses of deprecated and superseded tidyverse functions, which gave tidyselect deprecation warnings</li>
+<li>Fixed <code><a href="../reference/collapse_ages.html">collapse_ages()</a></code> summing the age variable when age groups are unequal (e.g. 0, 1, 5, 10, …)</li>
+<li>
+<code><a href="https://tsibble.tidyverts.org/reference/fill_gaps.html" class="external-link">tsibble::fill_gaps()</a></code> now keeps vital objects and their attributes</li>
+<li>
+<code><a href="../reference/LC.html">LC()</a></code> and the GAPC models (<code><a href="../reference/GAPC.html">APC()</a></code>, <code><a href="../reference/GAPC.html">CBD()</a></code>, etc.) now give an error, rather than misaligned fits, when some age and time combinations are missing</li>
+<li>
+<code><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange()</a></code> on a mable of vital models no longer duplicates the <code>mdl_vtl_df</code> class</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.0.3" id="vital-203">vital 2.0.3<a class="anchor" aria-label="anchor" href="#vital-203"></a></h2><p class="text-muted">CRAN release: 2026-02-13</p>
