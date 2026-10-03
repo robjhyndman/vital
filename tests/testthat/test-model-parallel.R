@@ -5,13 +5,26 @@ test_that("model() gives the same fits when future is attached", {
     dplyr::filter(Year > 2000, Age < 90) |>
     make_pr(Mortality)
   fit_models <- function() {
-    dat |>
-      model(
-        lc = LC(log(Mortality)),
-        fdm = FDM(log(Mortality), coherent = TRUE),
-        bad = LC(Mortality)
-      ) |>
-      suppressWarnings()
+    msgs <- character()
+    fit <- withCallingHandlers(
+      dat |>
+        model(
+          lc = LC(log(Mortality)),
+          fdm = FDM(log(Mortality), coherent = TRUE),
+          bad = LC(Mortality)
+        ),
+      warning = function(w) {
+        msgs <<- c(msgs, conditionMessage(w))
+        invokeRestart("muffleWarning")
+      }
+    )
+    # Only the bad model should fail, so report any other model errors
+    errors <- grep("encountered for", msgs, value = TRUE)
+    expect_true(
+      all(grepl("encountered for bad", errors)),
+      info = paste(errors, collapse = "\n")
+    )
+    fit
   }
   base <- fit_models()
 
