@@ -62,6 +62,7 @@
 - Fixed `life_table()`, `life_expectancy()` and `interpolate()` for data with age group keys as well as age (e.g. `AgeGroup` in vitals from `demogdata` objects), and `total_fertility_rate()` for data with keys other than age. Forecasts now keep age group keys
 - Fixed `forecast()` with `new_data`, which failed for all models
 - `FMEAN()` and `FNAIVE()` now treat infinite values, such as logs of zero rates, as missing, rather than giving infinite means and standard deviations
+- Fixed `forecast()` for GAPC models (`LC2()`, `CBD()`, etc.) failing when `h = 1`
 
 # vital 2.0.3
 

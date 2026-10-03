@@ -150,3 +150,13 @@ test_that("autoplot shows age, period and cohort components of GAPC models", {
     grDevices::dev.off()
   }
 })
+
+test_that("GAPC forecasts one step ahead", {
+  fit <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Age > 60, Age < 90, Year > 2000) |>
+    model(LC2(Mortality))
+  fc1 <- suppressWarnings(forecast(fit, h = 1))
+  fc2 <- suppressWarnings(forecast(fit, h = 2))
+  expect_identical(NROW(fc1), 29L)
+  expect_equal(fc1$.mean, fc2$.mean[fc2$Year == min(fc2$Year)])
+})

@@ -485,11 +485,13 @@ forecast.GAPC <- function(
   indexvar <- index_var(new_data)
   agevar <- age_var(new_data)
   h <- length(unique(new_data[[indexvar]]))
-  pred <- forecast(object$model, h = h)
+  # StMoMo drops the years when h = 1, so forecast at least 2 years
+  pred <- forecast(object$model, h = max(2, h))
   df <- as.data.frame(pred$rates) |>
     mutate(age = pred$ages) |>
     pivot_longer(-age, names_to = "year", values_to = ".mean")
   df$year <- as.numeric(df$year)
+  df <- df[df$year %in% new_data[[indexvar]], ]
   if (!setequal(df$year, new_data[[indexvar]])) {
     stop("Years don't match")
   }
