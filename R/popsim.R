@@ -305,7 +305,12 @@ generate_population <- function(
     births$Rx20 <- births$RxB - births$cohD
     births$Ex0 <- 0.5 * (births$RxB + births$Rx20)
     births$Dx <- stats::rpois(NROW(births), births$Ex0 * births$mx)
-    births$f0 <- births$cohD / (births$Ex0 * births$mx)
+    # Proportion of infant deaths in the birth cohort (none if no risk)
+    births$f0 <- if_else(
+      births$Ex0 * births$mx > 0,
+      births$cohD / (births$Ex0 * births$mx),
+      0
+    )
     births$cohDB <- births$f0 * births$Dx
     births$Dx0 <- pmax(0, births$Dx - births$cohDB)
     age0 <- births[, c(

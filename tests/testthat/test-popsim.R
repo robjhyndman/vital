@@ -56,6 +56,7 @@ test_that("generate_population works without mortality or migration models", {
   ) |>
     suppressWarnings()
   expect_s3_class(no_deaths, "vital")
+  expect_false(anyNA(no_deaths$Population))
   no_migrants <- generate_population(
     pop,
     mortality_model = mort,
