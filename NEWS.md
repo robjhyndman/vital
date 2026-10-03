@@ -48,6 +48,7 @@
 - `LC()` now defaults to `adjust = "none"` when the data have no deaths or population (e.g. fertility), gives an error if `adjust = "dt"` or `"dxt"` is requested for such data, and reports missing deviances rather than zero
 - `life_expectancy()` now returns only the index, keys and `ex`, without the `rx`, `nx` and `ax` columns of the life table
 - `generate_population()` now gives an error unless the starting population has consecutive single-year ages
+- `collapse_ages()` now sums all numeric variables other than age keys and constants, rather than truncating any variable that changes linearly with age
 
 # vital 2.0.3
 
