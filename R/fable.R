@@ -7,7 +7,7 @@ build_vital_fable <- function(
   vitals = NULL,
   reorder = FALSE
 ) {
-  final <- build_fable(x, response = response, distribution = distribution) |>
+  final <- as_fable(x, response = !!response, distribution = !!distribution) |>
     suppressWarnings()
   attr(final, "vital") <- vitals[vitals %in% colnames(x)]
   class(final) <- c("fbl_vtl_ts", "fbl_ts", "vital", class(final)[-1])
