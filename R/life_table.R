@@ -103,7 +103,6 @@ lt <- function(dt, sex, age, mortality) {
   } else if (startage < 0L) {
     stop("startage must be non-negative")
   } else if (agegroup != 1L & agegroup != 5L) {
-    print(dt)
     stop("Only 1-year and 5-year agegroups handled")
   }
 

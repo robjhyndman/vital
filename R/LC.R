@@ -347,7 +347,6 @@ lca <- function(
     }
   } else if (adjust == "e0") {
     # Fit to life expectancy
-    # stop("Not yet working")
     startage <- min(data[[age]])
     mx <- exp(logrates)
     e0 <- apply(mx, 1, get.e0, agegroup = ages, sex = sex, startage = startage)
