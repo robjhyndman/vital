@@ -9,7 +9,10 @@
 #' @param mortality Variable in `.data` containing Mortality rates (mx). If omitted, the variable with name  `mx`, `Mortality` or `Rate` will be used (not case sensitive).
 #'
 #' @author Rob J Hyndman
-#' @return A vital object containing the index, keys, and the new life table variables `mx`, `qx`, `lx`, `dx`, `Lx`, `Tx` and `ex`.
+#' @return A vital object containing the index, keys, and the new life table
+#' variables `mx`, `qx`, `lx`, `dx`, `Lx`, `Tx`, `ex`, `rx` (survivorship
+#' ratios), `nx` (widths of the age groups) and `ax` (average years lived in
+#' each age group by those dying in it).
 #' @rdname life_table
 #'
 #' @references Chiang CL. (1984) *The life table and its applications*. Robert E Krieger Publishing Company: Malabar.

@@ -132,3 +132,11 @@ test_that("simulated forecasts are matched to rows of new_data", {
   fc0 <- forecast(fit, new_data = nd)
   expect_equal(median(fc$Mortality), median(fc0$Mortality), tolerance = 0.05)
 })
+
+test_that("forecasts and simulations keep the type of the index", {
+  fit <- norway_mortality |>
+    filter(Sex == "Female", Year > 2015) |>
+    model(FMEAN(Mortality))
+  expect_type(forecast(fit, h = 2)$Year, "integer")
+  expect_type(generate(fit, h = 2)$Year, "integer")
+})

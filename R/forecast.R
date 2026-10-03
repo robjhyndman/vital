@@ -269,6 +269,8 @@ make_future_data <- function(.data, h = NULL) {
   }
   out <- tsibble::new_data(.data, round(n))
   indexvar <- index_var(out)
+  # Keep the type of the index (e.g. integer years)
+  out[[indexvar]] <- vctrs::vec_cast(out[[indexvar]], .data[[indexvar]])
   agevar <- age_var(.data)
   # Every future time for each age (and age group label)
   age_keys <- union(agevar, key_vars(.data))

@@ -52,7 +52,7 @@ test_that("FNAIVE works with non-annual data", {
     as_vital(index = Year, key = c(Age, Sex), .age = "Age", .sex = "Sex")
   fit <- nor5 |> model(fnaive = FNAIVE(Mortality))
   fc <- forecast(fit, h = 2)
-  expect_identical(unique(fc$Year), c(2025, 2030))
+  expect_identical(unique(fc$Year), c(2025L, 2030L))
   expect_false(anyNA(fc$.mean))
   last <- nor5 |> dplyr::filter(Year == max(Year))
   expect_equal(fc$.mean[fc$Year == 2025], last$Mortality)

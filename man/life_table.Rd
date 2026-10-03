@@ -12,7 +12,10 @@ life_table(.data, mortality)
 \item{mortality}{Variable in \code{.data} containing Mortality rates (mx). If omitted, the variable with name  \code{mx}, \code{Mortality} or \code{Rate} will be used (not case sensitive).}
 }
 \value{
-A vital object containing the index, keys, and the new life table variables \code{mx}, \code{qx}, \code{lx}, \code{dx}, \code{Lx}, \code{Tx} and \code{ex}.
+A vital object containing the index, keys, and the new life table
+variables \code{mx}, \code{qx}, \code{lx}, \code{dx}, \code{Lx}, \code{Tx}, \code{ex}, \code{rx} (survivorship
+ratios), \code{nx} (widths of the age groups) and \code{ax} (average years lived in
+each age group by those dying in it).
 }
 \description{
 All available years and ages are included in the tables.
