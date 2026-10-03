@@ -78,11 +78,11 @@ test_that("cohort_components from GAPC model", {
   expect_s3_class(cohort_comp, "tbl_ts")
 })
 
-test_that("autoplot of a GAPC mable gives an error, not infinite recursion", {
+test_that("autoplot of a GAPC mable returns a plot, not infinite recursion", {
   fit <- norway_mortality |>
     dplyr::filter(Sex == "Female", Year > 2000, Age < 90) |>
     model(apc = APC(Mortality))
-  expect_error(autoplot(fit), "not supported")
+  expect_s3_class(autoplot(fit), "patchwork")
 })
 
 test_that("GAPC forecasts work with any index and age names", {
@@ -109,4 +109,39 @@ test_that("logit link works with missing values", {
     dplyr::mutate(Deaths = dplyr::if_else(Age == 60 & Year == 2010, NA, Deaths))
   fit <- nor |> model(cbd = CBD(Mortality, link = "logit"))
   expect_s3_class(fit$cbd[[1]]$fit, "GAPC")
+})
+
+test_that("autoplot shows age, period and cohort components of GAPC models", {
+  fits <- norway_mortality |>
+    dplyr::filter(Sex != "Total", Age > 50, Age < 95, Year > 1990) |>
+    model(
+      LC2 = LC2(Mortality),
+      CBD = CBD(Mortality),
+      APC = APC(Mortality),
+      RH = RH(Mortality),
+      M7 = M7(Mortality),
+      PLAT = PLAT(Mortality)
+    ) |>
+    suppressWarnings()
+  # Number of panels (two rows) and blank panels for constant age functions
+  expected <- list(
+    LC2 = c(4, 0),
+    CBD = c(4, 1),
+    APC = c(6, 2),
+    RH = c(6, 1),
+    M7 = c(8, 2),
+    PLAT = c(8, 2)
+  )
+  for (m in names(expected)) {
+    p <- autoplot(dplyr::select(fits, Sex, dplyr::all_of(m)))
+    panels <- c(p$patches$plots, list(p))
+    expect_length(panels, expected[[m]][1])
+    expect_identical(
+      sum(vapply(panels, inherits, logical(1), "spacer")),
+      as.integer(expected[[m]][2])
+    )
+    grDevices::pdf(NULL)
+    expect_no_error(print(p))
+    grDevices::dev.off()
+  }
 })

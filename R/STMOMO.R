@@ -30,7 +30,8 @@
 #' to produce a model that is suitable for full age ranges and captures the cohort effect.
 #'
 #' Each of these functions returns a GAPC model applied to the formula's response
-#' variable as a function of age.
+#' variable as a function of age. Use `autoplot()` on the fitted models to plot
+#' their age, period and cohort components.
 #' The model will optionally call \code{\link[StMoMo]{genWeightMat}} with arguments `clip` and `zeroCohorts`.
 #' All other arguments are passed to \code{\link[StMoMo]{StMoMo}}.
 #'
@@ -99,6 +100,9 @@
 #' gapc |>
 #'   dplyr::select(cbd2) |>
 #'   report()
+#' gapc |>
+#'   dplyr::select(cbd2) |>
+#'   autoplot()
 #' @export
 GAPC <- function(
   formula,
@@ -631,6 +635,73 @@ cohort_components.GAPC <- function(object, ...) {
   )
 }
 
+
+#' @export
+autoplot.GAPC <- function(object, ...) {
+  fit <- first_fit(object)
+  agevar <- age_var(fit$data)
+  obj_x <- age_components(object)
+  obj_time <- time_components(object)
+  index <- index_var(obj_time)
+  keys <- setdiff(colnames(as_tibble(object)), attributes(object)$model)
+
+  # Each column pairs an age function (top) with the index it multiplies (bottom)
+  kvars <- setdiff(colnames(obj_time), c(keys, index))
+  bvars <- if (length(kvars) == 1L) {
+    intersect(c("bx", "b1x"), colnames(obj_x))
+  } else {
+    paste0("b", seq_along(kvars), "x")
+  }
+  top <- lapply(bvars, function(b) gapc_age_panel(obj_x, agevar, b, keys))
+  bottom <- map2(kvars, bvars, function(k, b) {
+    key_plot(obj_time, sym(index), k, keys) +
+      ggplot2::ylab(gapc_index_label(obj_x, k, b))
+  })
+  # Cohort effect, against year of birth
+  if (!is.null(fit$fit$model$gc)) {
+    top <- c(top, list(gapc_age_panel(obj_x, agevar, "b0x", keys)))
+    bottom <- c(bottom, list(
+      key_plot(cohort_components(object), sym("Birth_Year"), "gc", keys) +
+        ggplot2::labs(x = "Birth year", y = gapc_index_label(obj_x, "gc", "b0x"))
+    ))
+  }
+  # Static age function, with the legend beneath it as in the LC plot
+  if ("ax" %in% colnames(obj_x)) {
+    top <- c(list(key_plot(obj_x, sym(agevar), "ax", keys)), top)
+    bottom <- c(list(patchwork::guide_area()), bottom)
+  }
+  patchwork::wrap_plots(c(top, bottom), nrow = 2) +
+    patchwork::plot_layout(guides = "collect")
+}
+
+# Value of an age function that does not vary with age, or NULL if it varies
+constant_age_function <- function(x) {
+  x <- x[!is.na(x)]
+  if (length(x) > 0 && all(abs(x - x[1]) <= 1e-8 * max(1, abs(x[1])))) {
+    x[1]
+  } else {
+    NULL
+  }
+}
+
+# Plot an age function, or leave a blank space if it is constant
+gapc_age_panel <- function(obj_x, agevar, b, keys) {
+  if (is.null(constant_age_function(obj_x[[b]]))) {
+    key_plot(obj_x, sym(agevar), b, keys)
+  } else {
+    patchwork::plot_spacer()
+  }
+}
+
+# Label an index, noting the value of its age function when that is constant
+gapc_index_label <- function(obj_x, k, b) {
+  value <- constant_age_function(obj_x[[b]])
+  if (is.null(value)) {
+    k
+  } else {
+    paste0(k, " (", b, " = ", format(signif(value, 4)), ")")
+  }
+}
 
 utils::globalVariables(c(
   "Birth_Year",

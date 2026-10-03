@@ -129,7 +129,8 @@ Plat (2009) combined the CBD model with some features of the Lee-Carter model
 to produce a model that is suitable for full age ranges and captures the cohort effect.
 
 Each of these functions returns a GAPC model applied to the formula's response
-variable as a function of age.
+variable as a function of age. Use \code{autoplot()} on the fitted models to plot
+their age, period and cohort components.
 The model will optionally call \code{\link[StMoMo]{genWeightMat}} with arguments \code{clip} and \code{zeroCohorts}.
 All other arguments are passed to \code{\link[StMoMo]{StMoMo}}.
 }
@@ -149,6 +150,9 @@ glance(gapc)
 gapc |>
   dplyr::select(cbd2) |>
   report()
+gapc |>
+  dplyr::select(cbd2) |>
+  autoplot()
 }
 \references{
 Cairns, AJG, Blake, D, and Dowd, K (2006). A two-factor model for
