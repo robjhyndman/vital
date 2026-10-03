@@ -80,31 +80,17 @@ forecast.FNAIVE <- function(
   # than this method. The arguments are included so they show in the docs.
   agevar <- age_var(new_data)
   indexvar <- index_var(object$fitted)
-  h <- length(unique(new_data[[indexvar]]))
-  fc <- object$fitted |>
-    as_tsibble() |>
-    left_join(object$model, by = agevar) |>
-    group_by(!!sym(agevar)) |>
-    dplyr::group_modify(function(x, ...) {
-      index <- colnames(x)[[1]]
-      measure <- colnames(x)[[2]]
-      mean <- x[[measure]][x[[index]] == max(x[[index]])]
-      sigma <- x$sigma[1]
-      out <- tibble(
-        horizon = seq(h),
-        mean = rep(mean, h),
-        sigma = sigma * sqrt(seq(h))
-      ) |>
-        mutate(fc = distributional::dist_normal(mean, sigma))
-      out[, c("horizon", "fc")]
-    })
-  new_data$horizon <- match(
-    new_data[[indexvar]],
-    sort(unique(new_data[[indexvar]]))
+  fitted <- as_tibble(object$fitted)
+  measure <- colnames(fitted)[3]
+  # Random walks start from the last observation for each age
+  last <- fitted[fitted[[indexvar]] == max(fitted[[indexvar]]), ]
+  horizon <- match(new_data[[indexvar]], sort(unique(new_data[[indexvar]])))
+  ages <- new_data[[agevar]]
+  sigma <- object$model$sigma[match(ages, object$model[[agevar]])]
+  distributional::dist_normal(
+    last[[measure]][match(ages, last[[agevar]])],
+    sigma * sqrt(horizon)
   )
-  new_data |>
-    left_join(fc, by = c("horizon", agevar)) |>
-    pull(fc)
 }
 
 #' @export
