@@ -88,3 +88,15 @@ test_that("FMEAN and FNAIVE plots find the age variable", {
     expect_identical(rlang::as_label(p$mapping$x), "age")
   }
 })
+
+test_that("Formulas using vars() and invalid transformations are parsed", {
+  nf <- norway_mortality |> filter(Sex == "Female", Year > 2010)
+  expect_s3_class(
+    model(nf, FMEAN(vars(Mortality, Deaths)), .safely = FALSE)[[2]][[1]],
+    "mdl_vtl_ts"
+  )
+  expect_error(
+    model(nf, FMEAN(Mortality^0), .safely = FALSE),
+    "Cannot invert"
+  )
+})

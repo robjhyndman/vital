@@ -14,6 +14,7 @@
 #' @importFrom rlang call2 get_env new_formula expr_name new_environment enexpr set_env
 #' @importFrom rlang quo_get_expr quo_is_call caller_env as_string quo_name
 #' @importFrom rlang rep_along new_quosure expr call_name as_label call_args
+#' @importFrom rlang exprs expr_text
 #' @importFrom stats na.omit residuals fitted var time predict sd
 #' @importFrom stats as.formula
 #' @importFrom tibble as_tibble tibble tbl_sum
