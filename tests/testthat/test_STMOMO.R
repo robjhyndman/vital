@@ -84,3 +84,17 @@ test_that("autoplot of a GAPC mable gives an error, not infinite recursion", {
     model(apc = APC(Mortality))
   expect_error(autoplot(fit), "not supported")
 })
+
+test_that("GAPC forecasts work with any index and age names", {
+  nor <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 2000, Age < 90)
+  nor2 <- nor |> dplyr::rename(year = Year, age = Age)
+  fc <- nor |> model(apc = APC(Mortality)) |> forecast(h = 2) |>
+    suppressWarnings()
+  fc2 <- nor2 |> model(apc = APC(Mortality)) |> forecast(h = 2) |>
+    suppressWarnings()
+  expect_equal(fc2$.mean, fc$.mean)
+  set.seed(1)
+  sim2 <- nor2 |> model(apc = APC(Mortality)) |> generate(h = 2, times = 2)
+  expect_false(anyNA(sim2$.sim))
+})

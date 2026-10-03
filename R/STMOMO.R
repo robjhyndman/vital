@@ -480,21 +480,22 @@ forecast.GAPC <- function(
   # Uncertainty does not work here. Users should call with simulate = TRUE for PI
   warning("Use simulate = TRUE to get distributional forecasts")
   indexvar <- index_var(new_data)
+  agevar <- age_var(new_data)
   h <- length(unique(new_data[[indexvar]]))
   pred <- forecast(object$model, h = h)
   df <- as.data.frame(pred$rates) |>
     mutate(age = pred$ages) |>
     pivot_longer(-age, names_to = "year", values_to = ".mean")
-  df <- df[, c("year", "age", ".mean")]
-  colnames(df)[1:2] <- colnames(new_data)
-  df$Year <- as.numeric(df$Year)
-  if (any(sort(unique(df$Year)) != sort(unique(new_data$Year)))) {
+  df$year <- as.numeric(df$year)
+  if (!setequal(df$year, new_data[[indexvar]])) {
     stop("Years don't match")
   }
-  if (any(sort(unique(df$Age)) != sort(unique(new_data$Age)))) {
+  if (!setequal(df$age, new_data[[agevar]])) {
     stop("Ages don't match")
   }
-  left_join(new_data, df, by = c("Age", "Year")) |>
+  df <- df[, c("year", "age", ".mean")]
+  colnames(df)[1:2] <- c(indexvar, agevar)
+  left_join(new_data, df, by = c(agevar, indexvar)) |>
     dplyr::pull(.mean) |>
     distributional::dist_degenerate()
 }
@@ -523,8 +524,8 @@ generate.GAPC <- function(
       year = as.numeric(sub("\\.\\d*$", "", year))
     )
   df <- df[, c(".rep", "year", "age", ".sim")]
-  colnames(df)[1:3] <- colnames(new_data)
-  left_join(new_data, df, by = c(".rep", "Year", "Age"))
+  colnames(df)[2:3] <- c(indexvar, agevar)
+  left_join(new_data, df, by = c(".rep", indexvar, agevar))
 }
 
 #' @export
