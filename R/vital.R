@@ -187,6 +187,12 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
           )
         )
     }
+  } else if (rates_included) {
+    output <- rates
+  } else if (pop_included) {
+    output <- pop
+  } else {
+    stop("No rates or population found in demogdata object")
   }
   output <- output |>
     select(Year, AgeGroup, Age, Group, dplyr::everything()) |>
