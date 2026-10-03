@@ -25,6 +25,7 @@
 * Fixed `read_ktdb()` ignoring the `triangle` argument
 * Grouped vital objects now stay `grouped_vital` after `mutate()`, `filter()`, `arrange()`, `rename()`, `relocate()`, `slice()` and `[`
 * Fixed `generate_population()` producing missing populations at the oldest ages from negative simulated mortality rates and undefined survivorship ratios
+* `generate_population()` now returns the index and age variables with the same types as `starting_population`
 
 # vital 2.0.3
 

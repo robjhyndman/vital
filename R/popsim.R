@@ -340,7 +340,12 @@ generate_population <- function(
       vvars$population
     )]
   }
-  future <- dplyr::bind_rows(future) |>
+  future <- dplyr::bind_rows(future)
+  # Restore the types of the index and age variables
+  for (v in c(indexvar, vvars$age)) {
+    future[[v]] <- vctrs::vec_cast(future[[v]], starting_population[[v]])
+  }
+  future |>
     as_vital(
       index = !!sym(indexvar),
       key = c(vvars$age, vvars$sex, ".rep"),

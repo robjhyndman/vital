@@ -142,4 +142,6 @@ test_that("generate_population gives no missing populations", {
     )
   )
   expect_false(anyNA(out$Population))
+  expect_type(out$Year, "integer")
+  expect_type(out$Age, "integer")
 })
