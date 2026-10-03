@@ -304,11 +304,12 @@ fdm <- function(
       values_from = all_of(measures),
       names_from = all_of(agevar)
     )
-  mx[[indexvar]] <- NULL
+  # Order rows by time and columns by age
+  mx <- mx[match(year, mx[[indexvar]]), as.character(ages)]
   mx <- as.matrix(mx)
   mx[mx == -Inf] <- NA
   # PC decomposition
-  y.pca <- fdpca(mx, order = order)
+  y.pca <- fdpca(mx, x = ages, order = order)
 
   # Compute fitted values
   fits <- as.data.frame(y.pca$basis %*% t(y.pca$coeff))
@@ -382,9 +383,9 @@ fdm <- function(
 
 # Functional PCA
 
-fdpca <- function(X, order = 2, ngrid = 500) {
+# X is a time by age matrix, and x contains the ages of its columns
+fdpca <- function(X, x = seq(NCOL(X)), order = 2, ngrid = 500) {
   y <- t(X)
-  x <- seq(NCOL(X))
   n <- NCOL(y)
   if (order < 1) {
     stop("Order must be at least 1")
@@ -412,14 +413,16 @@ fdpca <- function(X, order = 2, ngrid = 500) {
   # Eigenvectors and eigenvalues
   Phi <- as.matrix(t(s$vt)[, seq(order)])
   varprop <- s$d^2 / sum(s$d^2)
-  # Normalize eigenvectors
+  # Normalize eigenvectors so they integrate to 1 over age, weighting each
+  # age by the width of its interval (all 1 for single years of age)
   Phinorm <- matrix(NA, length(x), order)
   Phinormngrid <- matrix(NA, ngrid, order)
   delta <- xx[2] - xx[1]
+  widths <- c(diff(x), utils::tail(diff(x), 1))
   for (i in seq(order)) {
     Phinorm[, i] <- stats::approx(xx, Phi[, i], xout = x)$y /
       delta /
-      (sqrt(sum((stats::approx(xx, Phi[, i], xout = x)$y / delta)^2)))
+      (sqrt(sum(widths * (stats::approx(xx, Phi[, i], xout = x)$y / delta)^2)))
     Phinormngrid[, i] <- stats::approx(x, Phinorm[, i], xout = xx)$y
   }
   # Extract coeff and basis matrices

@@ -90,3 +90,46 @@ test_that("FDM requires at least one principal component", {
     forecast(h = 1)
   expect_false(anyNA(fc$.mean))
 })
+
+test_that("fdpca uses the actual ages rather than equal spacing", {
+  # Variation concentrated at age 0, plus variation across all ages
+  make <- function(ages) {
+    set.seed(2)
+    t1 <- rnorm(40)
+    t2 <- rnorm(40)
+    outer(t1, 3 * exp(-ages)) + outer(t2, ages / 100)
+  }
+  single <- 0:100
+  abridged <- c(0, 1, seq(5, 100, by = 5))
+  phi_single <- fdpca(make(single), x = single, order = 1)$basis[, "phi1"]
+  phi_abridged <- fdpca(make(abridged), x = abridged, order = 1)$basis[, "phi1"]
+  expect_gt(abs(cor(phi_abridged, phi_single[abridged + 1])), 0.9999)
+  # Single-year ages give the same results as equal spacing
+  expect_equal(
+    fdpca(make(single), x = single, order = 2),
+    fdpca(make(single), order = 2)
+  )
+})
+
+test_that("FDM works with abridged ages", {
+  abridged <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 1990) |>
+    tibble::as_tibble() |>
+    dplyr::mutate(
+      Age = c(0, 1, seq(5, 100, by = 5))[
+        findInterval(Age, c(0, 1, seq(5, 100, by = 5)))
+      ]
+    ) |>
+    dplyr::summarise(
+      Deaths = sum(Deaths),
+      Population = sum(Population),
+      .by = c(Year, Sex, Age)
+    ) |>
+    dplyr::mutate(Mortality = Deaths / Population) |>
+    as_vital(index = Year, key = c(Age, Sex), .age = "Age", .sex = "Sex")
+  fit <- abridged |> model(fdm = FDM(log(Mortality), order = 2))
+  ages <- age_components(fit)
+  expect_identical(ages$Age, c(0, 1, seq(5, 100, by = 5)))
+  fits <- augment(fit)
+  expect_lt(median(abs(log(fits$.fitted / fits$.response))), 0.1)
+})
