@@ -143,3 +143,9 @@ rename.vital <- function(.data, ...) {
   vvar <- rename_vital_vars(vital_var_list(.data), .data, loc)
   restore_vital(NextMethod(), vvar)
 }
+
+#' @exportS3Method tsibble::fill_gaps
+fill_gaps.vital <- function(.data, ..., .full = FALSE, .start = NULL, .end = NULL) {
+  vvar <- vital_var_list(.data)
+  restore_vital(NextMethod(), vvar)
+}

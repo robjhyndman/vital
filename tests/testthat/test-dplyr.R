@@ -133,3 +133,13 @@ test_that("dplyr verbs on mables keep a single mdl_vtl_df class", {
     expect_identical(sum(class(res) == "mdl_vtl_df"), 1L)
   }
 })
+
+test_that("fill_gaps() keeps vital attributes", {
+  nor <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 2010, Age < 90) |>
+    dplyr::filter(!(Age == 50 & Year == 2015))
+  filled <- tsibble::fill_gaps(nor)
+  expect_s3_class(filled, "vital")
+  expect_identical(vital_vars(filled), vital_vars(nor))
+  expect_identical(NROW(filled), NROW(nor) + 1L)
+})
