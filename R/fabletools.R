@@ -168,10 +168,10 @@ bind_new_data <- function(object, new_data) {
       ),
       .names_to = scenario_nm
     )
-    return(build_mable(
+    return(as_mable(
       new_data,
-      key = c(scenario_nm, key_vars(object)),
-      model = mable_vars(object)
+      key = !!c(scenario_nm, key_vars(object)),
+      model = !!mable_vars(object)
     ))
   }
   if (!is.data.frame(new_data)) {
@@ -208,120 +208,6 @@ bind_new_data <- function(object, new_data) {
   }
   object
 }
-build_mable <- function(x, key = NULL, key_data = NULL, model = NULL) {
-  model <- names(tidyselect::eval_select(enquo(model), data = x))
-  if (
-    length(
-      resp_var <- unique(map(x[model], function(mdl) response_vars(mdl[[1]])))
-    ) >
-      1
-  ) {
-    abort("A mable can only contain models with the same response variable(s).")
-  }
-  if (length(resp_var) == 0) {
-    abort("A mable must contain at least one model.")
-  }
-  if (!is_null(key_data)) {
-    assert_key_data(key_data)
-    key <- utils::head(names(key_data), -1L)
-  } else {
-    key <- names(tidyselect::eval_select(enquo(key), data = x))
-    key_data <- group_data(group_by(x, !!!syms(key)))
-  }
-  if (any(lengths(key_data[[length(key_data)]]) > 1)) {
-    abort(
-      "The result is not a valid mable. The key variables must uniquely identify each row."
-    )
-  }
-  build_mable_meta(x, key_data, model, response = resp_var[[1]])
-}
-
-build_mable_meta <- function(x, key_data, model, response) {
-  tsibble::new_tsibble(
-    x,
-    key = key_data,
-    model = model,
-    response = response,
-    nrow = NROW(x),
-    class = "mdl_df",
-    subclass = "mdl_df"
-  )
-}
-assert_key_data <- function(x) {
-  nc <- NCOL(x)
-  if (
-    is_false(
-      is.data.frame(x) &&
-        nc > 0 &&
-        is.list(x[[nc]]) &&
-        names(x)[[nc]] == ".rows"
-    )
-  ) {
-    abort(
-      "The `key` attribute must be a data frame with its last column called `.rows`."
-    )
-  }
-}
-
-build_fable <- function(x, response, distribution) {
-  response <- eval_tidy(enquo(response))
-  distribution <- names(x)[tidyselect::eval_select(
-    enquo(distribution),
-    x
-  )]
-  if (is_grouped_ts(x)) {
-    fbl <- structure(
-      x,
-      class = c(
-        "grouped_fbl",
-        "grouped_ts",
-        "grouped_df",
-        "fbl_ts",
-        "tbl_ts",
-        "tbl_df",
-        "tbl",
-        "data.frame"
-      ),
-      response = response,
-      dist = distribution,
-      model_cn = ".model"
-    )
-  } else {
-    fbl <- tsibble::new_tsibble(
-      x,
-      response = response,
-      dist = distribution,
-      model_cn = ".model",
-      class = "fbl_ts"
-    )
-  }
-  if (is.null(dimnames(fbl[[distribution]]))) {
-    warn(
-      "The dimnames of the fable's distribution are missing and have been set to match the response variables."
-    )
-    dimnames(fbl[[distribution]]) <- response
-  }
-  if (!identical(response, dimnames(fbl[[distribution]]))) {
-    dimnames(fbl[[distribution]]) <- response
-  }
-  validate_fable(fbl)
-  fbl
-}
-validate_fable <- function(fbl) {
-  stopifnot(inherits(fbl, "fbl_ts"))
-  chr_dist <- distribution_var(fbl)
-  if (!(chr_dist %in% names(fbl))) {
-    abort(sprintf(
-      "Could not find distribution variable `%s` in the fable. A fable must contain a distribution, if you want to remove it convert to a tsibble with `as_tsibble()`.",
-      chr_dist
-    ))
-  }
-  vctrs::vec_assert(
-    fbl[[chr_dist]],
-    distributional::new_dist(dimnames = response_vars(fbl))
-  )
-}
-
 dist_types <- function(dist) {
   map_chr(vctrs::vec_data(dist), function(x) class(x)[1])
 }
