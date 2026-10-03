@@ -208,3 +208,20 @@ test_that("LC and FDM plots work with several non-age keys", {
   expect_no_error(draw(autoplot(dplyr::select(fit, fdm))))
   expect_no_error(draw(autoplot(dplyr::filter(fit, Sex == "Female") |> dplyr::select(lc))))
 })
+
+test_that("LC only adjusts to deaths when deaths and population are available", {
+  fert <- norway_fertility |> dplyr::filter(Year > 2000)
+  fit <- fert |> model(lc = LC(log(Fertility)))
+  expect_identical(fit$lc[[1]]$fit$model$adjust, "none")
+  expect_true(all(is.na(unlist(glance(fit)[c("base_deviance", "total_deviance")]))))
+  expect_error(
+    fert |> model(lc = LC(log(Fertility), adjust = "dt"), .safely = FALSE),
+    "requires deaths and population"
+  )
+  mort <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 2000)
+  expect_identical(
+    model(mort, lc = LC(log(Mortality)))$lc[[1]]$fit$model$adjust,
+    "dt"
+  )
+})

@@ -22,7 +22,9 @@ Possibilities are
 \code{"dt"} (Lee-Carter method, the default),
 \code{"dxt"} (BMS method),
 \code{"e0"} (Lee-Miller method based on life expectancy) and
-\code{"none"}.}
+\code{"none"}. If omitted, \code{"dt"} is used when the data contain deaths and
+population (see \code{\link[=vital_vars]{vital_vars()}}), and \code{"none"} otherwise. The \code{"dt"} and
+\code{"dxt"} methods require deaths and population.}
 
 \item{jump_choice}{Method used for computation of jump-off point for forecasts.
 Possibilities: \code{"actual"} (use actual rates from final year) and

@@ -14,7 +14,9 @@
 #'   `"dt"` (Lee-Carter method, the default),
 #'   `"dxt"` (BMS method),
 #'   `"e0"` (Lee-Miller method based on life expectancy) and
-#'   `"none"`.
+#'   `"none"`. If omitted, `"dt"` is used when the data contain deaths and
+#'   population (see [vital_vars()]), and `"none"` otherwise. The `"dt"` and
+#'   `"dxt"` methods require deaths and population.
 #' @param jump_choice Method used for computation of jump-off point for forecasts.
 #' Possibilities: `"actual"` (use actual rates from final year) and
 #' `"fit"` (use fitted rates).
@@ -51,7 +53,8 @@ LC <- function(
   scale = FALSE,
   ...
 ) {
-  adjust <- match.arg(adjust)
+  # NULL means choose "dt" or "none" depending on the data
+  adjust <- if (missing(adjust)) NULL else match.arg(adjust)
   jump_choice <- match.arg(jump_choice)
   lc_model <- new_model_class("lc", train = train_lc)
   new_model_definition(
@@ -262,6 +265,17 @@ lca <- function(
 ) {
   index <- tsibble::index_var(data)
 
+  # Choose the adjustment method
+  counts_available <- !is.null(deaths) && !is.null(pop)
+  if (is.null(adjust)) {
+    adjust <- if (counts_available) "dt" else "none"
+  } else if (adjust %in% c("dt", "dxt") && !counts_available) {
+    stop(
+      "adjust = \"", adjust, "\" requires deaths and population variables. ",
+      "Use adjust = \"none\" or \"e0\" instead."
+    )
+  }
+
   # Check transformation
   if (substr(rates, 1, 3) != "log") {
     stop(
@@ -412,6 +426,9 @@ lca <- function(
     dfloglin *
     sum(deaths * log(d_nozero / deathslinfit) - (deaths - deathslinfit))
   mdev <- c(mdevlogadd, mdevloglin)
+  if (!counts_available) {
+    mdev[] <- NA_real_
+  }
   names(mdev) <- c("Mean deviance base", "Mean deviance total")
 
   # First object contains ages

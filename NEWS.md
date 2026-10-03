@@ -45,6 +45,7 @@
 - `forecast()`, `generate()`, `augment()` and `interpolate()` now keep the sex and other vital variables of the data, not just age
 - `autoplot()` of `LC()` and `FDM()` models now works when there is more than one key other than age
 - `collapse_ages()` no longer drops the open interval flag when `max_age` is the oldest age in the data
+- `LC()` now defaults to `adjust = "none"` when the data have no deaths or population (e.g. fertility), gives an error if `adjust = "dt"` or `"dxt"` is requested for such data, and reports missing deviances rather than zero
 
 # vital 2.0.3
 
