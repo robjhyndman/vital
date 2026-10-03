@@ -29,6 +29,7 @@
 * `model()` now estimates models in parallel when the `future` package is attached, as in fabletools (the previous implementation never ran)
 * Fixed coherent `FDM()` models fitting a second `geometric_mean` or `mean` series coherently when there are several such series (e.g. with keys other than sex)
 * Removed uses of deprecated and superseded tidyverse functions, which gave tidyselect deprecation warnings
+* Fixed `collapse_ages()` summing the age variable when age groups are unequal (e.g. 0, 1, 5, 10, ...)
 * `arrange()` on a mable of vital models no longer duplicates the `mdl_vtl_df` class
 
 # vital 2.0.3

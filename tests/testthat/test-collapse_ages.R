@@ -21,3 +21,18 @@ test_that("collapse_ages", {
     expect_warning(read_hmd_files("Mx_1x1.txt") |> collapse_ages())
   }
 })
+
+test_that("collapse_ages works with abridged age groups", {
+  ab <- norway_mortality |>
+    dplyr::filter(
+      Year == 2000,
+      Sex == "Female",
+      Age %in% c(0, 1, seq(5, 110, by = 5))
+    )
+  x <- collapse_ages(ab, max_age = 85)
+  expect_identical(max(x$Age), 85L)
+  top <- x |> dplyr::filter(Age == 85)
+  upper <- ab |> dplyr::filter(Age >= 85)
+  expect_equal(top$Deaths, sum(upper$Deaths))
+  expect_equal(top$Mortality, sum(upper$Deaths) / sum(upper$Population))
+})

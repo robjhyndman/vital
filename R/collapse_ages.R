@@ -64,7 +64,7 @@ collapse_ages <- function(.data, max_age = 100) {
     dplyr::reframe(dplyr::across(
       everything(),
       function(x) {
-        collapse_age_vector(x, ages, max_age)
+        collapse_age_vector(x, ages, max_age, dplyr::cur_column() == age)
       }
     )) |>
     as_tsibble(index = index, key = all_of(c(keys_noage, age)))
@@ -110,10 +110,10 @@ collapse_ages <- function(.data, max_age = 100) {
   )[, colnames])
 }
 
-collapse_age_vector <- function(x, ages, max_age) {
+collapse_age_vector <- function(x, ages, max_age, is_age = FALSE) {
   if (is.numeric(x)) {
-    # is it an age variable? Keep it as is
-    if (is.constant(diff(x))) {
+    # is it an age variable (or another age-like variable)? Keep it as is
+    if (is_age || is.constant(diff(x))) {
       out <- x[ages <= max_age]
     } else {
       # Sum upper group
