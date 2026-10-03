@@ -173,3 +173,21 @@ test_that("LC and GAPC models require a complete age by time grid", {
   expect_s3_class(filled$lc[[1]]$fit, "LC")
   expect_s3_class(filled$apc[[1]]$fit, "GAPC")
 })
+
+test_that("LC simulations use the actual jump-off when requested", {
+  nor <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 1990)
+  fit <- nor |>
+    model(
+      actual = LC(log(Mortality), jump_choice = "actual"),
+      fit = LC(log(Mortality), jump_choice = "fit")
+    )
+  set.seed(1)
+  sim_actual <- generate(dplyr::select(fit, actual), h = 2, times = 2)
+  set.seed(1)
+  sim_fit <- generate(dplyr::select(fit, fit), h = 2, times = 2)
+  innov <- fit$actual[[1]]$fit$fitted |>
+    dplyr::filter(Year == max(Year))
+  jump <- innov$.innov[match(sim_actual$Age, innov$Age)]
+  expect_equal(log(sim_actual$.sim) - log(sim_fit$.sim), jump)
+})

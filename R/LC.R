@@ -189,6 +189,15 @@ generate.LC <- function(
     left_join(fc, by = c(indexvar, ".rep")) |>
     mutate(fitted = ax + bx * .sim)
 
+  if (x$model$jump_choice == "actual") {
+    # Adjust simulations based on last year, as in forecast.LC()
+    lastresid <- x$fitted[x$fitted[[indexvar]] == max(x$fitted[[indexvar]]), ]
+    lastresid <- tibble(!!agevar := lastresid[[agevar]], .jump = lastresid$.innov)
+    new_data <- new_data |>
+      left_join(lastresid, by = agevar) |>
+      mutate(fitted = fitted + .jump)
+  }
+
   transmute(group_by_key(new_data), ".sim" := fitted)
 }
 
@@ -595,5 +604,6 @@ utils::globalVariables(c(
   "varprop",
   "lst_data",
   "by_x",
-  "by_t"
+  "by_t",
+  ".jump"
 ))

@@ -37,6 +37,7 @@
 - `total_fertility_rate()` now accepts a bare variable name for `fertility`
 - Fixed bootstrapped simulations from `FNAIVE()` models containing missing values
 - `FNAIVE()` models now work with data observed at intervals other than one time unit
+- `generate()` for `LC()` models, and hence `forecast(simulate = TRUE)` and `generate_population()`, now uses the actual rates as the jump-off when `jump_choice = "actual"`
 
 # vital 2.0.3
 
