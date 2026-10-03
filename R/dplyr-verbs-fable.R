@@ -23,7 +23,8 @@ select.fbl_vtl_ts <- function(.data, ...) {
     response = attr_data$response,
     distribution = attr_data$dist,
     vitals = vvar
-  )
+  ) |>
+    regroup_selected(.data, ...)
 }
 
 #' @export

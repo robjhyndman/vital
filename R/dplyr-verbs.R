@@ -24,7 +24,22 @@ select.vital <- function(.data, ...) {
     .deaths = vvar$deaths,
     .births = vvar$births,
     .population = vvar$population
-  )
+  ) |>
+    regroup_selected(.data, ...)
+}
+
+# tsibble's select() drops any grouping, so restore it,
+# following grouping variables that the selection renamed
+regroup_selected <- function(res, .data, ...) {
+  grps <- dplyr::group_vars(.data)
+  if (length(grps) == 0) {
+    return(res)
+  }
+  loc <- eval_select(expr(c(...)), .data)
+  old <- names(.data)[loc]
+  renamed <- grps %in% old
+  grps[renamed] <- names(loc)[match(grps[renamed], old)]
+  group_by(res, !!!syms(grps))
 }
 
 #' @export

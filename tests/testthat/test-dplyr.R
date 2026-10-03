@@ -38,6 +38,14 @@ test_that("classes", {
     "vital"
   )
   expect_s3_class(nor_mortality |> group_by(Sex) |> ungroup(), "vital")
+  expect_identical(
+    nor_mortality |> group_by(Sex) |> select(Deaths) |> group_vars(),
+    "Sex"
+  )
+  expect_identical(
+    nor_mortality |> group_by(Sex) |> select(S = Sex, Deaths) |> group_vars(),
+    "S"
+  )
   expect_s3_class(
     left_join(
       nor_mortality |> select(Population),
@@ -58,6 +66,8 @@ test_that("fable classes", {
   expect_s3_class(grouped |> filter(Year == 1904), "grouped_fbl_vtl")
   expect_s3_class(grouped |> mutate(z = .mean), "grouped_fbl_vtl")
   expect_s3_class(grouped |> arrange(Year), "grouped_fbl_vtl")
+  expect_s3_class(grouped |> select(Mortality), "grouped_fbl_vtl")
+  expect_identical(grouped |> select(Mortality) |> group_vars(), "Age")
   expect_s3_class(grouped |> ungroup(), "fbl_vtl_ts")
   expect_false(inherits(grouped |> ungroup(), "grouped_df"))
   expect_s3_class(grouped |> filter(Year == 1904) |> ungroup(), "fbl_vtl_ts")
