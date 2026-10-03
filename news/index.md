@@ -167,6 +167,9 @@
 - Errors reported by
   [`model()`](https://fabletools.tidyverts.org/reference/model.html) now
   include their underlying cause
+- Fixed coherent
+  [`FDM()`](https://pkg.robjhyndman.com/vital/reference/FDM.md) models
+  failing when estimated in parallel with `future`
 
 ## vital 2.0.3
 
