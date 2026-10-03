@@ -22,7 +22,8 @@
 #' Possibilities: `"actual"` (use actual rates from final year) and
 #' `"fit"` (use fitted rates).
 #' The original Lee-Carter method used `"fit"` (the default), but Lee and Miller (2001)
-#' and most other authors prefer `"actual"`.
+#' and most other authors prefer `"actual"`. With `"actual"`, fitted rates are
+#' used (with a warning) for ages whose rate is zero or missing in the final year.
 #' @param scale If TRUE, `bx` and `kt` are rescaled so that `kt` has drift parameter = 1.
 #' @param ... Not used.
 #'
@@ -111,6 +112,20 @@ train_lc <- function(
     ) |>
     select(all_of(c(indexvar, vvar$age, ".fitted", ".innov")))
 
+  # Jump-off adjustments: the final residuals for "actual", otherwise none
+  last <- fits[fits[[indexvar]] == max(fits[[indexvar]]), ]
+  jump <- if (jump_choice == "actual") last$.innov else rep(0, NROW(last))
+  if (anyNA(jump)) {
+    warning(
+      "Rates are zero or missing in the final year for ages ",
+      paste(last[[vvar$age]][is.na(jump)], collapse = ", "),
+      ". Using fitted rates as the jump-off for these ages.",
+      call. = FALSE
+    )
+    jump[is.na(jump)] <- 0
+  }
+  out$jump <- tibble(!!vvar$age := last[[vvar$age]], .jump = jump)
+
   structure(
     list(
       model = out,
@@ -134,8 +149,6 @@ forecast.LC <- function(
   times = 5000,
   ...
 ) {
-  jump_choice <- object$model$jump_choice
-
   # simulation/bootstrap not actually used here as forecast.mdl_vtl_ts
   # handles this using generate() and forecast.LC is never called.
   # The arguments are included to avoid a warning message, and because this is how it
@@ -149,24 +162,13 @@ forecast.LC <- function(
   fc <- object$model$fit_kt |>
     forecast(h = h)
 
-  # Create forecasts of response series
-  fc2 <- new_data |>
+  # Create forecasts of response series, adjusted to the jump-off rates
+  new_data |>
     left_join(object$model$by_x, by = agevar) |>
     left_join(fc, by = indexvar) |>
-    transmute(fc = ax + bx * kt)
-
-  if (jump_choice == "actual") {
-    # Adjust forecasts based on last year
-    lastresid <- object$fitted[
-      object$fitted[[indexvar]] == max(object$fitted[[indexvar]]),
-    ] |>
-      dplyr::select(all_of(c(agevar, ".innov")))
-    fc2 <- fc2 |>
-      left_join(lastresid, by = agevar) |>
-      mutate(fc = fc + .innov)
-  }
-
-  fc2 |> pull(fc)
+    left_join(object$model$jump, by = agevar) |>
+    transmute(fc = ax + bx * kt + .jump) |>
+    pull(fc)
 }
 
 #' @export
@@ -191,16 +193,8 @@ generate.LC <- function(
   new_data <- new_data |>
     left_join(x$model$by_x, by = agevar) |>
     left_join(fc, by = c(indexvar, ".rep")) |>
-    mutate(fitted = ax + bx * .sim)
-
-  if (x$model$jump_choice == "actual") {
-    # Adjust simulations based on last year, as in forecast.LC()
-    lastresid <- x$fitted[x$fitted[[indexvar]] == max(x$fitted[[indexvar]]), ]
-    lastresid <- tibble(!!agevar := lastresid[[agevar]], .jump = lastresid$.innov)
-    new_data <- new_data |>
-      left_join(lastresid, by = agevar) |>
-      mutate(fitted = fitted + .jump)
-  }
+    left_join(x$model$jump, by = agevar) |>
+    mutate(fitted = ax + bx * .sim + .jump)
 
   transmute(group_by_key(new_data), ".sim" := fitted)
 }

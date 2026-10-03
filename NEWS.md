@@ -67,6 +67,7 @@
 - `autoplot()` for `FDM()` models no longer fails when `show_order` is larger than the number of fitted components (e.g. `order = 1`)
 - `collapse_ages()` now gives an informative error when `max_age` is not one of the ages, and no longer adds a second `+` to age group labels that already end in `+`
 - Subsetting a mable of vital models with `[` no longer labels the result as a mable when it contains no models
+- `LC(jump_choice = "actual")` now uses fitted rates, with a warning, as the jump-off for ages whose rate is zero or missing in the final year, rather than giving missing forecasts
 
 # vital 2.0.3
 

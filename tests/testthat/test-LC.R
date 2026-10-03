@@ -181,7 +181,8 @@ test_that("LC simulations use the actual jump-off when requested", {
     model(
       actual = LC(log(Mortality), jump_choice = "actual"),
       fit = LC(log(Mortality), jump_choice = "fit")
-    )
+    ) |>
+    expect_warning("Rates are zero or missing in the final year")
   set.seed(1)
   sim_actual <- generate(dplyr::select(fit, actual), h = 2, times = 2)
   set.seed(1)
@@ -189,6 +190,8 @@ test_that("LC simulations use the actual jump-off when requested", {
   innov <- fit$actual[[1]]$fit$fitted |>
     dplyr::filter(Year == max(Year))
   jump <- innov$.innov[match(sim_actual$Age, innov$Age)]
+  # Ages with zero final rates use the fitted jump-off
+  jump[is.na(jump)] <- 0
   expect_equal(log(sim_actual$.sim) - log(sim_fit$.sim), jump)
 })
 
@@ -251,4 +254,21 @@ test_that("LC deviances omit ages with no population", {
   # Unchanged when all populations are positive
   gl2 <- glance(model(nf |> filter(Age < 100), LC(log(Mortality))))
   expect_equal(unname(gl2$base_deviance), 1.357878, tolerance = 1e-6)
+})
+
+test_that("LC with actual jump-off uses fitted rates for zero final rates", {
+  nz <- norway_mortality |> filter(Sex == "Female", Year > 1990, Age < 100)
+  nz$Mortality[nz$Year == max(nz$Year) & nz$Age == 5] <- 0
+  expect_warning(
+    fit <- model(nz, actual = LC(log(Mortality), jump_choice = "actual")),
+    "final year for ages 5, 10, 13\\."
+  )
+  fit_fit <- model(nz, fit = LC(log(Mortality)))
+  fc <- forecast(fit, h = 2)
+  fc_fit <- forecast(fit_fit, h = 2)
+  expect_false(anyNA(fc$.mean))
+  expect_equal(fc$.mean[fc$Age == 5], fc_fit$.mean[fc_fit$Age == 5])
+  expect_false(isTRUE(all.equal(fc$.mean[fc$Age == 6], fc_fit$.mean[fc_fit$Age == 6])))
+  sim <- generate(fit, h = 2, times = 2)
+  expect_false(anyNA(sim$.sim))
 })

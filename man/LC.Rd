@@ -31,7 +31,8 @@ contain product-ratios from \code{\link[=make_pr]{make_pr()}}. The \code{"dt"} a
 Possibilities: \code{"actual"} (use actual rates from final year) and
 \code{"fit"} (use fitted rates).
 The original Lee-Carter method used \code{"fit"} (the default), but Lee and Miller (2001)
-and most other authors prefer \code{"actual"}.}
+and most other authors prefer \code{"actual"}. With \code{"actual"}, fitted rates are
+used (with a warning) for ages whose rate is zero or missing in the final year.}
 
 \item{scale}{If TRUE, \code{bx} and \code{kt} are rescaled so that \code{kt} has drift parameter = 1.}
 
