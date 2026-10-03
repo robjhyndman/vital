@@ -18,8 +18,11 @@
 #' @examples
 #' autoplot(norway_fertility, Fertility)
 #' @export
-autoplot.vital <- function(object, .vars = NULL, age = age_var(object), ...) {
+autoplot.vital <- function(object, .vars = NULL, age = NULL, ...) {
   quo_vars <- enquo(.vars)
+  if (is.null(age)) {
+    age <- age_var(object)
+  }
 
   # Index variable
   index <- tsibble::index_var(object)

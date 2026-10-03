@@ -163,10 +163,12 @@ model_sum.FMEAN <- function(x) {
 #' @export
 autoplot.FMEAN <- function(
   object,
-  age = age_var(first_fit(object)$data),
+  age = NULL,
   ...
 ) {
-  force(age)
+  if (is.null(age)) {
+    age <- age_var(first_fit(object)$data)
+  }
   modelname <- attributes(object)$model
   object <- object |>
     mutate(
