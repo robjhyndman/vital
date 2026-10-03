@@ -1,7 +1,10 @@
 # Make sure class is preserved
 
 restore_mdl_vtl_df <- function(x) {
-  class(x) <- unique(c("mdl_vtl_df", class(x)))
+  # Results without model columns are no longer mables
+  if (inherits(x, "mdl_df")) {
+    class(x) <- unique(c("mdl_vtl_df", class(x)))
+  }
   x
 }
 

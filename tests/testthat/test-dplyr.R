@@ -165,3 +165,11 @@ test_that("dplyr verbs keep the vital variables of fables as a character vector"
   expect_identical(vital_vars(filter(fc, Age < 50)), vital_vars(fc))
   expect_type(vital_vars(filter(fc, Age < 50)), "character")
 })
+
+test_that("subsetting a mable without model columns gives a tibble", {
+  fit <- norway_mortality |>
+    dplyr::filter(Year > 2015, Sex != "Total") |>
+    model(FMEAN(Mortality))
+  expect_false(inherits(fit[, "Sex"], "mdl_vtl_df"))
+  expect_s3_class(fit[1, ], "mdl_vtl_df")
+})
