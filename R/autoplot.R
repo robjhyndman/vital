@@ -24,21 +24,10 @@ autoplot.vital <- function(object, .vars = NULL, age = age_var(object), ...) {
   # Index variable
   index <- tsibble::index_var(object)
 
-  # Age variable
+  # A vital without age, so try a tsibble autoplot
   if (is.null(age)) {
-    if (inherits(object, "vital")) {
-      age <- age_var(object)
-      if (is.null(age)) {
-        # A vital without age, so try a tsibble autoplot
-        object <- as_tsibble(object)
-        return(autoplot(object, .vars = {{ .vars }}, ...))
-      }
-    } else if (inherits(object, "tbl_ts")) {
-      # Need to find the age variable
-      age <- find_key(object, c("age", "age_group"))
-    } else {
-      stop("Not sure how to handle this class")
-    }
+    object <- as_tsibble(object)
+    return(autoplot(object, .vars = {{ .vars }}, ...))
   }
 
   # Drop Age as a key and nest results
