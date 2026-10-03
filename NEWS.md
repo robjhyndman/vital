@@ -14,6 +14,7 @@
 * Fixed `group_by()` with no variables failing on vital objects
 * `autoplot()` on a mable of GAPC models (APC, CBD, etc.) now gives an error instead of infinite recursion
 * `rename()` and `select()` now keep vital variables (age, sex, etc.) that are renamed
+* Fixed `generate_population()` failing when `female` is supplied
 
 # vital 2.0.3
 

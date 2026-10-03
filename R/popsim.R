@@ -65,11 +65,11 @@ generate_population <- function(
   }
   indexvar <- index_var(starting_population)
   vvars <- vital_var_list(starting_population)
+  sexes <- unique(starting_population[[vvars$sex]])
+  if (length(sexes) != 2) {
+    stop("starting_population must contain exactly 2 sexes")
+  }
   if (is.null(female)) {
-    sexes <- unique(starting_population[[vvars$sex]])
-    if (length(sexes) != 2) {
-      stop("More than 2 sexes found")
-    }
     # Try female
     female <- sexes[grepl("^[Ff]", sexes)]
     if (length(female) == 0L) {
@@ -80,8 +80,10 @@ generate_population <- function(
       female <- sexes[1]
       warning(paste("Setting female to ", female))
     }
-    male <- sexes[sexes != female]
+  } else if (!(female %in% sexes)) {
+    stop("female must be one of the values of the sex variable")
   }
+  male <- sexes[sexes != female]
   # Prepare the starting population
   pop <- starting_population[
     starting_population[[indexvar]] == max(starting_population[[indexvar]]),
