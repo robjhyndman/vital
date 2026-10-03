@@ -184,7 +184,7 @@ generate_population <- function(
     )
   future$fx[is.na(future$fx)] <- 0
   future$Nx[is.na(future$Nx)] <- 0
-  future$Population <- NA_integer_
+  future[[vvars$population]] <- NA_real_
   future <- future |>
     dplyr::arrange(
       future[[indexvar]],
@@ -219,7 +219,7 @@ generate_population <- function(
     # Survivorship ratios
     nsr <- future[[y]] |>
       as_tsibble(index = indexvar, key = c(vvars$age, vvars$sex, ".rep")) |>
-      as_vital(.sex = "Sex", .age = "Age", .population = "Rx") |>
+      as_vital(.sex = vvars$sex, .age = vvars$age, .population = "Rx") |>
       life_table()
     nsr$nsr <- 1 - nsr$rx
     nsr <- nsr[, c(indexvar, vvars$age, vvars$sex, ".rep", "nsr")]
@@ -286,7 +286,7 @@ generate_population <- function(
         )],
         by = c(indexvar, vvars$age, vvars$sex, ".rep")
       )
-    births$RxB <- births$Population + 0.5 * births$Nx
+    births$RxB <- births[[vvars$population]] + 0.5 * births$Nx
     births$cohD <- pmax(0, births$nsr * births$RxB)
     births$Rx20 <- births$RxB - births$cohD
     births$Ex0 <- 0.5 * (births$RxB + births$Rx20)
@@ -339,10 +339,11 @@ generate_population <- function(
   }
   future <- dplyr::bind_rows(future) |>
     as_vital(
-      index = Year,
+      index = !!sym(indexvar),
       key = c(vvars$age, vvars$sex, ".rep"),
       .sex = vvars$sex,
-      .age = vvars$age
+      .age = vvars$age,
+      .population = vvars$population
     )
 }
 

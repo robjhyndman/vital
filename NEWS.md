@@ -17,6 +17,7 @@
 * Fixed `generate_population()` failing when `female` is supplied
 * Fixed `generate_population()` failing when `mortality_model` or `migration_model` is NULL
 * Fixed `generate_population()` failing when `fertility_model` is NULL
+* `generate_population()` now works with any names for the index, age, sex and population variables
 
 # vital 2.0.3
 

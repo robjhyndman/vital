@@ -82,3 +82,34 @@ test_that("generate_population works without a fertility model", {
   first_year <- no_births |> dplyr::filter(Year == min(Year), Age == 0)
   expect_true(all(first_year$Population < 2000))
 })
+
+test_that("generate_population uses the vital variable names", {
+  pop2 <- pop |>
+    dplyr::rename(year = Year, age = Age, sex = Sex, Exposure = Population)
+  mort2 <- pop2 |> model(m = FMEAN(Mortality))
+  fert2 <- norway_fertility |>
+    dplyr::filter(Year > 2015) |>
+    dplyr::rename(year = Year, age = Age) |>
+    model(m = FMEAN(Fertility))
+  births2 <- norway_births |>
+    dplyr::filter(Year > 2015) |>
+    dplyr::rename(year = Year, sex = Sex)
+  mig2 <- net_migration(pop2, births2) |>
+    make_sd(NetMigration, key = sex) |>
+    model(m = FMEAN(NetMigration))
+  set.seed(1)
+  out <- generate_population(
+    pop2,
+    mortality_model = mort2,
+    fertility_model = fert2,
+    migration_model = mig2,
+    h = 2,
+    n_reps = 3
+  ) |>
+    suppressWarnings()
+  expect_identical(tsibble::index_var(out), "year")
+  expect_identical(
+    vital_vars(out),
+    c(age = "age", sex = "sex", population = "Exposure")
+  )
+})
