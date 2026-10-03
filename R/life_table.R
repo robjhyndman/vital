@@ -92,7 +92,7 @@ lt <- function(dt, sex, age, mortality) {
 
   # Grab information from tibble
   mx <- dt[[mortality]]
-  sex <- sex[1]
+  sex <- tolower(sex[1])
   ages <- sort(round(unique(dt[[age]])))
   startage <- ages[1]
   agegroup <- ages[2] - ages[1]

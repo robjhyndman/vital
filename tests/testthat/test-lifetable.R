@@ -47,3 +47,11 @@ test_that("life_expectancy works with any age variable name", {
     life_expectancy(nor, from_age = 65)$ex
   )
 })
+
+test_that("life_table uses sex-specific a0 regardless of case", {
+  nor <- norway_mortality |>
+    dplyr::filter(Year == 1950, Sex != "Total")
+  nor_lower <- nor |>
+    dplyr::mutate(Sex = tolower(Sex))
+  expect_equal(life_table(nor)$ax, life_table(nor_lower)$ax)
+})
