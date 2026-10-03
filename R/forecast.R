@@ -51,7 +51,7 @@ forecast.mdl_vtl_df <- function(
     )
     h <- NULL
   }
-  vvars <- vital_vars(object[[mdls[1]]][[1]]$data)
+  vvars <- unlist(mable_vital_vars(object))
   kv <- c(key_vars(object), ".model")
   if (!is.null(new_data)) {
     object <- bind_new_data(object, new_data)

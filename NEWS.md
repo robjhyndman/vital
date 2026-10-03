@@ -42,6 +42,7 @@
 - `as_vital()` now works for `demogdata` objects containing only rates or only population
 - `generate()` for `FNAIVE()` models is much faster
 - `as_vital()` on a vital object now accepts `key` (it previously ignored it), and keeps the existing vital variables unless they are given
+- `forecast()`, `generate()`, `augment()` and `interpolate()` now keep the sex and other vital variables of the data, not just age
 
 # vital 2.0.3
 

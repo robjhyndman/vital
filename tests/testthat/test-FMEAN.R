@@ -64,3 +64,13 @@ test_that("generate checks times against the replicates in new_data", {
     "must equal the number of replicates"
   )
 })
+
+test_that("mable methods keep the vital variables of the data", {
+  nor <- norway_mortality |>
+    dplyr::filter(Sex != "Total", Year > 2010)
+  fit <- nor |> model(mean = FMEAN(Mortality))
+  expect_identical(vital_var_list(forecast(fit, h = 2))$sex, "Sex")
+  expect_identical(vital_var_list(generate(fit, h = 2))$sex, "Sex")
+  expect_identical(vital_var_list(augment(fit))$sex, "Sex")
+  expect_identical(vital_var_list(interpolate(fit, nor))$sex, "Sex")
+})

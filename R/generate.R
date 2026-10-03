@@ -30,6 +30,7 @@ generate.mdl_vtl_df <- function(
   ...
 ) {
   mdls <- mable_vars(x)
+  vvar <- mable_vital_vars(x)
   if (!is.null(new_data)) {
     x <- bind_new_data(x, new_data)
   }
@@ -53,7 +54,7 @@ generate.mdl_vtl_df <- function(
 
   unnest_tsbl(x, ".sim", parent_key = kv) |>
     as_tsibble(index = index, key = all_of(c(agevar, kv, ".rep"))) |>
-    as_vital(.age = agevar, reorder = TRUE)
+    restore_vital(vvar, reorder = TRUE)
 }
 
 #' @export

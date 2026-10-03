@@ -218,18 +218,20 @@ nest_keys <- function(.data, nm = "data") {
           tsibble::interval(.data)
         }
       ) |>
-        as_vital(
-          .age = attr_data$age,
-          .sex = attr_data$sex,
-          .births = attr_data$births,
-          .deaths = attr_data$deaths,
-          .population = attr_data$population
-        )
+        restore_vital(attr_data) |>
+        # Keep the vital variables of keys dropped from each series, so they
+        # can be restored in forecasts and other output
+        `attr<-`("vital", unlist(attr_data))
     },
     x = tsibble::as_tibble(.data),
     j = col_nest
   )
   tsibble::as_tibble(out)
+}
+
+# Vital variables of the data used to fit the models in a mable
+mable_vital_vars <- function(object) {
+  vital_var_list(object[[mable_vars(object)[1]]][[1]]$data)
 }
 
 list_of_models <- function(x = list()) {

@@ -1,9 +1,10 @@
 # These just grab the vital attributes, then use the tsibble method,
 # before adding back the missing attributes
 
-restore_vital <- function(x, vvar) {
+restore_vital <- function(x, vvar, ...) {
   as_vital(
     x,
+    ...,
     .age = vvar$age,
     .sex = vvar$sex,
     .deaths = vvar$deaths,

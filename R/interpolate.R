@@ -33,7 +33,7 @@ interpolate.mdl_vtl_df <- function(object, new_data, ...) {
   )
   unnest_tbl(object, "interpolated") |>
     as_tsibble(index = index, key = all_of(c(agevar, keys_noage))) |>
-    as_vital(.age = agevar, reorder = TRUE)
+    restore_vital(vital_var_list(new_data), reorder = TRUE)
 }
 
 #' @export

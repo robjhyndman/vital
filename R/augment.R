@@ -2,6 +2,7 @@
 augment.mdl_vtl_df <- function(x, ...) {
   mbl_vars <- mable_vars(x)
   kv <- key_vars(x)
+  vvar <- mable_vital_vars(x)
   agevar <- age_var(x[[mbl_vars[1]]][[1]]$data)
   index <- index(x[[mbl_vars[1]]][[1]]$data)
   x <- mutate(
@@ -16,7 +17,7 @@ augment.mdl_vtl_df <- function(x, ...) {
   )
   unnest_tsbl(x, ".aug", parent_key = c(kv, ".model")) |>
     as_tsibble(index = index, key = all_of(c(agevar, kv, ".model"))) |>
-    as_vital(.age = agevar, reorder = TRUE)
+    restore_vital(vvar, reorder = TRUE)
 }
 
 #' @export
