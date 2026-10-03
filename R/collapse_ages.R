@@ -60,7 +60,7 @@ collapse_ages <- function(.data, max_age = 100) {
   ages <- sort(unique(.data[[age]]))
   collapsed <- .data |>
     as_tibble() |>
-    dplyr::group_by_at(c(index, keys_noage)) |>
+    group_by(across(all_of(c(index, keys_noage)))) |>
     dplyr::reframe(dplyr::across(
       everything(),
       function(x) {
@@ -85,7 +85,7 @@ collapse_ages <- function(.data, max_age = 100) {
     } else {
       warning("Cannot recompute rates for ", i, ". Using upper age value.")
       tmp <- max_age_values |>
-        select(index, keys_noage, age, i)
+        select(all_of(c(index, keys_noage, age, i)))
       colnames(tmp)[colnames(tmp) == i] <- ".new_rate"
       collapsed <- collapsed |>
         left_join(tmp, by = c(index, keys_noage, age))

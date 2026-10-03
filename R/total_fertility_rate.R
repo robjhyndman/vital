@@ -38,7 +38,7 @@ total_fertility_rate <- function(.data, fertility) {
 
   # Drop Age as a key and nest results
   keys_noage <- keys[keys != age]
-  .data <- tidyr::nest(.data, lst_data = c(-index, -!!keys_noage))
+  .data <- tidyr::nest(.data, lst_data = -all_of(c(index, keys_noage)))
   .data[[age]] <- NULL
 
   # Compute tfr for each sub-tibble

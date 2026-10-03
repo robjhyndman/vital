@@ -77,7 +77,7 @@ response.mdl_vtl_ts <- function(object, ...) {
   # Fix key
   as_vital(
     out,
-    key = vvar$age,
+    key = all_of(vvar$age),
     index = index_var(object$data),
     .age = vvar$age
   )

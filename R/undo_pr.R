@@ -118,7 +118,7 @@ undo_centred <- function(.data, .var, key, times, combine, label) {
   output <- as_vital(
     .data,
     index = v$index,
-    key = v$keys,
+    key = all_of(v$keys),
     .age = vvar$age,
     .population = vvar$population,
     .sex = vvar$sex,

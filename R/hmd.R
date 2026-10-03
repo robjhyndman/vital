@@ -183,7 +183,7 @@ hmd_to_vital <- function(object) {
   if (!all(age_included)) {
     data2 <- purrr::reduce(object[!age_included], dplyr::left_join) |>
       suppressMessages() |>
-      tsibble::as_tsibble(index = Year, key = sex) |>
+      tsibble::as_tsibble(index = Year, key = all_of(sex)) |>
       as_vital(
         .sex = sex,
         .deaths = deaths,

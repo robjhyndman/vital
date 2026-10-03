@@ -145,7 +145,7 @@ net_migration <- function(deaths, births) {
     ))) |>
     as_vital(
       index = death_idx,
-      keys = death_keys,
+      keys = all_of(death_keys),
       .age = agevar,
       .deaths = deathsvar,
       .population = popvar,

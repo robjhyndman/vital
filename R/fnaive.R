@@ -46,7 +46,7 @@ train_fnaive <- function(.data, ...) {
     group_by(across(all_of(agevar))) |>
     summarise(sigma = sd(.resid, na.rm = TRUE))
   out <- out |>
-    as_tsibble(index = indexvar, key = agevar) |>
+    as_tsibble(index = indexvar, key = all_of(agevar)) |>
     as_vital(.age = agevar) |>
     select(all_of(c(indexvar, agevar)), everything())
 

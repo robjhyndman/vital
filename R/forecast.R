@@ -56,18 +56,25 @@ forecast.mdl_vtl_df <- function(
   if (!is.null(new_data)) {
     object <- bind_new_data(object, new_data)
   }
-  object <- dplyr::mutate_at(
+  new_data <- object[["new_data"]]
+  kd <- key_data(object)
+  dots <- list2(...)
+  object <- mutate(
     as_tibble(object),
-    mdls,
-    forecast,
-    new_data = object[["new_data"]],
-    h = h,
-    point_forecast = point_forecast,
-    simulate = simulate,
-    bootstrap = bootstrap,
-    times = times,
-    ...,
-    key_data = key_data(object)
+    across(all_of(mdls), function(x) {
+      exec(
+        forecast,
+        x,
+        new_data = new_data,
+        h = h,
+        point_forecast = point_forecast,
+        simulate = simulate,
+        bootstrap = bootstrap,
+        times = times,
+        !!!dots,
+        key_data = kd
+      )
+    })
   )
   object <- tidyr::pivot_longer(
     object,
@@ -267,7 +274,7 @@ make_future_data <- function(.data, h = NULL) {
     sort()
   out <- tidyr::expand_grid(as_tibble(out), ages)
   colnames(out)[colnames(out) == "ages"] <- agevar
-  as_tsibble(out, index = indexvar, key = agevar) |>
+  as_tsibble(out, index = indexvar, key = all_of(agevar)) |>
     as_vital(.age = agevar)
 }
 

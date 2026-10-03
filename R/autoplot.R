@@ -52,12 +52,15 @@ autoplot.vital <- function(object, .vars = NULL, age = age_var(object), ...) {
     .vars <- as_quosures(list(y), env = empty_env())
   } else if (possibly(compose(is_quosures, eval_tidy), FALSE)(.vars)) {
     .vars <- eval_tidy(.vars)
-    object <- tidyr::gather(
+    response_names <- map_chr(.vars, quo_name)
+    object <- tidyr::pivot_longer(
       mutate(object, !!!.vars),
-      ".response",
-      "value",
-      !!!map(.vars, quo_name),
-      factor_key = TRUE
+      all_of(response_names),
+      names_to = ".response",
+      values_to = "value",
+      names_transform = list(
+        .response = function(x) factor(x, levels = response_names)
+      )
     )
     y <- sym("value")
   } else {
@@ -151,7 +154,7 @@ autoplot.mdl_vtl_df <- function(object, ...) {
 age_plot <- function(object, .var, keys) {
   names <- colnames(object)[!(colnames(object) %in% c(keys, .var))]
   age <- names[grep("age", names, ignore.case = TRUE)]
-  kv_noage <- all_of(keys[keys != age])
+  kv_noage <- keys[keys != age]
   p <- ggplot2::ggplot(object)
   if (length(kv_noage) == 0) {
     p <- p +

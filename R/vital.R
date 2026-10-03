@@ -113,7 +113,11 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
           AgeGroup = rownames(x$rate[[i]]),
           Age = x$age
         ) |>
-        tidyr::gather(key = "Year", value = "Rates", -AgeGroup, -Age) |>
+        tidyr::pivot_longer(
+          -c(AgeGroup, Age),
+          names_to = "Year",
+          values_to = "Rates"
+        ) |>
         mutate(
           Year = as.numeric(Year),
           Group = names(x$rate)[i]
@@ -142,7 +146,11 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
           AgeGroup = rownames(x$pop[[i]]),
           Age = x$age
         ) |>
-        tidyr::gather(key = "Year", value = "Exposure", -AgeGroup, -Age) |>
+        tidyr::pivot_longer(
+          -c(AgeGroup, Age),
+          names_to = "Year",
+          values_to = "Exposure"
+        ) |>
         mutate(
           Year = as.numeric(Year),
           Group = names(x$pop)[i]

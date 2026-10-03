@@ -99,7 +99,7 @@ generate_population <- function(
     future_mortality$mx <- pmax(future_mortality$.sim, 0) # Ensure no negative mortality rates
     future_mortality <- future_mortality |> dplyr::select(-.sim, -.model)
     if ("geometric_mean" %in% future_mortality[[vvars$sex]]) {
-      future_mortality <- undo_pr(future_mortality, "mx", key = vvars$sex)
+      future_mortality <- undo_pr(future_mortality, "mx", key = all_of(vvars$sex))
     }
   } else {
     # 0 deaths
@@ -149,7 +149,7 @@ generate_population <- function(
     future_migration$Nx <- future_migration$.sim
     future_migration <- future_migration |> dplyr::select(-.sim, -.model)
     if ("mean" %in% future_migration[[vvars$sex]]) {
-      future_migration <- undo_sd(future_migration, "Nx", key = vvars$sex)
+      future_migration <- undo_sd(future_migration, "Nx", key = all_of(vvars$sex))
     }
   } else {
     # 0 net migrants
@@ -218,7 +218,7 @@ generate_population <- function(
     future[[y]]$Rx <- pmax(0, future[[y]]$Prev_Pop + 0.5 * future[[y]]$Nx)
     # Survivorship ratios
     nsr <- future[[y]] |>
-      as_tsibble(index = indexvar, key = c(vvars$age, vvars$sex, ".rep")) |>
+      as_tsibble(index = indexvar, key = all_of(c(vvars$age, vvars$sex, ".rep"))) |>
       as_vital(.sex = vvars$sex, .age = vvars$age, .population = "Rx") |>
       life_table()
     nsr$nsr <- 1 - nsr$rx
@@ -348,7 +348,7 @@ generate_population <- function(
   future |>
     as_vital(
       index = !!sym(indexvar),
-      key = c(vvars$age, vvars$sex, ".rep"),
+      key = all_of(c(vvars$age, vvars$sex, ".rep")),
       .sex = vvars$sex,
       .age = vvars$age,
       .population = vvars$population

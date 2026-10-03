@@ -45,7 +45,7 @@ train_fmean <- function(.data, ...) {
     group_by(across(all_of(agevar))) |>
     summarise(sigma = sd(.resid, na.rm = TRUE))
   out <- out |>
-    as_tsibble(index = indexvar, key = agevar) |>
+    as_tsibble(index = indexvar, key = all_of(agevar)) |>
     as_vital(.age = agevar) |>
     select(all_of(c(indexvar, agevar)), everything())
   model <- ave_measure |>
@@ -210,7 +210,7 @@ interpolate.FMEAN <- function(object, new_data, specials, ...) {
   output$.fitted <- NULL
   return(vital(
     output,
-    key = unique(c(keyvar, agevar)),
+    key = all_of(unique(c(keyvar, agevar))),
     index = timevar,
     .age = agevar
   ))
