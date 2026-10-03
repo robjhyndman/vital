@@ -401,25 +401,23 @@ lca <- function(
   }
 
   # Compute deviances
-  logfit <- fitmx(kt, ax, bx, transform = TRUE)
-  deathsadjfit <- exp(logfit) * pop
-  drift <- mean(diff(kt))
-  ktlinfit <- mean(kt) + drift * (1:m - (m + 1) / 2)
-  deathslinfit <- fitmx(ktlinfit, ax, bx, transform = FALSE) * pop
-  dflogadd <- (m - 2) * (n - 1)
-  # Drop zero deaths from mdev calculation
-  d_nozero <- deaths
-  d_nozero[deaths == 0] <- 0.000001
-  mdevlogadd <- 2 /
-    dflogadd *
-    sum(deaths * log(d_nozero / deathsadjfit) - (deaths - deathsadjfit))
-  dfloglin <- (m - 2) * n
-  mdevloglin <- 2 /
-    dfloglin *
-    sum(deaths * log(d_nozero / deathslinfit) - (deaths - deathslinfit))
-  mdev <- c(mdevlogadd, mdevloglin)
-  if (!counts_available) {
-    mdev[] <- NA_real_
+  mdev <- c(NA_real_, NA_real_)
+  if (counts_available) {
+    logfit <- fitmx(kt, ax, bx, transform = TRUE)
+    deathsadjfit <- exp(logfit) * pop
+    drift <- mean(diff(kt))
+    ktlinfit <- mean(kt) + drift * (1:m - (m + 1) / 2)
+    deathslinfit <- fitmx(ktlinfit, ax, bx, transform = FALSE) * pop
+    # Drop zero deaths from mdev calculation
+    d_nozero <- deaths
+    d_nozero[deaths == 0] <- 0.000001
+    # Cells with no population have no expected deaths, so are omitted
+    exposed <- pop > 0
+    deviance <- function(fit) {
+      sum((deaths * log(d_nozero / fit) - (deaths - fit))[exposed])
+    }
+    mdev[1] <- 2 / ((m - 2) * (n - 1)) * deviance(deathsadjfit)
+    mdev[2] <- 2 / ((m - 2) * n) * deviance(deathslinfit)
   }
   names(mdev) <- c("Mean deviance base", "Mean deviance total")
 

@@ -63,6 +63,7 @@
 - Fixed `forecast()` with `new_data`, which failed for all models
 - `FMEAN()` and `FNAIVE()` now treat infinite values, such as logs of zero rates, as missing, rather than giving infinite means and standard deviations
 - Fixed `forecast()` for GAPC models (`LC2()`, `CBD()`, etc.) failing when `h = 1`
+- `LC()` deviances reported by `glance()` are no longer `NaN` when some ages have zero population
 
 # vital 2.0.3
 

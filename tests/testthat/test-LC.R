@@ -241,3 +241,14 @@ test_that("LC does not adjust product-ratios to deaths by default", {
     suppressWarnings()
   expect_identical(explicit$lc[[1]]$fit$model$adjust, "dt")
 })
+
+test_that("LC deviances omit ages with no population", {
+  nf <- norway_mortality |> filter(Sex == "Female", Year > 1990)
+  expect_identical(sum(nf$Population == 0) > 0, TRUE)
+  gl <- glance(model(nf, LC(log(Mortality))))
+  expect_true(is.finite(gl$base_deviance))
+  expect_true(is.finite(gl$total_deviance))
+  # Unchanged when all populations are positive
+  gl2 <- glance(model(nf |> filter(Age < 100), LC(log(Mortality))))
+  expect_equal(unname(gl2$base_deviance), 1.357878, tolerance = 1e-6)
+})
