@@ -123,14 +123,15 @@ test_that("autoplot shows age, period and cohort components of GAPC models", {
       PLAT = PLAT(Mortality)
     ) |>
     suppressWarnings()
-  # Number of panels (two rows) and blank panels for constant age functions
+  # Number of panels (two rows), blank panels for constant age functions,
+  # and whether the legend has its own panel (rather than to the right)
   expected <- list(
-    LC2 = c(4, 0),
-    CBD = c(4, 1),
-    APC = c(6, 2),
-    RH = c(6, 1),
-    M7 = c(8, 2),
-    PLAT = c(8, 2)
+    LC2 = c(4, 0, 1),
+    CBD = c(4, 0, 1),
+    APC = c(6, 2, 1),
+    RH = c(6, 1, 1),
+    M7 = c(8, 1, 1),
+    PLAT = c(8, 2, 1)
   )
   for (m in names(expected)) {
     p <- autoplot(dplyr::select(fits, Sex, dplyr::all_of(m)))
@@ -139,6 +140,10 @@ test_that("autoplot shows age, period and cohort components of GAPC models", {
     expect_identical(
       sum(vapply(panels, inherits, logical(1), "spacer")),
       as.integer(expected[[m]][2])
+    )
+    expect_identical(
+      sum(vapply(panels, inherits, logical(1), "guide_area")),
+      as.integer(expected[[m]][3])
     )
     grDevices::pdf(NULL)
     expect_no_error(print(p))

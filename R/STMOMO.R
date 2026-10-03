@@ -665,10 +665,13 @@ autoplot.GAPC <- function(object, ...) {
         ggplot2::labs(x = "Birth year", y = gapc_index_label(obj_x, "gc", "b0x"))
     ))
   }
-  # Static age function, with the legend beneath it as in the LC plot
+  # Static age function, with the legend beneath it as in the LC plot.
+  # Without one, put the legend in the top left if that space is blank.
   if ("ax" %in% colnames(obj_x)) {
     top <- c(list(key_plot(obj_x, sym(agevar), "ax", keys)), top)
     bottom <- c(list(patchwork::guide_area()), bottom)
+  } else if (inherits(top[[1]], "spacer")) {
+    top[[1]] <- patchwork::guide_area()
   }
   patchwork::wrap_plots(c(top, bottom), nrow = 2) +
     patchwork::plot_layout(guides = "collect")
