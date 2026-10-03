@@ -361,8 +361,12 @@ smooth_vital <- function(.data, .var, age_spacing, smooth_fn, ...) {
   nested_data$sm <- smooth
   nested_data$data <- NULL
   out <- tsibble::as_tibble(nested_data) |>
-    tidyr::unnest(cols = sm) |>
-    left_join(as_tibble(.data), by = c(index, keys_noage, age))
+    tidyr::unnest(cols = sm)
+  # Keep integer ages when the smoothed ages are whole numbers
+  if (is.integer(.data[[age]]) && all(out[[age]] == round(out[[age]]))) {
+    out[[age]] <- as.integer(out[[age]])
+  }
+  out <- left_join(out, as_tibble(.data), by = c(index, keys_noage, age))
   cols <- c(colnames(.data), ".smooth", ".smooth_se")
   out[cols] |>
     as_tsibble(index = index, key = all_of(keys)) |>

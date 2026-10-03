@@ -71,6 +71,7 @@
 - Clearer error messages from `model()` when there is no age variable, `FDM()` when `order` is too large for the number of years, and `total_fertility_rate()` when no fertility variable is found
 - Plots of `FMEAN()` and `FNAIVE()` models now title the legend with the key name rather than an `interaction()` call
 - `forecast()` and `generate()` now keep the type of the time index (e.g. integer years)
+- The smoothing functions now keep integer ages when the smoothed ages are whole numbers
 
 # vital 2.0.3
 

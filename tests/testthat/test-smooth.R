@@ -34,3 +34,9 @@ test_that("smoothing functions", {
     expect_lt(max(abs(c(test1) - test2), na.rm = TRUE), 0.01)
   }
 })
+
+test_that("smoothing keeps integer ages when possible", {
+  nf <- norway_mortality |> dplyr::filter(Sex == "Female", Year == 2000)
+  expect_type(smooth_loess(nf, Mortality)$Age, "integer")
+  expect_type(smooth_loess(nf, Mortality, age_spacing = 0.5)$Age, "double")
+})
