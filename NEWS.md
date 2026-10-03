@@ -6,6 +6,7 @@
 * Fixed `generate()` for FMEAN models using the wrong standard deviation for each age
 * Fixed `tidy()` for FMEAN models, which understated standard errors
 * Fixed `life_expectancy()` ignoring the `mortality` argument
+* Fixed `life_expectancy()` failing when the age variable is not called `Age`
 
 # vital 2.0.3
 

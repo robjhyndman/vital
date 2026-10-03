@@ -26,9 +26,11 @@
 #' @export
 
 life_expectancy <- function(.data, from_age = 0, mortality) {
-  life_table(.data = .data, mortality = {{ mortality }}) |>
+  lt_out <- life_table(.data = .data, mortality = {{ mortality }})
+  age <- age_var(lt_out)
+  lt_out |>
     # Keep only relevant ages
-    dplyr::filter(Age %in% from_age) |>
+    dplyr::filter(.data[[age]] %in% from_age) |>
     # Keep only ex column plus index and keys
     dplyr::select(-mx, -qx, -lx, -dx, -Lx, -Tx)
 }

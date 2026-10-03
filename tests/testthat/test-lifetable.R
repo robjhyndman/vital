@@ -27,3 +27,23 @@ test_that("life_expectancy uses the mortality argument", {
     life_table(nor |> dplyr::mutate(Mortality = mx2))$ex
   )
 })
+
+test_that("life_expectancy works with any age variable name", {
+  nor <- norway_mortality |>
+    dplyr::filter(Year == 2000)
+  nor_lower <- nor |>
+    tibble::as_tibble() |>
+    dplyr::rename(age = Age) |>
+    as_vital(
+      index = Year,
+      key = c(age, Sex),
+      .age = "age",
+      .sex = "Sex",
+      .deaths = "Deaths",
+      .population = "Population"
+    )
+  expect_equal(
+    life_expectancy(nor_lower, from_age = 65)$ex,
+    life_expectancy(nor, from_age = 65)$ex
+  )
+})
