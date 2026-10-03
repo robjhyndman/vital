@@ -86,3 +86,17 @@ test_that("model() estimates without .safely", {
     "Lee-Carter models require a log transformation"
   )
 })
+
+test_that("model() reports the underlying cause of chained errors", {
+  dat <- norway_mortality |>
+    dplyr::filter(Year > 2000, Sex == "Female")
+  local_mocked_bindings(
+    train_fmean = function(...) {
+      purrr::map(1, function(i) stop("the underlying cause"))
+    }
+  )
+  expect_warning(
+    dat |> model(mean = FMEAN(Mortality)),
+    "the underlying cause"
+  )
+})

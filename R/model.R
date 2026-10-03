@@ -149,7 +149,7 @@ Check that specified model(s) are model definitions.",
       if ((tot_err <- sum(err)) > 0) {
         err_msg <- table(purrr::map_chr(
           x[err],
-          function(x) x[["error"]][["message"]]
+          function(x) conditionMessage(x[["error"]])
         ))
         rlang::warn(
           sprintf(
