@@ -380,7 +380,7 @@ fdpca <- function(X, order = 2, ngrid = 500) {
   if (order < 0) {
     stop("Order must be at least 0")
   }
-  if (ngrid < n) {
+  if (ngrid < NCOL(X)) {
     stop("Grid should be larger than number of observations per time period.")
   }
   # Interpolate data onto grid using interpolating splines

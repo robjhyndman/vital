@@ -54,3 +54,12 @@ test_that("FDM checks the coherent time series model function", {
     "coherent_ts_model_fn"
   )
 })
+
+test_that("fdpca compares the grid size with the number of ages", {
+  set.seed(1)
+  # More years than grid points, but few ages
+  many_years <- matrix(rnorm(600 * 10), nrow = 600, ncol = 10)
+  expect_no_error(fdpca(many_years, order = 2, ngrid = 500))
+  many_ages <- matrix(rnorm(5 * 600), nrow = 5, ncol = 600)
+  expect_error(fdpca(many_ages, order = 2, ngrid = 500), "Grid should be larger")
+})
