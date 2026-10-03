@@ -1,11 +1,9 @@
 # These just grab the vital attributes, then use the tsibble method,
 # before adding back the missing attributes
 
-#' @export
-arrange.vital <- function(.data, ...) {
-  vvar <- vital_var_list(.data)
+restore_vital <- function(x, vvar) {
   as_vital(
-    NextMethod(),
+    x,
     .age = vvar$age,
     .sex = vvar$sex,
     .deaths = vvar$deaths,
@@ -15,17 +13,16 @@ arrange.vital <- function(.data, ...) {
 }
 
 #' @export
+arrange.vital <- function(.data, ...) {
+  vvar <- vital_var_list(.data)
+  restore_vital(NextMethod(), vvar)
+}
+
+#' @export
 select.vital <- function(.data, ...) {
   loc <- eval_select(expr(c(...)), .data)
   vvar <- rename_vital_vars(vital_var_list(.data), .data, loc)
-  as_vital(
-    NextMethod(),
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
-  ) |>
+  restore_vital(NextMethod(), vvar) |>
     regroup_selected(.data, ...)
 }
 
@@ -55,79 +52,37 @@ regroup_selected <- function(res, .data, ...) {
 #' @export
 transmute.vital <- function(.data, ...) {
   vvar <- vital_var_list(.data)
-  as_vital(
-    NextMethod(),
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
-  )
+  restore_vital(NextMethod(), vvar)
 }
 
 #' @exportS3Method dplyr::relocate
 relocate.vital <- function(.data, ...) {
   vvar <- vital_var_list(.data)
-  as_vital(
-    NextMethod(),
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
-  )
+  restore_vital(NextMethod(), vvar)
 }
 
 #' @export
 summarise.vital <- function(.data, ..., .groups = NULL) {
   vvar <- vital_var_list(.data)
-  as_vital(
-    NextMethod(),
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
-  )
+  restore_vital(NextMethod(), vvar)
 }
 
 #' @exportS3Method dplyr::dplyr_row_slice
 dplyr_row_slice.vital <- function(data, i, ..., preserve = FALSE) {
   vvar <- vital_var_list(data)
-  as_vital(
-    NextMethod(),
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
-  )
+  restore_vital(NextMethod(), vvar)
 }
 
 #' @exportS3Method dplyr::dplyr_col_modify
 dplyr_col_modify.vital <- function(data, cols) {
   vvar <- vital_var_list(data)
-  as_vital(
-    NextMethod(),
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
-  )
+  restore_vital(NextMethod(), vvar)
 }
 
 #' @exportS3Method dplyr::dplyr_reconstruct
 dplyr_reconstruct.vital <- function(data, template) {
   vvar <- vital_var_list(data)
-  as_vital(
-    NextMethod(),
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
-  )
+  restore_vital(NextMethod(), vvar)
 }
 
 #' @export
@@ -138,27 +93,13 @@ group_by.vital <- function(
   .drop = group_by_drop_default(.data)
 ) {
   vvar <- vital_var_list(.data)
-  as_vital(
-    NextMethod(),
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
-  )
+  restore_vital(NextMethod(), vvar)
 }
 
 #' @export
 ungroup.grouped_vital <- function(x, ...) {
   vvar <- vital_var_list(x)
-  as_vital(
-    NextMethod(),
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
-  )
+  restore_vital(NextMethod(), vvar)
 }
 
 #' @export
@@ -180,31 +121,14 @@ dplyr_row_slice.grouped_vital <- dplyr_row_slice.vital
 dplyr_col_modify.grouped_vital <- dplyr_col_modify.vital
 
 #' @exportS3Method dplyr::dplyr_reconstruct
-dplyr_reconstruct.grouped_vital <- function(data, template) {
-  vvar <- vital_var_list(data)
-  as_vital(
-    NextMethod(),
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
-  )
-}
+dplyr_reconstruct.grouped_vital <- dplyr_reconstruct.vital
 
 #' @export
 `[.vital` <- function(x, i, j, drop = FALSE) {
   vvar <- vital_var_list(x)
   res <- NextMethod()
   if (inherits(res, "tbl_ts")) {
-    as_vital(
-      res,
-      .age = vvar$age,
-      .sex = vvar$sex,
-      .deaths = vvar$deaths,
-      .births = vvar$births,
-      .population = vvar$population
-    )
+    restore_vital(res, vvar)
   } else {
     res
   }
@@ -217,12 +141,5 @@ dplyr_reconstruct.grouped_vital <- function(data, template) {
 rename.vital <- function(.data, ...) {
   loc <- tidyselect::eval_rename(expr(c(...)), .data)
   vvar <- rename_vital_vars(vital_var_list(.data), .data, loc)
-  as_vital(
-    NextMethod(),
-    .age = vvar$age,
-    .sex = vvar$sex,
-    .deaths = vvar$deaths,
-    .births = vvar$births,
-    .population = vvar$population
-  )
+  restore_vital(NextMethod(), vvar)
 }
