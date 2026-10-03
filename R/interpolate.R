@@ -81,3 +81,41 @@ interpolate.mdl_vtl_ts <- function(object, new_data, ...) {
   )
   new_data
 }
+
+# Replace missing values of the response with the fitted values of a model
+interpolate_fitted <- function(object, new_data) {
+  keyvar <- key_vars(new_data)
+  vvar <- vital_var_list(new_data)
+  agevar <- vvar$age
+  timevar <- index_var(new_data)
+  measures <- measured_vars(new_data)
+  measures <- measures[!(measures %in% c(agevar, vvar$population))]
+  measure <- measures[1]
+  fits <- as_tibble(object$fitted)[c(agevar, timevar, ".fitted")]
+  output <- as_tibble(new_data) |>
+    dplyr::left_join(fits, by = c(agevar, timevar))
+  missing <- is.na(output[[measure]])
+  output[[measure]][missing] <- output$.fitted[missing]
+  output$.fitted <- NULL
+  vital(
+    output,
+    key = all_of(unique(c(keyvar, agevar))),
+    index = timevar,
+    .age = agevar
+  )
+}
+
+#' @export
+interpolate.FNAIVE <- function(object, new_data, specials, ...) {
+  interpolate_fitted(object, new_data)
+}
+
+#' @export
+interpolate.LC <- function(object, new_data, specials, ...) {
+  interpolate_fitted(object, new_data)
+}
+
+#' @export
+interpolate.FDM <- function(object, new_data, specials, ...) {
+  interpolate_fitted(object, new_data)
+}

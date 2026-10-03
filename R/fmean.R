@@ -199,26 +199,7 @@ autoplot.FMEAN <- function(
 
 #' @export
 interpolate.FMEAN <- function(object, new_data, specials, ...) {
-  attrx <- attributes(new_data)
-  keyvar <- key_vars(new_data)
-  vvar <- vital_var_list(new_data)
-  agevar <- vvar$age
-  timevar <- attrx$index
-  measures <- measured_vars(new_data)
-  measures <- measures[!(measures %in% c(agevar, vvar$population))]
-  measure <- measures[1]
-  fits <- fitted(object) |> select(.fitted)
-  output <- as_tibble(new_data) |>
-    dplyr::left_join(as_tibble(fits), by = c(agevar, timevar))
-  missing <- is.na(output[[measure]])
-  output[[measure]][missing] <- output$.fitted[missing]
-  output$.fitted <- NULL
-  return(vital(
-    output,
-    key = all_of(unique(c(keyvar, agevar))),
-    index = timevar,
-    .age = agevar
-  ))
+  interpolate_fitted(object, new_data)
 }
 
 #' @export
