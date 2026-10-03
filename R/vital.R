@@ -267,9 +267,13 @@ as_vital.tbl_ts <- function(
     births = .births,
     population = .population
   )
-  # Add additional class
-  if (!inherits(x, "vital")) {
-    class(x) <- c("vital", class(x))
+  # Add additional class, keeping grouping classes first
+  cls <- setdiff(class(x), c("grouped_vital", "vital"))
+  if (is_grouped_ts(x)) {
+    grouped <- grepl("^grouped", cls)
+    class(x) <- c("grouped_vital", cls[grouped], "vital", cls[!grouped])
+  } else {
+    class(x) <- c("vital", cls)
   }
   # Check class of variables
   if (!is.null(.age)) {

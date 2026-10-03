@@ -23,6 +23,7 @@
 * GAPC models with `link = "logit"` no longer fail when the data contain missing values
 * `net_migration()` now works when births are stored as a population variable
 * Fixed `read_ktdb()` ignoring the `triangle` argument
+* Grouped vital objects now stay `grouped_vital` after `mutate()`, `filter()`, `arrange()`, `rename()`, `relocate()`, `slice()` and `[`
 
 # vital 2.0.3
 

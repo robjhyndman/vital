@@ -138,7 +138,7 @@ group_by.vital <- function(
   .drop = group_by_drop_default(.data)
 ) {
   vvar <- vital_var_list(.data)
-  tmp <- as_vital(
+  as_vital(
     NextMethod(),
     .age = vvar$age,
     .sex = vvar$sex,
@@ -146,17 +146,6 @@ group_by.vital <- function(
     .births = vvar$births,
     .population = vvar$population
   )
-  if (!is_grouped_ts(tmp)) {
-    return(tmp)
-  }
-  tmp_class <- class(tmp)
-  grouped_classes <- grepl("grouped", tmp_class)
-  class(tmp) <- unique(c(
-    "grouped_vital",
-    tmp_class[grouped_classes],
-    tmp_class[!grouped_classes]
-  ))
-  return(tmp)
 }
 
 #' @export
@@ -220,6 +209,9 @@ dplyr_reconstruct.grouped_vital <- function(data, template) {
     res
   }
 }
+
+#' @export
+`[.grouped_vital` <- `[.vital`
 
 #' @export
 rename.vital <- function(.data, ...) {

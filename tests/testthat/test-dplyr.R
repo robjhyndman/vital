@@ -98,3 +98,22 @@ test_that("rename() and select() keep renamed vital variables", {
   grouped <- dplyr::group_by(nor, Sex) |> dplyr::rename(S = Sex)
   expect_identical(vital_vars(grouped)[["sex"]], "S")
 })
+
+test_that("grouped verbs keep grouped_vital first", {
+  grouped <- norway_mortality |>
+    dplyr::filter(Year == 2000) |>
+    dplyr::group_by(Sex)
+  results <- list(
+    dplyr::rename(grouped, S = Sex),
+    dplyr::mutate(grouped, z = 1),
+    dplyr::relocate(grouped, Sex),
+    dplyr::filter(grouped, Age < 5),
+    dplyr::arrange(grouped, Age),
+    dplyr::slice(grouped, 1:2),
+    grouped[1:5, ]
+  )
+  for (res in results) {
+    expect_identical(class(res)[1:2], c("grouped_vital", "grouped_ts"))
+    expect_identical(sum(class(res) == "vital"), 1L)
+  }
+})

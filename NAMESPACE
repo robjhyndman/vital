@@ -2,6 +2,7 @@
 
 S3method("[",fbl_vtl_ts)
 S3method("[",grouped_fbl_vtl)
+S3method("[",grouped_vital)
 S3method("[",mdl_vtl_df)
 S3method("[",vital)
 S3method(age_components,FDM)
