@@ -163,3 +163,13 @@ test_that("autoplot shows no more components than were fitted", {
   expect_s3_class(p, "patchwork")
   expect_length(p$patches$plots, 3L)
 })
+
+test_that("FDM reports an order that is too large for the data", {
+  expect_warning(
+    model(
+      norway_mortality |> filter(Sex == "Female", Year > 2018, Age < 90),
+      FDM(log(Mortality), order = 6)
+    ),
+    "order must be less than the number of time periods \\(5\\)"
+  )
+})

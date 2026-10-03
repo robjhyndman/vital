@@ -111,3 +111,11 @@ test_that("FMEAN treats log of zero rates as missing", {
   nm$Mortality[5] <- NA
   expect_gt(interpolate(fit, nm)$Mortality[5], 0)
 })
+
+test_that("model() requires an age variable", {
+  no_age <- norway_mortality |>
+    filter(Sex == "Female", Age == 0) |>
+    as_tibble() |>
+    as_vital(index = Year, key = Sex, .sex = "Sex")
+  expect_error(model(no_age, FMEAN(Mortality)), "No age variable found")
+})

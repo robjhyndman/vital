@@ -7,3 +7,10 @@ test_that("total_fertility_rate accepts bare and quoted variable names", {
   expect_equal(total_fertility_rate(nor, "Fertility")$tfr, default$tfr)
   expect_equal(total_fertility_rate(nor, fx2)$tfr, 2 * default$tfr)
 })
+
+test_that("total_fertility_rate() reports a missing fertility variable", {
+  expect_error(
+    total_fertility_rate(dplyr::rename(norway_fertility, F = Fertility)),
+    "Fertility variable not found"
+  )
+})

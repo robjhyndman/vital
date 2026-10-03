@@ -56,6 +56,9 @@ Check that specified model(s) are model definitions.",
   }
 
   agevar <- age_var(.data)
+  if (is.null(agevar)) {
+    abort("No age variable found. Use `as_vital(.age = )` to identify it.")
+  }
   sexvar <- sex_var(.data)
   kv <- non_age_keys(.data)
   # Make sure Sex is first key (so it can be identified inside estimate_progress)

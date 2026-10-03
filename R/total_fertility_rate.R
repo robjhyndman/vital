@@ -34,6 +34,9 @@ total_fertility_rate <- function(.data, fertility) {
   } else {
     fertility <- find_measure(.data, c("fx", "fertility", "rate"))
   }
+  if (is.na(fertility) || !(fertility %in% colnames(.data))) {
+    stop("Fertility variable not found in data")
+  }
 
   # Drop Age as a key and nest results
   keys_noage <- non_age_keys(.data)

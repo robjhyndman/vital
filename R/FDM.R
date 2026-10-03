@@ -404,6 +404,15 @@ fdpca <- function(X, x = seq(NCOL(X)), order = 2, ngrid = 500) {
   if (order < 1) {
     stop("Order must be at least 1")
   }
+  # Centred data from n time periods have at most n - 1 components
+  if (order >= n) {
+    stop(
+      "order must be less than the number of time periods (",
+      n,
+      ")",
+      call. = FALSE
+    )
+  }
   if (ngrid < NCOL(X)) {
     stop("Grid should be larger than number of observations per time period.")
   }

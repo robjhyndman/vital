@@ -68,6 +68,7 @@
 - `collapse_ages()` now gives an informative error when `max_age` is not one of the ages, and no longer adds a second `+` to age group labels that already end in `+`
 - Subsetting a mable of vital models with `[` no longer labels the result as a mable when it contains no models
 - `LC(jump_choice = "actual")` now uses fitted rates, with a warning, as the jump-off for ages whose rate is zero or missing in the final year, rather than giving missing forecasts
+- Clearer error messages from `model()` when there is no age variable, `FDM()` when `order` is too large for the number of years, and `total_fertility_rate()` when no fertility variable is found
 
 # vital 2.0.3
 
