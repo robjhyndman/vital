@@ -30,9 +30,11 @@ train_fnaive <- function(.data, ...) {
   measures <- measured_vars(.data)
   measures <- measures[!(measures %in% c(agevar, vvar$population))]
   measure <- measures[1]
+  # Time step between observations
+  step <- tsibble::default_time_units(tsibble::interval(.data))
   last_measure <- .data |>
     tsibble::as_tibble() |>
-    dplyr::mutate(index = .data[[indexvar]] + 1)
+    dplyr::mutate(index = .data[[indexvar]] + step)
   last_measure <- last_measure[, c("index", agevar, measure)]
   colnames(last_measure) <- c(indexvar, agevar, ".fitted")
   out <- .data |>
@@ -96,7 +98,10 @@ forecast.FNAIVE <- function(
         mutate(fc = distributional::dist_normal(mean, sigma))
       out[, c("horizon", "fc")]
     })
-  new_data$horizon <- new_data[[indexvar]] - min(new_data[[indexvar]]) + 1
+  new_data$horizon <- match(
+    new_data[[indexvar]],
+    sort(unique(new_data[[indexvar]]))
+  )
   new_data |>
     left_join(fc, by = c("horizon", agevar)) |>
     pull(fc)
@@ -139,7 +144,10 @@ generate.FNAIVE <- function(
         tibble(horizon = seq(h), .sim = tail(x[[measure]], 1) + cumsum(innov))
       })
   }
-  new_data$horizon <- new_data[[indexvar]] - min(new_data[[indexvar]]) + 1
+  new_data$horizon <- match(
+    new_data[[indexvar]],
+    sort(unique(new_data[[indexvar]]))
+  )
   new_data |>
     left_join(out, by = c("horizon", agevar, ".rep")) |>
     select(-horizon)

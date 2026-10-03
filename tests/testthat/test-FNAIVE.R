@@ -43,3 +43,19 @@ test_that("FNAIVE bootstrap simulations have no missing values", {
     generate(h = 5, times = 10, bootstrap = TRUE)
   expect_false(anyNA(sim$.sim))
 })
+
+test_that("FNAIVE works with non-annual data", {
+  set.seed(1)
+  nor5 <- norway_mortality |>
+    tibble::as_tibble() |>
+    dplyr::filter(Year %% 5 == 0, Year > 1980, Sex == "Female") |>
+    as_vital(index = Year, key = c(Age, Sex), .age = "Age", .sex = "Sex")
+  fit <- nor5 |> model(fnaive = FNAIVE(Mortality))
+  fc <- forecast(fit, h = 2)
+  expect_identical(unique(fc$Year), c(2025, 2030))
+  expect_false(anyNA(fc$.mean))
+  last <- nor5 |> dplyr::filter(Year == max(Year))
+  expect_equal(fc$.mean[fc$Year == 2025], last$Mortality)
+  sim <- generate(fit, h = 2, times = 2)
+  expect_false(anyNA(sim$.sim))
+})

@@ -36,6 +36,7 @@
 - Fixed `life_table()` treating abridged ages (0, 1, 5, 10, ...) as single years, and 5-year ages as abridged
 - `total_fertility_rate()` now accepts a bare variable name for `fertility`
 - Fixed bootstrapped simulations from `FNAIVE()` models containing missing values
+- `FNAIVE()` models now work with data observed at intervals other than one time unit
 
 # vital 2.0.3
 
