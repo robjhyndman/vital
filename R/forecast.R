@@ -57,7 +57,6 @@ forecast.mdl_vtl_df <- function(
     object <- bind_new_data(object, new_data)
   }
   new_data <- object[["new_data"]]
-  kd <- key_data(object)
   dots <- list2(...)
   object <- mutate(
     as_tibble(object),
@@ -71,8 +70,7 @@ forecast.mdl_vtl_df <- function(
         simulate = simulate,
         bootstrap = bootstrap,
         times = times,
-        !!!dots,
-        key_data = kd
+        !!!dots
       )
     })
   )

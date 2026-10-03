@@ -149,11 +149,8 @@ forecast.LC <- function(
   times = 5000,
   ...
 ) {
-  # simulation/bootstrap not actually used here as forecast.mdl_vtl_ts
-  # handles this using generate() and forecast.LC is never called.
-  # The arguments are included to avoid a warning message, and because this is how it
-  # appears to work to the user.
-
+  # With simulate or bootstrap, forecast.mdl_vtl_ts() uses generate() rather
+  # than this method. The arguments are included so they show in the docs.
   h <- length(unique(new_data[[index_var(new_data)]]))
   agevar <- colnames(object$model$by_x)[1]
   indexvar <- index_var(object$model$by_t)
@@ -196,7 +193,7 @@ generate.LC <- function(
     left_join(x$model$jump, by = agevar) |>
     mutate(fitted = ax + bx * .sim + .jump)
 
-  transmute(group_by_key(new_data), ".sim" := fitted)
+  transmute(new_data, .sim = fitted)
 }
 
 #' @export

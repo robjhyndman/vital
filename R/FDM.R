@@ -134,10 +134,8 @@ forecast.FDM <- function(
   times = 5000,
   ...
 ) {
-  # simulation/bootstrap not actually used here as forecast.mdl_vtl_ts
-  # handles this using generate() and forecast.FDM is never called.
-  # The arguments are included to avoid a warning message.
-
+  # With simulate or bootstrap, forecast.mdl_vtl_ts() uses generate() rather
+  # than this method. The arguments are included so they show in the docs.
   # Forecast all beta series using stored models
   h <- length(unique(new_data[[index_var(new_data)]]))
   fc <- purrr::map(object$ts_models, function(x) {
@@ -195,9 +193,7 @@ generate.FDM <- function(
   for (i in seq_along(x$ts_models)) {
     fc$out <- fc$out + fc[[paste0("beta", i)]] * fc[[paste0("phi", i)]]
   }
-  fc |>
-    select(.rep, sym(indexvar), !!agevar, .sim = out) |>
-    transmute(group_by_key(new_data), .sim)
+  transmute(fc, .sim = out)
 }
 
 #' @export
@@ -350,7 +346,8 @@ fdm <- function(
               order_constraint = (p + q + P + Q <= 6) & (d + D == 0)
             )
           )
-      } else if (identical(coherent_ts_model, "ARFIMA")) {
+      } else {
+        # ARFIMA, the only other choice allowed by FDM()
         mod <- by_t |>
           fabletools::model(
             fit = fable::ARFIMA(
@@ -359,10 +356,6 @@ fdm <- function(
             )
           ) |>
           suppressWarnings()
-      } else {
-        stop(
-          "Only ARIMA and ARFIMA models are allowed for coherent time series"
-        )
       }
     } else {
       mod <- by_t |>
@@ -443,9 +436,8 @@ fdpca <- function(X, x = seq(NCOL(X)), order = 2, ngrid = 500) {
   delta <- xx[2] - xx[1]
   widths <- c(diff(x), utils::tail(diff(x), 1))
   for (i in seq(order)) {
-    Phinorm[, i] <- stats::approx(xx, Phi[, i], xout = x)$y /
-      delta /
-      (sqrt(sum(widths * (stats::approx(xx, Phi[, i], xout = x)$y / delta)^2)))
+    phi <- stats::approx(xx, Phi[, i], xout = x)$y
+    Phinorm[, i] <- phi / sqrt(sum(widths * phi^2))
     Phinormngrid[, i] <- stats::approx(x, Phinorm[, i], xout = xx)$y
   }
   # Extract coeff and basis matrices

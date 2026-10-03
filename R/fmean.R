@@ -76,10 +76,8 @@ forecast.FMEAN <- function(
   times = 5000,
   ...
 ) {
-  # simulation/bootstrap not actually used here as forecast.mdl_vtl_ts
-  # handles this using generate() and forecast.FMEAN is never called.
-  # The arguments are included so they show in the docs
-  # Similarly for h and point_forecast
+  # With simulate or bootstrap, forecast.mdl_vtl_ts() uses generate() rather
+  # than this method. The arguments are included so they show in the docs.
   agevar <- age_var(new_data)
   new_data |>
     left_join(object$model, by = agevar) |>
@@ -124,7 +122,7 @@ generate.FMEAN <- function(
     }
   }
 
-  transmute(group_by_key(new_data), ".sim" := mean + .innov)
+  transmute(new_data, .sim = mean + .innov)
 }
 
 #' @export
