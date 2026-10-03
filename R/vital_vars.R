@@ -25,3 +25,11 @@ age_var <- function(x) {
 sex_var <- function(x) {
   vital_var_list(x)$sex
 }
+
+# Keys other than age. Age group labels (e.g. AgeGroup from demogdata objects)
+# are also keys, but do not identify separate series.
+non_age_keys <- function(x) {
+  keys <- tsibble::key_vars(x)
+  age_names <- c(age_var(x), "Age", "AgeGroup", "Age_Group")
+  keys[!(tolower(keys) %in% tolower(age_names))]
+}

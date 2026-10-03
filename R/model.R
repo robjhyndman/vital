@@ -55,12 +55,9 @@ Check that specified model(s) are model definitions.",
     ))
   }
 
-  # Keys including age
-  keys <- tsibble::key_vars(.data)
   agevar <- age_var(.data)
   sexvar <- sex_var(.data)
-  # Drop Age as a key
-  kv <- keys[!(keys %in% c(agevar, "Age", "AgeGroup"))]
+  kv <- non_age_keys(.data)
   # Make sure Sex is first key (so it can be identified inside estimate_progress)
   if (!is.null(sexvar)) {
     if (!(sexvar %in% kv)) {
@@ -194,11 +191,9 @@ Check that specified model(s) are model definitions.",
 }
 
 nest_keys <- function(.data, nm = "data") {
-  # Keys including age
-  keys <- tsibble::key_vars(.data)
-  agevar <- age_var(.data)
-  # Drop Age as a key
-  keys_noage <- keys[!(keys %in% c(agevar, "Age", "AgeGroup"))]
+  keys_noage <- non_age_keys(.data)
+  # Age keys (age and any age group labels) remain the keys of each series
+  age_keys <- setdiff(key_vars(.data), keys_noage)
 
   out <- key_data(.data) |>
     tidyr::unnest(.rows) |>
@@ -224,17 +219,18 @@ nest_keys <- function(.data, nm = "data") {
     row_indices,
     function(x, i, j) {
       out <- if (is.null(j)) x[i, ] else x[i, j]
-      tsibble::build_tsibble_meta(
+      build_tsibble(
         out,
-        key_data = tsibble::as_tibble(list(.rows = list(seq_along(i)))),
-        index = idx,
-        index2 = idx2,
+        key = all_of(age_keys),
+        index = !!sym(idx),
+        index2 = !!sym(idx2),
         ordered = ordered,
         interval = if (length(i) > 1 && regular) {
           tsibble::interval_pull(out[[idx]])
         } else {
           tsibble::interval(.data)
-        }
+        },
+        validate = FALSE
       ) |>
         restore_vital(attr_data) |>
         # Keep the vital variables of keys dropped from each series, so they
@@ -289,7 +285,7 @@ estimate.vital <- function(.data, .model, sex, ...) {
     data = .data,
     env = .model$specials
   )
-  .data <- unclass(.data)[index_var(.data)]
+  .data <- unclass(.data)[c(index_var(.data), key_vars(.data))]
   .data[map_chr(parsed$expressions, rlang::expr_name)] <- resp
   .data[[agevar]] <- age
   if (!is.null(popvar)) {

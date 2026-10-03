@@ -59,6 +59,8 @@
 - `autoplot()` now plots the age, period and cohort components of GAPC models (`GAPC()`, `LC2()`, `CBD()`, `APC()`, `RH()`, `M7()` and `PLAT()`)
 - Fixed model formulas using `vars()`, and the error message for transformations that cannot be inverted, which failed with "could not find function"
 - Joins such as `left_join()` on vital objects and vital fables no longer drop the vital variables (age, sex, etc.), and `read_hmd()` keeps them when combining age-specific and other data
+- Fixed `life_table()`, `life_expectancy()` and `interpolate()` for data with age group keys as well as age (e.g. `AgeGroup` in vitals from `demogdata` objects), and `total_fertility_rate()` for data with keys other than age. Forecasts now keep age group keys
+- Fixed `forecast()` with `new_data`, which failed for all models
 
 # vital 2.0.3
 

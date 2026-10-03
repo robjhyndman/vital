@@ -83,9 +83,8 @@ centred_vars <- function(.data, .var, key) {
   # Key variables
   keys <- tsibble::key_vars(.data)
   attr_data <- vital_var_list(.data)
-  age_names <- c(attr_data$age, "Age", "AgeGroup", "Age_Group")
-  keys_noage <- keys[!(keys %in% age_names)]
-  if (key %in% age_names) {
+  keys_noage <- non_age_keys(.data)
+  if (key %in% setdiff(keys, keys_noage)) {
     stop("key cannot be an age variable")
   } else if (!(key %in% keys_noage)) {
     stop("key not found in data set")

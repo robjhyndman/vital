@@ -31,7 +31,7 @@ collapse_ages <- function(.data, max_age = 100) {
   # Keys including age
   keys <- tsibble::key_vars(.data)
   age <- attr_data$age
-  keys_noage <- keys[!(keys %in% c(age, "Age", "AgeGroup", "Age_Group"))]
+  keys_noage <- non_age_keys(.data)
 
   # Identify other columns
   pop <- attr_data$population

@@ -56,27 +56,20 @@ life_table <- function(.data, mortality) {
   }
 
   # Drop Age as a key and nest results
-  keys_noage <- keys[keys != age]
+  keys_noage <- non_age_keys(.data)
+  # Age keys to keep with each life table (e.g. AgeGroup as well as age)
+  age_keys <- c(age, setdiff(keys, c(age, keys_noage)))
   .data <- tidyr::nest(.data, .by = tidyselect::all_of(c(index, keys_noage)))
 
   # Create life table for each sub-tibble and row-bind them.
-  if (sex == "None") {
-    out <- purrr::map2(
-      .data[["data"]],
-      "None",
-      lt,
-      age = age,
-      mortality = mortality
-    )
-  } else {
-    out <- purrr::map2(
-      .data[["data"]],
-      .data[[sex]],
-      lt,
-      age = age,
-      mortality = mortality
-    )
-  }
+  out <- purrr::map2(
+    .data[["data"]],
+    if (sex == "None") "None" else .data[[sex]],
+    lt,
+    age = age,
+    mortality = mortality,
+    keep = age_keys
+  )
   .data$lt <- out
   .data$data <- NULL
   tsibble::as_tibble(.data) |>
@@ -87,7 +80,8 @@ life_table <- function(.data, mortality) {
 
 # This is a revised version of the demography::lt function.
 
-lt <- function(dt, sex, age, mortality) {
+# keep contains the columns of dt to return alongside the life table
+lt <- function(dt, sex, age, mortality, keep = age) {
   # Order by age
   dt <- dt[order(dt[[age]]), ]
 
@@ -200,7 +194,7 @@ lt <- function(dt, sex, age, mortality) {
     nx = nx,
     ax = ax
   ) |>
-    mutate(!!age := dt[[age]])
+    dplyr::bind_cols(dt[keep])
 
   return(result)
 }

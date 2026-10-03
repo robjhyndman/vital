@@ -338,7 +338,7 @@ smooth_vital <- function(.data, .var, age_spacing, smooth_fn, ...) {
   }
   pop <- attrx$population
   # Drop Age as a key and nest results
-  keys_noage <- keys[!(keys %in% c(age, "AgeGroup", "Age_Group"))]
+  keys_noage <- non_age_keys(.data)
   # Turn .var into character
   resp <- names(eval_select(enquo(.var), data = .data))
   nested_data <- tidyr::nest(

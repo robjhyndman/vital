@@ -242,7 +242,7 @@ Does your model require extra variables to produce forecasts?",
   new_data[names(point_fc)] <- point_fc
   cn <- c(dist_col, names(point_fc))
   fbl <- tsibble::build_tsibble_meta(
-    as_tibble(new_data)[unique(c(idx, agevar, cn, mv))],
+    as_tibble(new_data)[unique(c(idx, key_vars(new_data), cn, mv))],
     key_data(new_data),
     index = idx,
     index2 = idx,
@@ -269,12 +269,12 @@ make_future_data <- function(.data, h = NULL) {
   out <- tsibble::new_data(.data, round(n))
   indexvar <- index_var(out)
   agevar <- age_var(.data)
-  ages <- .data[[agevar]] |>
-    unique() |>
-    sort()
-  out <- tidyr::expand_grid(as_tibble(out), ages)
-  colnames(out)[colnames(out) == "ages"] <- agevar
-  as_tsibble(out, index = indexvar, key = all_of(agevar)) |>
+  # Every future time for each age (and age group label)
+  age_keys <- union(agevar, key_vars(.data))
+  ages <- dplyr::distinct(as_tibble(.data)[age_keys])
+  ages <- ages[order(ages[[agevar]]), ]
+  out <- tidyr::expand_grid(unique(as_tibble(out)[indexvar]), ages)
+  as_tsibble(out, index = indexvar, key = all_of(age_keys)) |>
     as_vital(.age = agevar)
 }
 

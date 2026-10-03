@@ -34,8 +34,7 @@ autoplot.vital <- function(object, .vars = NULL, age = NULL, ...) {
   }
 
   # Drop Age as a key and nest results
-  kv <- tsibble::key_vars(object)
-  kv <- kv[!(tolower(kv) %in% tolower(c(age, "Age", "AgeGroup", "Age_Group")))]
+  kv <- non_age_keys(object)
   nk <- length(kv)
 
   # Variable to plot
