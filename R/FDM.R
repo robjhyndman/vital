@@ -48,10 +48,10 @@ FDM <- function(
 ) {
   if (
     coherent &
-      !(identical(ts_model_fn, fable::ARIMA) ||
-        identical(ts_model_fn, fable::ARFIMA))
+      !(identical(coherent_ts_model_fn, fable::ARIMA) ||
+        identical(coherent_ts_model_fn, fable::ARFIMA))
   ) {
-    stop("coherent = TRUE only works with ARIMA or ARFIMA models")
+    stop("coherent_ts_model_fn must be fable::ARIMA or fable::ARFIMA")
   }
   if (!coherent) {
     coherent <- NULL

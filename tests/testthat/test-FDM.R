@@ -44,3 +44,13 @@ test_that("Functional data model", {
     )
   }
 })
+
+test_that("FDM checks the coherent time series model function", {
+  expect_no_error(
+    FDM(log(Mortality), coherent = TRUE, ts_model_fn = fable::ETS)
+  )
+  expect_error(
+    FDM(log(Mortality), coherent = TRUE, coherent_ts_model_fn = fable::ETS),
+    "coherent_ts_model_fn"
+  )
+})
