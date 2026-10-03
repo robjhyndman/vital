@@ -80,7 +80,6 @@ net_migration <- function(deaths, births) {
   prevtx$Txminus1 <- prevtx$Tx
   prevtx$Tx <- prevtx$Lx <- NULL
 
-  attr_deaths <- attributes(deaths)
   deaths <- deaths |>
     dplyr::bind_rows(births) |>
     dplyr::left_join(lt) |>
@@ -131,8 +130,8 @@ net_migration <- function(deaths, births) {
   # average of deaths over this year and next
   mig$NetMigration <- mig$nextpop - mig[[popvar]] + mig[[deathsvar]]
 
-  # Zap nextpop and nextdeaths
-  mig$nextpop <- mig$nextdeaths <- NULL
+  # Zap nextpop
+  mig$nextpop <- NULL
   mig <- mig[!is.na(mig$NetMigration), ]
 
   # Only return population, estimated (not actual) deaths, net migrants

@@ -412,7 +412,6 @@ train_stmomo <- function(
   ...
 ) {
   # Variable names
-  indexvar <- index_var(.data)
   vvar <- vital_var_list(.data)
   measures <- measured_vars(.data)
   measures <- measures[!(measures %in% c(vvar$age, vvar$population))]

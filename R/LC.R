@@ -262,7 +262,6 @@ lca <- function(
 
   # Extract mortality rates and population numbers
   year <- sort(unique(data[[index]]))
-  deltat <- year[2] - year[1]
   ages <- sort(unique(data[[age]]))
   n <- length(ages)
   m <- length(year)
@@ -350,7 +349,6 @@ lca <- function(
     # Fit to life expectancy
     # stop("Not yet working")
     startage <- min(data[[age]])
-    agegroup <- ages[4] - ages[3]
     mx <- exp(logrates)
     e0 <- apply(mx, 1, get.e0, agegroup = ages, sex = sex, startage = startage)
     FUN2 <- function(p, e0i, ax, bx, ages, sex, startage) {
@@ -596,7 +594,7 @@ age_components.LC <- function(object, ...) {
 }
 
 #' @export
-autoplot.LC <- function(object, age = "Age", ...) {
+autoplot.LC <- function(object, ...) {
   obj_time <- time_components(object)
   obj_x <- age_components(object)
   index <- index_var(obj_time)

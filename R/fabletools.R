@@ -140,7 +140,6 @@ unnest_tsbl <- function(.data, tsbl_col, parent_key = NULL, interval = NULL) {
     abort("Unnested column is not a tsibble object.")
   }
   idx <- index(tsbl)
-  idx_chr <- as_string(idx)
   key <- c(parent_key, key_vars(tsbl))
   .data <- unnest_tbl(.data, tsbl_col)
   build_tsibble(

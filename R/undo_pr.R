@@ -100,8 +100,7 @@ undo_pr <- function(.data, .var, key = Sex, times = 2000) {
       output,
       response = varname,
       distribution = varname,
-      vitals = vvar,
-      reorder = TRUE
+      vitals = vvar
     )
   }
   return(output)
@@ -202,8 +201,7 @@ undo_sd <- function(.data, .var, key = Sex, times = 2000) {
       output,
       response = varname,
       distribution = varname,
-      vitals = vvar,
-      reorder = TRUE
+      vitals = vvar
     )
   }
   return(output)

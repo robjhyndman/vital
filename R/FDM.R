@@ -158,7 +158,6 @@ generate.FDM <- function(
   h = NULL,
   bootstrap = FALSE,
   times = 1,
-  forecast_fn,
   ...
 ) {
   agevar <- age_var(new_data)
@@ -272,7 +271,6 @@ autoplot.FDM <- function(object, show_order = 2, ...) {
   timevar <- tmp[grepl("beta", tmp)]
   tmp <- colnames(obj_x)
   agevar <- tmp[grepl("phi", tmp)]
-  index <- index_var(obj_time)
   keys <- head(colnames(object), -1)
 
   # Set up list of plots

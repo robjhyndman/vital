@@ -4,8 +4,7 @@ build_vital_fable <- function(
   x,
   response,
   distribution,
-  vitals = NULL,
-  reorder = FALSE
+  vitals = NULL
 ) {
   # Without a distribution column (e.g. after summarise) it is no longer a fable
   if (!(distribution %in% colnames(x))) {

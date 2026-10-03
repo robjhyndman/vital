@@ -120,7 +120,6 @@ forecast.mdl_vtl_ts <- function(
   } else {
     resp_vars
   }
-  attrs <- attributes(new_data)
   agevar <- age_var(new_data)
   if (NROW(new_data) == 0) {
     new_data[[dist_col]] <- distributional::new_dist(dimnames = resp_vars)
