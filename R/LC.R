@@ -269,7 +269,6 @@ lca <- function(
 
   logrates <- t(matrix(data[[rates]], nrow = n, ncol = m, byrow = TRUE))
   logrates[logrates == -Inf] <- NA
-  logrates[is.na(logrates)] <- 0
 
   if (!is.null(pop)) {
     pop <- t(matrix(data[[pop]], nrow = n, ncol = m, byrow = TRUE))

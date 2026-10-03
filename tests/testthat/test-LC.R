@@ -28,7 +28,7 @@ test_that("Lee Carter", {
       .model == "actual"
     ) |>
       dplyr::pull(.mean),
-    0.00175119,
+    0.00172968,
     tolerance = 1e-5
   )
   expect_identical(
@@ -125,6 +125,18 @@ test_that("Lee Carter", {
     expect_false(identical(time_components(lc2), time_components(lc3)))
     expect_lt(sum(abs(lc1$kt - time_components(lc2)$kt)), 1e-10)
   }
+
+  # Zero rates should be treated as missing, not as log rates of 0
+  zeros <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 1980, Age == 2)
+  expect_true(any(zeros$Mortality == 0))
+  lc_zero <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 1980) |>
+    model(lc = LC(log(Mortality)))
+  expect_equal(
+    age_components(lc_zero) |> dplyr::filter(Age == 2) |> dplyr::pull(ax),
+    mean(log(zeros$Mortality[zeros$Mortality > 0]))
+  )
 
   # Simulations should be on the scale of the response
   sim <- norway_mortality |>

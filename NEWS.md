@@ -2,6 +2,7 @@
 
 * Updated to work with fabletools v0.7.0+
 * Fixed `generate()` for LC models, which back-transformed simulations twice
+* Fixed `LC()` treating zero rates as log rates of 0 rather than as missing
 
 # vital 2.0.3
 
