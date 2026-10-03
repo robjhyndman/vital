@@ -170,130 +170,152 @@ export(undo_sd)
 export(vital)
 export(vital_vars)
 import(fabletools)
-importFrom(dplyr,"%>%")
-importFrom(dplyr,across)
-importFrom(dplyr,arrange)
-importFrom(dplyr,full_join)
-importFrom(dplyr,group_by)
-importFrom(dplyr,group_by_drop_default)
-importFrom(dplyr,group_data)
-importFrom(dplyr,if_else)
-importFrom(dplyr,left_join)
-importFrom(dplyr,mutate)
-importFrom(dplyr,nest_by)
-importFrom(dplyr,pull)
-importFrom(dplyr,rename)
-importFrom(dplyr,select)
-importFrom(dplyr,summarise)
-importFrom(dplyr,transmute)
-importFrom(dplyr,ungroup)
-importFrom(fabletools,augment)
-importFrom(fabletools,estimate)
-importFrom(fabletools,forecast)
-importFrom(fabletools,generate)
-importFrom(fabletools,glance)
-importFrom(fabletools,interpolate)
-importFrom(fabletools,model)
-importFrom(fabletools,report)
-importFrom(fabletools,tidy)
-importFrom(ggplot2,aes)
-importFrom(ggplot2,autoplot)
-importFrom(ggplot2,geom_line)
-importFrom(ggplot2,ggplot)
-importFrom(ggplot2,xlab)
+importFrom(dplyr,
+  "%>%",
+  across,
+  arrange,
+  full_join,
+  group_by,
+  group_by_drop_default,
+  group_data,
+  if_else,
+  left_join,
+  mutate,
+  nest_by,
+  pull,
+  rename,
+  select,
+  summarise,
+  transmute,
+  ungroup
+)
+importFrom(fabletools,
+  augment,
+  estimate,
+  forecast,
+  generate,
+  glance,
+  interpolate,
+  model,
+  report,
+  tidy
+)
+importFrom(ggplot2,
+  aes,
+  autoplot,
+  geom_line,
+  ggplot,
+  xlab
+)
 importFrom(grDevices,rainbow)
-importFrom(purrr,compose)
-importFrom(purrr,map)
-importFrom(purrr,map2)
-importFrom(purrr,map_chr)
-importFrom(purrr,map_dbl)
-importFrom(purrr,map_dfr)
-importFrom(purrr,map_int)
-importFrom(purrr,map_lgl)
-importFrom(purrr,possibly)
-importFrom(purrr,transpose)
-importFrom(rlang,"%@%")
-importFrom(rlang,"%||%")
-importFrom(rlang,":=")
-importFrom(rlang,abort)
-importFrom(rlang,as_label)
-importFrom(rlang,as_name)
-importFrom(rlang,as_quosures)
-importFrom(rlang,as_string)
-importFrom(rlang,call2)
-importFrom(rlang,call_args)
-importFrom(rlang,call_name)
-importFrom(rlang,caller_env)
-importFrom(rlang,empty_env)
-importFrom(rlang,enexpr)
-importFrom(rlang,enquo)
-importFrom(rlang,eval_tidy)
-importFrom(rlang,exec)
-importFrom(rlang,expr)
-importFrom(rlang,expr_name)
-importFrom(rlang,flatten)
-importFrom(rlang,get_env)
-importFrom(rlang,get_expr)
-importFrom(rlang,inform)
-importFrom(rlang,is_call)
-importFrom(rlang,is_empty)
-importFrom(rlang,is_false)
-importFrom(rlang,is_null)
-importFrom(rlang,is_quosure)
-importFrom(rlang,is_quosures)
-importFrom(rlang,is_symbol)
-importFrom(rlang,is_syntactic_literal)
-importFrom(rlang,list2)
-importFrom(rlang,missing_arg)
-importFrom(rlang,new_environment)
-importFrom(rlang,new_formula)
-importFrom(rlang,new_function)
-importFrom(rlang,new_quosure)
-importFrom(rlang,quo)
-importFrom(rlang,quo_get_expr)
-importFrom(rlang,quo_is_call)
-importFrom(rlang,quo_is_missing)
-importFrom(rlang,quo_is_null)
-importFrom(rlang,quo_name)
-importFrom(rlang,rep_along)
-importFrom(rlang,set_env)
-importFrom(rlang,set_names)
-importFrom(rlang,sym)
-importFrom(rlang,syms)
-importFrom(rlang,warn)
-importFrom(stats,as.formula)
-importFrom(stats,fitted)
-importFrom(stats,loess)
-importFrom(stats,na.omit)
-importFrom(stats,predict)
-importFrom(stats,qnorm)
-importFrom(stats,residuals)
-importFrom(stats,sd)
-importFrom(stats,time)
-importFrom(stats,ts)
-importFrom(stats,var)
-importFrom(tibble,as_tibble)
-importFrom(tibble,tbl_sum)
-importFrom(tibble,tibble)
-importFrom(tidyr,pivot_longer)
-importFrom(tidyr,pivot_wider)
-importFrom(tidyselect,all_of)
-importFrom(tidyselect,eval_select)
-importFrom(tidyselect,everything)
-importFrom(tsibble,as_tsibble)
-importFrom(tsibble,build_tsibble)
-importFrom(tsibble,group_by_key)
-importFrom(tsibble,index)
-importFrom(tsibble,index2)
-importFrom(tsibble,index_var)
-importFrom(tsibble,is_grouped_ts)
-importFrom(tsibble,is_ordered)
-importFrom(tsibble,is_regular)
-importFrom(tsibble,is_tsibble)
-importFrom(tsibble,key_data)
-importFrom(tsibble,key_vars)
-importFrom(tsibble,measured_vars)
-importFrom(tsibble,n_keys)
-importFrom(tsibble,tsibble)
-importFrom(utils,head)
-importFrom(utils,tail)
+importFrom(purrr,
+  compose,
+  map,
+  map2,
+  map_chr,
+  map_dbl,
+  map_dfr,
+  map_int,
+  map_lgl,
+  possibly,
+  transpose
+)
+importFrom(rlang,
+  "%@%",
+  "%||%",
+  ":=",
+  abort,
+  as_label,
+  as_name,
+  as_quosures,
+  as_string,
+  call2,
+  call_args,
+  call_name,
+  caller_env,
+  empty_env,
+  enexpr,
+  enquo,
+  eval_tidy,
+  exec,
+  expr,
+  expr_name,
+  flatten,
+  get_env,
+  get_expr,
+  inform,
+  is_call,
+  is_empty,
+  is_false,
+  is_null,
+  is_quosure,
+  is_quosures,
+  is_symbol,
+  is_syntactic_literal,
+  list2,
+  missing_arg,
+  new_environment,
+  new_formula,
+  new_function,
+  new_quosure,
+  quo,
+  quo_get_expr,
+  quo_is_call,
+  quo_is_missing,
+  quo_is_null,
+  quo_name,
+  rep_along,
+  set_env,
+  set_names,
+  sym,
+  syms,
+  warn
+)
+importFrom(stats,
+  as.formula,
+  fitted,
+  loess,
+  na.omit,
+  predict,
+  qnorm,
+  residuals,
+  sd,
+  time,
+  ts,
+  var
+)
+importFrom(tibble,
+  as_tibble,
+  tbl_sum,
+  tibble
+)
+importFrom(tidyr,
+  pivot_longer,
+  pivot_wider
+)
+importFrom(tidyselect,
+  all_of,
+  eval_select,
+  everything
+)
+importFrom(tsibble,
+  as_tsibble,
+  build_tsibble,
+  group_by_key,
+  index,
+  index2,
+  index_var,
+  is_grouped_ts,
+  is_ordered,
+  is_regular,
+  is_tsibble,
+  key_data,
+  key_vars,
+  measured_vars,
+  n_keys,
+  tsibble
+)
+importFrom(utils,
+  head,
+  tail
+)
