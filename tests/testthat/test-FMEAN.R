@@ -119,3 +119,16 @@ test_that("model() requires an age variable", {
     as_vital(index = Year, key = Sex, .sex = "Sex")
   expect_error(model(no_age, FMEAN(Mortality)), "No age variable found")
 })
+
+test_that("simulated forecasts are matched to rows of new_data", {
+  nf <- norway_mortality |> filter(Sex == "Female", Year > 2000, Age < 20)
+  fit <- model(nf, FMEAN(log(Mortality)))
+  nd <- nf |>
+    filter(Year == max(Year)) |>
+    mutate(Year = Year + 1L) |>
+    as_vital(index = Year, key = c(Age, Sex))
+  set.seed(1)
+  fc <- forecast(fit, new_data = nd, simulate = TRUE, times = 5000)
+  fc0 <- forecast(fit, new_data = nd)
+  expect_equal(median(fc$Mortality), median(fc0$Mortality), tolerance = 0.05)
+})

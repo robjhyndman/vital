@@ -137,13 +137,16 @@ forecast.mdl_vtl_ts <- function(
       vitals = vital_vars(object$data)
     ))
   }
-  if (simulate || bootstrap) {
-    fc <- generate(object, new_data, bootstrap = bootstrap, times = times, ...)
-    fc <- unname(split(
-      object$transformation[[1]](fc[[".sim"]]),
-      list(fc[[index_var(fc)]], fc[[agevar]])
-    ))
-    fc <- distributional::dist_sample(fc)
+  simulated <- simulate || bootstrap
+  if (simulated) {
+    # Simulations are already back-transformed. Collect them for each row
+    sims <- generate(object, new_data, bootstrap = bootstrap, times = times, ...)
+    rows <- paste(new_data[[idx]], new_data[[agevar]])
+    fc <- split(
+      sims[[".sim"]],
+      factor(paste(sims[[idx]], sims[[agevar]]), levels = rows)
+    )
+    fc <- distributional::dist_sample(unname(fc))
   } else {
     object$model$stage <- "forecast"
     object$model$add_data(new_data)
@@ -214,7 +217,7 @@ Does your model require extra variables to produce forecasts?",
       abort("Transformations of multivariate forecasts are not yet supported")
     }
   }
-  if (any(is_transformed)) {
+  if (any(is_transformed) && !simulated) {
     if (identical(unique(dist_types(fc)), "dist_sample")) {
       fc <- distributional::dist_sample(.mapply(
         exec,
