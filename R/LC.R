@@ -90,7 +90,7 @@ train_lc <- function(
     age = vvar$age,
     pop = vvar$population,
     deaths = vvar$deaths,
-    rates = colnames(.data)[2],
+    rates = measures,
     adjust = adjust,
     jump_choice = jump_choice,
     scale = scale
