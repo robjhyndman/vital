@@ -40,11 +40,10 @@ total_fertility_rate <- function(.data, fertility) {
   .data <- tidyr::nest(.data, lst_data = -all_of(c(index, keys_noage)))
 
   # Compute tfr for each sub-tibble
-  out <- purrr::map_dfr(
-    .data[["lst_data"]],
-    tfr,
-    fertility = fertility
-  )
+  tfr <- map_dbl(.data[["lst_data"]], function(dt) {
+    sum(dt[[fertility]], na.rm = TRUE)
+  })
+  out <- tibble(tfr = tfr)
   out[[index]] <- .data[[index]]
   out |>
     as_tsibble(index = index, key = all_of(keys_noage)) |>
@@ -54,10 +53,4 @@ total_fertility_rate <- function(.data, fertility) {
       .population = vital_names$population,
       reorder = TRUE
     )
-}
-
-tfr <- function(dt, fertility) {
-  tibble(
-    tfr = sum(dt[[fertility]], na.rm = TRUE)
-  )
 }
