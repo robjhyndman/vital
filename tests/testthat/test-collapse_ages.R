@@ -36,3 +36,13 @@ test_that("collapse_ages works with abridged age groups", {
   expect_equal(top$Deaths, sum(upper$Deaths))
   expect_equal(top$Mortality, sum(upper$Deaths) / sum(upper$Population))
 })
+
+test_that("collapse_ages keeps the open interval at the top age", {
+  hmd <- read_hmd_files(test_path("Mx_1x1.txt"))
+  top <- max(hmd$Age)
+  for (m in c(100, top)) {
+    out <- collapse_ages(hmd, max_age = m) |> suppressWarnings()
+    expect_true(all(out$OpenInterval[out$Age == m]))
+    expect_false(any(out$OpenInterval[out$Age < m]))
+  }
+})

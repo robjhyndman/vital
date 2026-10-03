@@ -125,7 +125,7 @@ collapse_age_vector <- function(x, ages, max_age, is_age = FALSE) {
     out[length(out)] <- paste0(out[length(out)], "+")
   } else if (is.logical(x)) {
     # Perhaps OpenInterval variable
-    out <- c(x[ages < max_age], any(x[ages > max_age]))
+    out <- c(x[ages < max_age], any(x[ages >= max_age]))
   } else {
     # No idea what this is, but just truncate
     out <- x[ages <= max_age]

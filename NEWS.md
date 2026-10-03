@@ -44,6 +44,7 @@
 - `as_vital()` on a vital object now accepts `key` (it previously ignored it), and keeps the existing vital variables unless they are given
 - `forecast()`, `generate()`, `augment()` and `interpolate()` now keep the sex and other vital variables of the data, not just age
 - `autoplot()` of `LC()` and `FDM()` models now works when there is more than one key other than age
+- `collapse_ages()` no longer drops the open interval flag when `max_age` is the oldest age in the data
 
 # vital 2.0.3
 
