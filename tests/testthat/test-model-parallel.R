@@ -4,12 +4,13 @@ test_that("model() gives the same fits when future is attached", {
   dat <- norway_mortality |>
     dplyr::filter(Year > 2000, Age < 90) |>
     make_pr(Mortality)
+  # Adjusting to deaths is not meaningful for ratios, so use adjust = "none"
   fit_models <- function() {
     msgs <- character()
     fit <- withCallingHandlers(
       dat |>
         model(
-          lc = LC(log(Mortality)),
+          lc = LC(log(Mortality), adjust = "none"),
           fdm = FDM(log(Mortality), coherent = TRUE),
           bad = LC(Mortality)
         ),
@@ -39,7 +40,7 @@ test_that("model() gives the same fits when future is attached", {
       )
       called <- FALSE
       with_mocked_bindings(
-        dat |> model(lc = LC(log(Mortality))),
+        dat |> model(lc = LC(log(Mortality), adjust = "none")),
         future_mapply = function(..., future.globals, future.seed) {
           called <<- TRUE
           mapply(...)
