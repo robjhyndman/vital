@@ -5,6 +5,8 @@
 #' The vital object is returned along with some additional columns containing
 #' information about the smoothed variable: `.smooth` containing the
 #' smoothed values, and `.smooth_se` containing the corresponding standard errors.
+#' If `.data` has deaths and population variables (see [vital_vars()]), the law
+#' is fitted to these; otherwise it is fitted to `.var`.
 #'
 #' @param .data A vital object
 #' @param .var name of variable to smooth. This should contain mortality rates.
@@ -22,6 +24,7 @@ smooth_mortality_law <- function(.data, .var, law = "gompertz", ...) {
     .data,
     {{ .var }},
     smooth_fn = smooth_mortality_law_x,
+    deaths = vital_var_list(.data)$deaths,
     law = law,
     ...
   )
@@ -33,24 +36,24 @@ smooth_mortality_law_x <- function(
   age_spacing = 1,
   age,
   pop = NULL,
+  deaths = NULL,
   ...
 ) {
-  # Get Ex and Dx variables
-  Ex <- if (!is.null(pop)) data[[pop]] else NULL
-  Dx_name <- vital_vars(data)["deaths"]
-  Dx <- if (!is.null(Dx_name)) data[[Dx_name]] else NULL
-  # Need both Ex and Dx
-  if (is.null(Dx) | is.null(Ex)) {
-    Dx <- Ex <- NULL
+  # Call MortalityLaws, using Dx and Ex if both are available
+  if (!is.null(deaths) && !is.null(pop)) {
+    smooth.fit <- MortalityLaws::MortalityLaw(
+      x = data[[age]],
+      Dx = data[[deaths]],
+      Ex = data[[pop]],
+      ...
+    )
+  } else {
+    smooth.fit <- MortalityLaws::MortalityLaw(
+      x = data[[age]],
+      mx = data[[var]],
+      ...
+    )
   }
-  # Call MortalityLaws
-  smooth.fit <- MortalityLaws::MortalityLaw(
-    x = data[[age]],
-    Dx = Dx,
-    Ex = Ex,
-    mx = data[[var]],
-    ...
-  )
   # Mean squared error
   n <- length(smooth.fit$fitted.values)
   p <- length(smooth.fit$coefficients)

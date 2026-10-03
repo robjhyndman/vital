@@ -25,6 +25,8 @@ the MortalityLaw package.
 The vital object is returned along with some additional columns containing
 information about the smoothed variable: \code{.smooth} containing the
 smoothed values, and \code{.smooth_se} containing the corresponding standard errors.
+If \code{.data} has deaths and population variables (see \code{\link[=vital_vars]{vital_vars()}}), the law
+is fitted to these; otherwise it is fitted to \code{.var}.
 }
 \examples{
 norway_mortality |> smooth_mortality_law(Mortality)
