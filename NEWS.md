@@ -61,6 +61,7 @@
 - Joins such as `left_join()` on vital objects and vital fables no longer drop the vital variables (age, sex, etc.), and `read_hmd()` keeps them when combining age-specific and other data
 - Fixed `life_table()`, `life_expectancy()` and `interpolate()` for data with age group keys as well as age (e.g. `AgeGroup` in vitals from `demogdata` objects), and `total_fertility_rate()` for data with keys other than age. Forecasts now keep age group keys
 - Fixed `forecast()` with `new_data`, which failed for all models
+- `FMEAN()` and `FNAIVE()` now treat infinite values, such as logs of zero rates, as missing, rather than giving infinite means and standard deviations
 
 # vital 2.0.3
 

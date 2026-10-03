@@ -33,12 +33,14 @@ train_fmean <- function(.data, ...) {
   ave_measure <- .data |>
     as_tibble() |>
     group_by(!!sym(agevar)) |>
-    summarise(.fitted = mean(.data[[measure]], na.rm = TRUE))
+    # Infinite values (e.g. log of zero rates) are treated as missing
+    summarise(.fitted = mean(.data[[measure]][is.finite(.data[[measure]])]))
   out <- .data |>
     as_tibble() |>
     left_join(ave_measure, by = agevar) |>
     mutate(
       .resid = .data[[measure]] - .fitted,
+      .resid = if_else(is.finite(.resid), .resid, NA),
       .innov = .resid
     )
   sigma <- out |>

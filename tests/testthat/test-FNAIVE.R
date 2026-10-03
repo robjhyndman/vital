@@ -73,3 +73,10 @@ test_that("FNAIVE simulations are random walks from the last observation", {
   expect_equal(sim$mean, rep(last, 2), tolerance = 0.02)
   expect_equal(sim$sd, mdl$model$sigma * sqrt(1:2), tolerance = 0.05)
 })
+
+test_that("FNAIVE treats log of zero rates as missing", {
+  fit <- norway_mortality |>
+    filter(Sex == "Female", Year > 1990) |>
+    model(FNAIVE(log(Mortality)))
+  expect_true(all(is.finite(fit[[2]][[1]]$fit$model$sigma)))
+})

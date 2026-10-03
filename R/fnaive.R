@@ -42,6 +42,8 @@ train_fnaive <- function(.data, ...) {
     left_join(last_measure, by = c(indexvar, agevar)) |>
     mutate(
       .resid = .data[[measure]] - .fitted,
+      # Infinite values (e.g. log of zero rates) are treated as missing
+      .resid = if_else(is.finite(.resid), .resid, NA),
       .innov = .resid
     )
   model <- out |>

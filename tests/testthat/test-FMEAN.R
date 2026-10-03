@@ -100,3 +100,14 @@ test_that("Formulas using vars() and invalid transformations are parsed", {
     "Cannot invert"
   )
 })
+
+test_that("FMEAN treats log of zero rates as missing", {
+  nf <- norway_mortality |> filter(Sex == "Female", Year > 1990)
+  fit <- model(nf, FMEAN(log(Mortality)))
+  mod <- fit[[2]][[1]]$fit$model
+  expect_true(all(is.finite(mod$mean)))
+  expect_true(all(is.finite(mod$sigma)))
+  nm <- nf
+  nm$Mortality[5] <- NA
+  expect_gt(interpolate(fit, nm)$Mortality[5], 0)
+})
