@@ -66,3 +66,19 @@ test_that("generate_population works without mortality or migration models", {
     suppressWarnings()
   expect_s3_class(no_migrants, "vital")
 })
+
+test_that("generate_population works without a fertility model", {
+  set.seed(1)
+  no_births <- generate_population(
+    pop,
+    mortality_model = mort,
+    migration_model = mig,
+    h = 2,
+    n_reps = 3
+  ) |>
+    suppressWarnings()
+  expect_s3_class(no_births, "vital")
+  # Only migrants can be aged 0
+  first_year <- no_births |> dplyr::filter(Year == min(Year), Age == 0)
+  expect_true(all(first_year$Population < 2000))
+})

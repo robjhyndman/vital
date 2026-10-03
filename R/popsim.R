@@ -130,10 +130,10 @@ generate_population <- function(
     future_fertility <- tidyr::expand_grid(
       year = max(pop[[indexvar]]) + seq(h + 2) - 1,
       age = unique(pop[[vvars$age]]),
+      sex = female,
       .rep = as.character(seq(n_reps))
     )
     future_fertility$fx <- 0
-    future_fertility[[vvars$sex]] <- female
     colnames(future_fertility) <- c(
       indexvar,
       vvars$age,

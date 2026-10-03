@@ -16,6 +16,7 @@
 * `rename()` and `select()` now keep vital variables (age, sex, etc.) that are renamed
 * Fixed `generate_population()` failing when `female` is supplied
 * Fixed `generate_population()` failing when `mortality_model` or `migration_model` is NULL
+* Fixed `generate_population()` failing when `fertility_model` is NULL
 
 # vital 2.0.3
 
