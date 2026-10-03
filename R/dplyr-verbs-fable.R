@@ -17,7 +17,8 @@ arrange.fbl_vtl_ts <- function(.data, ...) {
 #' @export
 select.fbl_vtl_ts <- function(.data, ...) {
   attr_data <- attributes(.data)
-  vvar <- vital_var_list(.data)
+  loc <- eval_select(expr(c(...)), .data)
+  vvar <- rename_vital_vars(vital_var_list(.data), .data, loc)
   build_vital_fable(
     NextMethod(),
     response = attr_data$response,

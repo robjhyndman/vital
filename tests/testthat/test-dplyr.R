@@ -85,3 +85,16 @@ test_that("group_by() with no variables keeps an ungrouped vital", {
   expect_identical(sum(class(grouped) == "grouped_vital"), 1L)
   expect_identical(sum(class(grouped) == "vital"), 1L)
 })
+
+test_that("rename() and select() keep renamed vital variables", {
+  nor <- norway_mortality |> dplyr::filter(Year == 2000)
+  renamed <- dplyr::rename(nor, age = Age, D = Deaths)
+  expect_identical(vital_vars(renamed)[["age"]], "age")
+  expect_identical(vital_vars(renamed)[["deaths"]], "D")
+  expect_equal(life_expectancy(renamed)$ex, life_expectancy(nor)$ex)
+  selected <- dplyr::select(nor, Year, age = Age, Sex, Mortality)
+  expect_identical(vital_vars(selected)[["age"]], "age")
+  expect_identical(vital_vars(selected)[["sex"]], "Sex")
+  grouped <- dplyr::group_by(nor, Sex) |> dplyr::rename(S = Sex)
+  expect_identical(vital_vars(grouped)[["sex"]], "S")
+})

@@ -13,6 +13,7 @@
 * `FDM(coherent = TRUE)` now validates `coherent_ts_model_fn` rather than `ts_model_fn`
 * Fixed `group_by()` with no variables failing on vital objects
 * `autoplot()` on a mable of GAPC models (APC, CBD, etc.) now gives an error instead of infinite recursion
+* `rename()` and `select()` now keep vital variables (age, sex, etc.) that are renamed
 
 # vital 2.0.3
 

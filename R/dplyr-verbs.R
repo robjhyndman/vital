@@ -16,7 +16,8 @@ arrange.vital <- function(.data, ...) {
 
 #' @export
 select.vital <- function(.data, ...) {
-  vvar <- vital_var_list(.data)
+  loc <- eval_select(expr(c(...)), .data)
+  vvar <- rename_vital_vars(vital_var_list(.data), .data, loc)
   as_vital(
     NextMethod(),
     .age = vvar$age,
@@ -26,6 +27,15 @@ select.vital <- function(.data, ...) {
     .population = vvar$population
   ) |>
     regroup_selected(.data, ...)
+}
+
+# Follow renamed columns in the vital variables
+# loc is a named vector of column positions from eval_select() or eval_rename()
+rename_vital_vars <- function(vvar, .data, loc) {
+  old <- names(.data)[loc]
+  lapply(vvar, function(v) {
+    if (v %in% old) names(loc)[match(v, old)] else v
+  })
 }
 
 # tsibble's select() drops any grouping, so restore it,
@@ -213,7 +223,8 @@ dplyr_reconstruct.grouped_vital <- function(data, template) {
 
 #' @export
 rename.vital <- function(.data, ...) {
-  vvar <- vital_var_list(.data)
+  loc <- tidyselect::eval_rename(expr(c(...)), .data)
+  vvar <- rename_vital_vars(vital_var_list(.data), .data, loc)
   as_vital(
     NextMethod(),
     .age = vvar$age,
