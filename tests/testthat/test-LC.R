@@ -126,6 +126,13 @@ test_that("Lee Carter", {
     expect_lt(sum(abs(lc1$kt - time_components(lc2)$kt)), 1e-10)
   }
 
+  # Simulations should be on the scale of the response
+  sim <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 1980, Age < 90) |>
+    model(lc = LC(log(Mortality))) |>
+    generate(h = 2, times = 3)
+  expect_lt(median(sim$.sim), 0.1)
+
   # Test LC on fertility
   expect_no_error(
     norway_fertility |>

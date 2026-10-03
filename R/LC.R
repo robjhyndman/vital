@@ -187,7 +187,7 @@ generate.LC <- function(
   new_data <- new_data |>
     left_join(x$model$by_x, by = agevar) |>
     left_join(fc, by = c(indexvar, ".rep")) |>
-    mutate(fitted = exp(ax + bx * .sim))
+    mutate(fitted = ax + bx * .sim)
 
   transmute(group_by_key(new_data), ".sim" := fitted)
 }
