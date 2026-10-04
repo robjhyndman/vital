@@ -62,38 +62,31 @@ cohort_components <- function(object, ...) {
 
 #' @export
 time_components.mdl_vtl_df <- function(object, ...) {
-  if (length(mable_vars(object)) > 1) {
-    stop(
-      "Extracting components is only supported for individual models. Please use `dplyr::select()` to choose one model column."
-    )
-  }
-  model <- mable_vars(object)
-  class(object) <- c(class(object[[model]][[1]]$fit), class(object)[-1])
-  time_components(object, ...)
+  time_components(as_model_class(object, "Extracting components"), ...)
 }
 
 #' @export
 age_components.mdl_vtl_df <- function(object, ...) {
-  if (length(mable_vars(object)) > 1) {
-    stop(
-      "Extracting components is only supported for individual models. Please use `dplyr::select()` to choose one model column."
-    )
-  }
-  model <- mable_vars(object)
-  class(object) <- c(class(object[[model]][[1]]$fit), class(object)[-1])
-  age_components(object, ...)
+  age_components(as_model_class(object, "Extracting components"), ...)
 }
 
 #' @export
 cohort_components.mdl_vtl_df <- function(object, ...) {
+  cohort_components(as_model_class(object, "Extracting components"), ...)
+}
+
+# Give a single-model mable the class of its fitted models, so methods for
+# that model class are dispatched. what describes the operation for errors.
+as_model_class <- function(object, what) {
   if (length(mable_vars(object)) > 1) {
     stop(
-      "Extracting components is only supported for individual models. Please use `dplyr::select()` to choose one model column."
+      what,
+      " is only supported for individual models. Please use `dplyr::select()` to choose one model column."
     )
   }
   model <- mable_vars(object)
   class(object) <- c(class(object[[model]][[1]]$fit), class(object)[-1])
-  cohort_components(object, ...)
+  object
 }
 
 # The first fitted model in a single-model mable

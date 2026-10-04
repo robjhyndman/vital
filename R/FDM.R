@@ -63,9 +63,6 @@ FDM <- function(
   if (coherent && is.null(coherent_ts_model)) {
     stop("coherent_ts_model_fn must be fable::ARIMA or fable::ARFIMA")
   }
-  if (!coherent) {
-    coherent <- NULL
-  }
   fd_model <- new_model_class("fdm", train = train_fdm)
   new_model_definition(
     fd_model,
@@ -248,24 +245,22 @@ autoplot.FDM <- function(object, show_order = 2, ...) {
   obj_time <- time_components(object)
   obj_x <- age_components(object)
 
-  meanvar <- "mean"
-  tmp <- colnames(obj_time)
-  timevar <- tmp[grepl("beta", tmp)]
-  tmp <- colnames(obj_x)
-  agevar <- tmp[grepl("phi", tmp)]
+  agevar <- colnames(first_fit(object)$fit$model$by_x)[1]
+  betas <- grep("beta", colnames(obj_time), value = TRUE)
+  phis <- grep("phi", colnames(obj_x), value = TRUE)
   keys <- head(colnames(object), -1)
   # Cannot show more components than were fitted
-  show_order <- min(show_order, length(agevar))
+  show_order <- min(show_order, length(phis))
 
   # Set up list of plots
   p <- list()
-  p[[1]] <- age_plot(obj_x, meanvar, keys) + ggplot2::ylab(meanvar)
+  p[[1]] <- key_plot(obj_x, sym(agevar), "mean", keys) + ggplot2::ylab("mean")
   for (i in seq(show_order)) {
-    p[[i + 1]] <- age_plot(obj_x, agevar[i], keys)
+    p[[i + 1]] <- key_plot(obj_x, sym(agevar), phis[i], keys)
   }
   p[[show_order + 2]] <- patchwork::guide_area()
   for (i in seq(show_order)) {
-    p[[i + 2 + show_order]] <- time_plot(obj_time, timevar[i], keys)
+    p[[i + 2 + show_order]] <- time_plot(obj_time, betas[i], keys)
   }
   patchwork::wrap_plots(p) +
     patchwork::plot_layout(ncol = show_order + 1, nrow = 2, guides = "collect")
@@ -278,12 +273,9 @@ fdm <- function(
   data,
   order = 6,
   ts_model_fn = fable::ARIMA,
-  coherent = NULL,
+  coherent = FALSE,
   coherent_ts_model = "ARFIMA"
 ) {
-  if (is.null(coherent)) {
-    coherent <- FALSE
-  }
   # Grab variable names
   indexvar <- index_var(data)
   vvar <- vital_var_list(data)

@@ -135,17 +135,7 @@ autoplot.fbl_vtl_ts <- function(object, ...) {
 #'
 #' @export
 autoplot.mdl_vtl_df <- function(object, ...) {
-  if (length(mable_vars(object)) > 1) {
-    stop(
-      "Model plotting is only supported for one class of models. To produce a plot for a specific class of models, use `select()`"
-    )
-  } else {
-    model <- mable_vars(object)
-    class(object) <- c(class(object[[model]][[1]]$fit), class(object)[-1])
-    agevar <- age_var(object[[model]][[1]]$fit$fitted)
-    p <- autoplot(object, age = agevar, ...)
-  }
-  p
+  autoplot(as_model_class(object, "Model plotting"), ...)
 }
 
 # Plot a column of the model component of each fit in a single-model mable
@@ -157,14 +147,6 @@ model_component_plot <- function(object, age, .var) {
   keys <- setdiff(colnames(as_tibble(object)), attributes(object)$model)
   p <- key_plot(unnest_components(object, identity), sym(age), .var, keys)
   p + ggplot2::xlab(age)
-}
-
-# Plot a variable against age by key
-age_plot <- function(object, .var, keys) {
-  names <- colnames(object)[!(colnames(object) %in% c(keys, .var))]
-  age <- names[grep("age", names, ignore.case = TRUE)]
-  kv_noage <- keys[keys != age]
-  key_plot(object, sym(age), .var, kv_noage)
 }
 
 # Plot a variable against time by key

@@ -579,11 +579,12 @@ autoplot.LC <- function(object, ...) {
   index <- index_var(obj_time)
   keys <- colnames(obj_time)
   keys <- keys[!(keys %in% c(index, "kt"))]
+  agevar <- colnames(first_fit(object)$fit$model$by_x)[1]
 
   # Set up list of plots
   p <- list()
-  p[[1]] <- age_plot(obj_x, "ax", keys) + ggplot2::ylab("ax")
-  p[[2]] <- age_plot(obj_x, "bx", keys) + ggplot2::ylab("bx")
+  p[[1]] <- key_plot(obj_x, sym(agevar), "ax", keys) + ggplot2::ylab("ax")
+  p[[2]] <- key_plot(obj_x, sym(agevar), "bx", keys) + ggplot2::ylab("bx")
   p[[3]] <- patchwork::guide_area()
   p[[4]] <- time_plot(obj_time, "kt", keys) + ggplot2::labs(x = index, y = "kt")
   patchwork::wrap_plots(p) +

@@ -100,7 +100,7 @@ Check that specified model(s) are model definitions.",
     } else {
       sex <- NULL
     }
-    if (!is.null(mdl$extra$coherent)) {
+    if (isTRUE(mdl$extra$coherent)) {
       # Model definitions are R6 objects, so copy before changing for this series
       mdl <- mdl$clone()
       mdl$extra$coherent <- mdl$extra$coherent &&

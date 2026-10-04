@@ -260,40 +260,17 @@ as_vital.tbl_ts <- function(
   reorder = FALSE,
   ...
 ) {
-  # Add attributes to x to identify the various variables
-  vnames <- colnames(x)
-  if (!is.null(.age)) {
-    if (!(.age %in% vnames)) {
-      .age <- NULL
-    }
-  }
-  if (!is.null(.sex)) {
-    if (!(.sex %in% vnames)) {
-      .sex <- NULL
-    }
-  }
-  if (!is.null(.births)) {
-    if (!(.births %in% vnames)) {
-      .births <- NULL
-    }
-  }
-  if (!is.null(.deaths)) {
-    if (!(.deaths %in% vnames)) {
-      .deaths <- NULL
-    }
-  }
-  if (!is.null(.population)) {
-    if (!(.population %in% vnames)) {
-      .population <- NULL
-    }
-  }
-  attr(x, "vital") <- c(
+  # Add attributes to x to identify the various variables,
+  # dropping any that are not in x
+  vvar <- list(
     age = .age,
     sex = .sex,
     deaths = .deaths,
     births = .births,
     population = .population
   )
+  vvar <- vvar[vapply(vvar, function(v) isTRUE(v %in% colnames(x)), logical(1L))]
+  attr(x, "vital") <- unlist(vvar)
   # Add additional class, keeping grouping classes first
   cls <- setdiff(class(x), c("grouped_vital", "vital"))
   if (is_grouped_ts(x)) {
@@ -303,38 +280,18 @@ as_vital.tbl_ts <- function(
     class(x) <- c("vital", cls)
   }
   # Check class of variables
-  if (!is.null(.age)) {
-    if (!is.numeric(x[[.age]])) {
-      stop("Age variable must be numeric")
+  for (v in setdiff(names(vvar), "sex")) {
+    if (!is.numeric(x[[vvar[[v]]]])) {
+      stop(toupper(substring(v, 1, 1)), substring(v, 2), " variable must be numeric")
     }
   }
-  if (!is.null(.sex)) {
-    if (!is.factor(x[[.sex]]) & !is.character((x[[.sex]]))) {
-      stop("Sex variable must be character or factor")
-    }
-  }
-  if (!is.null(.births)) {
-    if (!is.numeric(x[[.births]])) {
-      stop("Births variable must be numeric")
-    }
-  }
-  if (!is.null(.deaths)) {
-    if (!is.numeric(x[[.deaths]])) {
-      stop("Deaths variable must be numeric")
-    }
-  }
-  if (!is.null(.population)) {
-    if (!is.numeric(x[[.population]])) {
-      stop("Population variable must be numeric")
-    }
+  if (!is.null(vvar$sex) && !is.factor(x[[vvar$sex]]) && !is.character(x[[vvar$sex]])) {
+    stop("Sex variable must be character or factor")
   }
   # Sort variables
   if (reorder) {
-    agevar <- age_var(x)
-    keys <- key_vars(x)
-    agevars <- colnames(x)
-    agevars <- agevars[grep("age", agevars, ignore.case = TRUE)]
-    keys_noage <- keys[!(keys %in% c(agevar, agevars))]
+    agevar <- vvar$age
+    keys_noage <- non_age_keys(x)
     x <- select(x, all_of(c(index_var(x), agevar)), everything()) |>
       arrange(across(all_of(c(index_var(x), keys_noage, agevar))))
   }
