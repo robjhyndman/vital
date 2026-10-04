@@ -75,6 +75,7 @@
 - `FMEAN()` and `FNAIVE()` now interpolate standard deviations from neighbouring ages where they cannot be estimated, rather than simulating missing values. Bootstrap simulations from `FMEAN()` no longer fail at ages with no finite residuals
 - Fixed `augment()`, `fitted()` and `residuals()` failing for GAPC models (`LC2()`, `APC()`, `CBD()`, etc.)
 - `generate()` and `forecast()` for GAPC models now give an error with `bootstrap = TRUE`, rather than silently ignoring it
+- Fixed `forecast()` and `generate()` for `FNAIVE()` models failing for data with age group keys (e.g. `AgeGroup` in vitals from `demogdata` objects)
 
 # vital 2.0.3
 

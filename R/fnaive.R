@@ -61,6 +61,7 @@ train_fnaive <- function(.data, ...) {
     list(
       fitted = out,
       model = model,
+      response = measure,
       nobs = sum(!is.na(.data[[measure]]))
     ),
     class = "FNAIVE"
@@ -84,7 +85,7 @@ forecast.FNAIVE <- function(
   agevar <- age_var(new_data)
   indexvar <- index_var(object$fitted)
   fitted <- as_tibble(object$fitted)
-  measure <- colnames(fitted)[3]
+  measure <- object$response
   # Random walks start from the last observation for each age
   last <- fitted[fitted[[indexvar]] == max(fitted[[indexvar]]), ]
   horizon <- match(new_data[[indexvar]], sort(unique(new_data[[indexvar]])))
@@ -112,7 +113,7 @@ generate.FNAIVE <- function(
   if (times != length(reps)) {
     stop("`times` must equal the number of replicates (`.rep`) in `new_data`")
   }
-  measure <- colnames(x$fitted)[3]
+  measure <- x$response
   fitted <- as_tibble(x$fitted)
   # Random walks start from the last observation for each age
   last <- fitted[fitted[[indexvar]] == max(fitted[[indexvar]]), ]

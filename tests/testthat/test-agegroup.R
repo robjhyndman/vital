@@ -49,3 +49,17 @@ test_that("forecasts keep age group keys", {
   expect_true("AgeGroup" %in% key_vars(fc))
   expect_identical(NROW(fc), 180L)
 })
+
+test_that("FNAIVE forecasts and simulations allow age group keys", {
+  fc <- nor_ag |>
+    model(FNAIVE(Mortality)) |>
+    forecast(h = 2)
+  fc0 <- nor |>
+    model(FNAIVE(Mortality)) |>
+    forecast(h = 2)
+  expect_equal(fc$.mean, fc0$.mean)
+  sim <- nor_ag |>
+    model(FNAIVE(Mortality)) |>
+    generate(h = 2, times = 2)
+  expect_false(anyNA(sim$.sim))
+})
