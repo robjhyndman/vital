@@ -81,8 +81,8 @@ by simulation. This argument specifies the number of simulations to use.</p></dd
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Note that when a measured variable takes value 0, the geometric mean
-is set to 10^-5 to avoid infinite values in the ratio. Therefore, when the
+    <p>Note that when a measured variable takes value 0, <code><a href="make_pr.html">make_pr()</a></code> sets
+it to 10^-5 to avoid infinite values in the ratio. Therefore, when the
 transformation is undone, the results will not be identical to the original
 in the case that the original data was 0.</p>
     </div>
@@ -126,11 +126,11 @@ models. <em>Demography</em>, 50(1), 261-283.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">2</span>016     1 FALSE        Female      <span style="text-decoration: underline;">29</span>195      7     1.36 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">2</span>016     2 FALSE        Female      <span style="text-decoration: underline;">29</span>631      6     1.78 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">2</span>016     3 FALSE        Female      <span style="text-decoration: underline;">30</span>416      2     1.44 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">2</span>016     4 FALSE        Female      <span style="text-decoration: underline;">30</span>582      0     0    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">2</span>016     4 FALSE        Female      <span style="text-decoration: underline;">30</span>582      0     0.328</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">2</span>016     5 FALSE        Female      <span style="text-decoration: underline;">31</span>567      1     0.724</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">2</span>016     6 FALSE        Female      <span style="text-decoration: underline;">31</span>963      2     1.45 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">2</span>016     7 FALSE        Female      <span style="text-decoration: underline;">31</span>318      2     0.841</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">2</span>016     8 FALSE        Female      <span style="text-decoration: underline;">30</span>710      0     0    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">2</span>016     8 FALSE        Female      <span style="text-decoration: underline;">30</span>710      0     1    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">2</span>016     9 FALSE        Female      <span style="text-decoration: underline;">30</span>882      1     1.79 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2,654 more rows</span></span>
 <span class="r-in"><span><span class="co"># Undo products and ratios</span></span></span>
@@ -143,11 +143,11 @@ models. <em>Demography</em>, 50(1), 261-283.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">2</span>016     1 FALSE        Female      <span style="text-decoration: underline;">29</span>195      7  0.000<span style="text-decoration: underline;">24</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">2</span>016     2 FALSE        Female      <span style="text-decoration: underline;">29</span>631      6  0.000<span style="text-decoration: underline;">203</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">2</span>016     3 FALSE        Female      <span style="text-decoration: underline;">30</span>416      2  0.000<span style="text-decoration: underline;">066</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">2</span>016     4 FALSE        Female      <span style="text-decoration: underline;">30</span>582      0  0       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">2</span>016     4 FALSE        Female      <span style="text-decoration: underline;">30</span>582      0  0.000<span style="text-decoration: underline;">01</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">2</span>016     5 FALSE        Female      <span style="text-decoration: underline;">31</span>567      1  0.000<span style="text-decoration: underline;">032</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">2</span>016     6 FALSE        Female      <span style="text-decoration: underline;">31</span>963      2  0.000<span style="text-decoration: underline;">063</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">2</span>016     7 FALSE        Female      <span style="text-decoration: underline;">31</span>318      2  0.000<span style="text-decoration: underline;">063</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">2</span>016     8 FALSE        Female      <span style="text-decoration: underline;">30</span>710      0  0       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">2</span>016     8 FALSE        Female      <span style="text-decoration: underline;">30</span>710      0  0.000<span style="text-decoration: underline;">01</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">2</span>016     9 FALSE        Female      <span style="text-decoration: underline;">30</span>882      1  0.000<span style="text-decoration: underline;">032</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,766 more rows</span></span>
 </code></pre></div>

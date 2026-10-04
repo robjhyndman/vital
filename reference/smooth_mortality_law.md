@@ -27,11 +27,9 @@ smooth_mortality_law(.data, .var, law = "gompertz", ...)
 
 - law:
 
-  name of mortality law. For available mortality laws, users can check
-  the
-  [`availableLaws`](https://rdrr.io/pkg/MortalityLaws/man/availableLaws.html).
-  Argument ignored if a custom law supplied. function to learn about the
-  available options.
+  name of mortality law. See
+  [`availableLaws`](https://rdrr.io/pkg/MortalityLaws/man/availableLaws.html)
+  for the available options. Argument ignored if a custom law supplied.
 
 - ...:
 

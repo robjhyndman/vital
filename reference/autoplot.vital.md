@@ -1,7 +1,7 @@
 # Rainbow plot of demographic data against age
 
 Produce rainbow plot (coloured by time index) of demographic variable
-against against age.
+against age.
 
 ## Usage
 

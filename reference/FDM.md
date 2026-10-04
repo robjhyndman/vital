@@ -63,7 +63,7 @@ A model specification.
 
 Hyndman, R. J., and Ullah, S. (2007) Robust forecasting of mortality and
 fertility rates: a functional data approach. *Computational Statistics &
-Data Analysis*, 5, 4942-4956.
+Data Analysis*, 51, 4942-4956.
 <https://robjhyndman.com/publications/funcfor/>
 
 Hyndman, R. J., Booth, H., & Yasmeen, F. (2013). Coherent mortality

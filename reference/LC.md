@@ -28,10 +28,9 @@ LC(
 - adjust:
 
   method to use for adjustment of coefficients \\k_t\\. Possibilities
-  are `"dt"` (Lee-Carter method, the default), `"dxt"` (BMS method),
-  `"e0"` (Lee-Miller method based on life expectancy) and `"none"`. If
-  omitted, `"dt"` is used when the data contain deaths and population
-  (see
+  are `"dt"` (Lee-Carter method), `"dxt"` (BMS method), `"e0"`
+  (Lee-Miller method based on life expectancy) and `"none"`. If omitted,
+  `"dt"` is used when the data contain deaths and population (see
   [`vital_vars()`](https://pkg.robjhyndman.com/vital/reference/vital_vars.md)),
   and `"none"` otherwise, or when the data contain product-ratios from
   [`make_pr()`](https://pkg.robjhyndman.com/vital/reference/make_pr.md).

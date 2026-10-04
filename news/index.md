@@ -158,8 +158,9 @@
   now gives an error unless the starting population has consecutive
   single-year ages
 - [`collapse_ages()`](https://pkg.robjhyndman.com/vital/reference/collapse_ages.md)
-  now sums all numeric variables other than age keys and constants,
-  rather than truncating any variable that changes linearly with age
+  now sums all numeric variables other than age and rates, rather than
+  truncating any variable that changes linearly with age or is constant
+  over age
 - [`interpolate()`](https://generics.r-lib.org/reference/interpolate.html)
   now works for
   [`FNAIVE()`](https://pkg.robjhyndman.com/vital/reference/FNAIVE.md),
@@ -266,6 +267,60 @@
   simulations from
   [`FMEAN()`](https://pkg.robjhyndman.com/vital/reference/FMEAN.md) no
   longer fail at ages with no finite residuals
+- Fixed
+  [`augment()`](https://generics.r-lib.org/reference/augment.html),
+  [`fitted()`](https://rdrr.io/r/stats/fitted.values.html) and
+  [`residuals()`](https://rdrr.io/r/stats/residuals.html) failing for
+  GAPC models
+  ([`LC2()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+  [`APC()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+  [`CBD()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md), etc.)
+- [`generate()`](https://generics.r-lib.org/reference/generate.html) and
+  [`forecast()`](https://generics.r-lib.org/reference/forecast.html) for
+  GAPC models now give an error with `bootstrap = TRUE`, rather than
+  silently ignoring it
+- Fixed
+  [`forecast()`](https://generics.r-lib.org/reference/forecast.html) and
+  [`generate()`](https://generics.r-lib.org/reference/generate.html) for
+  [`FNAIVE()`](https://pkg.robjhyndman.com/vital/reference/FNAIVE.md)
+  models failing for data with age group keys (e.g. `AgeGroup` in vitals
+  from `demogdata` objects)
+- [`forecast()`](https://generics.r-lib.org/reference/forecast.html),
+  [`generate()`](https://generics.r-lib.org/reference/generate.html) and
+  [`interpolate()`](https://generics.r-lib.org/reference/interpolate.html)
+  now give a clear error when `new_data` is a list, rather than failing
+  in an unsupported attempt to combine scenarios
+- [`generate_population()`](https://pkg.robjhyndman.com/vital/reference/generate_population.md)
+  is faster, computing survivorship ratios for all replicates at once
+  rather than a life table for each
+- [`make_pr()`](https://pkg.robjhyndman.com/vital/reference/make_pr.md)
+  now sets zero values to 10^-5 before computing ratios, as documented,
+  so ratios are no longer zero (and infinite on the log scale)
+- [`life_table()`](https://pkg.robjhyndman.com/vital/reference/life_table.md)
+  and
+  [`life_expectancy()`](https://pkg.robjhyndman.com/vital/reference/life_expectancy.md)
+  now interpolate missing mortality rates from neighbouring ages
+  (log-linearly), with a warning, rather than silently setting them to
+  0.5. This also affects `LC(adjust = "e0")` fits to data with zero or
+  missing rates
+- `LC(adjust = "dxt")` now excludes only cells with zero population when
+  fitting to deaths, rather than all cells with fewer than one expected
+  death
+- [`LC()`](https://pkg.robjhyndman.com/vital/reference/LC.md) now uses
+  the nearest available age for `ax` at the youngest or oldest ages when
+  they have no observed rates, rather than returning missing values
+- [`generate_population()`](https://pkg.robjhyndman.com/vital/reference/generate_population.md)
+  now simulates each model from the end of its data to the last year
+  required, so models trained on data ending before the starting
+  population no longer give missing years (e.g. zero births), and gives
+  an error if a model is trained on data beyond the starting population
+- [`tidy()`](https://generics.r-lib.org/reference/tidy.html) now returns
+  the coefficients of
+  [`LC()`](https://pkg.robjhyndman.com/vital/reference/LC.md),
+  [`FDM()`](https://pkg.robjhyndman.com/vital/reference/FDM.md),
+  [`FNAIVE()`](https://pkg.robjhyndman.com/vital/reference/FNAIVE.md)
+  and GAPC models in long form (`term` and `estimate`, with the age,
+  time or birth year to which each refers), rather than nothing
 
 ## vital 2.0.3
 

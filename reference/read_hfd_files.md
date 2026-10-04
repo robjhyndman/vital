@@ -1,7 +1,7 @@
 # Read data from files downloaded from HFD and construct a `vital` object for use in other functions
 
 `read_hfd_files` reads single-year and single-age data from files
-downloaded from the Human Mortality Database (HFD
+downloaded from the Human Fertility Database (HFD
 <https://www.humanfertility.org>) and constructs a `vital` object
 suitable for use in other functions. This function uses
 [`HMDHFDplus::readHFD()`](https://rdrr.io/pkg/HMDHFDplus/man/readHFD.html)
@@ -23,7 +23,7 @@ read_hfd_files(files)
   contents. If it is unclear what a file contains, the columns will be
   named according to the filename. If the data contains a mixture of
   age-specific and non-age-specific variables, then the non-age-specific
-  data will be repeated for each age. If you have HMD files for many
+  data will be repeated for each age. If you have HFD files for many
   countries, all with the same names, then you should put them in
   separate folders to avoid confusion, and to save changing all the
   filenames.

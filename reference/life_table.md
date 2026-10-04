@@ -3,7 +3,8 @@
 All available years and ages are included in the tables. \$qx = mx/(1 +
 ((1-ax) \* mx))\$ as per Chiang (1984). Ages can be single years,
 abridged (0, 1, 5, 10, ...), or 5-year groups starting at age 5 or
-above.
+above. Missing mortality rates are interpolated (on the log scale) from
+neighbouring ages, with a warning.
 
 ## Usage
 

@@ -18,7 +18,7 @@ read_hfd(country, username, password, variables = "asfrRR")
 
 - country:
 
-  Directory abbreviation from the HMD. For instance, Norway = "NOR".
+  Country code as used by the HFD. For instance, Norway = "NOR".
 
 - username:
 
