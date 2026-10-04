@@ -198,3 +198,44 @@ test_that("generate_population requires models trained up to the starting popula
     "up to the year of the starting population"
   )
 })
+
+test_that("generate_population adds net migrants by age at the end of the year", {
+  pop100 <- pop |> collapse_ages(max_age = 100)
+  # Net migration of exactly x at age x
+  mig_age <- pop100 |>
+    dplyr::mutate(NetMigration = as.numeric(Age)) |>
+    model(m = FMEAN(NetMigration))
+  out <- generate_population(pop100, migration_model = mig_age, h = 1, n_reps = 1)
+  P0 <- pop100 |> dplyr::filter(Year == max(Year), Sex == "Female")
+  P1 <- out |> dplyr::filter(Sex == "Female")
+  P <- function(d, a) d$Population[d$Age == a]
+  expect_equal(P(P1, 0), 0)
+  expect_equal(P(P1, 50), P(P0, 49) + 50)
+  expect_equal(P(P1, 100), P(P0, 99) + P(P0, 100) + 100)
+})
+
+test_that("generate_population survival matches the life table", {
+  pop100 <- pop |> collapse_ages(max_age = 100)
+  mort_naive <- pop100 |> model(m = FNAIVE(Mortality))
+  set.seed(2)
+  out <- generate_population(
+    pop100,
+    mortality_model = mort_naive,
+    h = 1,
+    n_reps = 200
+  )
+  P0 <- pop100 |> dplyr::filter(Year == max(Year), Sex == "Female")
+  P1 <- out |>
+    tibble::as_tibble() |>
+    dplyr::filter(Sex == "Female") |>
+    dplyr::summarise(Population = mean(Population), .by = Age)
+  P <- function(d, a) d$Population[d$Age == a]
+  lt <- life_table(P0)
+  L <- function(a) lt$Lx[lt$Age == a]
+  expect_equal(P(P1, 86) / P(P0, 85), L(86) / L(85), tolerance = 0.001)
+  expect_equal(
+    P(P1, 100),
+    (P(P0, 99) + P(P0, 100)) * lt$rx[lt$Age == 100],
+    tolerance = 0.02
+  )
+})

@@ -4,6 +4,11 @@
 #' models for fertility, mortality, and migration. If any model is NULL, it is
 #' assumed there are no future births, deaths or net migrants, respectively.
 #' This is an experimental function and has not been thoroughly tested.
+#' The simulation follows `demography::pop.sim()`, as described in Hyndman and Booth (2008).
+#'
+#' @references
+#' Hyndman and Booth (2008) Stochastic population forecasts using functional data
+#' models for mortality, fertility and migration. *International Journal of Forecasting*, 24(3), 323-342.
 #'
 #' @param starting_population A `vital` object with the age-sex-specific starting population.
 #' @param mortality_model A `mable` object containing an age-sex-specific model for mortality rates,
@@ -11,7 +16,8 @@
 #' @param fertility_model A `mable` object containing an age-specific model for fertility rates,
 #' trained on data up to the year of the starting population. If NULL, there are zero future births.
 #' @param migration_model A `mable` object containing an age-sex-specific model for net migration numbers,
-#' trained on data up to the year of the starting population. If NULL, there are zero future net migrants.
+#' trained on data up to the year of the starting population. Net migrants are indexed by age at the
+#' end of the year, as returned by [net_migration()]. If NULL, there are zero future net migrants.
 #' @param h The forecast horizon equal to the number of years to simulate into the future.
 #' @param n_reps The number of replicates to simulate.
 #' @param female A character string giving the name used for females in the sex
@@ -223,6 +229,8 @@ generate_population <- function(
   # Split into years
   future <- split(future, future[[indexvar]])
 
+  # The simulation follows demography::pop.sim(). Rows within each year are
+  # ordered by age, then sex and replicate, so each age is a block of rows.
   # Advance the population by one year and combine upper ages. Assume zero births
   advance <- function(age, x) {
     min_age <- age == min(age)
@@ -230,46 +238,48 @@ generate_population <- function(
     max_age_1 <- age == max(age) - 1
     c(rep(0, sum(min_age)), x[!max_age & !max_age_1], x[max_age_1] + x[max_age])
   }
+  # Value at the next age; the oldest age keeps its own value
+  next_age <- function(age, x) {
+    c(x[age != min(age)], x[age == max(age)])
+  }
   for (y in seq(h)) {
-    yr <- future[[y]][[indexvar]][1]
-    n <- NROW(future[[y]])
-    # Add half migrants to current population
-    future[[y]]$Rx <- pmax(0, future[[y]]$Prev_Pop + 0.5 * future[[y]]$Nx)
+    fy <- future[[y]]
+    n <- NROW(fy)
+    age <- fy[[vvars$age]]
+    age0 <- age == min(age)
+    oldest <- age == max(age)
+    oldest_1 <- age == max(age) - 1
+    # Net migrants are indexed by age at the end of the year. Add half of them
+    # to the cohort at the start of the year, splitting those in the open age
+    # group equally between its two cohorts
+    mig <- next_age(age, fy$Nx)
+    mig[oldest_1 | oldest] <- rep(0.5 * fy$Nx[oldest], 2)
+    fy$Rx <- pmax(0, fy$Prev_Pop + 0.5 * mig)
     # Survivorship ratios from the life table of each sex and replicate
     rx <- single_year_rx(
-      future[[y]]$mx,
-      future[[y]][[vvars$age]],
-      paste(future[[y]][[vvars$sex]], future[[y]]$.rep),
-      future[[y]][[vvars$sex]]
+      fy$mx,
+      age,
+      paste(fy[[vvars$sex]], fy$.rep),
+      fy[[vvars$sex]]
     )
     nsr <- 1 - rx
     # No survivors where the life table has run out of lives
     nsr[!is.finite(nsr)] <- 1
-    future[[y]]$nsr <- pmin(pmax(nsr, 0), 1)
-    # Deaths
-    future[[y]]$cohD <- pmax(0, future[[y]]$nsr * future[[y]]$Rx)
-    future[[y]]$Rx2 <- pmax(
-      0,
-      advance(future[[y]][[vvars$age]], future[[y]]$Rx - future[[y]]$cohD)
-    )
-    future[[y]]$Ex <- 0.5 * (future[[y]]$Rx + future[[y]]$Rx2)
-    future[[y]]$Dx <- stats::rpois(n, future[[y]]$Ex * future[[y]]$mx)
-    future[[y]]$cohD <- 0.5 *
-      (future[[y]]$Dx + advance(future[[y]][[vvars$age]], future[[y]]$Dx))
-    future[[y]]$Rx2 <- pmax(
-      0,
-      advance(future[[y]][[vvars$age]], future[[y]]$Rx - future[[y]]$cohD)
-    )
+    fy$nsr <- pmin(pmax(nsr, 0), 1)
+    # Deaths, with exposures from the cohorts' expected survivors, using the
+    # survivorship ratio for each cohort's age at the end of the year
+    cohD <- pmax(0, next_age(age, fy$nsr) * fy$Rx)
+    Rx2 <- pmax(0, advance(age, fy$Rx - cohD))
+    fy$Dx <- stats::rpois(n, 0.5 * (fy$Rx + Rx2) * fy$mx)
+    # Each cohort has half the deaths at its age at the start of the year and
+    # half at its age at the end, except that the open age group's deaths all
+    # come from its cohorts
+    fy$cohD <- 0.5 * (fy$Dx + next_age(age, fy$Dx))
+    fy$cohD[oldest_1] <- 0.5 * fy$Dx[oldest_1] + fy$Dx[oldest]
+    fy$cohD[oldest] <- 0
+    fy$Rx2 <- pmax(0, advance(age, fy$Rx - fy$cohD))
 
-    births <- future[[y]][, c(
-      indexvar,
-      vvars$age,
-      vvars$sex,
-      ".rep",
-      "fx",
-      "Rx",
-      "Rx2"
-    )]
+    births <- fy[, c(indexvar, vvars$age, vvars$sex, ".rep", "fx", "Rx", "Rx2")]
     births$Births <- stats::rpois(n, births$fx * (births$Rx + births$Rx2) / 2)
     births <- births |>
       group_by(.rep) |>
@@ -288,70 +298,25 @@ generate_population <- function(
       tidyr::pivot_longer(
         all_of(c(male, female)),
         names_to = vvars$sex,
-        values_to = vvars$population
+        values_to = "B"
       )
-    births[[vvars$age]] <- 0
-    births[[indexvar]] <- yr
 
-    # Infant mortality
-    births <- births |>
-      dplyr::left_join(
-        future[[y]][, c(
-          indexvar,
-          vvars$age,
-          vvars$sex,
-          ".rep",
-          "Nx",
-          "mx",
-          "nsr"
-        )],
-        by = c(indexvar, vvars$age, vvars$sex, ".rep")
-      )
-    births$RxB <- births[[vvars$population]] + 0.5 * births$Nx
-    births$cohD <- pmax(0, births$nsr * births$RxB)
-    births$Rx20 <- births$RxB - births$cohD
-    births$Ex0 <- 0.5 * (births$RxB + births$Rx20)
-    births$Dx <- stats::rpois(NROW(births), births$Ex0 * births$mx)
+    # Infant mortality, for the rows of the youngest age
+    infant <- fy[age0, c(vvars$sex, ".rep", "Nx", "mx", "nsr", "Rx")] |>
+      left_join(births, by = c(vvars$sex, ".rep"))
+    RxB <- pmax(0, infant$B + 0.5 * infant$Nx)
+    cohDB <- infant$nsr * RxB
+    # Deaths at age 0, from the cohort aged 0 at the start of the year and the
+    # birth cohort
+    risk0 <- 0.5 * (infant$Rx + RxB - cohDB) * infant$mx
+    Dx0 <- stats::rpois(length(risk0), risk0)
     # Proportion of infant deaths in the birth cohort (none if no risk)
-    births$f0 <- if_else(
-      births$Ex0 * births$mx > 0,
-      births$cohD / (births$Ex0 * births$mx),
-      0
-    )
-    births$cohDB <- births$f0 * births$Dx
-    births$Dx0 <- pmax(0, births$Dx - births$cohDB)
-    age0 <- births[, c(
-      indexvar,
-      vvars$age,
-      vvars$sex,
-      ".rep",
-      "RxB",
-      "cohDB",
-      "f0",
-      "Dx0"
-    )] |>
-      left_join(
-        future[[y]][future[[y]][[vvars$age]] == 0, ],
-        by = c(indexvar, vvars$age, vvars$sex, ".rep")
-      )
-    age0$cohD <- (1 - age0$f0) * age0$Dx0 + 0.5 * age0$Dx
-    age0$Rx2 <- age0$RxB - age0$cohDB
-    age0 <- age0[, colnames(future[[y]])]
-    future[[y]] <- dplyr::bind_rows(
-      age0,
-      future[[y]][future[[y]][[vvars$age]] > 0, ]
-    )
-    future[[y]][[vvars$population]] <- pmax(
-      0,
-      round(future[[y]]$Rx2 + 0.5 * future[[y]]$Nx)
-    )
-    future[[y]] <- future[[y]] |>
-      dplyr::arrange(
-        future[[y]][[indexvar]],
-        future[[y]][[vvars$age]],
-        future[[y]][[vvars$sex]],
-        future[[y]][[".rep"]]
-      )
+    f0 <- if_else(risk0 > 0, pmin(1, cohDB / risk0), 0)
+    fy$cohD[age0] <- (1 - f0) * Dx0 + 0.5 * fy$Dx[age == min(age) + 1]
+    fy$Rx2 <- pmax(0, advance(age, fy$Rx - fy$cohD))
+    fy$Rx2[age0] <- pmax(0, RxB - f0 * Dx0)
+    fy[[vvars$population]] <- pmax(0, round(fy$Rx2 + 0.5 * fy$Nx))
+    future[[y]] <- fy
     if (y < h) {
       future[[y + 1]]$Prev_Pop <- future[[y]][[vvars$population]]
     }

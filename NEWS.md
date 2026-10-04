@@ -19,6 +19,7 @@
 - Fixed `generate_population()` failing when `fertility_model` is NULL
 - `generate_population()` now works with any names for the index, age, sex and population variables
 - `generate_population()` now correctly checks that each mable contains only one model
+- Fixed `generate_population()` applying survivorship ratios and cohort deaths one age too young, which misstated deaths at every age and understated the open age group by about a third. It now follows `demography::pop.sim()`, including infant deaths in the cohort aged 0 at the start of the year, with net migrants indexed by age at the end of the year
 - `forecast()` and `generate()` for GAPC models now work when the index and age variables are not called `Year` and `Age`
 - GAPC models with `link = "logit"` no longer fail when the data contain missing values
 - `net_migration()` now works when births are stored as a population variable

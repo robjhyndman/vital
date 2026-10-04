@@ -24,7 +24,8 @@ trained on data up to the year of the starting population. If NULL, there are ze
 trained on data up to the year of the starting population. If NULL, there are zero future births.}
 
 \item{migration_model}{A \code{mable} object containing an age-sex-specific model for net migration numbers,
-trained on data up to the year of the starting population. If NULL, there are zero future net migrants.}
+trained on data up to the year of the starting population. Net migrants are indexed by age at the
+end of the year, as returned by \code{\link[=net_migration]{net_migration()}}. If NULL, there are zero future net migrants.}
 
 \item{h}{The forecast horizon equal to the number of years to simulate into the future.}
 
@@ -43,4 +44,9 @@ Simulate future age-specific population given a starting population and
 models for fertility, mortality, and migration. If any model is NULL, it is
 assumed there are no future births, deaths or net migrants, respectively.
 This is an experimental function and has not been thoroughly tested.
+The simulation follows \code{demography::pop.sim()}, as described in Hyndman and Booth (2008).
+}
+\references{
+Hyndman and Booth (2008) Stochastic population forecasts using functional data
+models for mortality, fertility and migration. \emph{International Journal of Forecasting}, 24(3), 323-342.
 }
