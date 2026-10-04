@@ -526,6 +526,9 @@ generate.GAPC <- function(
   times = 1,
   ...
 ) {
+  if (bootstrap) {
+    stop("Bootstrapped simulations are not available for GAPC models. Use bootstrap = FALSE.")
+  }
   agevar <- age_var(new_data)
   indexvar <- index_var(new_data)
   h <- length(unique(new_data[[indexvar]]))

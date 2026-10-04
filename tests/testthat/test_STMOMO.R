@@ -169,3 +169,8 @@ test_that("augment, fitted and residuals work for GAPC models", {
   expect_equal(NROW(fitted(mod |> select(cbd))), NROW(nor))
   expect_equal(NROW(residuals(mod |> select(cbd))), NROW(nor))
 })
+
+test_that("GAPC models do not silently ignore bootstrap", {
+  expect_error(generate(mod |> select(lc2), h = 2, bootstrap = TRUE), "not available")
+  expect_error(forecast(mod |> select(lc2), h = 2, bootstrap = TRUE), "not available")
+})
