@@ -50,6 +50,7 @@
 - Fixed `read_ktdb()` ignoring the `triangle` argument
 - `read_hmd_files()` now orders rows by year when combining age-specific and non-age-specific files
 - Fixed `read_ktdb()` failing for most countries, and rejecting Lithuania (code 37); countries without K-T data now give an informative error
+- `read_stmf()` now takes `username` and `password` arguments, as the HMD requires a login to download STMF data. Previously it failed when reading the login page returned by the HMD
 - `read_stmf()` now gives an informative error for countries without STMF data
 - Grouped vital objects now stay `grouped_vital` after `mutate()`, `filter()`, `arrange()`, `rename()`, `relocate()`, `slice()` and `[`
 - Fixed `generate_population()` producing missing populations at the oldest ages from negative simulated mortality rates and undefined survivorship ratios

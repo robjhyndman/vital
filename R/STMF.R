@@ -3,20 +3,27 @@
 #' `read_stmf` reads weekly mortality data from the Short-term Mortality Fluctuations (STMF)
 #' series available in the Human Mortality Database (HMD) <https://www.mortality.org/Data/STMF>,
 #' and constructs a `vital` object suitable for use in other functions.
+#' The HMD requires a login to download STMF data.
 #'
 #' @param country Country name or country code as specified by the HMD. For instance, Australian
 #' data can be obtained using \code{country = "Australia"} or \code{country = "AUS"}.
+#' @param username HMD username (case-sensitive)
+#' @param password HMD password (case-sensitive)
 #' @return A `vital` object combining the downloaded data.
 #'
 #' @author Sixian Tang
+#' @seealso [read_stmf_files()] for reading STMF files that have already been downloaded.
 #' @examples
 #' \dontrun{
-#' norway <- read_stmf(country = "NOR")
+#' norway <- read_stmf(
+#'   country = "NOR",
+#'   username = "Nora.Weigh@mymail.com",
+#'   password = "FF!5xeEFa6"
+#' )
 #' }
 #'
-#'
 #' @export
-read_stmf <- function(country) {
+read_stmf <- function(country, username, password) {
   # Get country code
   if (!(country %in% countries$stmf_code)) {
     if (country %in% countries$Country) {
@@ -37,7 +44,35 @@ read_stmf <- function(country) {
     country,
     "stmfout.csv"
   )
-  read_stmf_files(url)
+  read_stmf_files(hmd_download(url, username, password))
+}
+
+# Log in to the HMD and download a file to a temporary file, returning its path
+hmd_download <- function(url, username, password) {
+  login_url <- "https://www.mortality.org/Account/Login"
+  session <- rvest::session(login_url)
+  form <- rvest::html_form(session)[[1]]
+  form$action <- login_url
+  form$url <- login_url
+  form <- rvest::html_form_set(
+    form,
+    Email = username,
+    Password = password,
+    `__RequestVerificationToken` = form$fields[["__RequestVerificationToken"]]$value
+  ) |>
+    suppressWarnings()
+  session <- rvest::session_submit(session, form)
+  response <- rvest::session_jump_to(session, url)$response
+  # Without a successful login, the HMD returns its login page instead
+  if (grepl("html", response$headers[["content-type"]], fixed = TRUE)) {
+    stop(
+      "Unable to download data from the HMD. Check your username and password.",
+      call. = FALSE
+    )
+  }
+  file <- tempfile(fileext = ".csv")
+  writeBin(response$content, file)
+  file
 }
 
 #' Read STMF data from files downloaded from HMD
@@ -52,6 +87,7 @@ read_stmf <- function(country) {
 #' @return `read_stmf_files` returns a `vital` object combining the downloaded data.
 #'
 #' @author Rob J Hyndman
+#' @seealso [read_stmf()] for downloading and reading STMF data directly from the HMD.
 #' @examples
 #' \dontrun{
 #' # File downloaded from the Human Mortality Database STMF series

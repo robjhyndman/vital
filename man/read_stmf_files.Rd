@@ -25,6 +25,9 @@ and constructs a \code{vital} object suitable for use in other functions.
 mortality <- read_stmf_files("AUSstmfout.csv")
 }
 }
+\seealso{
+\code{\link[=read_stmf]{read_stmf()}} for downloading and reading STMF data directly from the HMD.
+}
 \author{
 Rob J Hyndman
 }

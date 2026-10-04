@@ -27,6 +27,7 @@ Imports:
   patchwork,
   purrr,
   rlang (>= 1.0.0),
+  rvest,
   StMoMo,
   tibble,
   tidyr,

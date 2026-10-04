@@ -4,11 +4,15 @@
 \alias{read_stmf}
 \title{Read Short-Term Mortality Fluctuations data from the Human Mortality Database}
 \usage{
-read_stmf(country)
+read_stmf(country, username, password)
 }
 \arguments{
 \item{country}{Country name or country code as specified by the HMD. For instance, Australian
 data can be obtained using \code{country = "Australia"} or \code{country = "AUS"}.}
+
+\item{username}{HMD username (case-sensitive)}
+
+\item{password}{HMD password (case-sensitive)}
 }
 \value{
 A \code{vital} object combining the downloaded data.
@@ -17,13 +21,20 @@ A \code{vital} object combining the downloaded data.
 \code{read_stmf} reads weekly mortality data from the Short-term Mortality Fluctuations (STMF)
 series available in the Human Mortality Database (HMD) \url{https://www.mortality.org/Data/STMF},
 and constructs a \code{vital} object suitable for use in other functions.
+The HMD requires a login to download STMF data.
 }
 \examples{
 \dontrun{
-norway <- read_stmf(country = "NOR")
+norway <- read_stmf(
+  country = "NOR",
+  username = "Nora.Weigh@mymail.com",
+  password = "FF!5xeEFa6"
+)
 }
 
-
+}
+\seealso{
+\code{\link[=read_stmf_files]{read_stmf_files()}} for reading STMF files that have already been downloaded.
 }
 \author{
 Sixian Tang
