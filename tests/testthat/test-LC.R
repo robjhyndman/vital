@@ -12,7 +12,7 @@ test_that("Lee Carter", {
     suppressWarnings()
   fc <- forecast(lc)
 
-  expect_no_error(autoplot(fc))
+  expect_no_error(ggplot2::ggplot_build(autoplot(fc)))
   expect_identical(dim(lc), c(2L, 3L))
   expect_identical(dim(glance(lc)), c(4L, 5L))
   expect_no_error(residuals(lc, type = "innov"))
@@ -369,4 +369,18 @@ test_that("LC deviances are missing with two years and scale gives drift -1", {
     model(LC(log(Mortality), scale = TRUE)) |>
     time_components()
   expect_equal(mean(diff(kt$kt)), -1)
+})
+
+test_that("LC estimates do not depend on the order of the rows", {
+  x <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 1990, Age < 90)
+  kt <- function(fit) fit[[2]][[1]]$fit$model$by_t$kt
+  sorted <- kt(model(x, LC(log(Mortality))))
+  set.seed(3)
+  shuffled <- x[sample(NROW(x)), ]
+  expect_equal(kt(model(shuffled, LC(log(Mortality)))), sorted)
+  expect_equal(
+    estimate(x, LC(log(Mortality)), sex = "Female")$fit$model$by_t$kt,
+    sorted
+  )
 })
