@@ -16,6 +16,7 @@
 - `life_table()` now caps probabilities of death `qx` at 1, which previously exceeded 1 at very high mortality rates, giving negative deaths `dx` and infinite life expectancies
 - `life_table()` now uses sex-specific infant separation factors when sex is capitalised (e.g. "Female")
 - `smooth_mortality_law()` now fits to deaths and population when available, as intended
+- Fixed `smooth_mortality()` failing with "initial parameters not feasible" for some age ranges
 - Fixed `smooth_mortality_law()` giving infinite standard errors when some ages have zero population, and computing standard errors with the wrong units; they are now based on the residuals of the log rates
 - Fixed `generate_population()` not adding back the mean for coherent migration models
 - `FDM(coherent = TRUE)` now validates `coherent_ts_model_fn` rather than `ts_model_fn`

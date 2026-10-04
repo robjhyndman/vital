@@ -49,3 +49,11 @@ test_that("autoplot of several variables plots each separately", {
   d <- built$data[[1]]
   expect_identical(unique(as.vector(table(paste(d$PANEL, d$group)))), 111L)
 })
+
+test_that("smooth_mortality works for data starting above age 50", {
+  sm <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year == 2010, Age > 50, Age < 90) |>
+    smooth_mortality(Mortality)
+  expect_true(all(is.finite(sm$.smooth)))
+  expect_true(all(diff(sm$.smooth[sm$Age >= 65]) >= 0))
+})

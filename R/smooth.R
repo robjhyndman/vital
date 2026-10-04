@@ -290,12 +290,10 @@ smooth.monotonic <- function(x, y, b, k = -1, w = NULL, newx = x) {
   G$Ain <- A # constraint matrix
   G$bin <- rep(0, nc + 1) # constraint vector
   G$sp <- f.ug$sp # use smoothing parameters from un-constrained fit
-  k <- G$smooth[[1]]$df + 1
-  G$p <- rep(0, k)
-  G$p[k] <- 0.1 # get monotonic starting parameters, by
-  # setting coefficiants of polynomial part of term
-  G$p[k - 1] <- -mean(0.1 * xx) # must ensure that gam side conditions are
-  # met so that sum of smooth over x's is zero
+  # Feasible starting parameters: an increasing straight line, which the
+  # spline basis can represent exactly
+  G$p <- qr.coef(qr(G$X), mean(yy) + 0.1 * (xx - mean(xx)))
+  G$p[is.na(G$p)] <- 0
   G$y <- yy
   G$off <- G$off - 1 # indexing inconsistency between pcls and internal gam
   G$C <- matrix(0, 0, 0) # fixed constraint matrix (there are none)
