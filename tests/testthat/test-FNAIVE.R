@@ -80,3 +80,13 @@ test_that("FNAIVE treats log of zero rates as missing", {
     model(FNAIVE(log(Mortality)))
   expect_true(all(is.finite(fit[[2]][[1]]$fit$model$sigma)))
 })
+
+test_that("FNAIVE fills standard deviations that cannot be estimated", {
+  males <- norway_mortality |> filter(Sex == "Male", Year > 2000)
+  fit <- model(males, FNAIVE(log(Mortality)))
+  expect_true(all(is.finite(fit[[2]][[1]]$fit$model$sigma)))
+  for (b in c(FALSE, TRUE)) {
+    expect_no_warning(sim <- generate(fit, h = 3, times = 2, bootstrap = b))
+    expect_false(anyNA(sim$.sim))
+  }
+})

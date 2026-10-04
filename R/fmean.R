@@ -1,6 +1,8 @@
 #' Functional mean model
 #'
 #' `FMEAN()` returns an iid functional model applied to the formula's response variable as a function of age.
+#' Standard deviations that cannot be estimated, such as at ages with fewer
+#' than two finite residuals, are interpolated from neighbouring ages.
 #'
 #' @aliases report.FMEAN
 #'
@@ -46,6 +48,7 @@ train_fmean <- function(.data, ...) {
   sigma <- out |>
     group_by(across(all_of(agevar))) |>
     summarise(sigma = sd(.resid, na.rm = TRUE))
+  sigma$sigma <- fill_sigma(sigma$sigma, sigma[[agevar]])
   out <- out |>
     as_tsibble(index = indexvar, key = all_of(agevar)) |>
     as_vital(.age = agevar) |>
@@ -62,6 +65,32 @@ train_fmean <- function(.data, ...) {
     ),
     class = "FMEAN"
   )
+}
+
+# Fill missing standard deviations (e.g. at ages with too few observations)
+# by linear interpolation between neighbouring ages, using the nearest
+# available value beyond the youngest or oldest of them
+fill_sigma <- function(sigma, age) {
+  ok <- is.finite(sigma)
+  if (all(ok) || !any(ok)) {
+    return(sigma)
+  }
+  if (sum(ok) == 1L) {
+    sigma[!ok] <- sigma[ok]
+  } else {
+    sigma[!ok] <- stats::approx(age[ok], sigma[ok], xout = age[!ok], rule = 2)$y
+  }
+  sigma
+}
+
+# Resample n innovations from pool, or simulate normal innovations with
+# standard deviation sigma if pool has no finite values
+resample_innov <- function(pool, n, sigma) {
+  pool <- pool[is.finite(pool)]
+  if (length(pool) == 0L) {
+    return(stats::rnorm(n, sd = sigma))
+  }
+  pool[sample.int(length(pool), size = n, replace = TRUE)]
 }
 
 #' @rdname forecast
@@ -103,18 +132,16 @@ generate.FMEAN <- function(
 
   if (!(".innov" %in% names(new_data))) {
     if (bootstrap) {
-      innov <- as_tibble(x$fitted) |>
-        select(all_of(c(agevar, ".innov"))) |>
-        nest_by(!!sym(agevar)) |>
-        mutate(
-          data = list(
-            tibble(
-              .innov = sample(unlist(na.omit(data)), times, replace = TRUE),
-              .rep = as.character(seq_along(.innov))
-            )
-          )
-        ) |>
-        tidyr::unnest(data)
+      fitted <- as_tibble(x$fitted)
+      ages <- x$model[[agevar]]
+      innov <- purrr::map2(ages, x$model$sigma, function(age, sigma) {
+        resample_innov(fitted$.innov[fitted[[agevar]] == age], times, sigma)
+      })
+      innov <- tibble(
+        !!agevar := rep(ages, each = times),
+        .rep = rep(unique(new_data$.rep), length(ages)),
+        .innov = unlist(innov)
+      )
       new_data <- new_data |>
         left_join(innov, by = c(agevar, ".rep"))
     } else {

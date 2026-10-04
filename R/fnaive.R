@@ -1,6 +1,8 @@
 #' Functional naive model
 #'
 #' `FNAIVE()` returns an random walk functional model applied to the formula's response variable as a function of age.
+#' Standard deviations that cannot be estimated, such as at ages with fewer
+#' than two finite residuals, are interpolated from neighbouring ages.
 #'
 #' @aliases report.FNAIVE
 #'
@@ -49,6 +51,7 @@ train_fnaive <- function(.data, ...) {
   model <- out |>
     group_by(across(all_of(agevar))) |>
     summarise(sigma = sd(.resid, na.rm = TRUE))
+  model$sigma <- fill_sigma(model$sigma, model[[agevar]])
   out <- out |>
     as_tsibble(index = indexvar, key = all_of(agevar)) |>
     as_vital(.age = agevar) |>
@@ -123,12 +126,7 @@ generate.FNAIVE <- function(
       if (!bootstrap) {
         return(stats::rnorm(n, sd = sigma[i]))
       }
-      pool <- fitted$.innov[fitted[[agevar]] == ages[i]]
-      pool <- pool[!is.na(pool)]
-      if (length(pool) == 0L) {
-        return(rep(NA_real_, n))
-      }
-      pool[sample.int(length(pool), size = n, replace = TRUE)]
+      resample_innov(fitted$.innov[fitted[[agevar]] == ages[i]], n, sigma[i])
     },
     numeric(n)
   )

@@ -17,6 +17,8 @@ A model specification.
 }
 \description{
 \code{FMEAN()} returns an iid functional model applied to the formula's response variable as a function of age.
+Standard deviations that cannot be estimated, such as at ages with fewer
+than two finite residuals, are interpolated from neighbouring ages.
 }
 \examples{
 fmean <- norway_mortality |>

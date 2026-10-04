@@ -140,3 +140,32 @@ test_that("forecasts and simulations keep the type of the index", {
   expect_type(forecast(fit, h = 2)$Year, "integer")
   expect_type(generate(fit, h = 2)$Year, "integer")
 })
+
+test_that("missing standard deviations are interpolated across age", {
+  expect_equal(fill_sigma(c(1, NA, 3, NA), 1:4), c(1, 2, 3, 3))
+  expect_equal(fill_sigma(c(NA, 2, NA), 1:3), c(2, 2, 2))
+  expect_identical(fill_sigma(c(NA_real_, NA_real_), 1:2), c(NA_real_, NA_real_))
+})
+
+test_that("FMEAN bootstrap handles ages with one or no residuals", {
+  males <- norway_mortality |> filter(Sex == "Male", Year > 2000)
+  fit <- model(males, FMEAN(log(Mortality)))
+  expect_true(all(is.finite(fit[[2]][[1]]$fit$model$sigma)))
+  set.seed(1)
+  sim <- generate(fit, h = 2, times = 50, bootstrap = TRUE)
+  expect_false(anyNA(sim$.sim))
+  # Age 110 has a single residual (zero), which is resampled as itself
+  resid110 <- fit[[2]][[1]]$fit$fitted |>
+    as_tibble() |>
+    filter(Age == 110, is.finite(.resid)) |>
+    pull(.resid)
+  mean110 <- fit[[2]][[1]]$fit$model$mean[fit[[2]][[1]]$fit$model$Age == 110]
+  expect_equal(unique(log(sim$.sim[sim$Age == 110])), mean110 + resid110)
+})
+
+test_that("FMEAN bootstrap works at ages with no finite residuals", {
+  d <- norway_mortality |> filter(Sex == "Male", Year > 2000, Age > 100)
+  d$Mortality[d$Age == 110] <- 0
+  fit <- model(d, FMEAN(log(Mortality)))
+  expect_no_error(generate(fit, h = 1, times = 3, bootstrap = TRUE))
+})
