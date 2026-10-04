@@ -118,11 +118,13 @@ get_ktdb_links <- function(id) {
     stringr::str_remove("/databases/ktdb/")
 }
 
-# Sometimes errors, even with tryCatch. Not sure why. Just rerun it.
+# The server sometimes refuses the connection, so retry after a short pause.
 while (any(countries$ktdb_male == "" & !is.na(countries$ktdb_number))) {
   i <- which(countries$ktdb_male == "" & !is.na(countries$ktdb_number))[1]
-  links <- tryCatch(get_ktdb_links(countries$ktdb_number[i]))
-  if (!inherits(links, "try-error")) {
+  links <- try(get_ktdb_links(countries$ktdb_number[i]), silent = TRUE)
+  if (inherits(links, "try-error")) {
+    Sys.sleep(2)
+  } else {
     countries$ktdb_male[i] <- links[1]
     countries$ktdb_female[i] <- links[2]
   }
