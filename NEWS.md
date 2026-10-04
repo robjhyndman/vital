@@ -22,6 +22,7 @@
 - `forecast()` and `generate()` for GAPC models now work when the index and age variables are not called `Year` and `Age`
 - GAPC models with `link = "logit"` no longer fail when the data contain missing values
 - `net_migration()` now works when births are stored as a population variable
+- `net_migration()` now indexes net migrants by age at the end of the year, as in `demography::netmigration()`: births are age 0 (rather than -1), and the open age group combines the two oldest ages at the start of the year. This fixes wrong net migration at the two oldest ages
 - Fixed `read_ktdb()` ignoring the `triangle` argument
 - Grouped vital objects now stay `grouped_vital` after `mutate()`, `filter()`, `arrange()`, `rename()`, `relocate()`, `slice()` and `[`
 - Fixed `generate_population()` producing missing populations at the oldest ages from negative simulated mortality rates and undefined survivorship ratios

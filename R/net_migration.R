@@ -6,9 +6,12 @@
 #' It is assumed that
 #' the population variable is the same as in the deaths object, and that the same keys other than age
 #' are present in both objects.
-#' @return A vital object containing population, estimated deaths (not actual deaths) and net migration,
-#' using the formula Net Migration = Population - lag(Population cohort) - Deaths + Births.
-#' Births are returned as Population at Age -1, and deaths are estimated from the life table
+#' @return A vital object containing population, estimated deaths (not actual deaths) and net migration.
+#' Net migration at age x in year t is for the cohort aged x at the end of year t (on 1 January
+#' of year t+1), so it equals the population aged x on 1 January of year t+1, minus the cohort's
+#' population on 1 January of year t (births during year t for age 0, and the two oldest ages
+#' combined for the open age group), plus the cohort's deaths during year t. Deaths are
+#' estimated from the survivorship ratios of the life table, as in `demography::netmigration()`.
 #' @references
 #' Hyndman and Booth (2008) Stochastic population forecasts using functional data
 #' models for mortality, fertility and migration. *International Journal of Forecasting*, 24(3), 323-342.
@@ -53,8 +56,8 @@ net_migration <- function(deaths, births) {
     stop("Keys are different in deaths and births objects")
   }
 
-  # Convert births to population at age -1 so they are 0 on 1 January following year
-  births[[agevar]] <- -1
+  # Births during the year are the cohort aged 0 at the end of the year
+  births[[agevar]] <- vctrs::vec_cast(0, deaths[[agevar]])
   births <- births[
     births[[birth_idx]] >= min(deaths[[death_idx]]) &
       births[[birth_idx]] <= max(deaths[[death_idx]]),
@@ -66,72 +69,36 @@ net_migration <- function(deaths, births) {
   } else {
     stop("Births or Population variable not found in births object")
   }
-  births <- births |>
-    select(all_of(unique(c(birth_idx, birth_keys, agevar, popvar))))
+  births <- as_tibble(births)[c(death_idx, death_keys, popvar)]
 
-  # Compute Lx and Tx
-  prevtx <- nextlx <- lt <- life_table(deaths) |> select(Lx, Tx)
-  # Next age Lx
-  nextlx[[agevar]] <- nextlx[[agevar]] - 1
-  nextlx$Lxplus1 <- nextlx$Lx
-  nextlx$Tx <- nextlx$Lx <- NULL
-  # Previous age Tx
-  prevtx[[agevar]] <- prevtx[[agevar]] + 1
-  prevtx$Txminus1 <- prevtx$Tx
-  prevtx$Tx <- prevtx$Lx <- NULL
+  # Population at the start of the year of each cohort, by its age at the end
+  # of the year, with the two oldest ages combined into the open age group
+  pop <- as_tibble(deaths)[c(death_idx, death_keys, popvar)]
+  start <- pop
+  start[[agevar]] <- pmin(start[[agevar]] + 1L, max(start[[agevar]]))
+  start <- dplyr::bind_rows(start, births) |>
+    dplyr::summarise(
+      start = sum(.data[[popvar]]),
+      .by = all_of(c(death_idx, death_keys))
+    )
 
-  deaths <- deaths |>
-    dplyr::bind_rows(births) |>
-    dplyr::left_join(lt) |>
-    dplyr::left_join(nextlx) |>
-    dplyr::left_join(prevtx) |>
-    suppressMessages()
+  # Survivorship ratios rx (Lx/Lx-1, L0 for births, Tx/Tx-1 for the open age
+  # group) give the deaths of each cohort during the year
+  rx <- as_tibble(life_table(deaths))[c(death_idx, death_keys, "rx")]
 
-  deaths$Lx <- if_else(deaths[[agevar]] == -1, 1, deaths$Lx)
-  deaths$Lxplus1 <- if_else(
-    deaths[[agevar]] == max(deaths[[agevar]]),
-    deaths$Tx,
-    deaths$Lxplus1
-  )
-  deaths$Lx <- if_else(
-    deaths[[agevar]] == max(deaths[[agevar]]),
-    deaths$Txminus1,
-    deaths$Lx
-  )
-  deaths[[deathsvar]] <- pmax(
-    0,
-    deaths[[popvar]] * (1 - deaths$Lxplus1 / deaths$Lx)
-  )
-  miss <- is.na(deaths[[deathsvar]])
-  deaths[[deathsvar]][miss] <- 0
-  deaths$Lx <- deaths$Lxplus1 <- deaths$Tx <- deaths$Txminus1 <- NULL
+  # Population at the end of the year
+  nextpop <- pop
+  nextpop[[death_idx]] <- nextpop[[death_idx]] - 1L
+  names(nextpop)[names(nextpop) == popvar] <- "nextpop"
 
-  nextpop <- deaths |> select(all_of(popvar))
-  nextpop[[agevar]] <- nextpop[[agevar]] - 1
-  nextpop[[death_idx]] <- nextpop[[death_idx]] - 1
-  nextpop$nextpop <- nextpop[[popvar]]
-  nextpop[[popvar]] <- NULL
-  nextpop <- nextpop |>
-    tsibble::group_by_key() |>
-    dplyr::mutate(diff = tsibble::difference(nextpop)) |>
-    dplyr::ungroup()
-  nextpop$nextpop <- if_else(
-    nextpop[[agevar]] == max(nextpop[[agevar]]),
-    nextpop$diff,
-    nextpop$nextpop
-  )
-  nextpop$diff <- NULL
-
-  mig <- deaths |>
-    left_join(nextpop) |>
-    suppressMessages()
-
-  # Net migrants is difference between population and lagpop plus
-  # average of deaths over this year and next
-  mig$NetMigration <- mig$nextpop - mig[[popvar]] + mig[[deathsvar]]
-
-  # Zap nextpop
-  mig$nextpop <- NULL
+  by <- c(death_idx, death_keys)
+  mig <- pop |>
+    left_join(start, by = by) |>
+    left_join(rx, by = by) |>
+    left_join(nextpop, by = by)
+  mig[[deathsvar]] <- pmax(0, mig$start * (1 - mig$rx))
+  mig[[deathsvar]][is.na(mig[[deathsvar]])] <- 0
+  mig$NetMigration <- mig$nextpop - mig$start + mig[[deathsvar]]
   mig <- mig[!is.na(mig$NetMigration), ]
 
   # Only return population, estimated (not actual) deaths, net migrants

@@ -16,9 +16,12 @@ the population variable is the same as in the deaths object, and that the same k
 are present in both objects.}
 }
 \value{
-A vital object containing population, estimated deaths (not actual deaths) and net migration,
-using the formula Net Migration = Population - lag(Population cohort) - Deaths + Births.
-Births are returned as Population at Age -1, and deaths are estimated from the life table
+A vital object containing population, estimated deaths (not actual deaths) and net migration.
+Net migration at age x in year t is for the cohort aged x at the end of year t (on 1 January
+of year t+1), so it equals the population aged x on 1 January of year t+1, minus the cohort's
+population on 1 January of year t (births during year t for age 0, and the two oldest ages
+combined for the open age group), plus the cohort's deaths during year t. Deaths are
+estimated from the survivorship ratios of the life table, as in \code{demography::netmigration()}.
 }
 \description{
 Calculate net migration from a vital object
