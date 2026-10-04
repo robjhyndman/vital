@@ -23,6 +23,13 @@ augment.mdl_vtl_df <- function(x, ...) {
 #' @export
 augment.mdl_vtl_ts <- function(x, ...) {
   x_response <- response(x)
+  # Models that failed to fit (NULL models) have no fitted values
+  if (is.null(x$fit$fitted)) {
+    x_response[[".fitted"]] <- NA_real_
+    x_response[[".innov"]] <- NA_real_
+    x_response[[".resid"]] <- NA_real_
+    return(x_response)
+  }
   out <- x_response |>
     left_join(
       x$fit$fitted,

@@ -339,3 +339,20 @@ test_that("forecasts for new_data with later times only match those for h", {
     "after the end of the training data"
   )
 })
+
+test_that("augment, fitted and residuals work with NULL models", {
+  x <- norway_mortality |>
+    dplyr::filter(Year > 2010, Sex != "Total") |>
+    dplyr::mutate(
+      Mortality = dplyr::if_else(Sex == "Male", NA_real_, Mortality)
+    )
+  fit <- x |>
+    model(lc = LC(log(Mortality))) |>
+    suppressWarnings()
+  aug <- augment(fit)
+  expect_identical(NROW(aug), NROW(x))
+  expect_true(all(is.na(aug$.fitted[aug$Sex == "Male"])))
+  expect_false(anyNA(aug$.fitted[aug$Sex == "Female"]))
+  expect_identical(NROW(fitted(fit)), NROW(x))
+  expect_identical(NROW(residuals(fit)), NROW(x))
+})
