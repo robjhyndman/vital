@@ -39,3 +39,11 @@ test_that("as_vital on a vital keeps vital variables that are not given", {
     vv[names(vv) != "sex"]
   )
 })
+
+test_that("the print header counts series correctly", {
+  x <- norway_mortality |>
+    dplyr::filter(Age < 50 | Sex == "Female")
+  expect_identical(unname(tibble::tbl_sum(x)["Key"]), "Age x Sex [111 x 3]")
+  y <- read_stmf_files("AUSstmfout.csv")
+  expect_identical(unname(tibble::tbl_sum(y)["Key"]), "Sex, Age_group [18]")
+})

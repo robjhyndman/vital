@@ -23,6 +23,7 @@
 - `FMEAN()` now interpolates the mean from neighbouring ages, with a warning, at ages with no finite values, rather than forecasting `NaN`
 - `interpolate()` now keeps all columns of `new_data` (not just the response), and works for GAPC models (APC, CBD, etc.)
 - `forecast()`, `generate()` and `interpolate()` now accept `new_data` with keys in a different order from the models, and `new_data` as a tsibble without vital variables (e.g. from `tsibble::new_data()`)
+- Fixed the printed key summary of vital objects with several keys and no age variable, and with different ages for different series
 - `as_vital()` on a vital object now keeps any vital variables not given in the call, also when `index` and `key` are not given
 - `rename()` and `select()` now keep vital variables (age, sex, etc.) that are renamed
 - Fixed `augment()`, `fitted()` and `residuals()` failing when the response is a vital variable such as `Population`

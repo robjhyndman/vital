@@ -368,9 +368,11 @@ tbl_sum.vital <- function(x) {
         keys <- age_key
       }
       nages <- length(unique(x[[age_key]]))
-      nkeys_noage <- n_keys / nages
+      # Number of series, which may not all have the same ages
+      nkeys_noage <- NROW(vctrs::vec_unique(tsibble::key_data(x)[non_age_keys(x)]))
       n_keys <- paste(big_mark(nages), "x", big_mark(nkeys_noage))
     } else {
+      keys <- comma(keys)
       n_keys <- big_mark(n_keys)
     }
     key_sum <- c(Key = paste(keys, brackets(n_keys)))
