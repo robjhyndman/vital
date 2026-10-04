@@ -33,7 +33,6 @@ smooth_mortality_law <- function(.data, .var, law = "gompertz", ...) {
 smooth_mortality_law_x <- function(
   data,
   var,
-  age_spacing = 1,
   age,
   popvar = NULL,
   deaths = NULL,
