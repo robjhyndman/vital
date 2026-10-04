@@ -24,7 +24,7 @@
 #' The original Lee-Carter method used `"fit"` (the default), but Lee and Miller (2001)
 #' and most other authors prefer `"actual"`. With `"actual"`, fitted rates are
 #' used (with a warning) for ages whose rate is zero or missing in the final year.
-#' @param scale If TRUE, `bx` and `kt` are rescaled so that `kt` has drift parameter = 1.
+#' @param scale If TRUE, `bx` and `kt` are rescaled so that `kt` has drift parameter = -1 (i.e., `kt` decreases by 1 per year on average).
 #' @param ... Not used.
 #'
 #' @references Basellini, U, Camarda, C G, and Booth, H (2022) Thirty years on:
@@ -386,9 +386,9 @@ lca <- function(
     kt <- kt / avdiffk
   }
 
-  # Compute deviances
+  # Compute deviances (which need more than two years for their degrees of freedom)
   mdev <- c(NA_real_, NA_real_)
-  if (counts_available) {
+  if (counts_available && m > 2) {
     logfit <- fitmx(kt, ax, bx, transform = TRUE)
     deathsadjfit <- exp(logfit) * pop
     drift <- mean(diff(kt))

@@ -3,6 +3,7 @@
 - Updated to work with fabletools v0.7.0+
 - Fixed `generate()` for LC models, which back-transformed simulations twice
 - Fixed `LC()` treating zero rates as log rates of 0 rather than as missing
+- `LC()` deviances are now missing rather than infinite with only two years of data
 - Fixed `generate()` for FMEAN models using the wrong standard deviation for each age
 - Fixed `tidy()` for FMEAN models, which understated standard errors
 - Fixed `life_expectancy()` ignoring the `mortality` argument

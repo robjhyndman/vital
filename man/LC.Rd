@@ -34,7 +34,7 @@ The original Lee-Carter method used \code{"fit"} (the default), but Lee and Mill
 and most other authors prefer \code{"actual"}. With \code{"actual"}, fitted rates are
 used (with a warning) for ages whose rate is zero or missing in the final year.}
 
-\item{scale}{If TRUE, \code{bx} and \code{kt} are rescaled so that \code{kt} has drift parameter = 1.}
+\item{scale}{If TRUE, \code{bx} and \code{kt} are rescaled so that \code{kt} has drift parameter = -1 (i.e., \code{kt} decreases by 1 per year on average).}
 
 \item{...}{Not used.}
 }

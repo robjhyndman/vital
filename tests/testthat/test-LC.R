@@ -356,3 +356,17 @@ test_that("augment, fitted and residuals work with NULL models", {
   expect_identical(NROW(fitted(fit)), NROW(x))
   expect_identical(NROW(residuals(fit)), NROW(x))
 })
+
+test_that("LC deviances are missing with two years and scale gives drift -1", {
+  g <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 2021) |>
+    model(LC(log(Mortality))) |>
+    glance()
+  expect_true(is.na(g$base_deviance))
+  expect_true(is.na(g$total_deviance))
+  kt <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 1990) |>
+    model(LC(log(Mortality), scale = TRUE)) |>
+    time_components()
+  expect_equal(mean(diff(kt$kt)), -1)
+})
