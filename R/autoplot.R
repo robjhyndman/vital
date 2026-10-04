@@ -191,3 +191,5 @@ key_plot <- function(object, x, .var, keys) {
   }
   p
 }
+
+globalVariables(".response")
