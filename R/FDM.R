@@ -446,17 +446,15 @@ fdpca <- function(X, x = seq(NCOL(X)), order = 2, ngrid = 500) {
   coeffdummy <- B * delta
   colmeanrm <- matrix(colMeans(coeffdummy), dim(B)[2], 1)
   coeff <- cbind(coeff, sweep(coeffdummy, 2, colmeanrm))
-  m <- ncol(basis)
   basis <- basis + Phinorm %*% colmeanrm
-  colnames(basis) <- "mean"
   for (i in seq(order)) {
     basis <- cbind(basis, Phinorm[, i])
-    if (sum(basis[, i + m]) < 0) {
-      basis[, i + m] <- -basis[, i + m]
-      coeff[, i + m] <- -coeff[, i + m]
+    if (sum(basis[, i + 1]) < 0) {
+      basis[, i + 1] <- -basis[, i + 1]
+      coeff[, i + 1] <- -coeff[, i + 1]
     }
   }
-  colnames(basis)[m + seq(order)] <- paste0("phi", seq(order))
+  colnames(basis)[1 + seq(order)] <- paste0("phi", seq(order))
 
   # Return results
   return(list(
@@ -467,5 +465,5 @@ fdpca <- function(X, x = seq(NCOL(X)), order = 2, ngrid = 500) {
 }
 
 
-utils::globalVariables(c(".model", "out", "object", ".fitted", ".rep"))
+utils::globalVariables(c(".model", "out", ".fitted", ".rep"))
 utils::globalVariables(c("p", "P", "d", "D", "q", "Q"))

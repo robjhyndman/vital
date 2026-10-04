@@ -186,4 +186,4 @@ time_components.FNAIVE <- function(object, ...) {
   stop("FNAIVE objects have no time components")
 }
 
-globalVariables(c("fit", "horizon"))
+globalVariables("horizon")

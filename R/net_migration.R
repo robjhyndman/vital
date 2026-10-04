@@ -152,5 +152,3 @@ net_migration <- function(deaths, births) {
       reorder = TRUE
     )
 }
-
-utils::globalVariables(c("Population", "population"))

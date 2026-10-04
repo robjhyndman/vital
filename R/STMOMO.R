@@ -213,8 +213,7 @@ RH <- function(
     gc,
     wxt,
     ages,
-    cohortAgeFun,
-    approxConst
+    cohortAgeFun
   ) {
     c1 <- mean(kt[1, ], na.rm = TRUE)
     ax <- ax + c1 * bx[, 1]
@@ -241,8 +240,7 @@ RH <- function(
       gc,
       wxt,
       ages,
-      cohortAgeFun,
-      FALSE
+      cohortAgeFun
     )
   }
 
@@ -724,7 +722,6 @@ gapc_index_label <- function(obj_x, k, b) {
 }
 
 utils::globalVariables(c(
-  "Birth_Year",
   "age",
   "year"
 ))

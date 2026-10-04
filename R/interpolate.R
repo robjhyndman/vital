@@ -22,7 +22,6 @@ interpolate.mdl_vtl_df <- function(object, new_data, ...) {
     )
   }
   keys <- key_vars(new_data)
-  agevar <- age_var(new_data)
   keys_noage <- non_age_keys(new_data)
   index <- index_var(new_data)
   object <- bind_new_data(object, new_data)
@@ -63,10 +62,8 @@ interpolate.mdl_vtl_ts <- function(object, new_data, ...) {
   ) %>%
     set_names(map_chr(object$response, as_string))
   vvar <- vital_vars(new_data)
-  agevar <- vvar["age"]
-  age <- new_data[[agevar]]
+  # transmute() keeps the index and keys, including age
   new_data <- transmute(new_data, !!!resp)
-  new_data[[agevar]] <- age
   attr(new_data, "vital") <- vvar
   new_data <- interpolate(
     object[["fit"]],

@@ -94,7 +94,6 @@ train_lc <- function(
     deaths = vvar$deaths,
     rates = measures,
     adjust = adjust,
-    jump_choice = jump_choice,
     scale = scale
   )
 
@@ -243,7 +242,6 @@ lca <- function(
   pop,
   deaths,
   adjust,
-  jump_choice,
   scale
 ) {
   index <- tsibble::index_var(data)
@@ -294,7 +292,6 @@ lca <- function(
   }
   clogrates <- sweep(logrates, 2, ax) # central log rates (with ax subtracted) (dimensions m*n)
   # Set missing central rates to 0 (effectively setting mx to ax)
-  clogrates[clogrates == -Inf] <- NA
   clogrates[is.na(clogrates)] <- 0
   # Take SVD
   svd.mx <- svd(clogrates)
@@ -354,11 +351,10 @@ lca <- function(
     }
   } else if (adjust == "e0") {
     # Fit to life expectancy
-    startage <- min(data[[age]])
     mx <- exp(logrates)
-    e0 <- apply(mx, 1, get.e0, agegroup = ages, sex = sex, startage = startage)
-    FUN2 <- function(p, e0i, ax, bx, ages, sex, startage) {
-      e0i - estimate_e0(p, ax, bx, ages, sex, startage)
+    e0 <- apply(mx, 1, get.e0, agegroup = ages, sex = sex)
+    FUN2 <- function(p, e0i, ax, bx, ages, sex) {
+      e0i - estimate_e0(p, ax, bx, ages, sex)
     }
     for (i in seq(m)) {
       if (!is.na(e0[i])) {
@@ -375,8 +371,7 @@ lca <- function(
           ax = ax,
           bx = bx,
           ages = ages,
-          sex = sex,
-          startage = startage
+          sex = sex
         )
       }
     }
@@ -443,19 +438,19 @@ lca <- function(
   )
 }
 
-estimate_e0 <- function(kt, ax, bx, agegroup, sex, startage = 0) {
+estimate_e0 <- function(kt, ax, bx, agegroup, sex) {
   if (length(kt) > 1) {
     stop("Length of kt greater than 1")
   }
   mx <- c(fitmx(kt, ax, bx))
-  return(get.e0(mx, agegroup, sex, startage = startage))
+  return(get.e0(mx, agegroup, sex))
 }
 
 # Compute expected age from single year mortality rates
 # x contains vector of mortality rates
 # agegroup is vector of ages
 # sex is a string
-get.e0 <- function(x, agegroup, sex, startage = 0) {
+get.e0 <- function(x, agegroup, sex) {
   lt(
     tibble::tibble(age = agegroup, sex = sex, mx = x),
     "sex",
@@ -599,9 +594,5 @@ utils::globalVariables(c(
   "kt",
   "ax",
   "bx",
-  "varprop",
-  "lst_data",
-  "by_x",
-  "by_t",
   ".jump"
 ))

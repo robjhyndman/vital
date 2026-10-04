@@ -168,13 +168,6 @@ lt <- function(dt, sex, age, mortality, keep = age) {
   Tx <- rev(cumsum(rev(Lx)))
   ex <- Tx / lx
   # Finally compute rx
-  if (nn > 2) {
-    rx <- c(Lx[1] / lx[1], Lx[2:(nn - 1)] / Lx[1:(nn - 2)], Tx[nn] / Tx[nn - 1])
-  } else if (nn == 2) {
-    rx <- c(Lx[1] / lx[1], Tx[nn] / Tx[nn - 1])
-  } else {
-    rx <- c(Lx[1] / lx[1])
-  }
   if (abridged) {
     rx <- c(
       0,
@@ -183,6 +176,12 @@ lt <- function(dt, sex, age, mortality, keep = age) {
       Lx[4:(nn - 1)] / Lx[3:(nn - 2)],
       Tx[nn] / Tx[nn - 1]
     )
+  } else if (nn > 2) {
+    rx <- c(Lx[1] / lx[1], Lx[2:(nn - 1)] / Lx[1:(nn - 2)], Tx[nn] / Tx[nn - 1])
+  } else if (nn == 2) {
+    rx <- c(Lx[1] / lx[1], Tx[nn] / Tx[nn - 1])
+  } else {
+    rx <- c(Lx[1] / lx[1])
   }
   # Return the results in a tibble
   result <- tibble::tibble(
@@ -201,5 +200,3 @@ lt <- function(dt, sex, age, mortality, keep = age) {
 
   return(result)
 }
-
-globalVariables(c("agevar", "sexvar"))

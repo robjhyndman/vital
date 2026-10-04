@@ -371,5 +371,3 @@ generate_population <- function(
       .population = vvars$population
     )
 }
-
-utils::globalVariables(c("fx", "Nx", "Prev_Pop"))
