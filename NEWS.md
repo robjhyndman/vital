@@ -8,6 +8,7 @@
 - Fixed `generate()` for FMEAN models using the wrong standard deviation for each age
 - Fixed `tidy()` for FMEAN models, which understated standard errors
 - Fixed `life_expectancy()` ignoring the `mortality` argument
+- `life_expectancy()` now warns when `from_age` contains ages that are not in the data
 - Fixed `life_expectancy()` failing when the age variable is not called `Age`
 - `forecast()` and `generate()` now work when `new_data` does not start immediately after the training data, rather than giving missing values (LC, FDM), errors (GAPC) or the wrong forecast horizon (FNAIVE)
 - Fixed `total_fertility_rate()` ignoring the width of age groups, which made it too small for 5-year age groups

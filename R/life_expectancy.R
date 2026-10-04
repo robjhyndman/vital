@@ -28,6 +28,14 @@
 life_expectancy <- function(.data, from_age = 0, mortality) {
   lt_out <- life_table(.data = .data, mortality = {{ mortality }})
   age <- age_var(lt_out)
+  missing_ages <- setdiff(from_age, lt_out[[age]])
+  if (length(missing_ages) > 0L) {
+    warning(
+      "Ages not in the data are ignored: ",
+      paste(missing_ages, collapse = ", "),
+      call. = FALSE
+    )
+  }
   lt_out |>
     # Keep only relevant ages
     dplyr::filter(.data[[age]] %in% from_age) |>

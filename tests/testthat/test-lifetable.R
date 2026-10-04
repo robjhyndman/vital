@@ -144,3 +144,13 @@ test_that("life_table works for short abridged tables", {
   expect_equal(lt4$rx[3], lt4$Lx[3] / (lt4$Lx[1] + lt4$Lx[2]))
   expect_equal(lt4$rx[4], lt4$Tx[4] / lt4$Tx[3])
 })
+
+test_that("life_expectancy warns about ages not in the data", {
+  nor <- norway_mortality |>
+    dplyr::filter(Year == 2000, Sex == "Female")
+  expect_warning(
+    e <- life_expectancy(nor, from_age = c(65, 200)),
+    "Ages not in the data are ignored: 200"
+  )
+  expect_identical(NROW(e), 1L)
+})
