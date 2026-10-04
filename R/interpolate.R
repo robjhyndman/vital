@@ -32,7 +32,8 @@ interpolate.mdl_vtl_df <- function(object, new_data, ...) {
   )
   unnest_tbl(object, "interpolated") |>
     as_tsibble(index = index, key = all_of(keys)) |>
-    restore_vital(vital_var_list(new_data), reorder = TRUE)
+    restore_vital(vital_var_list(new_data), reorder = TRUE) |>
+    select(all_of(colnames(new_data)))
 }
 
 #' @export
@@ -63,20 +64,34 @@ interpolate.mdl_vtl_ts <- function(object, new_data, ...) {
     set_names(map_chr(object$response, as_string))
   vvar <- vital_vars(new_data)
   # transmute() keeps the index and keys, including age
-  new_data <- transmute(new_data, !!!resp)
-  attr(new_data, "vital") <- vvar
-  new_data <- interpolate(
+  resp_data <- transmute(new_data, !!!resp)
+  attr(resp_data, "vital") <- vvar
+  resp_data <- interpolate(
     object[["fit"]],
-    new_data = new_data,
+    new_data = resp_data,
     specials = specials,
     ...
   )
-  new_data[names(resp)] <- map2(
-    new_data[names(resp)],
+  resp_data[names(resp)] <- map2(
+    resp_data[names(resp)],
     object$transformation,
     function(x, f) invert_transformation(f)(x)
   )
-  new_data
+  # Replace the responses in new_data, keeping its other columns
+  by <- c(index_var(new_data), vvar[["age"]])
+  out <- as_tibble(new_data)
+  out <- dplyr::left_join(
+    out[setdiff(names(out), names(resp))],
+    as_tibble(resp_data)[c(by, names(resp))],
+    by = by
+  )[names(out)]
+  build_tsibble(
+    out,
+    index = !!index_var(new_data),
+    key = !!key_vars(new_data),
+    interval = tsibble::interval(new_data)
+  ) |>
+    restore_vital(as.list(vvar))
 }
 
 # Replace missing values of the response with the fitted values of a model
@@ -114,5 +129,10 @@ interpolate.LC <- function(object, new_data, specials, ...) {
 
 #' @export
 interpolate.FDM <- function(object, new_data, specials, ...) {
+  interpolate_fitted(object, new_data)
+}
+
+#' @export
+interpolate.GAPC <- function(object, new_data, specials, ...) {
   interpolate_fitted(object, new_data)
 }
