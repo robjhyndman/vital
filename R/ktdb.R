@@ -68,6 +68,9 @@ read_ktdb <- function(country, triangle = 1) {
 #'
 #' @export
 read_ktdb_files <- function(male = NULL, female = NULL, triangle = 1) {
+  if (is.null(male) && is.null(female)) {
+    stop("At least one of `male` and `female` must be given")
+  }
   # Read files
   if (!is.null(male)) {
     data_male <- utils::read.csv(

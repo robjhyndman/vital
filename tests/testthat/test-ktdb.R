@@ -18,7 +18,7 @@ test_that("read_ktdb_files", {
   )
   expect_true(tsibble::is_tsibble(z))
   # Read 0 files
-  expect_error(read_ktdb_files())
+  expect_error(read_ktdb_files(), "At least one of")
   # Test different Triangle
   z <- read_ktdb_files("maustl.txt", "faustl.txt", triangle = 2)
   expect_true(all(z$Triangle == 2))
