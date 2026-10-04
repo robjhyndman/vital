@@ -82,6 +82,7 @@
 - `life_table()` and `life_expectancy()` now interpolate missing mortality rates from neighbouring ages (log-linearly), with a warning, rather than silently setting them to 0.5. This also affects `LC(adjust = "e0")` fits to data with zero or missing rates
 - `LC(adjust = "dxt")` now excludes only cells with zero population when fitting to deaths, rather than all cells with fewer than one expected death
 - `LC()` now uses the nearest available age for `ax` at the youngest or oldest ages when they have no observed rates, rather than returning missing values
+- `generate_population()` now simulates each model from the end of its data to the last year required, so models trained on data ending before the starting population no longer give missing years (e.g. zero births), and gives an error if a model is trained on data beyond the starting population
 
 # vital 2.0.3
 

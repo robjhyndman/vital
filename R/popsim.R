@@ -96,11 +96,17 @@ generate_population <- function(
   pop[[indexvar]] <- pop[[indexvar]] + 1
   pop$Prev_Pop <- round(pop[[vvars$population]])
   pop <- pop[, c(indexvar, vvars$age, vvars$sex, "Prev_Pop")]
+  # Years to simulate
+  first_year <- max(pop[[indexvar]])
+  last_year <- first_year + h - 1
 
   # Simulate from mortality model
   if (!is.null(mortality_model)) {
     future_mortality <- mortality_model |>
-      generate(h = h + 2, times = n_reps)
+      generate(
+        h = model_horizon(mortality_model, first_year - 1, last_year),
+        times = n_reps
+      )
     future_mortality$mx <- pmax(future_mortality$.sim, 0) # Ensure no negative mortality rates
     future_mortality <- future_mortality |> dplyr::select(-.sim, -.model)
     if ("geometric_mean" %in% future_mortality[[vvars$sex]]) {
@@ -113,7 +119,7 @@ generate_population <- function(
   } else {
     # 0 deaths
     future_mortality <- tidyr::expand_grid(
-      year = max(pop[[indexvar]]) + seq(h + 2) - 1,
+      year = first_year + seq(h) - 1,
       age = unique(pop[[vvars$age]]),
       sex = unique(pop[[vvars$sex]]),
       .rep = as.character(seq(n_reps))
@@ -130,14 +136,17 @@ generate_population <- function(
   # Simulate from fertility model
   if (!is.null(fertility_model)) {
     future_fertility <- fertility_model |>
-      generate(h = h + 2, times = n_reps)
+      generate(
+        h = model_horizon(fertility_model, first_year - 1, last_year),
+        times = n_reps
+      )
     future_fertility$fx <- pmax(future_fertility$.sim, 0) # Ensure no negative fertility rates
     future_fertility[[vvars$sex]] <- female
     future_fertility <- future_fertility |> dplyr::select(-.sim, -.model)
   } else {
     # 0 births
     future_fertility <- tidyr::expand_grid(
-      year = max(pop[[indexvar]]) + seq(h + 2) - 1,
+      year = first_year + seq(h) - 1,
       age = unique(pop[[vvars$age]]),
       sex = female,
       .rep = as.character(seq(n_reps))
@@ -154,7 +163,10 @@ generate_population <- function(
   # Simulate from migration model
   if (!is.null(migration_model)) {
     future_migration <- migration_model |>
-      generate(h = h + 2, times = n_reps)
+      generate(
+        h = model_horizon(migration_model, first_year - 1, last_year),
+        times = n_reps
+      )
     future_migration$Nx <- future_migration$.sim
     future_migration <- future_migration |> dplyr::select(-.sim, -.model)
     if ("mean" %in% future_migration[[vvars$sex]]) {
@@ -167,7 +179,7 @@ generate_population <- function(
   } else {
     # 0 net migrants
     future_migration <- tidyr::expand_grid(
-      year = max(pop[[indexvar]]) + seq(h + 2) - 1,
+      year = first_year + seq(h) - 1,
       age = unique(pop[[vvars$age]]),
       sex = unique(pop[[vvars$sex]]),
       .rep = as.character(seq(n_reps))
@@ -205,10 +217,8 @@ generate_population <- function(
       future[[vvars$sex]],
       future[[".rep"]]
     )
-  # Remove extra years
-  first_year <- max(pop[[indexvar]])
-  last_year <- first_year + h - 1
-  future <- future[future[[indexvar]] <= last_year, ]
+  # Remove years before the starting population
+  future <- future[future[[indexvar]] >= first_year, ]
 
   # Split into years
   future <- split(future, future[[indexvar]])
@@ -413,4 +423,19 @@ single_year_rx <- function(mx, age, group, sex) {
     Tx[, nn] / Tx[, nn - 1]
   )
   rx[pos]
+}
+
+# Horizon needed for a model to be simulated up to last_year from the end of
+# its data, which must not be later than the starting population (start_year)
+model_horizon <- function(model, start_year, last_year) {
+  fit_data <- model[[mable_vars(model)]][[1]]$data
+  data_end <- max(fit_data[[index_var(fit_data)]])
+  if (data_end > start_year) {
+    stop(
+      "Models must be trained on data up to the year of the starting population (",
+      start_year,
+      ")"
+    )
+  }
+  last_year - data_end
 }

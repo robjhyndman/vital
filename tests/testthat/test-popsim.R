@@ -170,3 +170,31 @@ test_that("single_year_rx() matches the survivorship ratios of life_table()", {
   key <- function(d) paste(d$Year, d$Sex, d$Age)
   expect_equal(rx, lt$rx[match(key(x), key(lt))])
 })
+
+test_that("generate_population simulates models whose data end before the starting population", {
+  fert_early <- norway_fertility |>
+    dplyr::filter(Year > 2010, Year <= 2019) |>
+    model(m = FMEAN(Fertility))
+  set.seed(1)
+  out <- generate_population(
+    pop,
+    mortality_model = mort,
+    fertility_model = fert_early,
+    h = 2,
+    n_reps = 3
+  )
+  expect_identical(sort(unique(out$Year)), max(pop$Year) + 1:2)
+  expect_true(all(out$Population[out$Age == 0] > 0))
+})
+
+test_that("generate_population requires models trained up to the starting population", {
+  expect_error(
+    generate_population(
+      pop |> dplyr::filter(Year <= 2020),
+      mortality_model = mort,
+      h = 2,
+      n_reps = 3
+    ),
+    "up to the year of the starting population"
+  )
+})
