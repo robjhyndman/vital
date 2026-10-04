@@ -7,6 +7,10 @@
 #' smoothed values, and `.smooth_se` containing the corresponding standard errors.
 #' If `.data` has deaths and population variables (see [vital_vars()]), the law
 #' is fitted to these; otherwise it is fitted to `.var`.
+#' The standard errors are approximate: they are the smoothed values multiplied
+#' by the residual standard deviation of the log rates and by \eqn{\sqrt{p/n}},
+#' where \eqn{p} is the number of parameters of the law and \eqn{n} is the
+#' number of ages with positive rates.
 #'
 #' @param .data A vital object
 #' @param .var name of variable to smooth. This should contain mortality rates.
@@ -53,15 +57,17 @@ smooth_mortality_law_x <- function(
       ...
     )
   }
-  # Mean squared error
-  n <- length(smooth.fit$fitted.values)
+  # Residual variance on the log scale, from ages with finite log rates
+  log_resid <- log(data[[var]]) - log(smooth.fit$fitted.values)
+  log_resid <- log_resid[is.finite(log_resid)]
+  n <- length(log_resid)
   p <- length(smooth.fit$coefficients)
-  residual_variance <- sum((smooth.fit$residuals)^2, na.rm = TRUE) / (n - p)
-  # Construct output as a tibble
+  residual_variance <- sum(log_resid^2) / (n - p)
+  # Approximate standard errors, using the average leverage p/n of the fit
   out <- tibble(
     age = data[[age]],
     .smooth = smooth.fit$fitted.values,
-    .smooth_se = .smooth * sqrt(residual_variance) / sqrt(n)
+    .smooth_se = .smooth * sqrt(residual_variance * p / n)
   )
   colnames(out)[1] <- age
   return(out)

@@ -18,3 +18,12 @@ test_that("smooth_mortality_law uses deaths and population when available", {
   )
   expect_equal(unname(sm$.smooth), unname(fit$fitted.values))
 })
+
+test_that("smooth_mortality_law gives finite standard errors", {
+  nor <- norway_mortality |>
+    dplyr::filter(Year == 2000, Sex == "Female")
+  sm <- smooth_mortality_law(nor, Mortality)
+  expect_true(all(is.finite(sm$.smooth_se)))
+  # Standard errors are proportional to the smoothed rates
+  expect_equal(sd(sm$.smooth_se / sm$.smooth), 0, tolerance = 1e-10)
+})

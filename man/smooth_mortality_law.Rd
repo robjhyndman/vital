@@ -27,6 +27,10 @@ information about the smoothed variable: \code{.smooth} containing the
 smoothed values, and \code{.smooth_se} containing the corresponding standard errors.
 If \code{.data} has deaths and population variables (see \code{\link[=vital_vars]{vital_vars()}}), the law
 is fitted to these; otherwise it is fitted to \code{.var}.
+The standard errors are approximate: they are the smoothed values multiplied
+by the residual standard deviation of the log rates and by \eqn{\sqrt{p/n}},
+where \eqn{p} is the number of parameters of the law and \eqn{n} is the
+number of ages with positive rates.
 }
 \examples{
 norway_mortality |> smooth_mortality_law(Mortality)
