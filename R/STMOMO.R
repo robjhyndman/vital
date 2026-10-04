@@ -436,7 +436,8 @@ train_stmomo <- function(
       clip = clip,
       zeroCohorts = zeroCohorts
     )
-    miss <- is.na(data2$Dxt / data2$Ext)
+    # Zero weight for missing rates and for deaths with no exposure
+    miss <- !is.finite(data2$Dxt / data2$Ext)
     wxt[miss] <- 0
     data2$Dxt[miss] <- 0
     data2$Ext[miss] <- 1

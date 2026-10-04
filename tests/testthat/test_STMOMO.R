@@ -190,3 +190,11 @@ test_that("APC and CBD models fit and forecast", {
   expect_identical(NROW(fc), 2L * 2L * 35L)
   expect_true(all(fc$.mean > 0))
 })
+
+test_that("GAPC models zero-weight deaths with no exposure without a warning", {
+  x <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 2000, Age >= 60)
+  expect_true(any(x$Population == 0 & x$Deaths > 0))
+  expect_no_warning(fit <- model(x, m = LC2(Mortality)))
+  expect_s3_class(fit, "mdl_vtl_df")
+})
