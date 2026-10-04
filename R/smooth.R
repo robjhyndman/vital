@@ -187,7 +187,7 @@ smooth_loess_x <- function(data, var, age_spacing, age, popvar, span = 0.2) {
   } else {
     pop <- data[[popvar]]
   }
-  weights <- smooth_weights(data[[var]], pop, lambda = 0)
+  weights <- smooth_weights(data[[var]], pop, lambda = 1)
   fit <- stats::loess(
     y ~ x,
     span = span,

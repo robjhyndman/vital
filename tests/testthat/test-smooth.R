@@ -57,3 +57,19 @@ test_that("smooth_mortality works for data starting above age 50", {
   expect_true(all(is.finite(sm$.smooth)))
   expect_true(all(diff(sm$.smooth[sm$Age >= 65]) >= 0))
 })
+
+test_that("smooth_loess weights rates by population over rate", {
+  nor <- norway_mortality |>
+    dplyr::filter(Year == 2000, Sex == "Female", Age >= 30, Age <= 90)
+  sm <- smooth_loess(nor, Mortality)
+  w <- nor$Population / nor$Mortality
+  fit <- stats::loess(
+    Mortality ~ Age,
+    data = nor,
+    span = 0.2,
+    degree = 2,
+    weights = w / sum(w),
+    surface = "direct"
+  )
+  expect_equal(unname(sm$.smooth), unname(predict(fit, newdata = nor)))
+})
