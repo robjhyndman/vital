@@ -38,7 +38,8 @@ as_vital(x, ...)
 \arguments{
 \item{x}{Object to be coerced to a vital format.}
 
-\item{...}{Other arguments passed to \code{\link[tsibble:as_tsibble]{tsibble::as_tsibble()}}}
+\item{...}{Other arguments passed to methods. For data frames, these are
+passed on to \code{\link[tsibble:as_tsibble]{tsibble::as_tsibble()}}.}
 
 \item{sex_groups}{Logical variable indicating if the groups denote sexes}
 
@@ -52,7 +53,9 @@ as_vital(x, ...)
 
 \item{.population}{Character string with name of population variable}
 
-\item{reorder}{Logical indicating if the variables should be reordered.}
+\item{reorder}{Logical indicating if the rows should be sorted by the index,
+the keys other than age, and then age. The default is \code{TRUE} for data frames
+and \code{FALSE} for tsibbles.}
 
 \item{key}{Variable(s) that uniquely determine time indices. NULL for empty key,
 and \code{\link[=c]{c()}} for multiple variables. It works with tidy selector

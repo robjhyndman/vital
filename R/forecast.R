@@ -11,7 +11,7 @@
 #' @param point_forecast A list of functions used to compute point forecasts from the forecast distribution.
 #' @param simulate If  `TRUE`, then forecast distributions are computed using simulation from a parametric model.
 #' @param bootstrap If `TRUE`, then forecast distributions are computed using simulation with resampling.
-#' @param times The number of sample paths to use in estimating the forecast distribution when `bootstrap = TRUE`.
+#' @param times The number of sample paths to use in estimating the forecast distribution when `simulate = TRUE` or `bootstrap = TRUE`.
 #' @param ... Additional arguments passed to the specific model method.
 #' @author Rob J Hyndman and Mitchell O'Hara-Wild
 #'

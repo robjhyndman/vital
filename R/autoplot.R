@@ -5,7 +5,8 @@
 #' @param object A vital including an age variable and the variable you wish to plot.
 #' @param .vars The name of the variable you wish to plot.
 #' @param age The name of the age variable. If not supplied, the function will attempt to find it.
-#' @param ... Further arguments not used.
+#' @param ... Further arguments passed to [fabletools::autoplot.tbl_ts()] when
+#' `object` has no age variable, and otherwise not used.
 #'
 #' @author Rob J Hyndman
 #' @references Hyndman, Rob J & Shang, Han Lin (2010) Rainbow plots, bagplots,

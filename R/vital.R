@@ -94,7 +94,8 @@ as_vital.vital <- function(x, index, key, ...) {
 #' functions, including age, sex, births, deaths and population.
 #'
 #' @param x Object to be coerced to a vital format.
-#' @param ... Other arguments passed on to [tsibble::as_tsibble()].
+#' @param ... Other arguments passed to methods. For data frames, these are
+#' passed on to [tsibble::as_tsibble()].
 #'
 #' @return A tsibble with class \code{vital}.
 #' @author Rob J Hyndman
@@ -247,7 +248,9 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
 #' @param .deaths Character string with name of deaths variable
 #' @param .births Character string with name of births variable
 #' @param .population Character string with name of population variable
-#' @param reorder Logical indicating if the variables should be reordered.
+#' @param reorder Logical indicating if the rows should be sorted by the index,
+#' the keys other than age, and then age. The default is `TRUE` for data frames
+#' and `FALSE` for tsibbles.
 #' @rdname as_vital
 #' @export
 as_vital.tbl_ts <- function(
@@ -302,7 +305,6 @@ as_vital.tbl_ts <- function(
 #' @param key Variable(s) that uniquely determine time indices. NULL for empty key,
 #' and [c()] for multiple variables. It works with tidy selector
 #' (e.g. [tidyselect::starts_with()]).
-#' @param ... Other arguments passed to [tsibble::as_tsibble()]
 #' @rdname as_vital
 #' @examples
 #' # create a vital with only age as a key

@@ -17,7 +17,7 @@
 #' @rdname generate
 #' @examples
 #' norway_mortality |>
-#'   model(lc = LC(Mortality)) |>
+#'   model(lc = LC(log(Mortality))) |>
 #'   generate(times = 3, bootstrap = TRUE)
 #'
 #' @export

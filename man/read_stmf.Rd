@@ -15,7 +15,7 @@ A \code{vital} object combining the downloaded data.
 }
 \description{
 \code{read_stmf} reads weekly mortality data from the Short-term Mortality Fluctuations (STMF)
-series available in the Human Mortality Database (HMD) \url{https://www.mortality.org/Data/STMF}),
+series available in the Human Mortality Database (HMD) \url{https://www.mortality.org/Data/STMF},
 and constructs a \code{vital} object suitable for use in other functions.
 }
 \examples{

@@ -1,7 +1,7 @@
 #' Read Short-Term Mortality Fluctuations data from the Human Mortality Database
 #'
 #' `read_stmf` reads weekly mortality data from the Short-term Mortality Fluctuations (STMF)
-#' series available in the Human Mortality Database (HMD) <https://www.mortality.org/Data/STMF>),
+#' series available in the Human Mortality Database (HMD) <https://www.mortality.org/Data/STMF>,
 #' and constructs a `vital` object suitable for use in other functions.
 #'
 #' @param country Country name or country code as specified by the HMD. For instance, Australian
@@ -44,7 +44,7 @@ read_stmf <- function(country) {
 #'
 #' `read_stmf_files` reads weekly mortality data from a file downloaded
 #' from the Short-term Mortality Fluctuations (STMF) series available in the
-#' Human Mortality Database (HMD) <https://www.mortality.org/Data/STMF>),
+#' Human Mortality Database (HMD) <https://www.mortality.org/Data/STMF>,
 #' and constructs a `vital` object suitable for use in other functions.
 #'
 #' @param file Name of a file containing data downloaded from the HMD.
@@ -54,8 +54,8 @@ read_stmf <- function(country) {
 #' @author Rob J Hyndman
 #' @examples
 #' \dontrun{
-#' # File downloaded from the [Human Mortality Database STMF series]
-#' (https://www.mortality.org/Data/STMF)
+#' # File downloaded from the Human Mortality Database STMF series
+#' # (https://www.mortality.org/Data/STMF)
 #' mortality <- read_stmf_files("AUSstmfout.csv")
 #' }
 #' @keywords manip

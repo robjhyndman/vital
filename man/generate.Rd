@@ -32,7 +32,7 @@ If \code{bootstrap} is \code{TRUE}, innovations will be sampled from the model's
 }
 \examples{
 norway_mortality |>
-  model(lc = LC(Mortality)) |>
+  model(lc = LC(log(Mortality))) |>
   generate(times = 3, bootstrap = TRUE)
 
 }

@@ -90,7 +90,7 @@ when there are no covariates in the model. It is ignored if \code{new_data} is p
 
 \item{bootstrap}{If \code{TRUE}, then forecast distributions are computed using simulation with resampling.}
 
-\item{times}{The number of sample paths to use in estimating the forecast distribution when \code{bootstrap = TRUE}.}
+\item{times}{The number of sample paths to use in estimating the forecast distribution when \code{simulate = TRUE} or \code{bootstrap = TRUE}.}
 
 \item{...}{Additional arguments passed to the specific model method.}
 }

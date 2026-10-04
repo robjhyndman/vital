@@ -15,13 +15,13 @@ read_stmf_files(file)
 \description{
 \code{read_stmf_files} reads weekly mortality data from a file downloaded
 from the Short-term Mortality Fluctuations (STMF) series available in the
-Human Mortality Database (HMD) \url{https://www.mortality.org/Data/STMF}),
+Human Mortality Database (HMD) \url{https://www.mortality.org/Data/STMF},
 and constructs a \code{vital} object suitable for use in other functions.
 }
 \examples{
 \dontrun{
-# File downloaded from the [Human Mortality Database STMF series]
-(https://www.mortality.org/Data/STMF)
+# File downloaded from the Human Mortality Database STMF series
+# (https://www.mortality.org/Data/STMF)
 mortality <- read_stmf_files("AUSstmfout.csv")
 }
 }

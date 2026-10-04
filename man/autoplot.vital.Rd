@@ -13,7 +13,8 @@
 
 \item{age}{The name of the age variable. If not supplied, the function will attempt to find it.}
 
-\item{...}{Further arguments not used.}
+\item{...}{Further arguments passed to \code{\link[fabletools:autoplot.tbl_ts]{fabletools::autoplot.tbl_ts()}} when
+\code{object} has no age variable, and otherwise not used.}
 }
 \value{
 A ggplot2 object.
