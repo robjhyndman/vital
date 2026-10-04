@@ -67,10 +67,11 @@ residuals.mdl_vtl_df <- function(
 
 #' @export
 response.mdl_vtl_ts <- function(object, ...) {
-  mv <- measured_vars(object$data)
   vvar <- vital_var_list(object$data)
-  protected <- c(vvar$age, vvar$population, vvar$deaths, vvar$births)
-  mv <- mv[!(mv %in% protected)]
+  # The (transformed) responses come first, before the vital variables added
+  # by estimate(), which may include the response (e.g. Population)
+  mv <- setdiff(measured_vars(object$data), vvar$age)
+  mv <- mv[seq_along(object$response)]
   resp <- as.list(object$data)[mv]
   bt <- map(object$transformation, invert_transformation)
   resp <- map2(bt, resp, function(bt, fit) bt(fit))

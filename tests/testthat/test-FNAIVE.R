@@ -100,3 +100,14 @@ test_that("tidy() returns FNAIVE standard deviations by age", {
   expect_identical(unique(td$term), "sigma")
   expect_equal(td$estimate, age_components(fit)$sigma)
 })
+
+test_that("augment works when the response is a vital variable", {
+  x <- norway_mortality |>
+    dplyr::filter(Year > 2018, Sex == "Female")
+  aug <- x |>
+    model(fn = FNAIVE(Population)) |>
+    augment() |>
+    dplyr::arrange(Year, Age)
+  expect_identical(NROW(aug), NROW(x))
+  expect_equal(aug$.response, x$Population)
+})

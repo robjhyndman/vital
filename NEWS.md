@@ -18,6 +18,7 @@
 - Fixed `group_by()` with no variables failing on vital objects
 - `autoplot()` on a mable of GAPC models (APC, CBD, etc.) now gives an error instead of infinite recursion
 - `rename()` and `select()` now keep vital variables (age, sex, etc.) that are renamed
+- Fixed `augment()`, `fitted()` and `residuals()` failing when the response is a vital variable such as `Population`
 - `augment()`, `fitted()` and `residuals()` now work on mables containing NULL models (from models that failed to fit), giving missing fitted values for those models
 - `rename()` now keeps mables and fables as vital objects, so that `forecast()` and other methods still use the vital methods
 - Fixed `generate_population()` failing when `female` is supplied
