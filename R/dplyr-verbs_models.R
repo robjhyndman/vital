@@ -19,6 +19,11 @@ select.mdl_vtl_df <- function(.data, ...) {
 }
 
 #' @export
+rename.mdl_vtl_df <- function(.data, ...) {
+  restore_mdl_vtl_df(NextMethod())
+}
+
+#' @export
 transmute.mdl_vtl_df <- function(.data, ...) {
   restore_mdl_vtl_df(NextMethod())
 }

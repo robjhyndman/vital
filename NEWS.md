@@ -18,6 +18,7 @@
 - Fixed `group_by()` with no variables failing on vital objects
 - `autoplot()` on a mable of GAPC models (APC, CBD, etc.) now gives an error instead of infinite recursion
 - `rename()` and `select()` now keep vital variables (age, sex, etc.) that are renamed
+- `rename()` now keeps mables and fables as vital objects, so that `forecast()` and other methods still use the vital methods
 - Fixed `generate_population()` failing when `female` is supplied
 - Fixed `generate_population()` failing when `mortality_model` or `migration_model` is NULL
 - Fixed `generate_population()` failing when `fertility_model` is NULL

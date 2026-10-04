@@ -28,6 +28,19 @@ select.fbl_vtl_ts <- function(.data, ...) {
 }
 
 #' @export
+rename.fbl_vtl_ts <- function(.data, ...) {
+  attr_data <- attributes(.data)
+  loc <- tidyselect::eval_rename(expr(c(...)), .data)
+  vvar <- rename_vital_vars(vital_var_list(.data), .data, loc)
+  # Follow a renamed distribution column
+  old <- names(.data)[loc]
+  if (attr_data$dist %in% old) {
+    attr_data$dist <- names(loc)[match(attr_data$dist, old)]
+  }
+  restore_vital_fable(NextMethod(), attr_data, vvar)
+}
+
+#' @export
 transmute.fbl_vtl_ts <- function(.data, ...) {
   attr_data <- attributes(.data)
   vvar <- vital_var_list(.data)
@@ -94,6 +107,9 @@ arrange.grouped_fbl_vtl <- arrange.fbl_vtl_ts
 
 #' @export
 select.grouped_fbl_vtl <- select.fbl_vtl_ts
+
+#' @export
+rename.grouped_fbl_vtl <- rename.fbl_vtl_ts
 
 #' @export
 transmute.grouped_fbl_vtl <- transmute.fbl_vtl_ts

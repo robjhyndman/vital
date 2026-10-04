@@ -175,3 +175,24 @@ test_that("subsetting a mable without model columns gives a tibble", {
   expect_false(inherits(fit[, "Sex"], "mdl_vtl_df"))
   expect_s3_class(fit[1, ], "mdl_vtl_df")
 })
+
+test_that("rename keeps mables and fables vital", {
+  x <- norway_mortality |>
+    dplyr::filter(Year > 2015, Sex != "Total")
+  fit <- x |>
+    model(fn = FNAIVE(Mortality)) |>
+    dplyr::rename(naive = fn)
+  expect_s3_class(fit, "mdl_vtl_df")
+  fc <- forecast(fit, h = 2)
+  expect_s3_class(fc, "fbl_vtl_ts")
+  expect_identical(unique(fc$.model), "naive")
+  fc2 <- dplyr::rename(fc, mx = Mortality, age = Age)
+  expect_s3_class(fc2, "fbl_vtl_ts")
+  expect_identical(fabletools::distribution_var(fc2), "mx")
+  expect_identical(vital_vars(fc2)[["age"]], "age")
+  fc3 <- fc |>
+    dplyr::group_by(Sex) |>
+    dplyr::rename(age = Age)
+  expect_s3_class(fc3, "grouped_fbl_vtl")
+  expect_identical(dplyr::group_vars(fc3), "Sex")
+})
