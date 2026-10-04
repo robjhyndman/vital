@@ -76,15 +76,21 @@ test_that("FNAIVE simulations are random walks from the last observation", {
 })
 
 test_that("FNAIVE treats log of zero rates as missing", {
-  fit <- norway_mortality |>
-    filter(Sex == "Female", Year > 1990) |>
-    model(FNAIVE(log(Mortality)))
+  expect_warning(
+    fit <- norway_mortality |>
+      filter(Sex == "Female", Year > 1990) |>
+      model(FNAIVE(log(Mortality))),
+    "zero or missing in the final year"
+  )
   expect_true(all(is.finite(fit[[2]][[1]]$fit$model$sigma)))
 })
 
 test_that("FNAIVE fills standard deviations that cannot be estimated", {
   males <- norway_mortality |> filter(Sex == "Male", Year > 2000)
-  fit <- model(males, FNAIVE(log(Mortality)))
+  expect_warning(
+    fit <- model(males, FNAIVE(log(Mortality))),
+    "zero or missing in the final year"
+  )
   expect_true(all(is.finite(fit[[2]][[1]]$fit$model$sigma)))
   for (b in c(FALSE, TRUE)) {
     expect_no_warning(sim <- generate(fit, h = 3, times = 2, bootstrap = b))
@@ -110,4 +116,20 @@ test_that("augment works when the response is a vital variable", {
     dplyr::arrange(Year, Age)
   expect_identical(NROW(aug), NROW(x))
   expect_equal(aug$.response, x$Population)
+})
+
+test_that("FNAIVE starts from the last finite value when the final value is zero", {
+  x <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 2010, Age < 100)
+  x$Mortality[x$Year == max(x$Year) & x$Age == 95] <- 0
+  expect_warning(
+    fit <- model(x, fn = FNAIVE(log(Mortality))),
+    "final year for ages .*95"
+  )
+  fc <- forecast(fit, h = 1)
+  expect_true(all(is.finite(fc$.mean)))
+  prev <- x$Mortality[x$Year == max(x$Year) - 1 & x$Age == 95]
+  expect_equal(median(fc$Mortality[fc$Age == 95]), prev)
+  set.seed(1)
+  expect_true(all(is.finite(generate(fit, h = 2, times = 2)$.sim)))
 })

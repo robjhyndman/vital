@@ -51,7 +51,21 @@ train_fnaive <- function(.data, ...) {
   model <- out |>
     group_by(across(all_of(agevar))) |>
     summarise(sigma = sd(.resid, na.rm = TRUE))
-  model$sigma <- fill_sigma(model$sigma, model[[agevar]])
+  model$sigma <- fill_by_age(model$sigma, model[[agevar]])
+  # Random walks start from the last finite observation for each age
+  obs <- as_tibble(.data)[is.finite(.data[[measure]]), c(indexvar, agevar, measure)]
+  obs <- obs[order(obs[[agevar]], obs[[indexvar]]), ]
+  last <- obs[!duplicated(obs[[agevar]], fromLast = TRUE), ]
+  ages <- unique(.data[[agevar]])
+  stale <- ages[!(ages %in% last[[agevar]][last[[indexvar]] == max(.data[[indexvar]])])]
+  if (length(stale) > 0L) {
+    warning(
+      "Values are zero or missing in the final year for ages ",
+      paste(stale, collapse = ", "),
+      ". Using the last finite value as the starting point for these ages.",
+      call. = FALSE
+    )
+  }
   out <- out |>
     as_tsibble(index = indexvar, key = all_of(agevar)) |>
     as_vital(.age = agevar) |>
@@ -61,6 +75,7 @@ train_fnaive <- function(.data, ...) {
     list(
       fitted = out,
       model = model,
+      last = last[c(agevar, measure)],
       response = measure,
       nobs = sum(!is.na(.data[[measure]]))
     ),
@@ -84,10 +99,8 @@ forecast.FNAIVE <- function(
   # than this method. The arguments are included so they show in the docs.
   agevar <- age_var(new_data)
   indexvar <- index_var(object$fitted)
-  fitted <- as_tibble(object$fitted)
   measure <- object$response
-  # Random walks start from the last observation for each age
-  last <- fitted[fitted[[indexvar]] == max(fitted[[indexvar]]), ]
+  last <- object$last
   horizon <- match(new_data[[indexvar]], sort(unique(new_data[[indexvar]])))
   ages <- new_data[[agevar]]
   sigma <- object$model$sigma[match(ages, object$model[[agevar]])]
@@ -115,8 +128,7 @@ generate.FNAIVE <- function(
   }
   measure <- x$response
   fitted <- as_tibble(x$fitted)
-  # Random walks start from the last observation for each age
-  last <- fitted[fitted[[indexvar]] == max(fitted[[indexvar]]), ]
+  last <- x$last
   ages <- last[[agevar]]
   sigma <- x$model$sigma[match(ages, x$model[[agevar]])]
   # Innovations for each age, ordered by horizon within replicate

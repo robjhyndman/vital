@@ -48,7 +48,7 @@ train_fmean <- function(.data, ...) {
   sigma <- out |>
     group_by(across(all_of(agevar))) |>
     summarise(sigma = sd(.resid, na.rm = TRUE))
-  sigma$sigma <- fill_sigma(sigma$sigma, sigma[[agevar]])
+  sigma$sigma <- fill_by_age(sigma$sigma, sigma[[agevar]])
   out <- out |>
     as_tsibble(index = indexvar, key = all_of(agevar)) |>
     as_vital(.age = agevar) |>
@@ -56,6 +56,16 @@ train_fmean <- function(.data, ...) {
   model <- ave_measure |>
     rename(mean = .fitted) |>
     left_join(sigma, by = agevar)
+  # Ages with no finite values take their mean from neighbouring ages
+  if (!all(is.finite(model$mean))) {
+    warning(
+      "No finite values for ages ",
+      paste(model[[agevar]][!is.finite(model$mean)], collapse = ", "),
+      ". Interpolating their means from neighbouring ages.",
+      call. = FALSE
+    )
+    model$mean <- fill_by_age(model$mean, model[[agevar]])
+  }
 
   structure(
     list(
@@ -67,20 +77,20 @@ train_fmean <- function(.data, ...) {
   )
 }
 
-# Fill missing standard deviations (e.g. at ages with too few observations)
-# by linear interpolation between neighbouring ages, using the nearest
-# available value beyond the youngest or oldest of them
-fill_sigma <- function(sigma, age) {
-  ok <- is.finite(sigma)
+# Fill missing values (e.g. standard deviations at ages with too few
+# observations) by linear interpolation between neighbouring ages, using the
+# nearest available value beyond the youngest or oldest of them
+fill_by_age <- function(x, age) {
+  ok <- is.finite(x)
   if (all(ok) || !any(ok)) {
-    return(sigma)
+    return(x)
   }
   if (sum(ok) == 1L) {
-    sigma[!ok] <- sigma[ok]
+    x[!ok] <- x[ok]
   } else {
-    sigma[!ok] <- stats::approx(age[ok], sigma[ok], xout = age[!ok], rule = 2)$y
+    x[!ok] <- stats::approx(age[ok], x[ok], xout = age[!ok], rule = 2)$y
   }
-  sigma
+  x
 }
 
 # Resample n innovations from pool, or simulate normal innovations with

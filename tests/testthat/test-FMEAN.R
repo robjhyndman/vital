@@ -144,9 +144,9 @@ test_that("forecasts and simulations keep the type of the index", {
 })
 
 test_that("missing standard deviations are interpolated across age", {
-  expect_equal(fill_sigma(c(1, NA, 3, NA), 1:4), c(1, 2, 3, 3))
-  expect_equal(fill_sigma(c(NA, 2, NA), 1:3), c(2, 2, 2))
-  expect_identical(fill_sigma(c(NA_real_, NA_real_), 1:2), c(NA_real_, NA_real_))
+  expect_equal(fill_by_age(c(1, NA, 3, NA), 1:4), c(1, 2, 3, 3))
+  expect_equal(fill_by_age(c(NA, 2, NA), 1:3), c(2, 2, 2))
+  expect_identical(fill_by_age(c(NA_real_, NA_real_), 1:2), c(NA_real_, NA_real_))
 })
 
 test_that("FMEAN bootstrap handles ages with one or no residuals", {
@@ -168,8 +168,13 @@ test_that("FMEAN bootstrap handles ages with one or no residuals", {
 test_that("FMEAN bootstrap works at ages with no finite residuals", {
   d <- norway_mortality |> filter(Sex == "Male", Year > 2000, Age > 100)
   d$Mortality[d$Age == 110] <- 0
-  fit <- model(d, FMEAN(log(Mortality)))
-  expect_no_error(generate(fit, h = 1, times = 3, bootstrap = TRUE))
+  expect_warning(
+    fit <- model(d, FMEAN(log(Mortality))),
+    "No finite values for ages 110"
+  )
+  sim <- generate(fit, h = 1, times = 3, bootstrap = TRUE)
+  expect_true(all(is.finite(sim$.sim)))
+  expect_true(all(is.finite(forecast(fit, h = 1)$.mean)))
 })
 
 test_that("forecast() gives a clear error when new_data is not a data frame", {
