@@ -291,3 +291,13 @@ test_that("LC dxt adjustment only drops cells with zero population", {
     stats::coef()
   expect_equal(time_components(fit)$kt[1], unname(kt), tolerance = 1e-6)
 })
+
+test_that("LC fills ax at end ages with no observed rates", {
+  x <- norway_mortality |>
+    filter(Sex == "Female", Year > 2000, Age < 90)
+  x$Mortality[x$Age == 89] <- NA
+  fit <- model(x, LC(log(Mortality)))
+  ax <- age_components(fit)$ax
+  expect_false(anyNA(ax))
+  expect_equal(ax[90], ax[89])
+})

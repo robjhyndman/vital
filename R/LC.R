@@ -288,7 +288,7 @@ lca <- function(
   if (any(ax < -1e9) | anyNA(ax)) {
     # Estimate troublesome values with interpolation
     ax[ax < -1e9] <- NA
-    ax <- stats::approx(seq_along(ax), ax, xout = seq_along(ax))$y
+    ax <- stats::approx(seq_along(ax), ax, xout = seq_along(ax), rule = 2)$y
   }
   clogrates <- sweep(logrates, 2, ax) # central log rates (with ax subtracted) (dimensions m*n)
   # Set missing central rates to 0 (effectively setting mx to ax)
