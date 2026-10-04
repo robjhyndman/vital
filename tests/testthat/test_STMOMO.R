@@ -160,3 +160,12 @@ test_that("GAPC forecasts one step ahead", {
   expect_identical(NROW(fc1), 29L)
   expect_equal(fc1$.mean, fc2$.mean[fc2$Year == min(fc2$Year)])
 })
+
+test_that("augment, fitted and residuals work for GAPC models", {
+  aug <- augment(mod |> select(lc2, apc))
+  expect_equal(NROW(aug), 2L * NROW(nor))
+  expect_equal(aug$.resid, aug$.response - aug$.fitted)
+  expect_false(anyNA(aug$.fitted))
+  expect_equal(NROW(fitted(mod |> select(cbd))), NROW(nor))
+  expect_equal(NROW(residuals(mod |> select(cbd))), NROW(nor))
+})

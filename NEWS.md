@@ -73,6 +73,7 @@
 - `forecast()` and `generate()` now keep the type of the time index (e.g. integer years)
 - The smoothing functions now keep integer ages when the smoothed ages are whole numbers
 - `FMEAN()` and `FNAIVE()` now interpolate standard deviations from neighbouring ages where they cannot be estimated, rather than simulating missing values. Bootstrap simulations from `FMEAN()` no longer fail at ages with no finite residuals
+- Fixed `augment()`, `fitted()` and `residuals()` failing for GAPC models (`LC2()`, `APC()`, `CBD()`, etc.)
 
 # vital 2.0.3
 

@@ -457,10 +457,22 @@ train_stmomo <- function(
   out$data$series <- sex
   out$data$label <- "vital"
 
+  # Fitted rates (ages in rows, years in columns) in long form
+  indexvar <- index_var(.data)
+  fits <- tibble(
+    !!indexvar := rep(data2$years, each = length(data2$ages)),
+    !!vvar$age := rep(data2$ages, length(data2$years)),
+    .fitted = c(fitted(out, type = "rates"))
+  )
+  fits <- as_tibble(.data)[c(indexvar, vvar$age, measures)] |>
+    left_join(fits, by = c(indexvar, vvar$age))
+  fits$.innov <- fits[[measures]] - fits$.fitted
+  fits[[measures]] <- NULL
+
   structure(
     list(
       model = out,
-      fitted = fitted(out),
+      fitted = fits,
       nobs = sum(!is.na(.data[[measures]]))
     ),
     class = "GAPC"
