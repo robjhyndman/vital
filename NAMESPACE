@@ -189,7 +189,6 @@ importFrom(dplyr,
   if_else,
   left_join,
   mutate,
-  nest_by,
   pull,
   rename,
   select,
@@ -208,12 +207,7 @@ importFrom(fabletools,
   report,
   tidy
 )
-importFrom(ggplot2,
-  aes,
-  autoplot,
-  geom_line,
-  ggplot
-)
+importFrom(ggplot2,autoplot)
 importFrom(grDevices,rainbow)
 importFrom(purrr,
   compose,
@@ -299,7 +293,6 @@ importFrom(tidyselect,
 importFrom(tsibble,
   as_tsibble,
   build_tsibble,
-  group_by_key,
   index,
   index2,
   index_var,

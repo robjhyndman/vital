@@ -79,14 +79,11 @@ merge_named_list <- function(...) {
   map(split(flat, nm), function(x) flatten(unname(x)))
 }
 
-capture_error <- function(code, otherwise = NULL, quiet = TRUE) {
+capture_error <- function(code) {
   tryCatch(
     list(result = code, error = NULL),
     error = function(e) {
-      if (!quiet) {
-        message("Error: ", e$message)
-      }
-      list(result = otherwise, error = e)
+      list(result = NULL, error = e)
     },
     interrupt = function(e) {
       stop("Terminated by user", call. = FALSE)
@@ -94,7 +91,7 @@ capture_error <- function(code, otherwise = NULL, quiet = TRUE) {
   )
 }
 
-unnest_tbl <- function(.data, tbl_col, .sep = NULL) {
+unnest_tbl <- function(.data, tbl_col) {
   row_indices <- rep.int(
     seq_len(NROW(.data)),
     map_int(
@@ -111,11 +108,6 @@ unnest_tbl <- function(.data, tbl_col, .sep = NULL) {
       unlist(lst_col)
     }
   })
-  if (!is.null(.sep)) {
-    nested_cols <- map2(nested_cols, tbl_col, function(x, nm) {
-      set_names(x, paste(nm, colnames(x), sep = .sep))
-    })
-  }
   is_df <- map_lgl(nested_cols, is.data.frame)
   vctrs::vec_cbind(
     .data[
@@ -134,7 +126,7 @@ unnest_tbl <- function(.data, tbl_col, .sep = NULL) {
   )
 }
 
-unnest_tsbl <- function(.data, tsbl_col, parent_key = NULL, interval = NULL) {
+unnest_tsbl <- function(.data, tsbl_col, parent_key = NULL) {
   tsbl <- .data[[tsbl_col]][[1L]]
   if (!is_tsibble(tsbl)) {
     abort("Unnested column is not a tsibble object.")
@@ -148,7 +140,7 @@ unnest_tsbl <- function(.data, tsbl_col, parent_key = NULL, interval = NULL) {
     index = !!idx,
     index2 = !!index2(tsbl),
     ordered = is_ordered(tsbl),
-    interval = interval %||% tsibble::interval(tsbl),
+    interval = tsibble::interval(tsbl),
     validate = FALSE
   )
 }

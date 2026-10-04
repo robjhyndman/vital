@@ -208,7 +208,7 @@ smooth_loess_x <- function(data, var, age_spacing, age, popvar, span = 0.2) {
 
 # Concave smoothing of fertility data
 
-fert.curve <- function(x, y, w, lambda = 1, newx = x, ...) {
+fert.curve <- function(x, y, w, lambda = 1, newx = x) {
   w <- w / sum(w)
   fred <- stats::predict(
     cobs::cobs(
@@ -381,14 +381,12 @@ smooth_vital <- function(.data, .var, age_spacing, smooth_fn, ...) {
     )
 }
 
+# Weights for smoothing rates, inversely proportional to their variances on
+# the Box-Cox scale with parameter lambda
 smooth_weights <- function(rate, pop, lambda) {
-  if (!is.null(pop)) {
-    pop <- pop / max(pop, na.rm = TRUE)
-    weight <- pop * abs(rate)^(1 - 2 * lambda)
-    weight[weight < 0 | is.na(weight) | abs(weight) > 1e50] <- 0
-  } else {
-    weight <- rep(1, length(rate))
-  }
+  pop <- pop / max(pop, na.rm = TRUE)
+  weight <- pop * abs(rate)^(1 - 2 * lambda)
+  weight[weight < 0 | is.na(weight) | abs(weight) > 1e50] <- 0
   return(weight / sum(weight, na.rm = TRUE))
 }
 
