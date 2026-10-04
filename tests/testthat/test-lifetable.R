@@ -108,3 +108,13 @@ test_that("life_expectancy returns only the index, keys and ex", {
     life_expectancy()
   expect_identical(colnames(e0), c("Year", "Age", "Sex", "ex"))
 })
+
+test_that("life_table() interpolates missing rates from neighbouring ages", {
+  x <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year == 2010)
+  x$Mortality[x$Age == 49] <- NA
+  expect_warning(lt <- life_table(x), "interpolated")
+  m <- x$Mortality[x$Age %in% c(48, 50)]
+  expect_equal(lt$mx[lt$Age == 49], sqrt(prod(m)))
+  expect_false(anyNA(lt$ex))
+})

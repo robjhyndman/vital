@@ -379,7 +379,9 @@ single_year_rx <- function(mx, age, group, sex) {
   pos <- cbind(match(group, groups), match(age, ages))
   m <- matrix(NA_real_, length(groups), nn)
   m[pos] <- mx
-  m[is.na(m)] <- 0.5
+  for (i in which(apply(is.na(m), 1, any))) {
+    m[i, ] <- fill_mx(m[i, ], ages)
+  }
   sex <- tolower(sex[match(groups, group)])
   # Average years lived in each age by those dying
   ax <- matrix(0.5, length(groups), nn)

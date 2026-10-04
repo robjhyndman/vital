@@ -4,6 +4,8 @@
 #' $qx = mx/(1 + ((1-ax) * mx))$ as per Chiang (1984).
 #' Ages can be single years, abridged (0, 1, 5, 10, ...), or 5-year groups
 #' starting at age 5 or above.
+#' Missing mortality rates are interpolated (on the log scale) from
+#' neighbouring ages, with a warning.
 #'
 #' @param .data A `vital` including an age variable and a variable containing mortality rates.
 #' @param mortality Variable in `.data` containing Mortality rates (mx). If omitted, the variable with name  `mx`, `Mortality` or `Rate` will be used (not case sensitive).
@@ -43,6 +45,12 @@ life_table <- function(.data, mortality) {
     } else {
       stop("Mortality variable not found in data")
     }
+  }
+  if (anyNA(.data[[mortality]])) {
+    warning(
+      "Missing mortality rates have been interpolated from neighbouring ages",
+      call. = FALSE
+    )
   }
   # Index variable
   index <- tsibble::index_var(.data)
@@ -130,8 +138,8 @@ lt <- function(dt, sex, age, mortality, keep = age) {
   nn <- NROW(dt)
   nx <- c(widths, Inf)
 
-  # Set NA values to 0.5
-  mx[is.na(mx)] <- 0.5
+  # Interpolate missing rates
+  mx <- fill_mx(mx, dt[[age]])
 
   # Set remaining ax values
   if (agegroup == 1L) {
@@ -199,4 +207,23 @@ lt <- function(dt, sex, age, mortality, keep = age) {
     dplyr::bind_cols(dt[keep])
 
   return(result)
+}
+
+# Fill missing mortality rates by linear interpolation of log rates between
+# neighbouring ages with positive rates, using the nearest such rate beyond
+# the youngest or oldest of them
+fill_mx <- function(mx, age) {
+  miss <- is.na(mx)
+  ok <- !miss & mx > 0
+  if (!any(miss) || !any(ok)) {
+    return(mx)
+  }
+  if (sum(ok) == 1L) {
+    mx[miss] <- mx[ok]
+  } else {
+    mx[miss] <- exp(
+      stats::approx(age[ok], log(mx[ok]), xout = age[miss], rule = 2)$y
+    )
+  }
+  mx
 }

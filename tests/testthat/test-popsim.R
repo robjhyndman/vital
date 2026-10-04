@@ -160,7 +160,7 @@ test_that("single_year_rx() matches the survivorship ratios of life_table()", {
     dplyr::filter(Year %in% c(1950, 2020), Age < 100)
   x$Mortality[c(5, 400)] <- NA
   x$Mortality[x$Age == 99 & x$Year == 1950] <- 0
-  lt <- life_table(x)
+  expect_warning(lt <- life_table(x), "interpolated")
   rx <- vital:::single_year_rx(
     x$Mortality,
     x$Age,
