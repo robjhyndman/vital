@@ -11,7 +11,7 @@
 #'
 #' @author Sixian Tang
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' australia <- read_ktdb(country = "Australia")
 #' }
 #'

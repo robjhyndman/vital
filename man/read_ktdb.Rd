@@ -21,7 +21,7 @@ The series is available in Kannisto-Thatcher (K-T) database (\url{https://www.de
 and constructs a \code{vital} object suitable for use in other functions.
 }
 \examples{
-\dontrun{
+\donttest{
 australia <- read_ktdb(country = "Australia")
 }
 
