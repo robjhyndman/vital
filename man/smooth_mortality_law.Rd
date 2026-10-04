@@ -11,8 +11,8 @@ smooth_mortality_law(.data, .var, law = "gompertz", ...)
 
 \item{.var}{name of variable to smooth. This should contain mortality rates.}
 
-\item{law}{name of mortality law. For available mortality laws, users can check the \code{\link[MortalityLaws]{availableLaws}}. Argument ignored if a custom law supplied.
-function to learn about the available options.}
+\item{law}{name of mortality law. See \code{\link[MortalityLaws]{availableLaws}}
+for the available options. Argument ignored if a custom law supplied.}
 
 \item{...}{Additional arguments are passed to \code{\link[MortalityLaws]{MortalityLaw}}.}
 }

@@ -1,7 +1,6 @@
 #' Rainbow plot of demographic data against age
 #'
-#' Produce rainbow plot (coloured by time index) of demographic variable against
-#' against age.
+#' Produce rainbow plot (coloured by time index) of demographic variable against age.
 #'
 #' @param object A vital including an age variable and the variable you wish to plot.
 #' @param .vars The name of the variable you wish to plot.

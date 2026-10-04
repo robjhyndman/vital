@@ -19,8 +19,7 @@
 A ggplot2 object.
 }
 \description{
-Produce rainbow plot (coloured by time index) of demographic variable against
-against age.
+Produce rainbow plot (coloured by time index) of demographic variable against age.
 }
 \examples{
 autoplot(norway_fertility, Fertility)

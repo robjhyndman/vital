@@ -1,6 +1,6 @@
 #' Generalized APC stochastic mortality model
 #'
-#' A Generalized Age-Period-Cohort (GAPC) stochastic mortality mode is defined
+#' A Generalized Age-Period-Cohort (GAPC) stochastic mortality model is defined
 #' in Villegas et al. (2018). The StMoMo package is used to fit the model. Separate
 #' functions are available to fit various special cases of the GAPC model.
 #'
@@ -76,7 +76,7 @@
 #' @references Renshaw, AE, and Haberman, S (2011). A comparative study of
 #' parametric mortality projection models.
 #' *Insurance: Mathematics and Economics*, **48**(1), 35–55.
-#' <doi:10.1016/j. insmatheco.2010.09.003>
+#' <doi:10.1016/j.insmatheco.2010.09.003>
 #' @references Villegas, AM, Millossovich, P, and Kaishev, VK (2018).
 #' StMoMo: An R package for stochastic mortality modelling.
 #' *Journal of Statistical Software*, **84**(3), 1-38.

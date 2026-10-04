@@ -15,7 +15,7 @@ A character vector of the names of the vital variables.
 \description{
 A vital object is a special case of a tsibble object with additional attributes
 identifying the age, sex, deaths, births and population variables.
-\code{vital_vars()} returns a character vector the names of the vital variables.
+\code{vital_vars()} returns a character vector of the names of the vital variables.
 }
 \examples{
 vital_vars(norway_mortality)

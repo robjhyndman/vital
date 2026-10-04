@@ -2,7 +2,7 @@
 #'
 #' A vital object is a special case of a tsibble object with additional attributes
 #' identifying the age, sex, deaths, births and population variables.
-#' `vital_vars()` returns a character vector the names of the vital variables.
+#' `vital_vars()` returns a character vector of the names of the vital variables.
 #'
 #' @param x A tsibble object.
 #' @return A character vector of the names of the vital variables.

@@ -21,7 +21,7 @@
 #'
 #' @references Hyndman, R. J., and Ullah, S. (2007) Robust forecasting of
 #' mortality and fertility rates: a functional data approach.
-#' *Computational Statistics & Data Analysis*, 5, 4942-4956.
+#' *Computational Statistics & Data Analysis*, 51, 4942-4956.
 #' <https://robjhyndman.com/publications/funcfor/>
 #' @references Hyndman, R. J., Booth, H., & Yasmeen, F. (2013). Coherent mortality
 #' forecasting: the product-ratio method with functional time series models.

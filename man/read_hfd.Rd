@@ -7,7 +7,7 @@
 read_hfd(country, username, password, variables = "asfrRR")
 }
 \arguments{
-\item{country}{Directory abbreviation from the HMD. For instance, Norway = "NOR".}
+\item{country}{Country code as used by the HFD. For instance, Norway = "NOR".}
 
 \item{username}{HFD username (case-sensitive)}
 

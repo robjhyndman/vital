@@ -19,7 +19,7 @@ See the examples.}
 
 \item{adjust}{method to use for adjustment of coefficients \eqn{k_t}.
 Possibilities are
-\code{"dt"} (Lee-Carter method, the default),
+\code{"dt"} (Lee-Carter method),
 \code{"dxt"} (BMS method),
 \code{"e0"} (Lee-Miller method based on life expectancy) and
 \code{"none"}. If omitted, \code{"dt"} is used when the data contain deaths and

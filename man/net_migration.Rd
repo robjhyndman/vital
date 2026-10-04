@@ -28,7 +28,7 @@ net_migration(norway_mortality, norway_births)
 \dontrun{
 # Files downloaded from the [Human Mortality Database](https://mortality.org)
 deaths <- read_hmd_files(c("Population.txt", "Mx_1x1.txt"))
-births <- read_hmd_file("Births.txt")
+births <- read_hmd_files("Births.txt")
 mig <- net_migration(deaths, births)
 }
 }

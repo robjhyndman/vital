@@ -11,7 +11,7 @@
 #' See the examples.
 #' @param adjust method to use for adjustment of coefficients \eqn{k_t}.
 #'   Possibilities are
-#'   `"dt"` (Lee-Carter method, the default),
+#'   `"dt"` (Lee-Carter method),
 #'   `"dxt"` (BMS method),
 #'   `"e0"` (Lee-Miller method based on life expectancy) and
 #'   `"none"`. If omitted, `"dt"` is used when the data contain deaths and

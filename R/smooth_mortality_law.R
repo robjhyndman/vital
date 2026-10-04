@@ -10,8 +10,8 @@
 #'
 #' @param .data A vital object
 #' @param .var name of variable to smooth. This should contain mortality rates.
-#' @param law name of mortality law. For available mortality laws, users can check the \code{\link[MortalityLaws]{availableLaws}}. Argument ignored if a custom law supplied.
-#' function to learn about the available options.
+#' @param law name of mortality law. See \code{\link[MortalityLaws]{availableLaws}}
+#' for the available options. Argument ignored if a custom law supplied.
 #' @param ... Additional arguments are passed to \code{\link[MortalityLaws]{MortalityLaw}}.
 #' @return vital with added columns containing smoothed values and their standard errors
 #' @keywords smooth
