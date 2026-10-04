@@ -91,3 +91,17 @@ test_that("collapse_ages() sums count columns even when they are constant over a
   expect_equal(out$Extra[out$Age == 100], 2 * n_upper)
   expect_equal(out$Mortality[out$Age == 100], n_upper / sum(x$Population[x$Age >= 100]))
 })
+
+test_that("collapse_ages works when a group is missing an age", {
+  x <- norway_mortality |>
+    dplyr::filter(Year %in% 1999:2000, Sex == "Female")
+  full <- collapse_ages(x, max_age = 100)
+  gap <- collapse_ages(
+    x |> dplyr::filter(!(Age == 50 & Year == 2000)),
+    max_age = 100
+  )
+  expect_equal(
+    gap |> dplyr::filter(Age == 100),
+    full |> dplyr::filter(Age == 100)
+  )
+})

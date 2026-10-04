@@ -56,17 +56,19 @@ collapse_ages <- function(.data, max_age = 100) {
     }
   }
 
-  # Collapse data by summing for max_age and above
-  ages <- sort(unique(.data[[age]]))
-  collapsed <- .data |>
+  # Collapse data by summing for max_age and above, using the ages of each
+  # group as some groups may not have all ages
+  tbl <- .data |>
     as_tibble() |>
+    dplyr::arrange(dplyr::across(all_of(c(index, keys_noage, age))))
+  collapsed <- tbl |>
     group_by(across(all_of(c(index, keys_noage)))) |>
     dplyr::reframe(dplyr::across(
       everything(),
       function(x) {
         collapse_age_vector(
           x,
-          ages,
+          tbl[[age]][dplyr::cur_group_rows()],
           max_age,
           # Rates are recomputed below
           dplyr::cur_column() %in% c(setdiff(keys, keys_noage), rates)
