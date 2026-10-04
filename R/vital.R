@@ -65,11 +65,6 @@ vital <- function(
 # Vital variables not given in ... are kept from x.
 #' @export
 as_vital.vital <- function(x, index, key, ...) {
-  if (missing(index) && missing(key)) {
-    return(as_vital.tbl_ts(x, ...))
-  }
-  index <- if (missing(index)) sym(index_var(x)) else enquo(index)
-  key <- if (missing(key)) key_vars(x) else enquo(key)
   vvar <- vital_var_list(x)
   dots <- list2(...)
   vital_args <- list(
@@ -80,6 +75,11 @@ as_vital.vital <- function(x, index, key, ...) {
     .population = vvar$population
   )
   dots <- c(dots, vital_args[setdiff(names(vital_args), names(dots))])
+  if (missing(index) && missing(key)) {
+    return(exec(as_vital.tbl_ts, x, !!!dots))
+  }
+  index <- if (missing(index)) sym(index_var(x)) else enquo(index)
+  key <- if (missing(key)) key_vars(x) else enquo(key)
   out <- as_tibble(x) |>
     as_tsibble(index = !!index, key = !!key)
   exec(as_vital, out, !!!dots)

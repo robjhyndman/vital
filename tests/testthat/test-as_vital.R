@@ -29,3 +29,13 @@ test_that("as_vital on a vital rebuilds keys and keeps vital variables", {
   expect_null(vital_var_list(no_sex)$sex)
   expect_identical(vital_var_list(no_sex)$deaths, "Deaths")
 })
+
+test_that("as_vital on a vital keeps vital variables that are not given", {
+  vv <- vital_vars(norway_mortality)
+  expect_identical(vital_vars(as_vital(norway_mortality)), vv)
+  expect_identical(vital_vars(as_vital(norway_mortality, .age = "Age")), vv)
+  expect_identical(
+    vital_vars(as_vital(norway_mortality, .sex = NULL)),
+    vv[names(vv) != "sex"]
+  )
+})

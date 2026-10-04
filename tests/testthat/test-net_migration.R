@@ -6,13 +6,13 @@ test_that("net_migration accepts births as a population variable", {
   expected <- net_migration(pop, births)
   births_as_pop <- births |>
     dplyr::rename(Population = Births) |>
-    as_vital(.sex = "Sex", .population = "Population")
+    as_vital(.population = "Population", .births = NULL)
   expect_equal(
     net_migration(pop, births_as_pop)$NetMigration,
     expected$NetMigration
   )
   expect_error(
-    net_migration(pop, births |> as_vital(.sex = "Sex")),
+    net_migration(pop, births |> as_vital(.births = NULL)),
     "Births or Population variable not found"
   )
 })
