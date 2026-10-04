@@ -214,10 +214,6 @@ gapc <- norway_mortality |>
     ),
     cbd2 = CBD(Mortality)
   )
-#> Warning: StMoMo: 8 data points have 
-#>                   non-positive exposures and have been zero weighted
-#> Warning: StMoMo: 8 data points have 
-#>                   non-positive exposures and have been zero weighted
 glance(gapc)
 #> # A tibble: 2 × 6
 #>   Sex    .model loglik deviance  nobs  npar

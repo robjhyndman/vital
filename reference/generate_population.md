@@ -4,7 +4,9 @@ Simulate future age-specific population given a starting population and
 models for fertility, mortality, and migration. If any model is NULL, it
 is assumed there are no future births, deaths or net migrants,
 respectively. This is an experimental function and has not been
-thoroughly tested.
+thoroughly tested. The simulation follows
+[`demography::pop.sim()`](https://pkg.robjhyndman.com/demography/reference/pop.sim.html),
+as described in Hyndman and Booth (2008).
 
 ## Usage
 
@@ -42,7 +44,10 @@ generate_population(
 
   A `mable` object containing an age-sex-specific model for net
   migration numbers, trained on data up to the year of the starting
-  population. If NULL, there are zero future net migrants.
+  population. Net migrants are indexed by age at the end of the year, as
+  returned by
+  [`net_migration()`](https://pkg.robjhyndman.com/vital/reference/net_migration.md).
+  If NULL, there are zero future net migrants.
 
 - h:
 
@@ -63,3 +68,9 @@ generate_population(
 ## Value
 
 A `vital` object containing the simulated future population.
+
+## References
+
+Hyndman and Booth (2008) Stochastic population forecasts using
+functional data models for mortality, fertility and migration.
+*International Journal of Forecasting*, 24(3), 323-342.

@@ -73,8 +73,6 @@ that are indexed by birth year of the cohort.</p>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sex</span> <span class="op">==</span> <span class="st">"Male"</span>, <span class="va">Age</span> <span class="op">&gt;</span> <span class="fl">50</span>, <span class="va">Year</span> <span class="op">&gt;</span> <span class="fl">1960</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span>apc <span class="op">=</span> <span class="fu"><a href="GAPC.html">APC</a></span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">cohort_components</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>StMoMo: 22 data points have </span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>                   non-positive exposures and have been zero weighted</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tsibble: 122 x 3 [1Y]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Key:       Sex [1]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Sex   Birth_Year     gc</span>

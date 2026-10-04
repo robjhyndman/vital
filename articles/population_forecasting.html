@@ -79,40 +79,89 @@ Hyndman</h4>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2025</span><span class="op">)</span></span></code></pre></div>
 <p>The vital package can be used for stochastic population forecasting
 with coherent components. This is based on the papers by <span class="citation">Hyndman and Booth (2008)</span> and <span class="citation">Hyndman et al. (2013)</span>. Following <span class="citation">Hyndman and Booth (2008)</span>, we use the following
-demographic growth-balance equations:
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>P</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>B</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msub><mi>D</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>G</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">
-P_t(x) = P_{t-1}(x) + B_t(x) - D_t(x) + G_t(x)
+demographic growth-balance equations for each sex:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><msub><mi>P</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><msub><mi>P</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msub><mi>D</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>G</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><mi>x</mi><mo>=</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>p</mi><mo>−</mo><mn>2</mn><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><msub><mi>P</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mi>+</mi><mo stretchy="false" form="postfix">)</mo></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><msub><mi>P</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>P</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mi>+</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msub><mi>D</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo>−</mo><mn>1</mn><mi>+</mi><mo>,</mo><mi>p</mi><mi>+</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>G</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo>−</mo><mn>1</mn><mi>+</mi><mo>,</mo><mi>p</mi><mi>+</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><msub><mi>P</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><msub><mi>B</mi><mi>t</mi></msub><mo>−</mo><msub><mi>D</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>B</mi><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>G</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>B</mi><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+P_{t+1}(x+1) &amp;= P_t(x) - D_t(x,x+1) + G_t(x,x+1), \qquad x = 0,1,\dots,p-2,\\
+P_{t+1}(p+) &amp;= P_t(p-1) + P_t(p+) - D_t(p-1+,p+) + G_t(p-1+,p+),\\
+P_{t+1}(0) &amp;= B_t - D_t(B,0) + G_t(B,0),
+\end{aligned}
 </annotation></semantics></math> where</p>
 <ul>
 <li>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">P_t(x)</annotation></semantics></math>
-is the population at time
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
-and age
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>,</li>
+is the population aged
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+on 1 January of year
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>+</mo></mrow><annotation encoding="application/x-tex">p+</annotation></semantics></math>
+denotes the open-ended upper age group;</li>
 <li>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">B_t(x)</annotation></semantics></math>
-is the number of births at time
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
-and age
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>,</li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mi>t</mi></msub><annotation encoding="application/x-tex">B_t</annotation></semantics></math>
+is the number of births in year
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>;</li>
 <li>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">D_t(x)</annotation></semantics></math>
-is the number of deaths at time
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">D_t(x,x+1)</annotation></semantics></math>
+is the number of deaths in year
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
-and age
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>,
-and</li>
+of persons aged
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+at the beginning of year
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo>−</mo><mn>1</mn><mi>+</mi><mo>,</mo><mi>p</mi><mi>+</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">D_t(p-1+,p+)</annotation></semantics></math>
+is the number of deaths in year
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+of persons aged
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">p-1</annotation></semantics></math>
+and older at the beginning of year
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>B</mi><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">D_t(B,0)</annotation></semantics></math>
+is the number of deaths in year
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+of births during year
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>;</li>
 <li>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>G</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">G_t(x)</annotation></semantics></math>
-is the number of net migrants at time
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
-and age
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>.</li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>G</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">G_t(x,x+1)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>G</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo>−</mo><mn>1</mn><mi>+</mi><mo>,</mo><mi>p</mi><mi>+</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">G_t(p-1+,p+)</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>G</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>B</mi><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">G_t(B,0)</annotation></semantics></math>
+are the corresponding numbers of net migrants.</li>
 </ul>
-<p>There are slightly different equations for handling the upper age
-group, and for baby migrants. See <span class="citation">Hyndman and
-Booth (2008)</span> for details.</p>
+<p>These are cohort rhomboids in the Lexis diagram. The cohort deaths
+are estimated from the survivorship ratios of the life table:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><msub><mi>D</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><msub><mi>P</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo>−</mo><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mo>,</mo><mspace width="2.0em"></mspace><mi>x</mi><mo>=</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>p</mi><mo>−</mo><mn>2</mn><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><msub><mi>D</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo>−</mo><mn>1</mn><mi>+</mi><mo>,</mo><mi>p</mi><mi>+</mi><mo stretchy="false" form="postfix">)</mo></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mo stretchy="false" form="prefix">[</mo><msub><mi>P</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>P</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mi>+</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo>−</mo><mi>T</mi><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mi>T</mi><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><msub><mi>D</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>B</mi><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><msub><mi>B</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo>−</mo><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mi>l</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mo>,</mo></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+D_t(x,x+1) &amp;= P_t(x)[1 - L(x+1)/L(x)], \qquad x = 0,1,\dots,p-2,\\
+D_t(p-1+,p+) &amp;= [P_t(p-1) + P_t(p+)][1 - T(p)/T(p-1)],\\
+D_t(B,0) &amp;= B_t[1 - L(0)/l(0)],
+\end{aligned}
+</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">L(x)</annotation></semantics></math>
+denotes person-years lived at age
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">T(x)</annotation></semantics></math>
+denotes person-years lived at age
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+and older, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>l</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">l(0)</annotation></semantics></math>
+is the radix of the life table. Net migration is then estimated as the
+residual from the growth-balance equations. The
+<code><a href="../reference/net_migration.html">net_migration()</a></code> function returns these estimates indexed by
+the age of each cohort at the end of the year, so that
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>G</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">G_t(x,x+1)</annotation></semantics></math>
+is at age
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">x+1</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>G</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo>−</mo><mn>1</mn><mi>+</mi><mo>,</mo><mi>p</mi><mi>+</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">G_t(p-1+,p+)</annotation></semantics></math>
+is at age
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>G</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>B</mi><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">G_t(B,0)</annotation></semantics></math>
+is at age 0.</p>
+<p>In the simulation of future populations, half of each cohort’s net
+migrants are added at the beginning of the year and half at the end. See
+<span class="citation">Hyndman and Booth (2008)</span> for details.</p>
 <p>To simulate future births, deaths and net migrants, we develop three
 functional data models for fertility, mortality and migration. The
 models for mortality and migration use coherent components, so that the
@@ -159,7 +208,7 @@ shows the fitted values on the square root scale.</p>
 <p>For net migration, we use a coherent functional data model. Because
 net migration values can be positive or negative, we can’t take products
 and ratios. Instead, we need to compute the means and corresponding
-differences using the <code>mean_sd()</code> function.</p>
+differences using the <code><a href="../reference/make_sd.html">make_sd()</a></code> function.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">netmig</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/net_migration.html">net_migration</a></span><span class="op">(</span></span>
 <span>  <span class="va">norway_mortality</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sex</span> <span class="op">!=</span> <span class="st">"Total"</span><span class="op">)</span>,</span>
@@ -228,10 +277,10 @@ mean age of the population for the next 10 years</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Female  <span style="text-decoration: underline;">2</span>032     42.7</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Female  <span style="text-decoration: underline;">2</span>033     42.8</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> Male    <span style="text-decoration: underline;">2</span>024     40.6</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> Male    <span style="text-decoration: underline;">2</span>025     40.7</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> Male    <span style="text-decoration: underline;">2</span>025     40.8</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> Male    <span style="text-decoration: underline;">2</span>026     40.9</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> Male    <span style="text-decoration: underline;">2</span>027     41.0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> Male    <span style="text-decoration: underline;">2</span>028     41.1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> Male    <span style="text-decoration: underline;">2</span>028     41.2</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> Male    <span style="text-decoration: underline;">2</span>029     41.3</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">17</span> Male    <span style="text-decoration: underline;">2</span>030     41.4</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">18</span> Male    <span style="text-decoration: underline;">2</span>031     41.5</span></span>

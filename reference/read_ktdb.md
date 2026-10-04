@@ -36,7 +36,7 @@ Sixian Tang
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 australia <- read_ktdb(country = "Australia")
-} # }
+# }
 ```

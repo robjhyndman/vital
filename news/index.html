@@ -42,15 +42,31 @@
 <ul><li>Updated to work with fabletools v0.7.0+</li>
 <li>Fixed <code><a href="https://generics.r-lib.org/reference/generate.html" class="external-link">generate()</a></code> for LC models, which back-transformed simulations twice</li>
 <li>Fixed <code><a href="../reference/LC.html">LC()</a></code> treating zero rates as log rates of 0 rather than as missing</li>
+<li>Fixed <code><a href="../reference/LC.html">LC()</a></code> giving wrong estimates when the rows of the data are not sorted by age and then year (e.g. when calling <code><a href="https://fabletools.tidyverts.org/reference/estimate.html" class="external-link">estimate()</a></code> directly on <code>norway_mortality</code>)</li>
+<li>
+<code><a href="../reference/LC.html">LC()</a></code> deviances are now missing rather than infinite with only two years of data</li>
 <li>Fixed <code><a href="https://generics.r-lib.org/reference/generate.html" class="external-link">generate()</a></code> for FMEAN models using the wrong standard deviation for each age</li>
 <li>Fixed <code><a href="https://generics.r-lib.org/reference/tidy.html" class="external-link">tidy()</a></code> for FMEAN models, which understated standard errors</li>
 <li>Fixed <code><a href="../reference/life_expectancy.html">life_expectancy()</a></code> ignoring the <code>mortality</code> argument</li>
+<li>
+<code><a href="../reference/life_expectancy.html">life_expectancy()</a></code> now warns when <code>from_age</code> contains ages that are not in the data</li>
 <li>Fixed <code><a href="../reference/life_expectancy.html">life_expectancy()</a></code> failing when the age variable is not called <code>Age</code>
 </li>
+<li>
+<code><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast()</a></code> and <code><a href="https://generics.r-lib.org/reference/generate.html" class="external-link">generate()</a></code> now work when <code>new_data</code> does not start immediately after the training data, rather than giving missing values (LC, FDM), errors (GAPC) or the wrong forecast horizon (FNAIVE)</li>
+<li>Fixed <code><a href="../reference/total_fertility_rate.html">total_fertility_rate()</a></code> ignoring the width of age groups, which made it too small for 5-year age groups</li>
+<li>Fixed <code><a href="../reference/collapse_ages.html">collapse_ages()</a></code> giving wrong results when some years or groups are missing an age</li>
+<li>Fixed <code><a href="../reference/life_table.html">life_table()</a></code> failing for abridged life tables with only three or four age groups</li>
+<li>
+<code><a href="../reference/life_table.html">life_table()</a></code> now caps probabilities of death <code>qx</code> at 1, which previously exceeded 1 at very high mortality rates, giving negative deaths <code>dx</code> and infinite life expectancies</li>
 <li>
 <code><a href="../reference/life_table.html">life_table()</a></code> now uses sex-specific infant separation factors when sex is capitalised (e.g. “Female”)</li>
 <li>
 <code><a href="../reference/smooth_mortality_law.html">smooth_mortality_law()</a></code> now fits to deaths and population when available, as intended</li>
+<li>
+<code><a href="../reference/smooth_vital.html">smooth_loess()</a></code> now weights rates by population divided by rate (their inverse variance), as <code><a href="../reference/smooth_vital.html">smooth_spline()</a></code> does, rather than by population times rate</li>
+<li>Fixed <code><a href="../reference/smooth_vital.html">smooth_mortality()</a></code> failing with “initial parameters not feasible” for some age ranges</li>
+<li>Fixed <code><a href="../reference/smooth_mortality_law.html">smooth_mortality_law()</a></code> giving infinite standard errors when some ages have zero population, and computing standard errors with the wrong units; they are now based on the residuals of the log rates</li>
 <li>Fixed <code><a href="../reference/generate_population.html">generate_population()</a></code> not adding back the mean for coherent migration models</li>
 <li>
 <code>FDM(coherent = TRUE)</code> now validates <code>coherent_ts_model_fn</code> rather than <code>ts_model_fn</code>
@@ -59,7 +75,30 @@
 <li>
 <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> on a mable of GAPC models (APC, CBD, etc.) now gives an error instead of infinite recursion</li>
 <li>
+<code><a href="../reference/FNAIVE.html">FNAIVE()</a></code> now starts its random walk from the last finite value at ages whose final value is zero or missing (e.g. the log of a zero rate), with a warning, rather than forecasting <code>-Inf</code> or <code>NaN</code>
+</li>
+<li>
+<code><a href="../reference/FMEAN.html">FMEAN()</a></code> now interpolates the mean from neighbouring ages, with a warning, at ages with no finite values, rather than forecasting <code>NaN</code>
+</li>
+<li>
+<code><a href="https://generics.r-lib.org/reference/interpolate.html" class="external-link">interpolate()</a></code> now keeps all columns of <code>new_data</code> (not just the response), and works for GAPC models (APC, CBD, etc.)</li>
+<li>
+<code><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast()</a></code>, <code><a href="https://generics.r-lib.org/reference/generate.html" class="external-link">generate()</a></code> and <code><a href="https://generics.r-lib.org/reference/interpolate.html" class="external-link">interpolate()</a></code> now accept <code>new_data</code> with keys in a different order from the models, and <code>new_data</code> as a tsibble without vital variables (e.g. from <code><a href="https://tsibble.tidyverts.org/reference/new-data.html" class="external-link">tsibble::new_data()</a></code>)</li>
+<li>Fixed the printed key summary of vital objects with several keys and no age variable, and with different ages for different series</li>
+<li>
+<code><a href="../reference/as_vital.html">as_vital()</a></code> on a vital object now keeps any vital variables not given in the call, also when <code>index</code> and <code>key</code> are not given</li>
+<li>
 <code><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename()</a></code> and <code><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select()</a></code> now keep vital variables (age, sex, etc.) that are renamed</li>
+<li>Fixed <code><a href="https://generics.r-lib.org/reference/augment.html" class="external-link">augment()</a></code>, <code><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted()</a></code> and <code><a href="https://rdrr.io/r/stats/residuals.html" class="external-link">residuals()</a></code> failing when the response is a vital variable such as <code>Population</code>
+</li>
+<li>
+<code><a href="https://generics.r-lib.org/reference/augment.html" class="external-link">augment()</a></code>, <code><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted()</a></code> and <code><a href="https://rdrr.io/r/stats/residuals.html" class="external-link">residuals()</a></code> now work on mables containing NULL models (from models that failed to fit), giving missing fitted values for those models</li>
+<li>
+<code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> on a vital object with several variables (e.g. <code>vars(Deaths, Population)</code>) now plots each variable in its own row of panels, rather than joining them into one line</li>
+<li>
+<code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise()</a></code> on a vital fable now returns a vital object rather than a tsibble</li>
+<li>
+<code><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename()</a></code> now keeps mables and fables as vital objects, so that <code><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast()</a></code> and other methods still use the vital methods</li>
 <li>Fixed <code><a href="../reference/generate_population.html">generate_population()</a></code> failing when <code>female</code> is supplied</li>
 <li>Fixed <code><a href="../reference/generate_population.html">generate_population()</a></code> failing when <code>mortality_model</code> or <code>migration_model</code> is NULL</li>
 <li>Fixed <code><a href="../reference/generate_population.html">generate_population()</a></code> failing when <code>fertility_model</code> is NULL</li>
@@ -67,13 +106,24 @@
 <code><a href="../reference/generate_population.html">generate_population()</a></code> now works with any names for the index, age, sex and population variables</li>
 <li>
 <code><a href="../reference/generate_population.html">generate_population()</a></code> now correctly checks that each mable contains only one model</li>
+<li>Fixed <code><a href="../reference/generate_population.html">generate_population()</a></code> applying survivorship ratios and cohort deaths one age too young, which misstated deaths at every age and understated the open age group by about a third. It now follows <code><a href="https://pkg.robjhyndman.com/demography/reference/pop.sim.html" class="external-link">demography::pop.sim()</a></code>, including infant deaths in the cohort aged 0 at the start of the year, with net migrants indexed by age at the end of the year</li>
 <li>
 <code><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast()</a></code> and <code><a href="https://generics.r-lib.org/reference/generate.html" class="external-link">generate()</a></code> for GAPC models now work when the index and age variables are not called <code>Year</code> and <code>Age</code>
 </li>
+<li>GAPC models (APC, CBD, etc.) with <code>use_weights = TRUE</code> no longer warn about cells with deaths but no exposure, which are given zero weight</li>
 <li>GAPC models with <code>link = "logit"</code> no longer fail when the data contain missing values</li>
 <li>
 <code><a href="../reference/net_migration.html">net_migration()</a></code> now works when births are stored as a population variable</li>
+<li>
+<code><a href="../reference/net_migration.html">net_migration()</a></code> now indexes net migrants by age at the end of the year, as in <code><a href="https://pkg.robjhyndman.com/demography/reference/migration.html" class="external-link">demography::netmigration()</a></code>: births are age 0 (rather than -1), and the open age group combines the two oldest ages at the start of the year. This fixes wrong net migration at the two oldest ages</li>
 <li>Fixed <code><a href="../reference/read_ktdb.html">read_ktdb()</a></code> ignoring the <code>triangle</code> argument</li>
+<li>
+<code><a href="../reference/read_hmd_files.html">read_hmd_files()</a></code> now orders rows by year when combining age-specific and non-age-specific files</li>
+<li>Fixed <code><a href="../reference/read_ktdb.html">read_ktdb()</a></code> failing for most countries, and rejecting Lithuania (code 37); countries without K-T data now give an informative error</li>
+<li>
+<code><a href="../reference/read_stmf.html">read_stmf()</a></code> now takes <code>username</code> and <code>password</code> arguments, as the HMD requires a login to download STMF data. Previously it failed when reading the login page returned by the HMD</li>
+<li>
+<code><a href="../reference/read_stmf.html">read_stmf()</a></code> now gives an informative error for countries without STMF data</li>
 <li>Grouped vital objects now stay <code>grouped_vital</code> after <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/relocate.html" class="external-link">relocate()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice()</a></code> and <code>[</code>
 </li>
 <li>Fixed <code><a href="../reference/generate_population.html">generate_population()</a></code> producing missing populations at the oldest ages from negative simulated mortality rates and undefined survivorship ratios</li>

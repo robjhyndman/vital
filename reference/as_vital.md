@@ -50,8 +50,9 @@ as_vital(
 
 - ...:
 
-  Other arguments passed to
-  [`tsibble::as_tsibble()`](https://tsibble.tidyverts.org/reference/as-tsibble.html)
+  Other arguments passed to methods. For data frames, these are passed
+  on to
+  [`tsibble::as_tsibble()`](https://tsibble.tidyverts.org/reference/as-tsibble.html).
 
 - sex_groups:
 
@@ -79,7 +80,9 @@ as_vital(
 
 - reorder:
 
-  Logical indicating if the variables should be reordered.
+  Logical indicating if the rows should be sorted by the index, the keys
+  other than age, and then age. The default is `TRUE` for data frames
+  and `FALSE` for tsibbles.
 
 - key:
 

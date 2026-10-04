@@ -12,19 +12,48 @@ set.seed(2025)
 The vital package can be used for stochastic population forecasting with
 coherent components. This is based on the papers by Hyndman and Booth
 (2008) and Hyndman et al. (2013). Following Hyndman and Booth (2008), we
-use the following demographic growth-balance equations:
+use the following demographic growth-balance equations for each sex:
 ``` math
-P_t(x) = P_{t-1}(x) + B_t(x) - D_t(x) + G_t(x)
+\begin{aligned}
+P_{t+1}(x+1) &= P_t(x) - D_t(x,x+1) + G_t(x,x+1), \qquad x = 0,1,\dots,p-2,\\
+P_{t+1}(p+) &= P_t(p-1) + P_t(p+) - D_t(p-1+,p+) + G_t(p-1+,p+),\\
+P_{t+1}(0) &= B_t - D_t(B,0) + G_t(B,0),
+\end{aligned}
 ```
 where
 
-- $`P_t(x)`$ is the population at time $`t`$ and age $`x`$,
-- $`B_t(x)`$ is the number of births at time $`t`$ and age $`x`$,
-- $`D_t(x)`$ is the number of deaths at time $`t`$ and age $`x`$, and
-- $`G_t(x)`$ is the number of net migrants at time $`t`$ and age $`x`$.
+- $`P_t(x)`$ is the population aged $`x`$ on 1 January of year $`t`$,
+  and $`p+`$ denotes the open-ended upper age group;
+- $`B_t`$ is the number of births in year $`t`$;
+- $`D_t(x,x+1)`$ is the number of deaths in year $`t`$ of persons aged
+  $`x`$ at the beginning of year $`t`$, $`D_t(p-1+,p+)`$ is the number
+  of deaths in year $`t`$ of persons aged $`p-1`$ and older at the
+  beginning of year $`t`$, and $`D_t(B,0)`$ is the number of deaths in
+  year $`t`$ of births during year $`t`$;
+- $`G_t(x,x+1)`$, $`G_t(p-1+,p+)`$ and $`G_t(B,0)`$ are the
+  corresponding numbers of net migrants.
 
-There are slightly different equations for handling the upper age group,
-and for baby migrants. See Hyndman and Booth (2008) for details.
+These are cohort rhomboids in the Lexis diagram. The cohort deaths are
+estimated from the survivorship ratios of the life table:
+``` math
+\begin{aligned}
+D_t(x,x+1) &= P_t(x)[1 - L(x+1)/L(x)], \qquad x = 0,1,\dots,p-2,\\
+D_t(p-1+,p+) &= [P_t(p-1) + P_t(p+)][1 - T(p)/T(p-1)],\\
+D_t(B,0) &= B_t[1 - L(0)/l(0)],
+\end{aligned}
+```
+where $`L(x)`$ denotes person-years lived at age $`x`$, $`T(x)`$ denotes
+person-years lived at age $`x`$ and older, and $`l(0)`$ is the radix of
+the life table. Net migration is then estimated as the residual from the
+growth-balance equations. The
+[`net_migration()`](https://pkg.robjhyndman.com/vital/reference/net_migration.md)
+function returns these estimates indexed by the age of each cohort at
+the end of the year, so that $`G_t(x,x+1)`$ is at age $`x+1`$,
+$`G_t(p-1+,p+)`$ is at age $`p`$, and $`G_t(B,0)`$ is at age 0.
+
+In the simulation of future populations, half of each cohort’s net
+migrants are added at the beginning of the year and half at the end. See
+Hyndman and Booth (2008) for details.
 
 To simulate future births, deaths and net migrants, we develop three
 functional data models for fertility, mortality and migration. The
@@ -82,7 +111,9 @@ rates.](population_forecasting_files/figure-html/fertility-1.png)
 For net migration, we use a coherent functional data model. Because net
 migration values can be positive or negative, we can’t take products and
 ratios. Instead, we need to compute the means and corresponding
-differences using the `mean_sd()` function.
+differences using the
+[`make_sd()`](https://pkg.robjhyndman.com/vital/reference/make_sd.md)
+function.
 
 ``` r
 
@@ -168,10 +199,10 @@ future |>
 #>  9 Female  2032     42.7
 #> 10 Female  2033     42.8
 #> 11 Male    2024     40.6
-#> 12 Male    2025     40.7
+#> 12 Male    2025     40.8
 #> 13 Male    2026     40.9
 #> 14 Male    2027     41.0
-#> 15 Male    2028     41.1
+#> 15 Male    2028     41.2
 #> 16 Male    2029     41.3
 #> 17 Male    2030     41.4
 #> 18 Male    2031     41.5

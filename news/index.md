@@ -8,6 +8,13 @@
   LC models, which back-transformed simulations twice
 - Fixed [`LC()`](https://pkg.robjhyndman.com/vital/reference/LC.md)
   treating zero rates as log rates of 0 rather than as missing
+- Fixed [`LC()`](https://pkg.robjhyndman.com/vital/reference/LC.md)
+  giving wrong estimates when the rows of the data are not sorted by age
+  and then year (e.g. when calling
+  [`estimate()`](https://fabletools.tidyverts.org/reference/estimate.html)
+  directly on `norway_mortality`)
+- [`LC()`](https://pkg.robjhyndman.com/vital/reference/LC.md) deviances
+  are now missing rather than infinite with only two years of data
 - Fixed
   [`generate()`](https://generics.r-lib.org/reference/generate.html) for
   FMEAN models using the wrong standard deviation for each age
@@ -16,14 +23,48 @@
 - Fixed
   [`life_expectancy()`](https://pkg.robjhyndman.com/vital/reference/life_expectancy.md)
   ignoring the `mortality` argument
+- [`life_expectancy()`](https://pkg.robjhyndman.com/vital/reference/life_expectancy.md)
+  now warns when `from_age` contains ages that are not in the data
 - Fixed
   [`life_expectancy()`](https://pkg.robjhyndman.com/vital/reference/life_expectancy.md)
   failing when the age variable is not called `Age`
+- [`forecast()`](https://generics.r-lib.org/reference/forecast.html) and
+  [`generate()`](https://generics.r-lib.org/reference/generate.html) now
+  work when `new_data` does not start immediately after the training
+  data, rather than giving missing values (LC, FDM), errors (GAPC) or
+  the wrong forecast horizon (FNAIVE)
+- Fixed
+  [`total_fertility_rate()`](https://pkg.robjhyndman.com/vital/reference/total_fertility_rate.md)
+  ignoring the width of age groups, which made it too small for 5-year
+  age groups
+- Fixed
+  [`collapse_ages()`](https://pkg.robjhyndman.com/vital/reference/collapse_ages.md)
+  giving wrong results when some years or groups are missing an age
+- Fixed
+  [`life_table()`](https://pkg.robjhyndman.com/vital/reference/life_table.md)
+  failing for abridged life tables with only three or four age groups
+- [`life_table()`](https://pkg.robjhyndman.com/vital/reference/life_table.md)
+  now caps probabilities of death `qx` at 1, which previously exceeded 1
+  at very high mortality rates, giving negative deaths `dx` and infinite
+  life expectancies
 - [`life_table()`](https://pkg.robjhyndman.com/vital/reference/life_table.md)
   now uses sex-specific infant separation factors when sex is
   capitalised (e.g. “Female”)
 - [`smooth_mortality_law()`](https://pkg.robjhyndman.com/vital/reference/smooth_mortality_law.md)
   now fits to deaths and population when available, as intended
+- [`smooth_loess()`](https://pkg.robjhyndman.com/vital/reference/smooth_vital.md)
+  now weights rates by population divided by rate (their inverse
+  variance), as
+  [`smooth_spline()`](https://pkg.robjhyndman.com/vital/reference/smooth_vital.md)
+  does, rather than by population times rate
+- Fixed
+  [`smooth_mortality()`](https://pkg.robjhyndman.com/vital/reference/smooth_vital.md)
+  failing with “initial parameters not feasible” for some age ranges
+- Fixed
+  [`smooth_mortality_law()`](https://pkg.robjhyndman.com/vital/reference/smooth_mortality_law.md)
+  giving infinite standard errors when some ages have zero population,
+  and computing standard errors with the wrong units; they are now based
+  on the residuals of the log rates
 - Fixed
   [`generate_population()`](https://pkg.robjhyndman.com/vital/reference/generate_population.md)
   not adding back the mean for coherent migration models
@@ -35,9 +76,50 @@
 - [`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
   on a mable of GAPC models (APC, CBD, etc.) now gives an error instead
   of infinite recursion
+- [`FNAIVE()`](https://pkg.robjhyndman.com/vital/reference/FNAIVE.md)
+  now starts its random walk from the last finite value at ages whose
+  final value is zero or missing (e.g. the log of a zero rate), with a
+  warning, rather than forecasting `-Inf` or `NaN`
+- [`FMEAN()`](https://pkg.robjhyndman.com/vital/reference/FMEAN.md) now
+  interpolates the mean from neighbouring ages, with a warning, at ages
+  with no finite values, rather than forecasting `NaN`
+- [`interpolate()`](https://generics.r-lib.org/reference/interpolate.html)
+  now keeps all columns of `new_data` (not just the response), and works
+  for GAPC models (APC, CBD, etc.)
+- [`forecast()`](https://generics.r-lib.org/reference/forecast.html),
+  [`generate()`](https://generics.r-lib.org/reference/generate.html) and
+  [`interpolate()`](https://generics.r-lib.org/reference/interpolate.html)
+  now accept `new_data` with keys in a different order from the models,
+  and `new_data` as a tsibble without vital variables (e.g. from
+  [`tsibble::new_data()`](https://tsibble.tidyverts.org/reference/new-data.html))
+- Fixed the printed key summary of vital objects with several keys and
+  no age variable, and with different ages for different series
+- [`as_vital()`](https://pkg.robjhyndman.com/vital/reference/as_vital.md)
+  on a vital object now keeps any vital variables not given in the call,
+  also when `index` and `key` are not given
 - [`rename()`](https://dplyr.tidyverse.org/reference/rename.html) and
   [`select()`](https://dplyr.tidyverse.org/reference/select.html) now
   keep vital variables (age, sex, etc.) that are renamed
+- Fixed
+  [`augment()`](https://generics.r-lib.org/reference/augment.html),
+  [`fitted()`](https://rdrr.io/r/stats/fitted.values.html) and
+  [`residuals()`](https://rdrr.io/r/stats/residuals.html) failing when
+  the response is a vital variable such as `Population`
+- [`augment()`](https://generics.r-lib.org/reference/augment.html),
+  [`fitted()`](https://rdrr.io/r/stats/fitted.values.html) and
+  [`residuals()`](https://rdrr.io/r/stats/residuals.html) now work on
+  mables containing NULL models (from models that failed to fit), giving
+  missing fitted values for those models
+- [`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
+  on a vital object with several variables
+  (e.g. `vars(Deaths, Population)`) now plots each variable in its own
+  row of panels, rather than joining them into one line
+- [`summarise()`](https://dplyr.tidyverse.org/reference/summarise.html)
+  on a vital fable now returns a vital object rather than a tsibble
+- [`rename()`](https://dplyr.tidyverse.org/reference/rename.html) now
+  keeps mables and fables as vital objects, so that
+  [`forecast()`](https://generics.r-lib.org/reference/forecast.html) and
+  other methods still use the vital methods
 - Fixed
   [`generate_population()`](https://pkg.robjhyndman.com/vital/reference/generate_population.md)
   failing when `female` is supplied
@@ -52,17 +134,46 @@
   variables
 - [`generate_population()`](https://pkg.robjhyndman.com/vital/reference/generate_population.md)
   now correctly checks that each mable contains only one model
+- Fixed
+  [`generate_population()`](https://pkg.robjhyndman.com/vital/reference/generate_population.md)
+  applying survivorship ratios and cohort deaths one age too young,
+  which misstated deaths at every age and understated the open age group
+  by about a third. It now follows
+  [`demography::pop.sim()`](https://pkg.robjhyndman.com/demography/reference/pop.sim.html),
+  including infant deaths in the cohort aged 0 at the start of the year,
+  with net migrants indexed by age at the end of the year
 - [`forecast()`](https://generics.r-lib.org/reference/forecast.html) and
   [`generate()`](https://generics.r-lib.org/reference/generate.html) for
   GAPC models now work when the index and age variables are not called
   `Year` and `Age`
+- GAPC models (APC, CBD, etc.) with `use_weights = TRUE` no longer warn
+  about cells with deaths but no exposure, which are given zero weight
 - GAPC models with `link = "logit"` no longer fail when the data contain
   missing values
 - [`net_migration()`](https://pkg.robjhyndman.com/vital/reference/net_migration.md)
   now works when births are stored as a population variable
+- [`net_migration()`](https://pkg.robjhyndman.com/vital/reference/net_migration.md)
+  now indexes net migrants by age at the end of the year, as in
+  [`demography::netmigration()`](https://pkg.robjhyndman.com/demography/reference/migration.html):
+  births are age 0 (rather than -1), and the open age group combines the
+  two oldest ages at the start of the year. This fixes wrong net
+  migration at the two oldest ages
 - Fixed
   [`read_ktdb()`](https://pkg.robjhyndman.com/vital/reference/read_ktdb.md)
   ignoring the `triangle` argument
+- [`read_hmd_files()`](https://pkg.robjhyndman.com/vital/reference/read_hmd_files.md)
+  now orders rows by year when combining age-specific and
+  non-age-specific files
+- Fixed
+  [`read_ktdb()`](https://pkg.robjhyndman.com/vital/reference/read_ktdb.md)
+  failing for most countries, and rejecting Lithuania (code 37);
+  countries without K-T data now give an informative error
+- [`read_stmf()`](https://pkg.robjhyndman.com/vital/reference/read_stmf.md)
+  now takes `username` and `password` arguments, as the HMD requires a
+  login to download STMF data. Previously it failed when reading the
+  login page returned by the HMD
+- [`read_stmf()`](https://pkg.robjhyndman.com/vital/reference/read_stmf.md)
+  now gives an informative error for countries without STMF data
 - Grouped vital objects now stay `grouped_vital` after
   [`mutate()`](https://dplyr.tidyverse.org/reference/mutate.html),
   [`filter()`](https://dplyr.tidyverse.org/reference/filter.html),

@@ -30,8 +30,6 @@ norway_mortality |>
   dplyr::filter(Sex == "Male", Age > 50, Year > 1960) |>
   model(apc = APC(Mortality)) |>
   cohort_components()
-#> Warning: StMoMo: 22 data points have 
-#>                   non-positive exposures and have been zero weighted
 #> # A tsibble: 122 x 3 [1Y]
 #> # Key:       Sex [1]
 #>    Sex   Birth_Year     gc

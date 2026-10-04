@@ -27,7 +27,9 @@ autoplot(object, .vars = NULL, age = NULL, ...)
 
 - ...:
 
-  Further arguments not used.
+  Further arguments passed to
+  [`fabletools::autoplot.tbl_ts()`](https://fabletools.tidyverts.org/reference/autoplot.tbl_ts.html)
+  when `object` has no age variable, and otherwise not used.
 
 ## Value
 

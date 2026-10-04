@@ -1,7 +1,10 @@
 # Compute total fertility rate from age-specific fertility rates
 
 Total fertility rate is the expected number of babies per woman in a
-life-time given the fertility rate at each age of a woman's life.
+life-time given the fertility rate at each age of a woman's life. Rates
+for age groups wider than one year (e.g., 5-year age groups) are
+multiplied by the width of each group, with the oldest group assumed to
+be as wide as the one before it.
 
 ## Usage
 

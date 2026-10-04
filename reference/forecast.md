@@ -114,7 +114,7 @@ forecast(
 - times:
 
   The number of sample paths to use in estimating the forecast
-  distribution when `bootstrap = TRUE`.
+  distribution when `simulate = TRUE` or `bootstrap = TRUE`.
 
 - ...:
 

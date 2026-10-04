@@ -57,23 +57,21 @@ Rob J Hyndman and Mitchell O'Hara-Wild
 
 ``` r
 norway_mortality |>
-  model(lc = LC(Mortality)) |>
+  model(lc = LC(log(Mortality))) |>
   generate(times = 3, bootstrap = TRUE)
-#> Warning: 3 errors (1 unique) encountered for lc
-#> [3] Lee-Carter models require a log transformation of the response variable.
 #> # A vital: 1,998 x 6 [1Y]
 #> # Key:     Age x (Sex, .model, .rep) [111 x 9]
-#>     Year   Age Sex    .model .rep   .sim
-#>    <int> <int> <chr>  <chr>  <chr> <dbl>
-#>  1  2024     0 Female lc     1        NA
-#>  2  2024     1 Female lc     1        NA
-#>  3  2024     2 Female lc     1        NA
-#>  4  2024     3 Female lc     1        NA
-#>  5  2024     4 Female lc     1        NA
-#>  6  2024     5 Female lc     1        NA
-#>  7  2024     6 Female lc     1        NA
-#>  8  2024     7 Female lc     1        NA
-#>  9  2024     8 Female lc     1        NA
-#> 10  2024     9 Female lc     1        NA
+#>     Year   Age Sex    .model .rep       .sim
+#>    <int> <int> <chr>  <chr>  <chr>     <dbl>
+#>  1  2024     0 Female lc     1     0.00126  
+#>  2  2024     1 Female lc     1     0.0000721
+#>  3  2024     2 Female lc     1     0.0000485
+#>  4  2024     3 Female lc     1     0.0000393
+#>  5  2024     4 Female lc     1     0.0000412
+#>  6  2024     5 Female lc     1     0.0000335
+#>  7  2024     6 Female lc     1     0.0000314
+#>  8  2024     7 Female lc     1     0.0000303
+#>  9  2024     8 Female lc     1     0.0000345
+#> 10  2024     9 Female lc     1     0.0000296
 #> # ℹ 1,988 more rows
 ```

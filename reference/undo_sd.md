@@ -54,16 +54,16 @@ sd |> undo_sd(NetMigration)
 #> # A vital: 27,306 x 6 [1Y]
 #> # Key:     Age x Sex [111 x 2]
 #>     Year   Age Sex    Population Deaths NetMigration
-#>    <dbl> <dbl> <chr>       <dbl>  <dbl>        <dbl>
-#>  1  1900    -1 Female      32150 1726.        229.  
-#>  2  1900     0 Female      30070 1054.        -66.6 
-#>  3  1900     1 Female      28960  594.        222.  
-#>  4  1900     2 Female      28043  281.         57.3 
-#>  5  1900     3 Female      27019  190.         26.8 
-#>  6  1900     4 Female      26854  155.          3.50
-#>  7  1900     5 Female      25569  122.          5.37
-#>  8  1900     6 Female      25534  102.          4.64
-#>  9  1900     7 Female      24314   91.7        -5.27
-#> 10  1900     8 Female      24979   92.9       -11.1 
+#>    <int> <int> <chr>       <dbl>  <dbl>        <dbl>
+#>  1  1900     0 Female      30070 1726.        229.  
+#>  2  1900     1 Female      28960 1054.        -66.6 
+#>  3  1900     2 Female      28043  594.        222.  
+#>  4  1900     3 Female      27019  281.         57.3 
+#>  5  1900     4 Female      26854  190.         26.8 
+#>  6  1900     5 Female      25569  155.          3.50
+#>  7  1900     6 Female      25534  122.          5.37
+#>  8  1900     7 Female      24314  102.          4.64
+#>  9  1900     8 Female      24979   91.7        -5.27
+#> 10  1900     9 Female      24428   92.9       -11.1 
 #> # ℹ 27,296 more rows
 ```

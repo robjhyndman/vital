@@ -49,7 +49,7 @@ LC(
 - scale:
 
   If TRUE, `bx` and `kt` are rescaled so that `kt` has drift parameter =
-  1.
+  -1 (i.e., `kt` decreases by 1 per year on average).
 
 - ...:
 
