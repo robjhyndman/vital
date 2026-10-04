@@ -29,6 +29,7 @@
 - Fixed `augment()`, `fitted()` and `residuals()` failing when the response is a vital variable such as `Population`
 - `augment()`, `fitted()` and `residuals()` now work on mables containing NULL models (from models that failed to fit), giving missing fitted values for those models
 - `autoplot()` on a vital object with several variables (e.g. `vars(Deaths, Population)`) now plots each variable in its own row of panels, rather than joining them into one line
+- `summarise()` on a vital fable now returns a vital object rather than a tsibble
 - `rename()` now keeps mables and fables as vital objects, so that `forecast()` and other methods still use the vital methods
 - Fixed `generate_population()` failing when `female` is supplied
 - Fixed `generate_population()` failing when `mortality_model` or `migration_model` is NULL

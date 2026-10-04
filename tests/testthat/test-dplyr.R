@@ -216,3 +216,15 @@ test_that("forecast accepts new_data as a tsibble or with keys in any order", {
   nd2 <- tsibble::new_data(x2, 2)
   expect_identical(NROW(forecast(fit2, new_data = nd2)), NROW(nd2))
 })
+
+test_that("summarise on a vital fable gives a vital", {
+  fc <- norway_mortality |>
+    dplyr::filter(Year > 2015, Sex != "Total") |>
+    model(fn = FNAIVE(Mortality)) |>
+    forecast(h = 2)
+  s <- fc |>
+    dplyr::group_by(Sex) |>
+    dplyr::summarise(m = mean(.mean))
+  expect_s3_class(s, "vital")
+  expect_identical(vital_vars(s), c(sex = "Sex"))
+})

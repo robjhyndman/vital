@@ -6,9 +6,14 @@ build_vital_fable <- function(
   distribution,
   vitals = NULL
 ) {
-  # Without a distribution column (e.g. after summarise) it is no longer a fable
+  # Without a distribution column (e.g. after summarise) it is no longer a
+  # fable, but is still a vital
   if (!(distribution %in% colnames(x))) {
-    return(x)
+    if (!tsibble::is_tsibble(x)) {
+      return(x)
+    }
+    vitals <- as.list(unlist(vitals))
+    return(restore_vital(x, vitals[unlist(vitals) %in% colnames(x)]))
   }
   final <- as_fable(x, response = !!response, distribution = !!distribution) |>
     suppressWarnings()
