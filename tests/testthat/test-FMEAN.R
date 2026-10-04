@@ -171,3 +171,11 @@ test_that("FMEAN bootstrap works at ages with no finite residuals", {
   fit <- model(d, FMEAN(log(Mortality)))
   expect_no_error(generate(fit, h = 1, times = 3, bootstrap = TRUE))
 })
+
+test_that("forecast() gives a clear error when new_data is not a data frame", {
+  nf <- norway_mortality |> filter(Sex == "Female", Year > 2015, Age < 90)
+  fit <- model(nf, FMEAN(Mortality))
+  nd <- nf |> filter(Year == max(Year)) |> mutate(Year = Year + 1L)
+  expect_error(forecast(fit, new_data = list(a = nd, b = nd)), "requires a data frame\\.$")
+  expect_error(forecast(fit, new_data = 3), "use `h = 3`")
+})

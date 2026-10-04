@@ -154,26 +154,10 @@ unnest_tsbl <- function(.data, tsbl_col, parent_key = NULL, interval = NULL) {
 }
 
 bind_new_data <- function(object, new_data) {
-  if (inherits(new_data, "list")) {
-    scenario_nm <- attr(new_data, "names_to") %||% ".scenario"
-    new_data <- vctrs::vec_rbind(
-      !!!map(
-        new_data,
-        compose(
-          as_tibble,
-          bind_new_data
-        ),
-        object = object
-      ),
-      .names_to = scenario_nm
-    )
-    return(as_mable(
-      new_data,
-      key = !!c(scenario_nm, key_vars(object)),
-      model = !!mable_vars(object)
-    ))
-  }
   if (!is.data.frame(new_data)) {
+    if (!(is.numeric(new_data) && length(new_data) == 1L)) {
+      abort("`new_data` requires a data frame.")
+    }
     abort(sprintf(
       "`new_data` requires a data frame. Perhaps you intended to specify the forecast horizon? If so, use `h = %s`.",
       deparse(new_data)
