@@ -14,3 +14,11 @@ test_that("read_stmf_files", {
   # Read 0 files
   expect_error(read_stmf_files())
 })
+
+test_that("read_stmf finds the file for each country", {
+  local_mocked_bindings(read_stmf_files = function(files) files)
+  expect_match(read_stmf("Norway"), "NORstmfout.csv$")
+  expect_match(read_stmf("NOR"), "NORstmfout.csv$")
+  expect_error(read_stmf("Belarus"), "No STMF data available")
+  expect_error(read_stmf("Narnia"), "Unknown country")
+})

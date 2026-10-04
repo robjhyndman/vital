@@ -30,3 +30,15 @@ test_that("read_ktdb passes triangle to read_ktdb_files", {
   })
   expect_identical(read_ktdb(1, triangle = 2), 2)
 })
+
+test_that("read_ktdb finds the files for each country", {
+  local_mocked_bindings(read_ktdb_files = function(male, female, triangle) {
+    c(male, female)
+  })
+  expect_match(read_ktdb(10), "finland/mfinla.txt$", all = FALSE)
+  expect_match(read_ktdb("Finland"), "finland/mfinla.txt$", all = FALSE)
+  expect_match(read_ktdb(37), "ltu/mltu.txt$", all = FALSE)
+  expect_error(read_ktdb(24), "Unknown country code")
+  expect_error(read_ktdb("Belarus"), "No K-T data available")
+  expect_error(read_ktdb("Narnia"), "Unknown country")
+})

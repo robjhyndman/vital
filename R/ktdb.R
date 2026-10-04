@@ -17,17 +17,18 @@
 #'
 #' @export
 read_ktdb <- function(country, triangle = 1) {
-  # Get country code
+  # Find the country, by K-T number or name
   if (is.numeric(country)) {
-    country <- round(country)
-    if (country < 1 | country > 36) stop("Unknown country code")
-  } else if (country %in% countries$Country) {
-    country <- countries$ktdb_number[countries$Country == country]
+    row <- which(as.numeric(countries$ktdb_number) == round(country))
+    if (length(row) == 0L) stop("Unknown country code")
   } else {
-    stop("Unknown country")
+    row <- which(countries$Country == country)
+    if (length(row) == 0L) stop("Unknown country")
   }
-
-  links <- countries[countries$ktdb_number == country, ]
+  links <- countries[row[1], ]
+  if (is.na(links$ktdb_male)) {
+    stop("No K-T data available for ", links$Country)
+  }
   # read ktdb data
   read_ktdb_files(
     male = paste0(

@@ -20,7 +20,11 @@ read_stmf <- function(country) {
   # Get country code
   if (!(country %in% countries$stmf_code)) {
     if (country %in% countries$Country) {
-      country <- countries$stmf_code[countries$Country == country]
+      name <- country
+      country <- countries$stmf_code[countries$Country == name]
+      if (is.na(country)) {
+        stop("No STMF data available for ", name)
+      }
     } else {
       stop("Unknown country")
     }

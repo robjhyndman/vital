@@ -28,6 +28,8 @@
 - `net_migration()` now works when births are stored as a population variable
 - `net_migration()` now indexes net migrants by age at the end of the year, as in `demography::netmigration()`: births are age 0 (rather than -1), and the open age group combines the two oldest ages at the start of the year. This fixes wrong net migration at the two oldest ages
 - Fixed `read_ktdb()` ignoring the `triangle` argument
+- Fixed `read_ktdb()` failing for most countries, and rejecting Lithuania (code 37); countries without K-T data now give an informative error
+- `read_stmf()` now gives an informative error for countries without STMF data
 - Grouped vital objects now stay `grouped_vital` after `mutate()`, `filter()`, `arrange()`, `rename()`, `relocate()`, `slice()` and `[`
 - Fixed `generate_population()` producing missing populations at the oldest ages from negative simulated mortality rates and undefined survivorship ratios
 - `generate_population()` now returns the index and age variables with the same types as `starting_population`
