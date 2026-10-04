@@ -163,7 +163,19 @@ bind_new_data <- function(object, new_data) {
       deparse(new_data)
     ))
   }
-  if (!identical(key_vars(object), non_age_keys(new_data))) {
+  if (!tsibble::is_tsibble(new_data)) {
+    abort("`new_data` must be a vital object or tsibble.")
+  }
+  # Take the vital variables of a tsibble (e.g. from tsibble::new_data()) from
+  # the data used to train the models
+  if (is.null(age_var(new_data))) {
+    vvar <- mable_vital_vars(object)
+    if (!(vvar$age %in% names(new_data))) {
+      abort(sprintf("`new_data` must contain the age variable `%s`.", vvar$age))
+    }
+    new_data <- restore_vital(new_data, vvar[unlist(vvar) %in% names(new_data)])
+  }
+  if (!setequal(key_vars(object), non_age_keys(new_data))) {
     abort("Provided data contains a different key structure to the models.")
   }
   new_data <- nest_keys(new_data, "new_data")

@@ -17,6 +17,7 @@
 - `FDM(coherent = TRUE)` now validates `coherent_ts_model_fn` rather than `ts_model_fn`
 - Fixed `group_by()` with no variables failing on vital objects
 - `autoplot()` on a mable of GAPC models (APC, CBD, etc.) now gives an error instead of infinite recursion
+- `forecast()`, `generate()` and `interpolate()` now accept `new_data` with keys in a different order from the models, and `new_data` as a tsibble without vital variables (e.g. from `tsibble::new_data()`)
 - `as_vital()` on a vital object now keeps any vital variables not given in the call, also when `index` and `key` are not given
 - `rename()` and `select()` now keep vital variables (age, sex, etc.) that are renamed
 - Fixed `augment()`, `fitted()` and `residuals()` failing when the response is a vital variable such as `Population`

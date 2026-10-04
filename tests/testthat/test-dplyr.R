@@ -196,3 +196,23 @@ test_that("rename keeps mables and fables vital", {
   expect_s3_class(fc3, "grouped_fbl_vtl")
   expect_identical(dplyr::group_vars(fc3), "Sex")
 })
+
+test_that("forecast accepts new_data as a tsibble or with keys in any order", {
+  x <- norway_mortality |>
+    dplyr::filter(Year > 2015, Sex != "Total", Age < 5)
+  fit <- x |> model(fn = FNAIVE(Mortality))
+  nd <- tsibble::new_data(x, 2)
+  expect_identical(NROW(forecast(fit, new_data = nd)), NROW(nd))
+  expect_identical(NROW(generate(fit, new_data = nd, times = 2)), 2L * NROW(nd))
+  nd_noage <- nd |>
+    tibble::as_tibble() |>
+    dplyr::rename(A = Age) |>
+    tsibble::as_tsibble(index = Year, key = c(A, Sex))
+  expect_error(forecast(fit, new_data = nd_noage), "must contain the age variable")
+  x2 <- x |>
+    dplyr::mutate(Region = "A") |>
+    as_vital(index = Year, key = c(Age, Region, Sex), .age = "Age", .sex = "Sex")
+  fit2 <- x2 |> model(fn = FNAIVE(Mortality))
+  nd2 <- tsibble::new_data(x2, 2)
+  expect_identical(NROW(forecast(fit2, new_data = nd2)), NROW(nd2))
+})
