@@ -35,6 +35,7 @@ Imports:
   vctrs
 Suggests:
   demography,
+  feasts,
   future,
   future.apply,
   knitr,

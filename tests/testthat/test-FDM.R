@@ -3,6 +3,8 @@ library(dplyr)
 # Check Functional data models
 
 test_that("Functional data model", {
+  # The default time series model, fable::ARIMA(), needs feasts
+  skip_if_not_installed("feasts")
   hu <- norway_mortality |>
     filter(Year > 2000, Sex != "Total") |>
     model(hu = FDM(log(Mortality)))
