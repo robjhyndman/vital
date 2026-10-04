@@ -369,7 +369,6 @@ smooth_vital <- function(.data, .var, age_spacing, smooth_fn, ...) {
   out <- left_join(out, as_tibble(.data), by = c(index, keys_noage, age))
   cols <- c(colnames(.data), ".smooth", ".smooth_se")
   out[cols] |>
-    as_tsibble(index = index, key = all_of(keys)) |>
     as_vital(
       index = index,
       key = all_of(keys),

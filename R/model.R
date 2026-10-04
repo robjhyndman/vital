@@ -68,15 +68,11 @@ Check that specified model(s) are model definitions.",
     }
     kv <- c(sexvar, kv[kv != sexvar])
   }
-  n_ages <- length(unique(.data[[agevar]]))
-  num_key <- n_keys(.data) / n_ages
-  num_mdl <- length(models)
-  num_est <- num_mdl * num_key
+  .data <- nest_keys(.data, "lst_data")
   progress <- requireNamespace("progressr", quietly = TRUE)
   if (progress) {
-    p <- progressr::progressor(num_est)
+    p <- progressr::progressor(length(models) * NROW(.data))
   }
-  .data <- nest_keys(.data, "lst_data")
   # Product-ratio data (e.g. from make_pr()) contain a geometric_mean series
   product_ratio <- any(vapply(
     .data[kv],

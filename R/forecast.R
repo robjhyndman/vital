@@ -171,51 +171,50 @@ Does your model require extra variables to produce forecasts?",
       ...
     )
   }
-  bt <- map(object$transformation, function(x) {
-    trans <- x %@% "inverse"
-    inv_trans <- `attributes<-`(x, NULL)
-    req_vars <- setdiff(all.vars(body(trans)), names(formals(trans)))
-    if (any(req_vars %in% names(new_data))) {
-      trans <- lapply(
-        vctrs::vec_chop(new_data[req_vars]),
-        function(transform_data) {
-          set_env(
-            trans,
-            new_environment(
-              transform_data,
-              get_env(trans)
-            )
-          )
-        }
-      )
-      attr(trans, "inverse") <- lapply(
-        vctrs::vec_chop(new_data[req_vars]),
-        function(transform_data) {
-          set_env(
-            inv_trans,
-            new_environment(
-              transform_data,
-              get_env(inv_trans)
-            )
-          )
-        }
-      )
-      trans
-    } else {
-      structure(list(trans), inverse = list(inv_trans))
-    }
-  })
   is_transformed <- vapply(
-    bt,
-    function(x) !is_symbol(body(x[[1]])),
+    object$transformation,
+    function(x) !is_symbol(body(x %@% "inverse")),
     logical(1L)
   )
-  if (length(bt) > 1) {
-    if (any(is_transformed)) {
-      abort("Transformations of multivariate forecasts are not yet supported")
-    }
+  if (length(is_transformed) > 1 && any(is_transformed)) {
+    abort("Transformations of multivariate forecasts are not yet supported")
   }
+  # Back-transform forecast distributions (simulations already are)
   if (any(is_transformed) && !simulated) {
+    bt <- map(object$transformation, function(x) {
+      trans <- x %@% "inverse"
+      inv_trans <- `attributes<-`(x, NULL)
+      req_vars <- setdiff(all.vars(body(trans)), names(formals(trans)))
+      if (any(req_vars %in% names(new_data))) {
+        trans <- lapply(
+          vctrs::vec_chop(new_data[req_vars]),
+          function(transform_data) {
+            set_env(
+              trans,
+              new_environment(
+                transform_data,
+                get_env(trans)
+              )
+            )
+          }
+        )
+        attr(trans, "inverse") <- lapply(
+          vctrs::vec_chop(new_data[req_vars]),
+          function(transform_data) {
+            set_env(
+              inv_trans,
+              new_environment(
+                transform_data,
+                get_env(inv_trans)
+              )
+            )
+          }
+        )
+        trans
+      } else {
+        structure(list(trans), inverse = list(inv_trans))
+      }
+    })
     if (identical(unique(dist_types(fc)), "dist_sample")) {
       fc <- distributional::dist_sample(.mapply(
         exec,
