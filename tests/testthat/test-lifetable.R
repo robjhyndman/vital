@@ -128,3 +128,19 @@ test_that("life_table caps qx at 1 when mortality rates are very high", {
   expect_true(all(diff(lt$lx) <= 0))
   expect_false(any(is.infinite(lt$ex)))
 })
+
+test_that("life_table works for short abridged tables", {
+  mk <- function(ages) {
+    vital(
+      tibble::tibble(Year = 2000L, Age = ages, Mortality = 0.01 * seq_along(ages)),
+      index = Year,
+      key = Age,
+      .age = "Age"
+    )
+  }
+  lt3 <- life_table(mk(c(0, 1, 5)))
+  expect_equal(lt3$rx[3], lt3$Tx[3] / lt3$Tx[1])
+  lt4 <- life_table(mk(c(0, 1, 5, 10)))
+  expect_equal(lt4$rx[3], lt4$Lx[3] / (lt4$Lx[1] + lt4$Lx[2]))
+  expect_equal(lt4$rx[4], lt4$Tx[4] / lt4$Tx[3])
+})

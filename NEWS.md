@@ -10,6 +10,7 @@
 - `forecast()` and `generate()` now work when `new_data` does not start immediately after the training data, rather than giving missing values (LC, FDM), errors (GAPC) or the wrong forecast horizon (FNAIVE)
 - Fixed `total_fertility_rate()` ignoring the width of age groups, which made it too small for 5-year age groups
 - Fixed `collapse_ages()` giving wrong results when some years or groups are missing an age
+- Fixed `life_table()` failing for abridged life tables with only three or four age groups
 - `life_table()` now caps probabilities of death `qx` at 1, which previously exceeded 1 at very high mortality rates, giving negative deaths `dx` and infinite life expectancies
 - `life_table()` now uses sex-specific infant separation factors when sex is capitalised (e.g. "Female")
 - `smooth_mortality_law()` now fits to deaths and population when available, as intended

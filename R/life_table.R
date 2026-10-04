@@ -178,13 +178,20 @@ lt <- function(dt, sex, age, mortality, keep = age) {
   ex <- Tx / lx
   # Finally compute rx
   if (abridged) {
-    rx <- c(
-      0,
-      (Lx[1] + Lx[2]) / 5 * lx[1],
-      Lx[3] / (Lx[1] + Lx[2]),
-      Lx[4:(nn - 1)] / Lx[3:(nn - 2)],
-      Tx[nn] / Tx[nn - 1]
-    )
+    # Ages 0 and 1-4 are combined into the age group 0-4
+    L04 <- Lx[1] + Lx[2]
+    if (nn == 3L) {
+      rx <- c(0, L04 / (5 * lx[1]), Tx[3] / Tx[1])
+    } else {
+      i <- seq_len(nn - 4L) + 3L
+      rx <- c(
+        0,
+        L04 / (5 * lx[1]),
+        Lx[3] / L04,
+        Lx[i] / Lx[i - 1L],
+        Tx[nn] / Tx[nn - 1]
+      )
+    }
   } else if (nn > 2) {
     rx <- c(Lx[1] / lx[1], Lx[2:(nn - 1)] / Lx[1:(nn - 2)], Tx[nn] / Tx[nn - 1])
   } else if (nn == 2) {
