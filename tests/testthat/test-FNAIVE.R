@@ -7,7 +7,7 @@ test_that("Functional naive", {
     filter(Year > 2000, Sex != "Total") |>
     model(fnaive = FNAIVE(Mortality))
   fc <- forecast(fnaive)
-  expect_no_error(autoplot(fc))
+  expect_no_error(ggplot2::ggplot_build(autoplot(fc)))
   expect_identical(dim(fnaive), c(2L, 2L))
   expect_identical(
     colnames(glance(fnaive)),

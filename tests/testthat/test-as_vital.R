@@ -47,3 +47,17 @@ test_that("the print header counts series correctly", {
   y <- read_stmf_files("AUSstmfout.csv")
   expect_identical(unname(tibble::tbl_sum(y)["Key"]), "Sex, Age_group [18]")
 })
+
+test_that("vital() creates a vital object", {
+  v <- vital(
+    Year = rep(2000:2001, each = 3),
+    Age = rep(0:2, 2),
+    mx = 1:6 / 100,
+    index = Year,
+    key = Age,
+    .age = "Age"
+  )
+  expect_s3_class(v, "vital")
+  expect_identical(vital_vars(v), c(age = "Age"))
+  expect_identical(tsibble::key_vars(v), "Age")
+})

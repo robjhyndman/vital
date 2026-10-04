@@ -180,3 +180,13 @@ test_that("tidy() returns GAPC coefficients in long form", {
   expect_identical(sort(unique(td$term)), c("ax", "b0x", "b1x", "gc", "kt"))
   expect_equal(td$estimate[td$term == "gc"], cohort_components(mod |> select(apc))$gc)
 })
+
+test_that("APC and CBD models fit and forecast", {
+  x <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 1990, Age >= 55, Age < 90)
+  fit <- x |> model(apc = APC(Mortality), cbd = CBD(Mortality))
+  expect_s3_class(fit, "mdl_vtl_df")
+  fc <- forecast(fit, h = 2, simulate = TRUE, times = 20)
+  expect_identical(NROW(fc), 2L * 2L * 35L)
+  expect_true(all(fc$.mean > 0))
+})

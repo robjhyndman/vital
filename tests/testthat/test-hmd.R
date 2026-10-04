@@ -1,8 +1,12 @@
 # Check reading in HMD files
 
-test_that("read_hmd_files", {
-  # Incorrect username/password
+test_that("read_hmd fails with an incorrect username and password", {
+  skip_on_cran()
+  skip_if_offline()
   expect_error(read_hmd("AUS", "fred@gmail.com", "password"))
+})
+
+test_that("read_hmd_files", {
   # Read all files
   z <- read_hmd_files(c(
     "Deaths_1x1.txt",

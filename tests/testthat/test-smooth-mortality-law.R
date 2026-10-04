@@ -3,7 +3,7 @@ test_that("smooth_mortality_law", {
     dplyr::filter(Year <= 1910, Sex == "Male") |>
     smooth_mortality_law(Mortality)
   expect_identical(dim(sm), c(1221L, 9L))
-  expect_no_error(autoplot(sm, .smooth) + ggplot2::scale_y_log10())
+  expect_no_error(ggplot2::ggplot_build(autoplot(sm, .smooth) + ggplot2::scale_y_log10()))
 })
 
 test_that("smooth_mortality_law uses deaths and population when available", {

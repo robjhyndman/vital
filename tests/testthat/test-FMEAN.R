@@ -7,7 +7,7 @@ test_that("Functional mean", {
     filter(Year > 2000, Sex != "Total") |>
     model(fm = FMEAN(Mortality))
   fc <- forecast(fm)
-  expect_no_error(autoplot(fc))
+  expect_no_error(ggplot2::ggplot_build(autoplot(fc)))
   expect_identical(dim(fm), c(2L, 2L))
   expect_identical(dim(tidy(fm)), c(222L, 8L))
   # Standard errors use the number of years for each age

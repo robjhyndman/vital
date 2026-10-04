@@ -9,10 +9,10 @@ test_that("smoothing functions", {
     dplyr::filter(Year <= 1903, Sex == "Male") |>
     smooth_mortality(Mortality)
   expect_identical(dim(sm), c(444L, 9L))
-  expect_no_error(autoplot(sm, .smooth) + ggplot2::scale_y_log10())
+  expect_no_error(ggplot2::ggplot_build(autoplot(sm, .smooth) + ggplot2::scale_y_log10()))
   sm <- norway_fertility |>
     smooth_spline(Fertility, k = -1)
-  expect_no_error(autoplot(sm, .smooth))
+  expect_no_error(ggplot2::ggplot_build(autoplot(sm, .smooth)))
   sm <- norway_fertility |>
     smooth_loess(Fertility, span = 0.3)
   expect_identical(NROW(sm), 2464L)
