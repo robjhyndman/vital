@@ -40,3 +40,12 @@ test_that("smoothing keeps integer ages when possible", {
   expect_type(smooth_loess(nf, Mortality)$Age, "integer")
   expect_type(smooth_loess(nf, Mortality, age_spacing = 0.5)$Age, "double")
 })
+
+test_that("autoplot of several variables plots each separately", {
+  x <- norway_mortality |>
+    dplyr::filter(Year > 2015, Sex != "Total")
+  built <- ggplot2::ggplot_build(autoplot(x, ggplot2::vars(Deaths, Population)))
+  expect_identical(NROW(built$layout$layout), 4L)
+  d <- built$data[[1]]
+  expect_identical(unique(as.vector(table(paste(d$PANEL, d$group)))), 111L)
+})

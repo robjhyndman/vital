@@ -67,11 +67,20 @@ autoplot.vital <- function(object, .vars = NULL, age = NULL, ...) {
     y <- quo_vars
   }
 
+  # With several variables, each is plotted in its own row of panels
+  multiple <- ".response" %in% names(object)
   nyears <- length(unique(object[[index]]))
   aes_spec <- list(x = rlang::sym(age), y = y)
   if (nyears > 1) {
     aes_spec$color <- rlang::sym(index)
     aes_spec$group <- rlang::sym(index)
+  }
+  if (multiple) {
+    aes_spec$group <- if (nyears > 1) {
+      rlang::expr(interaction(!!rlang::sym(index), .response))
+    } else {
+      rlang::sym(".response")
+    }
   }
   p <- object |>
     as_tsibble() |>
@@ -79,7 +88,15 @@ autoplot.vital <- function(object, .vars = NULL, age = NULL, ...) {
     ggplot2::geom_line() +
     ggplot2::xlab(age) +
     ggplot2::scale_color_gradientn(colours = rainbow(10))
-  if (nk > 0) {
+  if (multiple) {
+    p <- p +
+      ggplot2::facet_grid(
+        rows = ggplot2::vars(.response),
+        cols = ggplot2::vars(!!!rlang::syms(kv)),
+        scales = "free_y"
+      ) +
+      ggplot2::ylab(NULL)
+  } else if (nk > 0) {
     p <- p + ggplot2::facet_wrap(kv)
   }
   return(p)
