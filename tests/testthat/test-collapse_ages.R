@@ -52,14 +52,13 @@ test_that("collapse_ages keeps the open interval at the top age", {
 test_that("collapse_ages sums counts that change linearly with age", {
   nor <- norway_mortality |>
     dplyr::filter(Sex == "Female", Year == 2000) |>
-    dplyr::mutate(Count = 200 - Age, Constant = 7)
+    dplyr::mutate(Count = 200 - Age)
   out <- collapse_ages(nor, max_age = 85)
   expect_identical(max(out$Age), 85L)
   expect_equal(
     out$Count[out$Age == 85],
     sum(nor$Count[nor$Age >= 85])
   )
-  expect_equal(unique(out$Constant), 7)
 })
 
 test_that("collapse_ages() checks max_age and labels open groups once", {
@@ -80,4 +79,15 @@ test_that("collapse_ages() checks max_age and labels open groups once", {
     unique(collapse_ages(labelled, max_age = 100)$AG),
     c(as.character(0:99), "100+")
   )
+})
+
+test_that("collapse_ages() sums count columns even when they are constant over age", {
+  x <- norway_mortality |>
+    filter(Sex == "Female", Year == 2010) |>
+    mutate(Deaths = 1, Extra = 2)
+  out <- collapse_ages(x, max_age = 100)
+  n_upper <- sum(x$Age >= 100)
+  expect_equal(out$Deaths[out$Age == 100], n_upper)
+  expect_equal(out$Extra[out$Age == 100], 2 * n_upper)
+  expect_equal(out$Mortality[out$Age == 100], n_upper / sum(x$Population[x$Age >= 100]))
 })

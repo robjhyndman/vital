@@ -43,9 +43,6 @@ collapse_ages <- function(.data, max_age = 100) {
   sex <- attr_data$sex
   rates <- find_measures(.data, c("mx", "mortality", "fx", "fertility", "rate"))
 
-  # Store values for max age in case they are needed
-  max_age_values <- .data[.data[[age]] == max_age, ]
-
   # Compute death and birth counts if they are missing
   for (i in rates) {
     if (!is.null(pop)) {
@@ -71,7 +68,8 @@ collapse_ages <- function(.data, max_age = 100) {
           x,
           ages,
           max_age,
-          dplyr::cur_column() %in% setdiff(keys, keys_noage)
+          # Rates are recomputed below
+          dplyr::cur_column() %in% c(setdiff(keys, keys_noage), rates)
         )
       }
     )) |>
@@ -91,18 +89,8 @@ collapse_ages <- function(.data, max_age = 100) {
       collapsed[[i]][upper_ages] <- collapsed[[counts]][upper_ages] /
         collapsed[[pop]][upper_ages]
     } else {
+      # Rates were truncated, so keep the value at max_age
       warning("Cannot recompute rates for ", i, ". Using upper age value.")
-      tmp <- max_age_values |>
-        select(all_of(c(index, keys_noage, age, i)))
-      colnames(tmp)[colnames(tmp) == i] <- ".new_rate"
-      collapsed <- collapsed |>
-        left_join(tmp, by = c(index, keys_noage, age))
-      collapsed[[i]] <- if_else(
-        upper_ages,
-        collapsed[[".new_rate"]],
-        collapsed[[i]]
-      )
-      collapsed[[".new_rate"]] <- NULL
     }
   }
 
@@ -118,10 +106,10 @@ collapse_ages <- function(.data, max_age = 100) {
   )[, colnames])
 }
 
-collapse_age_vector <- function(x, ages, max_age, is_age = FALSE) {
+collapse_age_vector <- function(x, ages, max_age, truncate = FALSE) {
   if (is.numeric(x)) {
-    # Truncate age variables and constant variables, and sum others
-    if (is_age || is.constant(x)) {
+    # Truncate age and rate variables, and sum others
+    if (truncate) {
       out <- x[ages <= max_age]
     } else {
       # Sum upper group
@@ -141,10 +129,4 @@ collapse_age_vector <- function(x, ages, max_age, is_age = FALSE) {
     out <- x[ages <= max_age]
   }
   return(out)
-}
-
-is.constant <- function(x) {
-  x <- as.numeric(x)
-  y <- rep(x[1], length(x))
-  return(isTRUE(all.equal(x, y)))
 }

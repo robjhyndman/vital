@@ -49,7 +49,7 @@
 - `LC()` no longer adjusts to deaths by default when fitted to product-ratios from `make_pr()`
 - `life_expectancy()` now returns only the index, keys and `ex`, without the `rx`, `nx` and `ax` columns of the life table
 - `generate_population()` now gives an error unless the starting population has consecutive single-year ages
-- `collapse_ages()` now sums all numeric variables other than age keys and constants, rather than truncating any variable that changes linearly with age
+- `collapse_ages()` now sums all numeric variables other than age and rates, rather than truncating any variable that changes linearly with age or is constant over age
 - `interpolate()` now works for `FNAIVE()`, `LC()` and `FDM()` models, as well as `FMEAN()`
 - Errors reported by `model()` now include their underlying cause
 - Fixed coherent `FDM()` models failing when estimated in parallel with `future`
