@@ -27,7 +27,9 @@ life_table(.data, mortality)
 ## Value
 
 A vital object containing the index, keys, and the new life table
-variables `mx`, `qx`, `lx`, `dx`, `Lx`, `Tx` and `ex`.
+variables `mx`, `qx`, `lx`, `dx`, `Lx`, `Tx`, `ex`, `rx` (survivorship
+ratios), `nx` (widths of the age groups) and `ax` (average years lived
+in each age group by those dying in it).
 
 ## References
 

@@ -90,7 +90,7 @@ report(hu)
 #> Basis functions
 #> # A tibble: 111 × 8
 #>     Age  mean    phi1    phi2  phi3     phi4     phi5    phi6
-#>   <dbl> <dbl>   <dbl>   <dbl> <dbl>    <dbl>    <dbl>   <dbl>
+#>   <int> <dbl>   <dbl>   <dbl> <dbl>    <dbl>    <dbl>   <dbl>
 #> 1     0 -6.27 -0.0470  0.153  0.107  0.220    0.00196 -0.299 
 #> 2     1 -8.51  0.167   0.107  0.295  0.00735 -0.410   -0.269 
 #> 3     2 -9.00  0.170   0.0341 0.295 -0.00474 -0.314   -0.195 

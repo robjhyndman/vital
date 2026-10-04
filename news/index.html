@@ -139,6 +139,31 @@
 <li>Fixed <code><a href="../reference/FDM.html">FDM()</a></code> misaligning years with missing values at the oldest (or youngest) ages, such as zero rates on the log scale. Such years are now extrapolated linearly from their last observed ages</li>
 <li>
 <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> now plots the age, period and cohort components of GAPC models (<code><a href="../reference/GAPC.html">GAPC()</a></code>, <code><a href="../reference/GAPC.html">LC2()</a></code>, <code><a href="../reference/GAPC.html">CBD()</a></code>, <code><a href="../reference/GAPC.html">APC()</a></code>, <code><a href="../reference/GAPC.html">RH()</a></code>, <code><a href="../reference/GAPC.html">M7()</a></code> and <code><a href="../reference/GAPC.html">PLAT()</a></code>)</li>
+<li>Fixed model formulas using <code><a href="https://dplyr.tidyverse.org/reference/vars.html" class="external-link">vars()</a></code>, and the error message for transformations that cannot be inverted, which failed with “could not find function”</li>
+<li>Joins such as <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join()</a></code> on vital objects and vital fables no longer drop the vital variables (age, sex, etc.), and <code><a href="../reference/read_hmd.html">read_hmd()</a></code> keeps them when combining age-specific and other data</li>
+<li>Fixed <code><a href="../reference/life_table.html">life_table()</a></code>, <code><a href="../reference/life_expectancy.html">life_expectancy()</a></code> and <code><a href="https://generics.r-lib.org/reference/interpolate.html" class="external-link">interpolate()</a></code> for data with age group keys as well as age (e.g. <code>AgeGroup</code> in vitals from <code>demogdata</code> objects), and <code><a href="../reference/total_fertility_rate.html">total_fertility_rate()</a></code> for data with keys other than age. Forecasts now keep age group keys</li>
+<li>Fixed <code><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast()</a></code> with <code>new_data</code>, which failed for all models</li>
+<li>
+<code><a href="../reference/FMEAN.html">FMEAN()</a></code> and <code><a href="../reference/FNAIVE.html">FNAIVE()</a></code> now treat infinite values, such as logs of zero rates, as missing, rather than giving infinite means and standard deviations</li>
+<li>Fixed <code><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast()</a></code> for GAPC models (<code><a href="../reference/GAPC.html">LC2()</a></code>, <code><a href="../reference/GAPC.html">CBD()</a></code>, etc.) failing when <code>h = 1</code>
+</li>
+<li>
+<code><a href="../reference/LC.html">LC()</a></code> deviances reported by <code><a href="https://generics.r-lib.org/reference/glance.html" class="external-link">glance()</a></code> are no longer <code>NaN</code> when some ages have zero population</li>
+<li>
+<code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> for <code><a href="../reference/FDM.html">FDM()</a></code> models no longer fails when <code>show_order</code> is larger than the number of fitted components (e.g. <code>order = 1</code>)</li>
+<li>
+<code><a href="../reference/collapse_ages.html">collapse_ages()</a></code> now gives an informative error when <code>max_age</code> is not one of the ages, and no longer adds a second <code>+</code> to age group labels that already end in <code>+</code>
+</li>
+<li>Subsetting a mable of vital models with <code>[</code> no longer labels the result as a mable when it contains no models</li>
+<li>
+<code>LC(jump_choice = "actual")</code> now uses fitted rates, with a warning, as the jump-off for ages whose rate is zero or missing in the final year, rather than giving missing forecasts</li>
+<li>Clearer error messages from <code><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model()</a></code> when there is no age variable, <code><a href="../reference/FDM.html">FDM()</a></code> when <code>order</code> is too large for the number of years, and <code><a href="../reference/total_fertility_rate.html">total_fertility_rate()</a></code> when no fertility variable is found</li>
+<li>Plots of <code><a href="../reference/FMEAN.html">FMEAN()</a></code> and <code><a href="../reference/FNAIVE.html">FNAIVE()</a></code> models now title the legend with the key name rather than an <code><a href="https://rdrr.io/r/base/interaction.html" class="external-link">interaction()</a></code> call</li>
+<li>
+<code><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast()</a></code> and <code><a href="https://generics.r-lib.org/reference/generate.html" class="external-link">generate()</a></code> now keep the type of the time index (e.g. integer years)</li>
+<li>The smoothing functions now keep integer ages when the smoothed ages are whole numbers</li>
+<li>
+<code><a href="../reference/FMEAN.html">FMEAN()</a></code> and <code><a href="../reference/FNAIVE.html">FNAIVE()</a></code> now interpolate standard deviations from neighbouring ages where they cannot be estimated, rather than simulating missing values. Bootstrap simulations from <code><a href="../reference/FMEAN.html">FMEAN()</a></code> no longer fail at ages with no finite residuals</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.0.3" id="vital-203">vital 2.0.3<a class="anchor" aria-label="anchor" href="#vital-203"></a></h2><p class="text-muted">CRAN release: 2026-02-13</p>

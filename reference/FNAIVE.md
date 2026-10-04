@@ -1,7 +1,9 @@
 # Functional naive model
 
 `FNAIVE()` returns an random walk functional model applied to the
-formula's response variable as a function of age.
+formula's response variable as a function of age. Standard deviations
+that cannot be estimated, such as at ages with fewer than two finite
+residuals, are interpolated from neighbouring ages.
 
 ## Usage
 

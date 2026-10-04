@@ -97,7 +97,7 @@ norway_mortality |>
 #> # A vital: 2,553 x 9 [1Y]
 #> # Key:     Age x Sex [111 x 1]
 #>     Year   Age OpenInterval Sex   Population Deaths Mortality .smooth .smooth_se
-#>    <int> <dbl> <lgl>        <chr>      <dbl>  <dbl>     <dbl>   <dbl>      <dbl>
+#>    <int> <int> <lgl>        <chr>      <dbl>  <dbl>     <dbl>   <dbl>      <dbl>
 #>  1  2001     0 FALSE        Fema…      28805     97  0.00343  3.42e-3  0.000311 
 #>  2  2001     1 FALSE        Fema…      29090      8  0.000274 2.71e-4  0.0000717
 #>  3  2001     2 FALSE        Fema…      28891      2  0.000069 1.64e-4  0.0000393
@@ -115,7 +115,7 @@ norway_fertility |>
 #> # A vital: 968 x 6 [1Y]
 #> # Key:     Age [44 x 1]
 #>     Year   Age Fertility OpenInterval    .smooth .smooth_se
-#>    <int> <dbl>     <dbl> <lgl>             <dbl>      <dbl>
+#>    <int> <int>     <dbl> <lgl>             <dbl>      <dbl>
 #>  1  2001    12   0       TRUE         0.00000601  0.0000299
 #>  2  2001    13   0.00004 FALSE        0.0000262   0.000119 
 #>  3  2001    14   0.00019 FALSE        0.000114    0.000469 

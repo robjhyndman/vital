@@ -64,7 +64,7 @@ norway_mortality |>
 #> # A vital: 1,998 x 6 [1Y]
 #> # Key:     Age x (Sex, .model, .rep) [111 x 9]
 #>     Year   Age Sex    .model .rep   .sim
-#>    <dbl> <int> <chr>  <chr>  <chr> <dbl>
+#>    <int> <int> <chr>  <chr>  <chr> <dbl>
 #>  1  2024     0 Female lc     1        NA
 #>  2  2024     1 Female lc     1        NA
 #>  3  2024     2 Female lc     1        NA

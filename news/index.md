@@ -193,6 +193,79 @@
   [`RH()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
   [`M7()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md) and
   [`PLAT()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md))
+- Fixed model formulas using
+  [`vars()`](https://dplyr.tidyverse.org/reference/vars.html), and the
+  error message for transformations that cannot be inverted, which
+  failed with “could not find function”
+- Joins such as
+  [`left_join()`](https://dplyr.tidyverse.org/reference/mutate-joins.html)
+  on vital objects and vital fables no longer drop the vital variables
+  (age, sex, etc.), and
+  [`read_hmd()`](https://pkg.robjhyndman.com/vital/reference/read_hmd.md)
+  keeps them when combining age-specific and other data
+- Fixed
+  [`life_table()`](https://pkg.robjhyndman.com/vital/reference/life_table.md),
+  [`life_expectancy()`](https://pkg.robjhyndman.com/vital/reference/life_expectancy.md)
+  and
+  [`interpolate()`](https://generics.r-lib.org/reference/interpolate.html)
+  for data with age group keys as well as age (e.g. `AgeGroup` in vitals
+  from `demogdata` objects), and
+  [`total_fertility_rate()`](https://pkg.robjhyndman.com/vital/reference/total_fertility_rate.md)
+  for data with keys other than age. Forecasts now keep age group keys
+- Fixed
+  [`forecast()`](https://generics.r-lib.org/reference/forecast.html)
+  with `new_data`, which failed for all models
+- [`FMEAN()`](https://pkg.robjhyndman.com/vital/reference/FMEAN.md) and
+  [`FNAIVE()`](https://pkg.robjhyndman.com/vital/reference/FNAIVE.md)
+  now treat infinite values, such as logs of zero rates, as missing,
+  rather than giving infinite means and standard deviations
+- Fixed
+  [`forecast()`](https://generics.r-lib.org/reference/forecast.html) for
+  GAPC models
+  ([`LC2()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+  [`CBD()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md), etc.)
+  failing when `h = 1`
+- [`LC()`](https://pkg.robjhyndman.com/vital/reference/LC.md) deviances
+  reported by
+  [`glance()`](https://generics.r-lib.org/reference/glance.html) are no
+  longer `NaN` when some ages have zero population
+- [`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
+  for [`FDM()`](https://pkg.robjhyndman.com/vital/reference/FDM.md)
+  models no longer fails when `show_order` is larger than the number of
+  fitted components (e.g. `order = 1`)
+- [`collapse_ages()`](https://pkg.robjhyndman.com/vital/reference/collapse_ages.md)
+  now gives an informative error when `max_age` is not one of the ages,
+  and no longer adds a second `+` to age group labels that already end
+  in `+`
+- Subsetting a mable of vital models with `[` no longer labels the
+  result as a mable when it contains no models
+- `LC(jump_choice = "actual")` now uses fitted rates, with a warning, as
+  the jump-off for ages whose rate is zero or missing in the final year,
+  rather than giving missing forecasts
+- Clearer error messages from
+  [`model()`](https://fabletools.tidyverts.org/reference/model.html)
+  when there is no age variable,
+  [`FDM()`](https://pkg.robjhyndman.com/vital/reference/FDM.md) when
+  `order` is too large for the number of years, and
+  [`total_fertility_rate()`](https://pkg.robjhyndman.com/vital/reference/total_fertility_rate.md)
+  when no fertility variable is found
+- Plots of
+  [`FMEAN()`](https://pkg.robjhyndman.com/vital/reference/FMEAN.md) and
+  [`FNAIVE()`](https://pkg.robjhyndman.com/vital/reference/FNAIVE.md)
+  models now title the legend with the key name rather than an
+  [`interaction()`](https://rdrr.io/r/base/interaction.html) call
+- [`forecast()`](https://generics.r-lib.org/reference/forecast.html) and
+  [`generate()`](https://generics.r-lib.org/reference/generate.html) now
+  keep the type of the time index (e.g. integer years)
+- The smoothing functions now keep integer ages when the smoothed ages
+  are whole numbers
+- [`FMEAN()`](https://pkg.robjhyndman.com/vital/reference/FMEAN.md) and
+  [`FNAIVE()`](https://pkg.robjhyndman.com/vital/reference/FNAIVE.md)
+  now interpolate standard deviations from neighbouring ages where they
+  cannot be estimated, rather than simulating missing values. Bootstrap
+  simulations from
+  [`FMEAN()`](https://pkg.robjhyndman.com/vital/reference/FMEAN.md) no
+  longer fail at ages with no finite residuals
 
 ## vital 2.0.3
 

@@ -151,7 +151,7 @@ norway_mortality |>
 #> # A vital fable: 1,110 x 6 [1Y]
 #> # Key:           Age x (Sex, .model) [111 x 1]
 #>    Sex    .model  Year   Age
-#>    <chr>  <chr>  <dbl> <int>
+#>    <chr>  <chr>  <int> <int>
 #>  1 Female naive   2024     0
 #>  2 Female naive   2025     0
 #>  3 Female naive   2026     0

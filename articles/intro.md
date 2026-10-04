@@ -301,7 +301,7 @@ lc |>
 #> # A vital fable: 4,040 x 6 [1Y]
 #> # Key:           Age x (Sex, .model) [101 x 2]
 #>    Sex    .model      Year   Age          Mortality    .mean
-#>    <chr>  <chr>      <dbl> <int>             <dist>    <dbl>
+#>    <chr>  <chr>      <int> <int>             <dist>    <dbl>
 #>  1 Female lee_carter  2024     0 t(N(-6.8, 0.0087)) 0.00113 
 #>  2 Female lee_carter  2025     0  t(N(-6.8, 0.017)) 0.00110 
 #>  3 Female lee_carter  2026     0  t(N(-6.9, 0.026)) 0.00106 
@@ -364,7 +364,7 @@ The components can be extracted.
 age_components(fdm)
 #> # A tibble: 202 × 9
 #>    Sex      Age  mean  phi1     phi2     phi3    phi4     phi5    phi6
-#>    <chr>  <dbl> <dbl> <dbl>    <dbl>    <dbl>   <dbl>    <dbl>   <dbl>
+#>    <chr>  <int> <dbl> <dbl>    <dbl>    <dbl>   <dbl>    <dbl>   <dbl>
 #>  1 Female     0 -4.34 0.133  0.257    0.0933  -0.0790 -0.0626   0.0496
 #>  2 Female     1 -6.13 0.185  0.232   -0.00843 -0.243  -0.145    0.392 
 #>  3 Female     2 -6.82 0.167  0.192   -0.0932  -0.239   0.00395  0.0676
@@ -415,7 +415,7 @@ fc_coherent
 #> # A vital fable: 4,040 x 6 [1Y]
 #> # Key:           Age x (Sex, .model) [101 x 2]
 #>     Year   Age Sex    .model      .smooth     .mean
-#>    <dbl> <dbl> <chr>  <chr>        <dist>     <dbl>
+#>    <int> <int> <chr>  <chr>        <dist>     <dbl>
 #>  1  2024     0 Female hby    sample[2000] 0.00202  
 #>  2  2024     1 Female hby    sample[2000] 0.000274 
 #>  3  2024     2 Female hby    sample[2000] 0.000163 

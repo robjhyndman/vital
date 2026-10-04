@@ -43,7 +43,9 @@ LC(
   Possibilities: `"actual"` (use actual rates from final year) and
   `"fit"` (use fitted rates). The original Lee-Carter method used
   `"fit"` (the default), but Lee and Miller (2001) and most other
-  authors prefer `"actual"`.
+  authors prefer `"actual"`. With `"actual"`, fitted rates are used
+  (with a warning) for ages whose rate is zero or missing in the final
+  year.
 
 - scale:
 
