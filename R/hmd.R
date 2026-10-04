@@ -202,7 +202,8 @@ hmd_to_vital <- function(object) {
           .sex = sex,
           .deaths = deaths,
           .population = population,
-          .births = births
+          .births = births,
+          reorder = TRUE
         )
     )
   } else if (!is.null(data1)) {

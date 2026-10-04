@@ -34,3 +34,10 @@ test_that("read_hmd_files", {
   # Read 0 files
   expect_error(read_hmd_files())
 })
+
+test_that("read_hmd_files orders combined age and non-age data by year", {
+  z <- read_hmd_files(c("Deaths_1x1.txt", "Births.txt")) |>
+    expect_warning("Duplicating non-age-specific data")
+  expect_false(is.unsorted(z$Year))
+  expect_true(all(c("Deaths", "Births") %in% colnames(z)))
+})
