@@ -67,8 +67,8 @@ generate_population <- function(
   vvars <- vital_var_list(starting_population)
   # Populations are advanced one year of age per year
   ages <- sort(unique(starting_population[[vvars$age]]))
-  if (any(diff(ages) != 1)) {
-    stop("starting_population must have consecutive single-year ages")
+  if (length(ages) < 3 || any(diff(ages) != 1)) {
+    stop("starting_population must have at least three consecutive single-year ages")
   }
   sexes <- unique(starting_population[[vvars$sex]])
   if (length(sexes) != 2) {
@@ -225,22 +225,18 @@ generate_population <- function(
     n <- NROW(future[[y]])
     # Add half migrants to current population
     future[[y]]$Rx <- pmax(0, future[[y]]$Prev_Pop + 0.5 * future[[y]]$Nx)
-    # Survivorship ratios
-    nsr <- future[[y]] |>
-      as_tsibble(
-        index = indexvar,
-        key = all_of(c(vvars$age, vvars$sex, ".rep"))
-      ) |>
-      as_vital(.sex = vvars$sex, .age = vvars$age, .population = "Rx") |>
-      life_table()
-    nsr$nsr <- 1 - nsr$rx
+    # Survivorship ratios from the life table of each sex and replicate
+    rx <- single_year_rx(
+      future[[y]]$mx,
+      future[[y]][[vvars$age]],
+      paste(future[[y]][[vvars$sex]], future[[y]]$.rep),
+      future[[y]][[vvars$sex]]
+    )
+    nsr <- 1 - rx
     # No survivors where the life table has run out of lives
-    nsr$nsr[!is.finite(nsr$nsr)] <- 1
-    nsr$nsr <- pmin(pmax(nsr$nsr, 0), 1)
-    nsr <- nsr[, c(indexvar, vvars$age, vvars$sex, ".rep", "nsr")]
+    nsr[!is.finite(nsr)] <- 1
+    future[[y]]$nsr <- pmin(pmax(nsr, 0), 1)
     # Deaths
-    future[[y]] <- future[[y]] |>
-      left_join(nsr, by = c(indexvar, vvars$age, vvars$sex, ".rep"))
     future[[y]]$cohD <- pmax(0, future[[y]]$nsr * future[[y]]$Rx)
     future[[y]]$Rx2 <- pmax(
       0,
@@ -370,4 +366,49 @@ generate_population <- function(
       .age = vvars$age,
       .population = vvars$population
     )
+}
+
+# Survivorship ratios rx of single-year life tables, as computed by lt(), for
+# all groups at once. Returns one value for each element of mx, where age gives
+# the (consecutive) single-year ages, group identifies each life table, and sex
+# gives the sex of each element.
+single_year_rx <- function(mx, age, group, sex) {
+  ages <- sort(unique(age))
+  groups <- unique(group)
+  nn <- length(ages)
+  pos <- cbind(match(group, groups), match(age, ages))
+  m <- matrix(NA_real_, length(groups), nn)
+  m[pos] <- mx
+  m[is.na(m)] <- 0.5
+  sex <- tolower(sex[match(groups, group)])
+  # Average years lived in each age by those dying
+  ax <- matrix(0.5, length(groups), nn)
+  if (ages[1] == 0) {
+    ax[, 1] <- dplyr::case_when(
+      sex == "female" ~ 0.35 + (m[, 1] < 0.107) * (-0.297 + 2.8 * m[, 1]),
+      sex == "male" ~ 0.33 + (m[, 1] < 0.107) * (-0.285 + 2.684 * m[, 1]),
+      TRUE ~ 0.34 + (m[, 1] < 0.107) * (-0.291 + 2.742 * m[, 1])
+    )
+  }
+  qx <- m / (1 + (1 - ax) * m)
+  lx <- matrix(1, length(groups), nn)
+  for (j in seq_len(nn - 1)) {
+    lx[, j + 1] <- lx[, j] * (1 - qx[, j])
+  }
+  lx[lx < 0] <- 0
+  dx <- lx - cbind(lx[, -1, drop = FALSE], 0)
+  Lx <- lx - dx * (1 - ax)
+  Lx[, nn] <- ifelse(m[, nn] == 0, 0, lx[, nn] / m[, nn])
+  Lx[is.na(Lx)] <- 0
+  Tx <- Lx[, nn:1, drop = FALSE]
+  for (j in seq_len(nn - 1)) {
+    Tx[, j + 1] <- Tx[, j + 1] + Tx[, j]
+  }
+  Tx <- Tx[, nn:1, drop = FALSE]
+  rx <- cbind(
+    Lx[, 1] / lx[, 1],
+    Lx[, 2:(nn - 1), drop = FALSE] / Lx[, 1:(nn - 2), drop = FALSE],
+    Tx[, nn] / Tx[, nn - 1]
+  )
+  rx[pos]
 }

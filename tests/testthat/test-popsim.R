@@ -154,3 +154,19 @@ test_that("generate_population requires single-year ages", {
     "consecutive single-year ages"
   )
 })
+
+test_that("single_year_rx() matches the survivorship ratios of life_table()", {
+  x <- norway_mortality |>
+    dplyr::filter(Year %in% c(1950, 2020), Age < 100)
+  x$Mortality[c(5, 400)] <- NA
+  x$Mortality[x$Age == 99 & x$Year == 1950] <- 0
+  lt <- life_table(x)
+  rx <- vital:::single_year_rx(
+    x$Mortality,
+    x$Age,
+    paste(x$Year, x$Sex),
+    x$Sex
+  )
+  key <- function(d) paste(d$Year, d$Sex, d$Age)
+  expect_equal(rx, lt$rx[match(key(x), key(lt))])
+})
