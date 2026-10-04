@@ -31,7 +31,7 @@ make_pr <- function(.data, .var, key = Sex) {
     enquo(.var),
     enquo(key),
     centre = function(x) exp(mean(log(pmax(x, 1e-5)))),
-    deviation = `/`,
+    deviation = function(x, centre) pmax(x, 1e-5) / centre,
     label = "geometric_mean"
   )
 }

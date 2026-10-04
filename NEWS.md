@@ -78,6 +78,7 @@
 - Fixed `forecast()` and `generate()` for `FNAIVE()` models failing for data with age group keys (e.g. `AgeGroup` in vitals from `demogdata` objects)
 - `forecast()`, `generate()` and `interpolate()` now give a clear error when `new_data` is a list, rather than failing in an unsupported attempt to combine scenarios
 - `generate_population()` is faster, computing survivorship ratios for all replicates at once rather than a life table for each
+- `make_pr()` now sets zero values to 10^-5 before computing ratios, as documented, so ratios are no longer zero (and infinite on the log scale)
 
 # vital 2.0.3
 

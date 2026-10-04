@@ -3,8 +3,8 @@
 #' Make a new vital from products and ratios of a measured variable by a
 #' key variable. The most common use case of this function is for computing mortality rates by
 #' sex, from the sex ratios and geometric mean of the rates.
-#' @details Note that when a measured variable takes value 0, the geometric mean
-#' is set to 10^-5 to avoid infinite values in the ratio. Therefore, when the
+#' @details Note that when a measured variable takes value 0, [make_pr()] sets
+#' it to 10^-5 to avoid infinite values in the ratio. Therefore, when the
 #' transformation is undone, the results will not be identical to the original
 #' in the case that the original data was 0.
 #'

@@ -5,7 +5,8 @@ test_that("Coherent calculatons", {
   pr <- orig_data |>
     make_pr(Mortality) |>
     undo_pr(Mortality)
-  expect_equal(orig_data, pr)
+  # Zero values are set to 1e-5 by make_pr()
+  expect_equal(dplyr::mutate(orig_data, Mortality = pmax(Mortality, 1e-5)), pr)
   # Mean/difference
   mig <- net_migration(norway_mortality, norway_births) |>
     dplyr::filter(Sex != "Total")
@@ -71,4 +72,16 @@ test_that("coherent flag is set separately for each series", {
     character(1)
   )
   expect_true(all(grepl("^ARIMA", ts_models[fit$Sex == "geometric_mean"])))
+})
+
+test_that("make_pr() sets zero values to 1e-5 so ratios are positive", {
+  orig <- norway_mortality |>
+    dplyr::filter(Year > 2015, Sex != "Total")
+  expect_true(any(orig$Mortality == 0, na.rm = TRUE))
+  pr <- make_pr(orig, Mortality)
+  ratios <- pr$Mortality[pr$Sex != "geometric_mean"]
+  expect_true(all(ratios > 0, na.rm = TRUE))
+  undone <- undo_pr(pr, Mortality)
+  zero <- which(orig$Mortality == 0)
+  expect_equal(undone$Mortality[zero], rep(1e-5, length(zero)))
 })
