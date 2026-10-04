@@ -1,7 +1,9 @@
 #' Compute total fertility rate from age-specific fertility rates
 #'
 #' Total fertility rate is the expected number of babies per woman in a life-time
-#' given the fertility rate at each age of a woman's life.
+#' given the fertility rate at each age of a woman's life. Rates for age groups
+#' wider than one year (e.g., 5-year age groups) are multiplied by the width of
+#' each group, with the oldest group assumed to be as wide as the one before it.
 #'
 #' @param .data A vital object including an age variable and a variable containing fertility rates.
 #' @param fertility Variable in `.data` containing fertility rates. If omitted, the variable with name  `fx`, `Fertility` or `Rate` will be used (not case sensitive).
@@ -18,8 +20,6 @@
 total_fertility_rate <- function(.data, fertility) {
   # Index variable
   index <- tsibble::index_var(.data)
-  # Keys including age
-  keys <- tsibble::key_vars(.data)
   # vital_names
   vital_names <- vital_var_list(.data)
 
@@ -38,13 +38,18 @@ total_fertility_rate <- function(.data, fertility) {
     stop("Fertility variable not found in data")
   }
 
+  ages <- sort(unique(.data[[age]]))
+  width <- if (length(ages) > 1L) diff(ages) else 1
+  width <- c(width, width[length(width)])
+
   # Drop Age as a key and nest results
   keys_noage <- non_age_keys(.data)
   .data <- tidyr::nest(.data, lst_data = -all_of(c(index, keys_noage)))
 
-  # Compute tfr for each sub-tibble
+  # Compute tfr for each sub-tibble, weighting rates by the width of each age
+  # group, with the oldest group as wide as the one before it
   tfr <- map_dbl(.data[["lst_data"]], function(dt) {
-    sum(dt[[fertility]], na.rm = TRUE)
+    sum(dt[[fertility]] * width[match(dt[[age]], ages)], na.rm = TRUE)
   })
   out <- as_tibble(.data)[c(index, keys_noage)]
   out$tfr <- tfr

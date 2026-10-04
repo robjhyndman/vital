@@ -7,6 +7,7 @@
 - Fixed `tidy()` for FMEAN models, which understated standard errors
 - Fixed `life_expectancy()` ignoring the `mortality` argument
 - Fixed `life_expectancy()` failing when the age variable is not called `Age`
+- Fixed `total_fertility_rate()` ignoring the width of age groups, which made it too small for 5-year age groups
 - Fixed `collapse_ages()` giving wrong results when some years or groups are missing an age
 - `life_table()` now caps probabilities of death `qx` at 1, which previously exceeded 1 at very high mortality rates, giving negative deaths `dx` and infinite life expectancies
 - `life_table()` now uses sex-specific infant separation factors when sex is capitalised (e.g. "Female")
