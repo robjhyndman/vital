@@ -310,3 +310,32 @@ test_that("tidy() returns LC coefficients in long form", {
   expect_equal(td$estimate[td$term == "kt"], time_components(fit)$kt)
   expect_equal(td$estimate[td$term == "ax"], age_components(fit)$ax)
 })
+
+test_that("forecasts for new_data with later times only match those for h", {
+  x <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 1990, Age < 90)
+  fit <- x |>
+    model(lc = LC(log(Mortality)), fn = FNAIVE(Mortality))
+  h5 <- forecast(fit, h = 5) |>
+    dplyr::filter(Year == max(Year)) |>
+    dplyr::arrange(.model, Age)
+  nd <- h5 |>
+    tibble::as_tibble() |>
+    dplyr::distinct(Year, Age, Sex) |>
+    as_vital(index = Year, key = c(Age, Sex), .age = "Age", .sex = "Sex")
+  gap <- forecast(fit, new_data = nd) |>
+    dplyr::arrange(.model, Age)
+  expect_equal(gap$.mean, h5$.mean)
+  expect_equal(
+    distributional::variance(gap$Mortality),
+    distributional::variance(h5$Mortality)
+  )
+  set.seed(1)
+  sims <- generate(fit, new_data = nd, times = 2)
+  expect_identical(NROW(sims), 2L * 2L * NROW(nd))
+  expect_false(anyNA(sims$.sim))
+  expect_error(
+    forecast(fit, new_data = x |> dplyr::filter(Year == max(Year))),
+    "after the end of the training data"
+  )
+})

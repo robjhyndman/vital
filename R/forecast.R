@@ -146,8 +146,9 @@ forecast.mdl_vtl_ts <- function(
     )
     fc <- distributional::dist_sample(unname(fc))
   } else {
+    filled <- fill_forecast_times(new_data, object$data)
     object$model$stage <- "forecast"
-    object$model$add_data(new_data)
+    object$model$add_data(filled$data)
     specials <- tryCatch(
       parse_model_rhs(object$model),
       error = function(e) {
@@ -165,11 +166,11 @@ Does your model require extra variables to produce forecasts?",
     object$model$stage <- NULL
     fc <- forecast(
       object$fit,
-      new_data,
+      filled$data,
       specials = specials,
       times = times,
       ...
-    )
+    )[filled$rows]
   }
   is_transformed <- vapply(
     object$transformation,
@@ -278,6 +279,40 @@ make_future_data <- function(.data, h = NULL) {
   out <- tidyr::expand_grid(unique(as_tibble(out)[indexvar]), ages)
   as_tsibble(out, index = indexvar, key = all_of(age_keys)) |>
     as_vital(.age = agevar)
+}
+
+# Forecasts are computed from the end of the training data, so add rows for
+# any times missing between then and the end of new_data, copied from the first
+# time in new_data. Returns the completed data and the positions of the rows of
+# new_data within it.
+fill_forecast_times <- function(new_data, train) {
+  idx <- index_var(new_data)
+  times <- new_data[[idx]]
+  last <- max(train[[index_var(train)]])
+  if (min(times) <= last) {
+    abort("`new_data` must only contain times after the end of the training data.")
+  }
+  missing <- setdiff(seq(last + 1, max(times)), times)
+  if (length(missing) == 0L) {
+    return(list(data = new_data, rows = seq_len(NROW(new_data))))
+  }
+  first <- as_tibble(new_data)[times == min(times), ]
+  extra <- lapply(missing, function(time) {
+    first[[idx]] <- vctrs::vec_cast(time, times)
+    first
+  })
+  keys <- key_vars(new_data)
+  full <- vctrs::vec_rbind(as_tibble(new_data), !!!extra) |>
+    build_tsibble(
+      index = !!idx,
+      key = !!keys,
+      interval = tsibble::interval(train)
+    ) |>
+    restore_vital(vital_var_list(new_data))
+  row_id <- function(x) {
+    do.call(paste, unname(as.list(as_tibble(x)[c(idx, keys)])))
+  }
+  list(data = full, rows = match(row_id(new_data), row_id(full)))
 }
 
 compute_point_forecasts <- function(distribution, measures) {

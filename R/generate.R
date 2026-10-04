@@ -86,6 +86,8 @@ generate.mdl_vtl_ts <- function(
     ) |>
       as_vital(.age = agevar)
   }
+  filled <- fill_forecast_times(new_data, x$data)
+  new_data <- filled$data
   # Compute specials with new_data
   x$model$stage <- "generate"
   x$model$add_data(new_data)
@@ -125,7 +127,7 @@ Does your model require extra variables to produce simulations?",
   })
 
   new_data[[".sim"]] <- bt[[1]](.sim)
-  new_data
+  new_data[filled$rows, ]
 }
 
 globalVariables(".sim")
