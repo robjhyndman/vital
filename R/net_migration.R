@@ -76,9 +76,11 @@ net_migration <- function(deaths, births) {
   pop <- as_tibble(deaths)[c(death_idx, death_keys, popvar)]
   start <- pop
   start[[agevar]] <- pmin(start[[agevar]] + 1L, max(start[[agevar]]))
-  start <- dplyr::bind_rows(start, births) |>
+  start <- dplyr::bind_rows(start, births)
+  names(start)[names(start) == popvar] <- "start"
+  start <- start |>
     dplyr::summarise(
-      start = sum(.data[[popvar]]),
+      start = sum(start),
       .by = all_of(c(death_idx, death_keys))
     )
 
