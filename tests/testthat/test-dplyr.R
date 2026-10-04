@@ -1,3 +1,5 @@
+library(dplyr)
+
 # Small data set for testing purposes
 nor_mortality <- norway_mortality |>
   filter(

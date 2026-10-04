@@ -1,3 +1,5 @@
+library(dplyr)
+
 # Check collapse_ages
 
 test_that("collapse_ages", {

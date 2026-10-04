@@ -1,3 +1,5 @@
+library(dplyr)
+
 # Check FNAIVE models
 
 test_that("Functional naive", {

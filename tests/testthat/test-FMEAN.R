@@ -1,3 +1,5 @@
+library(dplyr)
+
 # Check FMEAN models
 
 test_that("Functional mean", {

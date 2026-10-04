@@ -1,3 +1,5 @@
+library(dplyr)
+
 # Check Functional data models
 
 test_that("Functional data model", {

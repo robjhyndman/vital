@@ -1,3 +1,5 @@
+library(dplyr)
+
 # Check Lee-Carter models
 
 test_that("Lee Carter", {

@@ -1,3 +1,5 @@
+library(dplyr)
+
 # Prepare data
 nor <- norway_mortality |>
   filter(Sex != "Total", Year > 2000) |>
