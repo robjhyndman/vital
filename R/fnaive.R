@@ -132,11 +132,8 @@ generate.FNAIVE <- function(
     },
     numeric(n)
   )
-  # Cumulate innovations over the horizon for each path
-  paths <- matrix(innov, nrow = h)
-  for (j in seq_len(h)[-1]) {
-    paths[j, ] <- paths[j - 1, ] + paths[j, ]
-  }
+  # Cumulate innovations over the horizon for each path (one per column)
+  paths <- apply(matrix(innov, nrow = h), 2, cumsum)
   out <- tibble(
     !!agevar := rep(ages, each = n),
     .rep = rep(rep(reps, each = h), length(ages)),
