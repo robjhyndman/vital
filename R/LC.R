@@ -315,7 +315,7 @@ lca <- function(
     for (i in seq(m)) {
       y <- as.numeric(deaths[i, ])
       zi <- as.numeric(z[, i])
-      weight <- as.numeric(zi > -1e-8) # Avoid -infinity due to zero population
+      weight <- as.numeric(is.finite(zi)) # Avoid -infinity due to zero population
       # Prevent warnings if population is non-integer
       yearglm <- stats::glm(
         y ~ offset(zi) - 1 + bx,

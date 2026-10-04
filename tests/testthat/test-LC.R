@@ -274,3 +274,20 @@ test_that("LC with actual jump-off uses fitted rates for zero final rates", {
   sim <- generate(fit, h = 2, times = 2)
   expect_false(anyNA(sim$.sim))
 })
+
+test_that("LC dxt adjustment only drops cells with zero population", {
+  small <- norway_mortality |>
+    filter(Sex == "Female", Year > 2010, Age < 80) |>
+    mutate(Population = Population / 1000, Deaths = Deaths / 1000)
+  fit <- model(small, LC(log(Mortality), adjust = "dxt"))
+  ax <- age_components(fit)$ax
+  bx <- age_components(fit)$bx
+  yr <- small |> filter(Year == 2011)
+  kt <- stats::glm(
+    yr$Deaths ~ offset(log(yr$Population) + ax) - 1 + bx,
+    family = stats::poisson
+  ) |>
+    suppressWarnings() |>
+    stats::coef()
+  expect_equal(time_components(fit)$kt[1], unname(kt), tolerance = 1e-6)
+})

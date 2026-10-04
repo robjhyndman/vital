@@ -80,6 +80,7 @@
 - `generate_population()` is faster, computing survivorship ratios for all replicates at once rather than a life table for each
 - `make_pr()` now sets zero values to 10^-5 before computing ratios, as documented, so ratios are no longer zero (and infinite on the log scale)
 - `life_table()` and `life_expectancy()` now interpolate missing mortality rates from neighbouring ages (log-linearly), with a warning, rather than silently setting them to 0.5. This also affects `LC(adjust = "e0")` fits to data with zero or missing rates
+- `LC(adjust = "dxt")` now excludes only cells with zero population when fitting to deaths, rather than all cells with fewer than one expected death
 
 # vital 2.0.3
 
