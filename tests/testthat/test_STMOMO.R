@@ -174,3 +174,9 @@ test_that("GAPC models do not silently ignore bootstrap", {
   expect_error(generate(mod |> select(lc2), h = 2, bootstrap = TRUE), "not available")
   expect_error(forecast(mod |> select(lc2), h = 2, bootstrap = TRUE), "not available")
 })
+
+test_that("tidy() returns GAPC coefficients in long form", {
+  td <- tidy(mod |> select(apc))
+  expect_identical(sort(unique(td$term)), c("ax", "b0x", "b1x", "gc", "kt"))
+  expect_equal(td$estimate[td$term == "gc"], cohort_components(mod |> select(apc))$gc)
+})

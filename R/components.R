@@ -110,3 +110,19 @@ unnest_time_components <- function(object, extract, index) {
   unnest_components(object, extract) |>
     as_tsibble(index = index, key = all_of(keys))
 }
+
+# Model coefficients in long form. Each argument is a table whose first column
+# gives the age, time or cohort to which the remaining coefficients refer
+tidy_coefficients <- function(...) {
+  parts <- lapply(list(...), as_tibble)
+  parts <- parts[vapply(parts, function(x) NCOL(x) > 1 && NROW(x) > 0, logical(1L))]
+  ids <- unique(vapply(parts, function(x) colnames(x)[1], character(1L)))
+  parts <- lapply(
+    parts,
+    tidyr::pivot_longer,
+    -1,
+    names_to = "term",
+    values_to = "estimate"
+  )
+  dplyr::bind_rows(parts)[c(ids, "term", "estimate")]
+}

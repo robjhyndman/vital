@@ -83,6 +83,7 @@
 - `LC(adjust = "dxt")` now excludes only cells with zero population when fitting to deaths, rather than all cells with fewer than one expected death
 - `LC()` now uses the nearest available age for `ax` at the youngest or oldest ages when they have no observed rates, rather than returning missing values
 - `generate_population()` now simulates each model from the end of its data to the last year required, so models trained on data ending before the starting population no longer give missing years (e.g. zero births), and gives an error if a model is trained on data beyond the starting population
+- `tidy()` now returns the coefficients of `LC()`, `FDM()`, `FNAIVE()` and GAPC models in long form (`term` and `estimate`, with the age, time or birth year to which each refers), rather than nothing
 
 # vital 2.0.3
 

@@ -203,7 +203,9 @@ glance.FDM <- function(x, ...) {
 
 #' @export
 tidy.FDM <- function(x, ...) {
-  return(NULL)
+  # The coefficient of the mean function is always 1
+  by_t <- as_tibble(x$model$by_t)
+  tidy_coefficients(x$model$by_x, by_t[colnames(by_t) != "mean"])
 }
 
 #' @export

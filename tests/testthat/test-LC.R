@@ -14,7 +14,6 @@ test_that("Lee Carter", {
 
   expect_no_error(autoplot(fc))
   expect_identical(dim(lc), c(2L, 3L))
-  expect_identical(NROW(tidy(lc)), 0L)
   expect_identical(dim(glance(lc)), c(4L, 5L))
   expect_no_error(residuals(lc, type = "innov"))
   expect_no_error(residuals(lc, type = "response"))
@@ -300,4 +299,14 @@ test_that("LC fills ax at end ages with no observed rates", {
   ax <- age_components(fit)$ax
   expect_false(anyNA(ax))
   expect_equal(ax[90], ax[89])
+})
+
+test_that("tidy() returns LC coefficients in long form", {
+  fit <- norway_mortality |>
+    filter(Sex == "Female", Year > 2000, Age < 90) |>
+    model(LC(log(Mortality)))
+  td <- tidy(fit)
+  expect_identical(sort(unique(td$term)), c("ax", "bx", "kt"))
+  expect_equal(td$estimate[td$term == "kt"], time_components(fit)$kt)
+  expect_equal(td$estimate[td$term == "ax"], age_components(fit)$ax)
 })

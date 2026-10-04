@@ -206,7 +206,7 @@ glance.LC <- function(x, ...) {
 
 #' @export
 tidy.LC <- function(x, ...) {
-  return(NULL)
+  tidy_coefficients(x$model$by_x, x$model$by_t)
 }
 
 #' @export

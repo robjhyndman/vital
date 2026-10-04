@@ -9,7 +9,6 @@ test_that("Functional naive", {
   fc <- forecast(fnaive)
   expect_no_error(autoplot(fc))
   expect_identical(dim(fnaive), c(2L, 2L))
-  expect_identical(dim(tidy(fnaive)), c(0L, 3L))
   expect_identical(
     colnames(glance(fnaive)),
     c("Sex", ".model", "sigma2")
@@ -91,4 +90,13 @@ test_that("FNAIVE fills standard deviations that cannot be estimated", {
     expect_no_warning(sim <- generate(fit, h = 3, times = 2, bootstrap = b))
     expect_false(anyNA(sim$.sim))
   }
+})
+
+test_that("tidy() returns FNAIVE standard deviations by age", {
+  fit <- norway_mortality |>
+    filter(Sex == "Female", Year > 2000, Age < 90) |>
+    model(FNAIVE(Mortality))
+  td <- tidy(fit)
+  expect_identical(unique(td$term), "sigma")
+  expect_equal(td$estimate, age_components(fit)$sigma)
 })

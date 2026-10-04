@@ -11,7 +11,6 @@ test_that("Functional data model", {
     fc <- forecast(hu)
     expect_no_error(autoplot(fc))
     expect_identical(dim(hu), c(2L, 2L))
-    expect_identical(NROW(tidy(hu)), 0L)
     expect_identical(
       colnames(glance(hu)),
       c("Sex", ".model", "nobs", "varprop")
@@ -174,4 +173,16 @@ test_that("FDM reports an order that is too large for the data", {
     ),
     "order must be less than the number of time periods \\(5\\)"
   )
+})
+
+test_that("tidy() returns FDM coefficients in long form", {
+  fit <- norway_mortality |>
+    filter(Sex == "Female", Year > 2000, Age < 90) |>
+    model(FDM(log(Mortality), order = 2))
+  td <- tidy(fit)
+  expect_identical(
+    sort(unique(td$term)),
+    c("beta1", "beta2", "mean", "phi1", "phi2")
+  )
+  expect_equal(td$estimate[td$term == "beta1"], time_components(fit)$beta1)
 })

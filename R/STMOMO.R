@@ -558,7 +558,13 @@ glance.GAPC <- function(x, ...) {
 
 #' @export
 tidy.GAPC <- function(x, ...) {
-  return(NULL)
+  index <- colnames(x$fitted)[1]
+  agevar <- colnames(x$fitted)[2]
+  tidy_coefficients(
+    gapc_by_x(x$model, agevar),
+    gapc_by_t(x$model, index),
+    gapc_by_c(x$model)
+  )
 }
 
 #' @export
@@ -607,49 +613,50 @@ vital_to_stmomo <- function(.data) {
 #' @export
 time_components.GAPC <- function(object, ...) {
   index <- index_var(first_fit(object)$data)
-  unnest_time_components(
-    object,
-    function(x) {
-      kt <- t(x$kt)
-      if (NCOL(kt) > 1) {
-        colnames(kt) <- paste0("k", seq(NCOL(kt)), "t")
-      } else {
-        colnames(kt) <- "kt"
-      }
-      yr <- tibble(Year = x$years)
-      colnames(yr) <- index
-      dplyr::bind_cols(yr, kt)
-    },
-    index
-  )
+  unnest_time_components(object, function(x) gapc_by_t(x, index), index)
 }
-
 
 #' @export
 age_components.GAPC <- function(object, ...) {
   agevar <- age_var(first_fit(object)$data)
-  unnest_components(object, function(x) {
-    bx <- x$bx
-    if (NCOL(bx) > 1 | !is.null(x$b0x)) {
-      colnames(bx) <- paste0("b", seq(NCOL(bx)), "x")
-    } else {
-      colnames(bx) <- "bx"
-    }
-    ax <- tibble(Age = x$ages, ax = x$ax, b0x = x$b0x)
-    colnames(ax)[1] <- agevar
-    dplyr::bind_cols(ax, bx)
-  })
+  unnest_components(object, function(x) gapc_by_x(x, agevar))
 }
 
 #' @export
 cohort_components.GAPC <- function(object, ...) {
-  unnest_time_components(
-    object,
-    function(x) tibble(Birth_Year = as.integer(names(x$gc)), gc = x$gc),
-    "Birth_Year"
-  )
+  unnest_time_components(object, gapc_by_c, "Birth_Year")
 }
 
+# Period indexes of a fitted StMoMo model, by time
+gapc_by_t <- function(x, index) {
+  kt <- t(x$kt)
+  if (NCOL(kt) > 1) {
+    colnames(kt) <- paste0("k", seq(NCOL(kt)), "t")
+  } else {
+    colnames(kt) <- "kt"
+  }
+  yr <- tibble(Year = x$years)
+  colnames(yr) <- index
+  dplyr::bind_cols(yr, kt)
+}
+
+# Age functions of a fitted StMoMo model, by age
+gapc_by_x <- function(x, agevar) {
+  bx <- x$bx
+  if (NCOL(bx) > 1 | !is.null(x$b0x)) {
+    colnames(bx) <- paste0("b", seq(NCOL(bx)), "x")
+  } else {
+    colnames(bx) <- "bx"
+  }
+  ax <- tibble(Age = x$ages, ax = x$ax, b0x = x$b0x)
+  colnames(ax)[1] <- agevar
+  dplyr::bind_cols(ax, bx)
+}
+
+# Cohort effects of a fitted StMoMo model, by year of birth
+gapc_by_c <- function(x) {
+  tibble(Birth_Year = as.integer(names(x$gc)), gc = x$gc)
+}
 
 #' @export
 autoplot.GAPC <- function(object, ...) {

@@ -155,7 +155,7 @@ glance.FNAIVE <- function(x, ...) {
 
 #' @export
 tidy.FNAIVE <- function(x, ...) {
-  NULL
+  tidy_coefficients(x$model)
 }
 
 #' @export
