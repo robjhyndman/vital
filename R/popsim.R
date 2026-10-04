@@ -368,11 +368,11 @@ single_year_rx <- function(mx, age, group, sex) {
     )
   }
   qx <- m / (1 + (1 - ax) * m)
+  qx[qx > 1] <- 1
   lx <- matrix(1, length(groups), nn)
   for (j in seq_len(nn - 1)) {
     lx[, j + 1] <- lx[, j] * (1 - qx[, j])
   }
-  lx[lx < 0] <- 0
   dx <- lx - cbind(lx[, -1, drop = FALSE], 0)
   Lx <- lx - dx * (1 - ax)
   Lx[, nn] <- ifelse(m[, nn] == 0, 0, lx[, nn] / m[, nn])

@@ -118,3 +118,13 @@ test_that("life_table() interpolates missing rates from neighbouring ages", {
   expect_equal(lt$mx[lt$Age == 49], sqrt(prod(m)))
   expect_false(anyNA(lt$ex))
 })
+
+test_that("life_table caps qx at 1 when mortality rates are very high", {
+  lt <- norway_mortality |>
+    dplyr::filter(Year == 1900, Sex == "Female") |>
+    life_table()
+  expect_true(all(lt$qx <= 1))
+  expect_true(all(lt$dx >= 0))
+  expect_true(all(diff(lt$lx) <= 0))
+  expect_false(any(is.infinite(lt$ex)))
+})

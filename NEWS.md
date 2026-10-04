@@ -7,6 +7,7 @@
 - Fixed `tidy()` for FMEAN models, which understated standard errors
 - Fixed `life_expectancy()` ignoring the `mortality` argument
 - Fixed `life_expectancy()` failing when the age variable is not called `Age`
+- `life_table()` now caps probabilities of death `qx` at 1, which previously exceeded 1 at very high mortality rates, giving negative deaths `dx` and infinite life expectancies
 - `life_table()` now uses sex-specific infant separation factors when sex is capitalised (e.g. "Female")
 - `smooth_mortality_law()` now fits to deaths and population when available, as intended
 - Fixed `generate_population()` not adding back the mean for coherent migration models

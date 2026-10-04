@@ -160,11 +160,12 @@ lt <- function(dt, sex, age, mortality, keep = age) {
     ax <- c(rep(2.6, nn - 1), Inf)
   }
   # Find qx
-  qx <- nx * mx / (1 + (nx - ax) * mx)
+  # Probabilities of death can exceed 1 when mortality rates are very high
+  qx <- pmin(1, nx * mx / (1 + (nx - ax) * mx))
   qx[nn] <- 1
   # Find lx and dx
   if (nn > 1) {
-    lx <- pmax(0, c(1, cumprod(1 - qx[1:(nn - 1)])))
+    lx <- c(1, cumprod(1 - qx[1:(nn - 1)]))
     dx <- -diff(c(lx, 0))
   } else {
     lx <- dx <- 1
