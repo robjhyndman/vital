@@ -1,4 +1,4 @@
-# vital (development version)
+# vital 2.1.0
 
 - Updated to work with fabletools v0.7.0+
 - `read_stmf()` now takes `username` and `password` arguments, as the HMD now requires a login to download STMF data.
