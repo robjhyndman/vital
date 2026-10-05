@@ -36,7 +36,7 @@ test_that("read_hmd_files", {
   z <- read_hmd_files("Mx_1x1.txt")
   expect_identical(dim(z), c(33300L, 5L))
   # Read 0 files
-  expect_error(read_hmd_files())
+  expect_error(read_hmd_files(), "argument \"files\" is missing")
 })
 
 test_that("read_hmd_files orders combined age and non-age data by year", {

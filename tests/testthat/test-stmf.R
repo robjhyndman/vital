@@ -12,7 +12,7 @@ test_that("read_stmf_files", {
   expect_true(inherits(z, "vital"))
   expect_identical(vital_vars(z), c(sex = "Sex", deaths = "Deaths"))
   # Read 0 files
-  expect_error(read_stmf_files())
+  expect_error(read_stmf_files(), "argument \"file\" is missing")
 })
 
 test_that("read_stmf finds the file for each country", {

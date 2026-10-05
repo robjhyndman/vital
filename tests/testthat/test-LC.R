@@ -44,7 +44,7 @@ test_that("Lee Carter", {
     colnames(time_components(lc |> select(fit))),
     c("Sex", "Year", "kt")
   )
-  expect_error(age_components(lc))
+  expect_error(age_components(lc), "only supported for individual models")
 
   # Compare against demography
   if (requireNamespace("demography", quietly = TRUE)) {

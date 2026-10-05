@@ -1,5 +1,3 @@
-library(testthat)
-library(vital)
 library(dplyr)
 
 nor <- norway_mortality |>

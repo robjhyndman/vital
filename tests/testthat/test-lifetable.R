@@ -1,5 +1,5 @@
-test_that("norfertility", {
-  expect_error(norway_fertility |> life_table())
+test_that("life_table() requires mortality rates", {
+  expect_error(norway_fertility |> life_table(), "Mortality variable not found")
 })
 
 test_that("normortality", {

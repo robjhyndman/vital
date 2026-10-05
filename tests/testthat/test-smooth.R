@@ -17,22 +17,19 @@ test_that("smoothing functions", {
     smooth_loess(Fertility, span = 0.3)
   expect_identical(NROW(sm), 2464L)
 
-  # Check results are similar to demography
-  if (requireNamespace("demography", quietly = TRUE)) {
-    library(demography)
-    sm1 <- smooth.demogdata(fr.mort |> extract.years(1945))
-    expect_error(smooth_mortality(as_vital(fr.mort)))
-    sm2 <- smooth_mortality(
-      as_vital(fr.mort) |> dplyr::filter(Year == 1945, Sex == "male"),
-      Mortality
-    ) |>
-      dplyr::select(.smooth)
-    test1 <- extract.years(sm1, 1945)$rate$male
-    test2 <- sm2 |>
-      dplyr::filter(Year == 1945) |>
-      dplyr::pull(.smooth)
-    expect_lt(max(abs(c(test1) - test2), na.rm = TRUE), 0.01)
-  }
+})
+
+test_that("smooth_mortality is similar to demography::smooth.demogdata()", {
+  skip_if_not_installed("demography")
+  fr <- demography::fr.mort
+  sm1 <- demography::smooth.demogdata(demography::extract.years(fr, 1945))
+  expect_error(smooth_mortality(as_vital(fr)), ".var is missing")
+  sm2 <- smooth_mortality(
+    as_vital(fr) |> dplyr::filter(Year == 1945, Sex == "male"),
+    Mortality
+  )
+  test1 <- demography::extract.years(sm1, 1945)$rate$male
+  expect_lt(max(abs(c(test1) - sm2$.smooth), na.rm = TRUE), 0.01)
 })
 
 test_that("smoothing keeps integer ages when possible", {
