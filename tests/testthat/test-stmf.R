@@ -36,15 +36,6 @@ test_that("read_stmf reads the downloaded file", {
   )
 })
 
-test_that("read_stmf gives a clear error when the HMD login fails", {
-  skip_on_cran()
-  skip_if_offline()
-  expect_error(
-    read_stmf("NOR", "fred@example.com", "wrongpassword"),
-    "Check your username and password"
-  )
-})
-
 test_that("hmd_download logs in and saves the file, or reports a failed login", {
   submitted <- NULL
   mock_rvest <- function(content_type, content) {
