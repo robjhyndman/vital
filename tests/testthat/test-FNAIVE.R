@@ -154,3 +154,22 @@ test_that("FNAIVE forecast horizons are counted in periods for non-annual data",
   )
   expect_equal(fc_var, sigma$sigma[sigma$Age == 60]^2 * c(1, 2))
 })
+
+test_that("FNAIVE interpolates starting values at ages with no finite values", {
+  x <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 2010, Age >= 90, Age < 100)
+  x$Mortality[x$Age == 95] <- 0
+  expect_warning(
+    fit <- model(x, fn = FNAIVE(log(Mortality))),
+    "No finite values for ages 95"
+  )
+  fc <- forecast(fit, h = 1)
+  expect_true(all(is.finite(fc$.mean)))
+  last <- x |> dplyr::filter(Year == max(Year))
+  expect_equal(
+    median(fc$Mortality[fc$Age == 95]),
+    sqrt(last$Mortality[last$Age == 94] * last$Mortality[last$Age == 96])
+  )
+  set.seed(1)
+  expect_true(all(is.finite(generate(fit, h = 2, times = 2, bootstrap = TRUE)$.sim)))
+})

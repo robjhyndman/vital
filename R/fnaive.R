@@ -60,8 +60,20 @@ train_fnaive <- function(.data, ...) {
   obs <- as_tibble(.data)[is.finite(.data[[measure]]), c(indexvar, agevar, measure)]
   obs <- obs[order(obs[[agevar]], obs[[indexvar]]), ]
   last <- obs[!duplicated(obs[[agevar]], fromLast = TRUE), ]
-  ages <- unique(.data[[agevar]])
-  stale <- ages[!(ages %in% last[[agevar]][last[[indexvar]] == max(.data[[indexvar]])])]
+  ages <- sort(unique(.data[[agevar]]))
+  # Ages with no finite values take their starting values from neighbouring ages
+  none <- ages[!(ages %in% last[[agevar]])]
+  stale <- ages[!(ages %in% c(none, last[[agevar]][last[[indexvar]] == max(.data[[indexvar]])]))]
+  if (length(none) > 0L) {
+    warning(
+      "No finite values for ages ",
+      paste(none, collapse = ", "),
+      ". Interpolating their starting values from neighbouring ages.",
+      call. = FALSE
+    )
+    start <- last[[measure]][match(ages, last[[agevar]])]
+    last <- tibble(!!agevar := ages, !!measure := fill_by_age(start, ages))
+  }
   if (length(stale) > 0L) {
     warning(
       "Values are zero or missing in the final year for ages ",
