@@ -46,6 +46,31 @@ assumed there are no future births, deaths or net migrants, respectively.
 This is an experimental function and has not been thoroughly tested.
 The simulation follows \code{demography::pop.sim()}, as described in Hyndman and Booth (2008).
 }
+\examples{
+# Norwegian data, with ages above 100 combined
+nor <- norway_mortality |>
+  dplyr::filter(Sex != "Total") |>
+  collapse_ages(max_age = 100)
+# Models trained on data up to the year of the starting population
+mortality <- nor |>
+  dplyr::filter(Year > 2010) |>
+  model(fmean = FMEAN(log(Mortality)))
+fertility <- norway_fertility |>
+  dplyr::filter(Year > 2010) |>
+  model(fmean = FMEAN(Fertility))
+migration <- net_migration(nor, norway_births) |>
+  dplyr::filter(Year > 2010) |>
+  model(fmean = FMEAN(NetMigration))
+# Simulate 5 future populations for 3 years, starting from the final year of data
+generate_population(
+  starting_population = nor |> dplyr::filter(Year == max(Year)),
+  mortality_model = mortality,
+  fertility_model = fertility,
+  migration_model = migration,
+  h = 3,
+  n_reps = 5
+)
+}
 \references{
 Hyndman and Booth (2008) Stochastic population forecasts using functional data
 models for mortality, fertility and migration. \emph{International Journal of Forecasting}, 24(3), 323-342.

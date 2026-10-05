@@ -25,6 +25,30 @@
 #' from the fertility rates. If missing, the function will try to identify the
 #' most likely value automatically.
 #' @return A `vital` object containing the simulated future population.
+#' @examples
+#' # Norwegian data, with ages above 100 combined
+#' nor <- norway_mortality |>
+#'   dplyr::filter(Sex != "Total") |>
+#'   collapse_ages(max_age = 100)
+#' # Models trained on data up to the year of the starting population
+#' mortality <- nor |>
+#'   dplyr::filter(Year > 2010) |>
+#'   model(fmean = FMEAN(log(Mortality)))
+#' fertility <- norway_fertility |>
+#'   dplyr::filter(Year > 2010) |>
+#'   model(fmean = FMEAN(Fertility))
+#' migration <- net_migration(nor, norway_births) |>
+#'   dplyr::filter(Year > 2010) |>
+#'   model(fmean = FMEAN(NetMigration))
+#' # Simulate 5 future populations for 3 years, starting from the final year of data
+#' generate_population(
+#'   starting_population = nor |> dplyr::filter(Year == max(Year)),
+#'   mortality_model = mortality,
+#'   fertility_model = fertility,
+#'   migration_model = migration,
+#'   h = 3,
+#'   n_reps = 5
+#' )
 #' @export
 generate_population <- function(
   starting_population,
