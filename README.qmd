@@ -70,11 +70,12 @@ library(ggplot2)
 
 The basic data object is a `vital`, which is time-indexed tibble that contains vital statistics such as births, deaths, population counts, and mortality and fertility rates.
 
-Here is an example of a `vital` object containing mortality data for Norway.
+Here is an example of a `vital` object containing mortality data for Norway, with the upper ages collapsed into a final age group of 100+.
 
-```{r aus}
+```{r example}
 norway_mortality <- norway_mortality |>
   collapse_ages(max_age = 100)
+norway_mortality
 ```
 
 We can use functions to see which variables are index, key or vital:
@@ -116,7 +117,7 @@ norway_mortality |>
 
 ### Smoothing
 
-Several smoothing functions are provided: `smooth_spline()`, `smooth_mortality()`, `smooth_fertility()`, and `smooth_loess()`, each smoothing across the age variable for each year.
+Several smoothing functions are provided: `smooth_spline()`, `smooth_mortality()`, `smooth_fertility()`, and `smooth_loess()`, each smoothing across the age variable for each year. The `smooth_mortality_law()` function fits a parametric mortality law instead.
 
 ```{r smoothing}
 # Smoothed data
@@ -131,7 +132,7 @@ norway_mortality |>
 
 ### Mortality models
 
-Several mortality models are available including variations on Lee-Carter models (Lee & Carter, JASA, 1992), and functional data models (Hyndman & Ullah, CSDA, 2007).
+Several mortality models are available including variations on Lee-Carter models (Lee & Carter, JASA, 1992), functional data models (Hyndman & Ullah, CSDA, 2007), generalized age-period-cohort models from the StMoMo package (`LC2()`, `CBD()`, `APC()`, `RH()`, `M7()`, `PLAT()` and `GAPC()`), and the benchmark models `FMEAN()` and `FNAIVE()`.
 
 ```{r}
 #| label: lc
