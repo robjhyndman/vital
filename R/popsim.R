@@ -113,7 +113,7 @@ generate_population <- function(
     }
     if (length(female) == 0L) {
       female <- sexes[1]
-      warning(paste("Setting female to ", female))
+      warning("Setting female to ", female, call. = FALSE)
     }
   } else if (!(female %in% sexes)) {
     stop("female must be one of the values of the sex variable")

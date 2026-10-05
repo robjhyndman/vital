@@ -284,3 +284,19 @@ test_that("generate_population rejects missing simulated rates", {
     "mortality model have missing values at ages 30"
   )
 })
+
+test_that("generate_population identifies the female sex", {
+  start <- pop |>
+    dplyr::filter(Year == max(Year)) |>
+    dplyr::mutate(Sex = dplyr::if_else(Sex == "Female", "Women", "Men"))
+  set.seed(1)
+  out <- generate_population(start, h = 1, n_reps = 2)
+  expect_setequal(unique(out$Sex), c("Women", "Men"))
+  # Without a recognisable label, the first sex is used, with a warning
+  unlabelled <- start |>
+    dplyr::mutate(Sex = dplyr::if_else(Sex == "Women", "A", "B"))
+  expect_warning(
+    generate_population(unlabelled, h = 1, n_reps = 2),
+    "Setting female to A$"
+  )
+})
