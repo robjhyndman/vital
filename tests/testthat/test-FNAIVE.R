@@ -133,3 +133,24 @@ test_that("FNAIVE starts from the last finite value when the final value is zero
   set.seed(1)
   expect_true(all(is.finite(generate(fit, h = 2, times = 2)$.sim)))
 })
+
+test_that("FNAIVE forecast horizons are counted in periods for non-annual data", {
+  nor5 <- norway_mortality |>
+    tibble::as_tibble() |>
+    dplyr::filter(Year %% 5 == 0, Year > 1980, Sex == "Female", Age < 90) |>
+    as_vital(index = Year, key = c(Age, Sex), .age = "Age", .sex = "Sex")
+  fit <- nor5 |> model(fnaive = FNAIVE(log(Mortality)))
+  # The index type is kept in the fitted values
+  expect_type(fit$fnaive[[1]]$fit$fitted$Year, "integer")
+  sigma <- fit$fnaive[[1]]$fit$model
+  fc <- forecast(fit, h = 2) |>
+    tibble::as_tibble() |>
+    dplyr::filter(Age == 60)
+  # Variances on the log scale grow by sigma^2 per 5-year step
+  fc_var <- vapply(
+    vctrs::vec_data(fc$Mortality),
+    function(d) d$dist$sigma^2,
+    numeric(1)
+  )
+  expect_equal(fc_var, sigma$sigma[sigma$Age == 60]^2 * c(1, 2))
+})

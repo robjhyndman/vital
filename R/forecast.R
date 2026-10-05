@@ -292,7 +292,11 @@ fill_forecast_times <- function(new_data, train) {
   if (min(times) <= last) {
     abort("`new_data` must only contain times after the end of the training data.")
   }
-  missing <- setdiff(seq(last + 1, max(times)), times)
+  # Step forward by the interval of the training data (e.g. 5 for 5-yearly data)
+  step <- tsibble::default_time_units(tsibble::interval(train))
+  nsteps <- round(as.numeric(max(times) - last) / step)
+  missing <- last + step * seq_len(nsteps)
+  missing <- missing[!(missing %in% times)]
   if (length(missing) == 0L) {
     return(list(data = new_data, rows = seq_len(NROW(new_data))))
   }

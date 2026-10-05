@@ -36,7 +36,9 @@ train_fnaive <- function(.data, ...) {
   step <- tsibble::default_time_units(tsibble::interval(.data))
   last_measure <- .data |>
     tsibble::as_tibble() |>
-    dplyr::mutate(index = .data[[indexvar]] + step)
+    dplyr::mutate(
+      index = vctrs::vec_cast(.data[[indexvar]] + step, .data[[indexvar]])
+    )
   last_measure <- last_measure[, c("index", agevar, measure)]
   colnames(last_measure) <- c(indexvar, agevar, ".fitted")
   out <- .data |>
