@@ -53,7 +53,8 @@ LC(
 
 - ...:
 
-  Not used.
+  Not used. An error is given if any arguments are supplied here, so
+  that misspelled arguments are not silently ignored.
 
 ## Value
 

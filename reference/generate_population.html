@@ -116,6 +116,48 @@ most likely value automatically.</p></dd>
 models for mortality, fertility and migration. <em>International Journal of Forecasting</em>, 24(3), 323-342.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Norwegian data, with ages above 100 combined</span></span></span>
+<span class="r-in"><span><span class="va">nor</span> <span class="op">&lt;-</span> <span class="va">norway_mortality</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sex</span> <span class="op">!=</span> <span class="st">"Total"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="collapse_ages.html">collapse_ages</a></span><span class="op">(</span>max_age <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Models trained on data up to the year of the starting population</span></span></span>
+<span class="r-in"><span><span class="va">mortality</span> <span class="op">&lt;-</span> <span class="va">nor</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Year</span> <span class="op">&gt;</span> <span class="fl">2010</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span>fmean <span class="op">=</span> <span class="fu"><a href="FMEAN.html">FMEAN</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fertility</span> <span class="op">&lt;-</span> <span class="va">norway_fertility</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Year</span> <span class="op">&gt;</span> <span class="fl">2010</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span>fmean <span class="op">=</span> <span class="fu"><a href="FMEAN.html">FMEAN</a></span><span class="op">(</span><span class="va">Fertility</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">migration</span> <span class="op">&lt;-</span> <span class="fu"><a href="net_migration.html">net_migration</a></span><span class="op">(</span><span class="va">nor</span>, <span class="va">norway_births</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Year</span> <span class="op">&gt;</span> <span class="fl">2010</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span>fmean <span class="op">=</span> <span class="fu"><a href="FMEAN.html">FMEAN</a></span><span class="op">(</span><span class="va">NetMigration</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Simulate 5 future populations for 3 years, starting from the final year of data</span></span></span>
+<span class="r-in"><span><span class="fu">generate_population</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  starting_population <span class="op">=</span> <span class="va">nor</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Year</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Year</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  mortality_model <span class="op">=</span> <span class="va">mortality</span>,</span></span>
+<span class="r-in"><span>  fertility_model <span class="op">=</span> <span class="va">fertility</span>,</span></span>
+<span class="r-in"><span>  migration_model <span class="op">=</span> <span class="va">migration</span>,</span></span>
+<span class="r-in"><span>  h <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span>  n_reps <span class="op">=</span> <span class="fl">5</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A vital: 3,030 x 5 [1Y]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Key:     Age x (Sex, .rep) [101 x 10]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Year   Age Sex    .rep  Population</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">2</span>024     0 Female 1          <span style="text-decoration: underline;">28</span>791</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">2</span>024     1 Female 1          <span style="text-decoration: underline;">25</span>636</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">2</span>024     2 Female 1          <span style="text-decoration: underline;">28</span>528</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">2</span>024     3 Female 1          <span style="text-decoration: underline;">26</span>908</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">2</span>024     4 Female 1          <span style="text-decoration: underline;">27</span>810</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">2</span>024     5 Female 1          <span style="text-decoration: underline;">27</span>863</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">2</span>024     6 Female 1          <span style="text-decoration: underline;">28</span>828</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">2</span>024     7 Female 1          <span style="text-decoration: underline;">29</span>870</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">2</span>024     8 Female 1          <span style="text-decoration: underline;">30</span>189</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">2</span>024     9 Female 1          <span style="text-decoration: underline;">30</span>424</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 3,020 more rows</span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

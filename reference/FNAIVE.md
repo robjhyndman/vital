@@ -3,7 +3,12 @@
 `FNAIVE()` returns a random walk functional model applied to the
 formula's response variable as a function of age. Standard deviations
 that cannot be estimated, such as at ages with fewer than two finite
-residuals, are interpolated from neighbouring ages.
+residuals, are interpolated from neighbouring ages. Simulations from
+[`generate()`](https://generics.r-lib.org/reference/generate.html) with
+`bootstrap = TRUE` resample whole years of residuals, so they keep the
+correlation between ages. Otherwise, ages are simulated independently
+from normal distributions, which understates the uncertainty of
+quantities computed across ages, such as life expectancy.
 
 ## Usage
 
@@ -19,7 +24,8 @@ FNAIVE(formula, ...)
 
 - ...:
 
-  Not used.
+  Not used. An error is given if any arguments are supplied here, so
+  that misspelled arguments are not silently ignored.
 
 ## Value
 

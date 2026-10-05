@@ -183,6 +183,9 @@ variable as a function of age. Use <code><a href="https://ggplot2.tidyverse.org/
 their age, period and cohort components.
 The model will optionally call <code><a href="https://rdrr.io/pkg/StMoMo/man/genWeightMat.html" class="external-link">genWeightMat</a></code> with arguments <code>clip</code> and <code>zeroCohorts</code>.
 All other arguments are passed to <code><a href="https://rdrr.io/pkg/StMoMo/man/StMoMo.html" class="external-link">StMoMo</a></code>.</p>
+<p><code><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast()</a></code> gives point forecasts only for these models. Use
+<code>forecast(..., simulate = TRUE)</code> to obtain forecast distributions and
+prediction intervals.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

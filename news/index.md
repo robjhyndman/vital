@@ -35,6 +35,12 @@
   [`FNAIVE()`](https://pkg.robjhyndman.com/vital/reference/FNAIVE.md)
   and GAPC models in long form (`term` and `estimate`, with the age,
   time or birth year to which each refers)
+- [`LC()`](https://pkg.robjhyndman.com/vital/reference/LC.md),
+  [`FDM()`](https://pkg.robjhyndman.com/vital/reference/FDM.md),
+  [`FMEAN()`](https://pkg.robjhyndman.com/vital/reference/FMEAN.md) and
+  [`FNAIVE()`](https://pkg.robjhyndman.com/vital/reference/FNAIVE.md)
+  now give an error for unused arguments, so misspelled arguments are no
+  longer silently ignored
 - Many bug fixes, documentation improvements, more informative errors,
   and speed ups.
 

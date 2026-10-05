@@ -40,12 +40,28 @@ contains vital statistics such as births, deaths, population counts, and
 mortality and fertility rates.
 
 Here is an example of a `vital` object containing mortality data for
-Norway.
+Norway, with the upper ages collapsed into a final age group of 100+.
 
 ``` r
 
 norway_mortality <- norway_mortality |>
   collapse_ages(max_age = 100)
+norway_mortality
+#> # A vital: 37,572 x 7 [1Y]
+#> # Key:     Age x Sex [101 x 3]
+#>     Year   Age OpenInterval Sex    Population Deaths Mortality
+#>    <int> <int> <lgl>        <chr>       <dbl>  <dbl>     <dbl>
+#>  1  1900     0 FALSE        Female      30070 2376.    0.0778
+#>  2  1900     1 FALSE        Female      28960  842     0.0290
+#>  3  1900     2 FALSE        Female      28043  348     0.0123
+#>  4  1900     3 FALSE        Female      27019  216.    0.00786
+#>  5  1900     4 FALSE        Female      26854  168.    0.00624
+#>  6  1900     5 FALSE        Female      25569  140.    0.00538
+#>  7  1900     6 FALSE        Female      25534  108.    0.00422
+#>  8  1900     7 FALSE        Female      24314   93.5   0.00376
+#>  9  1900     8 FALSE        Female      24979   93.5   0.00380
+#> 10  1900     9 FALSE        Female      24428   90     0.00365
+#> # ℹ 37,562 more rows
 ```
 
 We can use functions to see which variables are index, key or vital:
@@ -84,7 +100,7 @@ norway_mortality |>
 #> # Key:     Age x Sex [101 x 1]
 #>     Year   Age Sex         mx        qx    lx        dx    Lx    Tx    ex    rx    nx     ax
 #>    <int> <int> <chr>    <dbl>     <dbl> <dbl>     <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl>
-#>  1  2000     0 Male  0.00426  0.00424   1     0.00424   0.996  76.0  76.0 0.996     1 0.0607
+#>  1  2000     0 Male  0.00426  0.00424   1     0.00424   0.996  76.0  76.0 0.996     1 0.0564
 #>  2  2000     1 Male  0.000593 0.000593  0.996 0.000590  0.995  75.0  75.3 0.999     1 0.5
 #>  3  2000     2 Male  0.000229 0.000229  0.995 0.000228  0.995  74.0  74.3 1.000     1 0.5
 #>  4  2000     3 Male  0.000157 0.000157  0.995 0.000156  0.995  73.0  73.3 1.000     1 0.5
@@ -117,7 +133,9 @@ Several smoothing functions are provided:
 [`smooth_fertility()`](https://pkg.robjhyndman.com/vital/reference/smooth_vital.md),
 and
 [`smooth_loess()`](https://pkg.robjhyndman.com/vital/reference/smooth_vital.md),
-each smoothing across the age variable for each year.
+each smoothing across the age variable for each year. The
+[`smooth_mortality_law()`](https://pkg.robjhyndman.com/vital/reference/smooth_mortality_law.md)
+function fits a parametric mortality law instead.
 
 ``` r
 
@@ -136,8 +154,19 @@ norway_mortality |>
 ### Mortality models
 
 Several mortality models are available including variations on
-Lee-Carter models (Lee & Carter, JASA, 1992), and functional data models
-(Hyndman & Ullah, CSDA, 2007).
+Lee-Carter models (Lee & Carter, JASA, 1992), functional data models
+(Hyndman & Ullah, CSDA, 2007), generalized age-period-cohort models from
+the StMoMo package
+([`LC2()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+[`CBD()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+[`APC()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+[`RH()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+[`M7()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+[`PLAT()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md) and
+[`GAPC()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md)), and
+the benchmark models
+[`FMEAN()`](https://pkg.robjhyndman.com/vital/reference/FMEAN.md) and
+[`FNAIVE()`](https://pkg.robjhyndman.com/vital/reference/FNAIVE.md).
 
 ``` r
 
@@ -176,27 +205,27 @@ fit |>
 #> # A tibble: 101 × 3
 #>     Age    ax     bx
 #>   <int> <dbl>  <dbl>
-#> 1     0 -4.33 0.0155
-#> 2     1 -6.16 0.0223
-#> 3     2 -6.77 0.0193
-#> 4     3 -7.14 0.0187
-#> 5     4 -7.18 0.0165
+#> 1     0 -4.33 0.0151
+#> 2     1 -6.16 0.0218
+#> 3     2 -6.88 0.0197
+#> 4     3 -7.20 0.0190
+#> 5     4 -7.35 0.0177
 #> # ℹ 96 more rows
 #>
 #> Time coefficients
 #> # A tsibble: 124 x 2 [1Y]
 #>    Year    kt
 #>   <int> <dbl>
-#> 1  1900  115.
-#> 2  1901  109.
-#> 3  1902  103.
-#> 4  1903  109.
-#> 5  1904  106.
+#> 1  1900  118.
+#> 2  1901  112.
+#> 3  1902  105.
+#> 4  1903  111.
+#> 5  1904  109.
 #> # ℹ 119 more rows
 #>
 #> Time series model: RW w/ drift
 #>
-#> Variance explained: 66.33%
+#> Variance explained: 92.39%
 ```
 
 ``` r
@@ -216,16 +245,16 @@ fit |>
 #> # A tibble: 202 × 4
 #>    Sex      Age    ax     bx
 #>    <chr>  <int> <dbl>  <dbl>
-#>  1 Female     0 -4.33 0.0155
-#>  2 Female     1 -6.16 0.0223
-#>  3 Female     2 -6.77 0.0193
-#>  4 Female     3 -7.14 0.0187
-#>  5 Female     4 -7.18 0.0165
-#>  6 Female     5 -7.41 0.0174
-#>  7 Female     6 -7.45 0.0165
-#>  8 Female     7 -7.48 0.0155
-#>  9 Female     8 -7.37 0.0125
-#> 10 Female     9 -7.39 0.0124
+#>  1 Female     0 -4.33 0.0151
+#>  2 Female     1 -6.16 0.0218
+#>  3 Female     2 -6.88 0.0197
+#>  4 Female     3 -7.20 0.0190
+#>  5 Female     4 -7.35 0.0177
+#>  6 Female     5 -7.53 0.0179
+#>  7 Female     6 -7.63 0.0177
+#>  8 Female     7 -7.73 0.0173
+#>  9 Female     8 -7.75 0.0163
+#> 10 Female     9 -7.83 0.0168
 #> # ℹ 192 more rows
 fit |>
   select(lee_carter) |>
@@ -234,16 +263,16 @@ fit |>
 #> # Key:       Sex [2]
 #>    Sex     Year    kt
 #>    <chr>  <int> <dbl>
-#>  1 Female  1900 115.
-#>  2 Female  1901 109.
-#>  3 Female  1902 103.
-#>  4 Female  1903 109.
-#>  5 Female  1904 106.
-#>  6 Female  1905 110.
-#>  7 Female  1906 101.
-#>  8 Female  1907 106.
-#>  9 Female  1908 105.
-#> 10 Female  1909  99.6
+#>  1 Female  1900  118.
+#>  2 Female  1901  112.
+#>  3 Female  1902  105.
+#>  4 Female  1903  111.
+#>  5 Female  1904  109.
+#>  6 Female  1905  113.
+#>  7 Female  1906  104.
+#>  8 Female  1907  108.
+#>  9 Female  1908  108.
+#> 10 Female  1909  102.
 #> # ℹ 238 more rows
 ```
 
@@ -253,17 +282,17 @@ fit |> forecast(h = 20)
 #> # A vital fable: 8,080 x 6 [1Y]
 #> # Key:           Age x (Sex, .model) [101 x 4]
 #>    Sex    .model      Year   Age          Mortality    .mean
-#>    <chr>  <chr>      <dbl> <int>             <dist>    <dbl>
-#>  1 Female lee_carter  2024     0 t(N(-6.8, 0.0088)) 0.00110
-#>  2 Female lee_carter  2025     0  t(N(-6.9, 0.018)) 0.00106
-#>  3 Female lee_carter  2026     0  t(N(-6.9, 0.027)) 0.00103
-#>  4 Female lee_carter  2027     0  t(N(-6.9, 0.036)) 0.00100
-#>  5 Female lee_carter  2028     0    t(N(-7, 0.045)) 0.000972
-#>  6 Female lee_carter  2029     0    t(N(-7, 0.055)) 0.000944
-#>  7 Female lee_carter  2030     0    t(N(-7, 0.064)) 0.000916
-#>  8 Female lee_carter  2031     0  t(N(-7.1, 0.074)) 0.000889
-#>  9 Female lee_carter  2032     0  t(N(-7.1, 0.084)) 0.000863
-#> 10 Female lee_carter  2033     0  t(N(-7.1, 0.094)) 0.000838
+#>    <chr>  <chr>      <int> <int>             <dist>    <dbl>
+#>  1 Female lee_carter  2024     0 t(N(-6.8, 0.0087)) 0.00113
+#>  2 Female lee_carter  2025     0  t(N(-6.8, 0.017)) 0.00110
+#>  3 Female lee_carter  2026     0  t(N(-6.9, 0.026)) 0.00106
+#>  4 Female lee_carter  2027     0  t(N(-6.9, 0.035)) 0.00103
+#>  5 Female lee_carter  2028     0  t(N(-6.9, 0.045)) 0.00100
+#>  6 Female lee_carter  2029     0    t(N(-7, 0.054)) 0.000973
+#>  7 Female lee_carter  2030     0    t(N(-7, 0.064)) 0.000944
+#>  8 Female lee_carter  2031     0    t(N(-7, 0.073)) 0.000917
+#>  9 Female lee_carter  2032     0  t(N(-7.1, 0.083)) 0.000890
+#> 10 Female lee_carter  2033     0  t(N(-7.1, 0.093)) 0.000864
 #> # ℹ 8,070 more rows
 ```
 

@@ -60,10 +60,11 @@ functional data models for fertility, mortality and migration. The
 models for mortality and migration use coherent components, so that the
 rates for males and females do not diverge over time.
 
-The following example uses Norwegian data up to 2022, and produces
-simulated populations for the ten future years. Different models are
-used for each component to demonstrate the flexibility of the package,
-but other models can be used as well.
+The following example uses Norwegian mortality data up to 2023 and
+fertility data up to 2022, and produces simulated populations for the
+ten future years. Different models are used for each component to
+demonstrate the flexibility of the package, but other models can be used
+as well.
 
 ## Mortality model
 
@@ -91,7 +92,7 @@ rates.](population_forecasting_files/figure-html/mortality-1.png)
 ## Fertility model
 
 For fertility, we use a functional mean model with a square root
-transformation, applied to the last 13 years of data. The plotted model
+transformation, applied to the last 12 years of data. The plotted model
 shows the fitted values on the square root scale.
 
 ``` r
@@ -136,7 +137,7 @@ The
 [`generate_population()`](https://pkg.robjhyndman.com/vital/reference/generate_population.md)
 function takes a starting population, and the three component models,
 and simulates future age-sex-specific population values. Here we produce
-ten replicates of the future population.
+500 replicates of the future population.
 
 ``` r
 
@@ -152,7 +153,7 @@ future <- generate_population(
 )
 ```
 
-The first replicate is plotted below, along with the last few years of
+One replicate is plotted below, along with the last few years of
 historical data.
 
 ``` r

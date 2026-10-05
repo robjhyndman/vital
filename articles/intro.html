@@ -197,7 +197,9 @@ by default) is computed using <code><a href="../reference/life_expectancy.html">
 <code><a href="../reference/smooth_vital.html">smooth_fertility()</a></code>, and <code><a href="../reference/smooth_vital.html">smooth_loess()</a></code>, each
 smoothing across the age variable for each year. The methods used in
 <code><a href="../reference/smooth_vital.html">smooth_mortality()</a></code> and <code><a href="../reference/smooth_vital.html">smooth_fertility()</a></code> are
-described in <span class="citation">Hyndman and Ullah (2007)</span>.</p>
+described in <span class="citation">Hyndman and Ullah (2007)</span>. The
+<code><a href="../reference/smooth_mortality_law.html">smooth_mortality_law()</a></code> function instead fits a parametric
+mortality law (Gompertz by default) using the MortalityLaws package.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Smoothed data</span></span>
 <span><span class="va">nor</span> <span class="op">|&gt;</span></span>
@@ -423,8 +425,80 @@ steps.</p>
 <p>Here, <code><a href="../reference/make_pr.html">make_pr()</a></code> makes the product-ratios, while
 <code><a href="../reference/undo_pr.html">undo_pr()</a></code> undoes them.</p>
 <p>The argument <code>coherent = TRUE</code> in <code><a href="../reference/FDM.html">FDM()</a></code>
-ensures that the ARIMA models fitted to the coefficients are stationary
-when applied to the sex-ratios.</p>
+ensures that the time series models fitted to the coefficients of the
+sex-ratios are stationary (ARFIMA models by default), so the forecast
+ratios do not diverge. The coefficients of the geometric mean are
+modelled with ARIMA models by default.</p>
+</div>
+<div class="section level2">
+<h2 id="other-models">Other models<a class="anchor" aria-label="anchor" href="#other-models"></a>
+</h2>
+<p>The <code><a href="../reference/FMEAN.html">FMEAN()</a></code> and <code><a href="../reference/FNAIVE.html">FNAIVE()</a></code> functions provide
+simple benchmark models. <code><a href="../reference/FMEAN.html">FMEAN()</a></code> forecasts each age using
+the mean of the observed values at that age, while <code><a href="../reference/FNAIVE.html">FNAIVE()</a></code>
+uses a random walk from the last observation at each age. Here,
+<code><a href="../reference/FNAIVE.html">FNAIVE()</a></code> warns that some young ages have zero mortality in
+the final year, so the last positive rate at those ages is used
+instead.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">benchmarks</span> <span class="op">&lt;-</span> <span class="va">nor</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Year</span> <span class="op">&gt;</span> <span class="fl">1990</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fu"><a href="../reference/FMEAN.html">FMEAN</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span><span class="op">)</span>, naive <span class="op">=</span> <span class="fu"><a href="../reference/FNAIVE.html">FNAIVE</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Values are zero or missing in the final year for ages 10, 13. Using</span></span>
+<span><span class="co">#&gt; the last finite value as the starting point for these ages.</span></span>
+<span><span class="va">benchmarks</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A vital fable: 4,040 x 6 [1Y]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Key:           Age x (Sex, .model) [101 x 4]</span></span></span>
+<span><span class="co">#&gt;    Sex    .model  Year   Age        Mortality   .mean</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dist&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Female mean    <span style="text-decoration: underline;">2</span>024     0 t(N(-5.9, 0.13)) 0.002<span style="text-decoration: underline;">85</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Female mean    <span style="text-decoration: underline;">2</span>025     0 t(N(-5.9, 0.13)) 0.002<span style="text-decoration: underline;">85</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Female mean    <span style="text-decoration: underline;">2</span>026     0 t(N(-5.9, 0.13)) 0.002<span style="text-decoration: underline;">85</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Female mean    <span style="text-decoration: underline;">2</span>027     0 t(N(-5.9, 0.13)) 0.002<span style="text-decoration: underline;">85</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Female mean    <span style="text-decoration: underline;">2</span>028     0 t(N(-5.9, 0.13)) 0.002<span style="text-decoration: underline;">85</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Female mean    <span style="text-decoration: underline;">2</span>029     0 t(N(-5.9, 0.13)) 0.002<span style="text-decoration: underline;">85</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Female mean    <span style="text-decoration: underline;">2</span>030     0 t(N(-5.9, 0.13)) 0.002<span style="text-decoration: underline;">85</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Female mean    <span style="text-decoration: underline;">2</span>031     0 t(N(-5.9, 0.13)) 0.002<span style="text-decoration: underline;">85</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Female mean    <span style="text-decoration: underline;">2</span>032     0 t(N(-5.9, 0.13)) 0.002<span style="text-decoration: underline;">85</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Female mean    <span style="text-decoration: underline;">2</span>033     0 t(N(-5.9, 0.13)) 0.002<span style="text-decoration: underline;">85</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4,030 more rows</span></span></span></code></pre></div>
+<p>Generalized age-period-cohort (GAPC) models <span class="citation">(Villegas et al. 2018)</span> are fitted using the
+StMoMo package. These include <code><a href="../reference/GAPC.html">LC2()</a></code> (an alternative
+Lee-Carter model that allows zero rates), <code><a href="../reference/GAPC.html">CBD()</a></code>,
+<code><a href="../reference/GAPC.html">APC()</a></code>, <code><a href="../reference/GAPC.html">RH()</a></code>, <code><a href="../reference/GAPC.html">M7()</a></code>,
+<code><a href="../reference/GAPC.html">PLAT()</a></code>, and the general <code><a href="../reference/GAPC.html">GAPC()</a></code> function. They
+are fitted to the deaths and population variables, and require annual
+data. For example, the Cairns-Blake-Dowd model is designed for older
+ages.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cbd</span> <span class="op">&lt;-</span> <span class="va">nor</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Age</span> <span class="op">&gt;=</span> <span class="fl">55</span>, <span class="va">Age</span> <span class="op">&lt;</span> <span class="fl">90</span>, <span class="va">Year</span> <span class="op">&gt;</span> <span class="fl">1970</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://fabletools.tidyverts.org/reference/model.html" class="external-link">model</a></span><span class="op">(</span>cbd <span class="op">=</span> <span class="fu"><a href="../reference/GAPC.html">CBD</a></span><span class="op">(</span><span class="va">Mortality</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">cbd</span><span class="op">)</span></span></code></pre></div>
+<p><img src="intro_files/figure-html/cbd-1.png" class="r-plt" alt="Components of the Cairns-Blake-Dowd model for mortality in Norway." width="100%"></p>
+<p>The <code><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast()</a></code> function gives only point forecasts for
+GAPC models, unless <code>simulate = TRUE</code> is used to obtain
+forecast distributions from simulated future paths.</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cbd</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/forecast.html" class="external-link">forecast</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">10</span>, simulate <span class="op">=</span> <span class="cn">TRUE</span>, times <span class="op">=</span> <span class="fl">500</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sex</span> <span class="op">==</span> <span class="st">"Female"</span>, <span class="va">Age</span> <span class="op">==</span> <span class="fl">80</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pi <span class="op">=</span> <span class="fu">distributional</span><span class="fu">::</span><span class="fu"><a href="https://pkg.mitchelloharawild.com/distributional/reference/hilo.html" class="external-link">hilo</a></span><span class="op">(</span><span class="va">Mortality</span>, <span class="fl">95</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A vital fable: 10 x 7 [1Y]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Key:           Age x (Sex, .model) [1 x 1]</span></span></span>
+<span><span class="co">#&gt;    Sex    .model  Year   Age   Mortality  .mean                         pi</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dist&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;hilo&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Female cbd     <span style="text-decoration: underline;">2</span>024    80 sample[500] 0.036<span style="text-decoration: underline;">7</span> [0.03503988, 0.03842375]95</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Female cbd     <span style="text-decoration: underline;">2</span>025    80 sample[500] 0.036<span style="text-decoration: underline;">2</span> [0.03382494, 0.03866225]95</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Female cbd     <span style="text-decoration: underline;">2</span>026    80 sample[500] 0.035<span style="text-decoration: underline;">7</span> [0.03289851, 0.03854067]95</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Female cbd     <span style="text-decoration: underline;">2</span>027    80 sample[500] 0.035<span style="text-decoration: underline;">2</span> [0.03203992, 0.03848268]95</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Female cbd     <span style="text-decoration: underline;">2</span>028    80 sample[500] 0.034<span style="text-decoration: underline;">7</span> [0.03090754, 0.03853392]95</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Female cbd     <span style="text-decoration: underline;">2</span>029    80 sample[500] 0.034<span style="text-decoration: underline;">2</span> [0.03020974, 0.03853143]95</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Female cbd     <span style="text-decoration: underline;">2</span>030    80 sample[500] 0.033<span style="text-decoration: underline;">8</span> [0.02935744, 0.03847232]95</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Female cbd     <span style="text-decoration: underline;">2</span>031    80 sample[500] 0.033<span style="text-decoration: underline;">3</span> [0.02867820, 0.03852769]95</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Female cbd     <span style="text-decoration: underline;">2</span>032    80 sample[500] 0.032<span style="text-decoration: underline;">8</span> [0.02787233, 0.03830655]95</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Female cbd     <span style="text-decoration: underline;">2</span>033    80 sample[500] 0.032<span style="text-decoration: underline;">4</span> [0.02756522, 0.03784387]95</span></span></code></pre></div>
 </div>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -454,6 +528,12 @@ Mortality and Fertility Rates: A Functional Data Approach.”</span>
 Lee, Ronald D, and Lawrence R Carter. 1992. <span>“Modeling and
 Forecasting <span>US</span> Mortality.”</span> <em>Journal of the
 American Statistical Association</em> 87 (419): 659–71.
+</div>
+<div id="ref-stmomo" class="csl-entry">
+Villegas, Andrés M, Pietro Millossovich, and Vladimir K Kaishev. 2018.
+<span>“<span>StMoMo</span>: An <span>R</span> Package for Stochastic
+Mortality Modeling.”</span> <em>Journal of Statistical Software</em> 84
+(3): 1–38. <a href="https://doi.org/10.18637/jss.v084.i03" class="external-link">https://doi.org/10.18637/jss.v084.i03</a>.
 </div>
 </div>
 </div>

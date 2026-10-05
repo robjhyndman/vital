@@ -159,7 +159,10 @@ in
 [`smooth_mortality()`](https://pkg.robjhyndman.com/vital/reference/smooth_vital.md)
 and
 [`smooth_fertility()`](https://pkg.robjhyndman.com/vital/reference/smooth_vital.md)
-are described in Hyndman and Ullah (2007).
+are described in Hyndman and Ullah (2007). The
+[`smooth_mortality_law()`](https://pkg.robjhyndman.com/vital/reference/smooth_mortality_law.md)
+function instead fits a parametric mortality law (Gompertz by default)
+using the MortalityLaws package.
 
 ``` r
 
@@ -437,8 +440,102 @@ undoes them.
 
 The argument `coherent = TRUE` in
 [`FDM()`](https://pkg.robjhyndman.com/vital/reference/FDM.md) ensures
-that the ARIMA models fitted to the coefficients are stationary when
-applied to the sex-ratios.
+that the time series models fitted to the coefficients of the sex-ratios
+are stationary (ARFIMA models by default), so the forecast ratios do not
+diverge. The coefficients of the geometric mean are modelled with ARIMA
+models by default.
+
+## Other models
+
+The [`FMEAN()`](https://pkg.robjhyndman.com/vital/reference/FMEAN.md)
+and [`FNAIVE()`](https://pkg.robjhyndman.com/vital/reference/FNAIVE.md)
+functions provide simple benchmark models.
+[`FMEAN()`](https://pkg.robjhyndman.com/vital/reference/FMEAN.md)
+forecasts each age using the mean of the observed values at that age,
+while
+[`FNAIVE()`](https://pkg.robjhyndman.com/vital/reference/FNAIVE.md) uses
+a random walk from the last observation at each age. Here,
+[`FNAIVE()`](https://pkg.robjhyndman.com/vital/reference/FNAIVE.md)
+warns that some young ages have zero mortality in the final year, so the
+last positive rate at those ages is used instead.
+
+``` r
+
+benchmarks <- nor |>
+  filter(Year > 1990) |>
+  model(mean = FMEAN(log(Mortality)), naive = FNAIVE(log(Mortality)))
+#> Warning: Values are zero or missing in the final year for ages 10, 13. Using
+#> the last finite value as the starting point for these ages.
+benchmarks |>
+  forecast(h = 10)
+#> # A vital fable: 4,040 x 6 [1Y]
+#> # Key:           Age x (Sex, .model) [101 x 4]
+#>    Sex    .model  Year   Age        Mortality   .mean
+#>    <chr>  <chr>  <int> <int>           <dist>   <dbl>
+#>  1 Female mean    2024     0 t(N(-5.9, 0.13)) 0.00285
+#>  2 Female mean    2025     0 t(N(-5.9, 0.13)) 0.00285
+#>  3 Female mean    2026     0 t(N(-5.9, 0.13)) 0.00285
+#>  4 Female mean    2027     0 t(N(-5.9, 0.13)) 0.00285
+#>  5 Female mean    2028     0 t(N(-5.9, 0.13)) 0.00285
+#>  6 Female mean    2029     0 t(N(-5.9, 0.13)) 0.00285
+#>  7 Female mean    2030     0 t(N(-5.9, 0.13)) 0.00285
+#>  8 Female mean    2031     0 t(N(-5.9, 0.13)) 0.00285
+#>  9 Female mean    2032     0 t(N(-5.9, 0.13)) 0.00285
+#> 10 Female mean    2033     0 t(N(-5.9, 0.13)) 0.00285
+#> # ℹ 4,030 more rows
+```
+
+Generalized age-period-cohort (GAPC) models (Villegas et al. 2018) are
+fitted using the StMoMo package. These include
+[`LC2()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md) (an
+alternative Lee-Carter model that allows zero rates),
+[`CBD()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+[`APC()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+[`RH()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+[`M7()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+[`PLAT()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md), and the
+general [`GAPC()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md)
+function. They are fitted to the deaths and population variables, and
+require annual data. For example, the Cairns-Blake-Dowd model is
+designed for older ages.
+
+``` r
+
+cbd <- nor |>
+  filter(Age >= 55, Age < 90, Year > 1970) |>
+  model(cbd = CBD(Mortality))
+autoplot(cbd)
+```
+
+![Components of the Cairns-Blake-Dowd model for mortality in
+Norway.](intro_files/figure-html/cbd-1.png)
+
+The [`forecast()`](https://generics.r-lib.org/reference/forecast.html)
+function gives only point forecasts for GAPC models, unless
+`simulate = TRUE` is used to obtain forecast distributions from
+simulated future paths.
+
+``` r
+
+cbd |>
+  forecast(h = 10, simulate = TRUE, times = 500) |>
+  filter(Sex == "Female", Age == 80) |>
+  mutate(pi = distributional::hilo(Mortality, 95))
+#> # A vital fable: 10 x 7 [1Y]
+#> # Key:           Age x (Sex, .model) [1 x 1]
+#>    Sex    .model  Year   Age   Mortality  .mean                         pi
+#>    <chr>  <chr>  <int> <int>      <dist>  <dbl>                     <hilo>
+#>  1 Female cbd     2024    80 sample[500] 0.0367 [0.03503988, 0.03842375]95
+#>  2 Female cbd     2025    80 sample[500] 0.0362 [0.03382494, 0.03866225]95
+#>  3 Female cbd     2026    80 sample[500] 0.0357 [0.03289851, 0.03854067]95
+#>  4 Female cbd     2027    80 sample[500] 0.0352 [0.03203992, 0.03848268]95
+#>  5 Female cbd     2028    80 sample[500] 0.0347 [0.03090754, 0.03853392]95
+#>  6 Female cbd     2029    80 sample[500] 0.0342 [0.03020974, 0.03853143]95
+#>  7 Female cbd     2030    80 sample[500] 0.0338 [0.02935744, 0.03847232]95
+#>  8 Female cbd     2031    80 sample[500] 0.0333 [0.02867820, 0.03852769]95
+#>  9 Female cbd     2032    80 sample[500] 0.0328 [0.02787233, 0.03830655]95
+#> 10 Female cbd     2033    80 sample[500] 0.0324 [0.02756522, 0.03784387]95
+```
 
 ## References
 
@@ -463,3 +560,8 @@ Mortality and Fertility Rates: A Functional Data Approach.”
 Lee, Ronald D, and Lawrence R Carter. 1992. “Modeling and Forecasting US
 Mortality.” *Journal of the American Statistical Association* 87 (419):
 659–71.
+
+Villegas, Andrés M, Pietro Millossovich, and Vladimir K Kaishev. 2018.
+“StMoMo: An R Package for Stochastic Mortality Modeling.” *Journal of
+Statistical Software* 84 (3): 1–38.
+<https://doi.org/10.18637/jss.v084.i03>.

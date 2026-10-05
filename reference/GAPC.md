@@ -158,6 +158,11 @@ model will optionally call
 arguments `clip` and `zeroCohorts`. All other arguments are passed to
 [`StMoMo`](https://rdrr.io/pkg/StMoMo/man/StMoMo.html).
 
+[`forecast()`](https://generics.r-lib.org/reference/forecast.html) gives
+point forecasts only for these models. Use
+`forecast(..., simulate = TRUE)` to obtain forecast distributions and
+prediction intervals.
+
 ## References
 
 Cairns, AJG, Blake, D, and Dowd, K (2006). A two-factor model for
