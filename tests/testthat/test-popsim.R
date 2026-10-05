@@ -10,9 +10,10 @@ mig <- net_migration(pop, norway_births |> dplyr::filter(Year > 2015)) |>
 
 test_that("generate_population undoes coherent migration models", {
   called <- FALSE
-  local_mocked_bindings(undo_sd = function(.data, ...) {
+  real_undo_sd <- undo_sd
+  local_mocked_bindings(undo_sd = function(...) {
     called <<- TRUE
-    .data
+    real_undo_sd(...)
   })
   generate_population(
     pop,
@@ -237,5 +238,49 @@ test_that("generate_population survival matches the life table", {
     P(P1, 100),
     (P(P0, 99) + P(P0, 100)) * lt$rx[lt$Age == 100],
     tolerance = 0.02
+  )
+})
+
+test_that("generate_population requires models with the ages and sexes of the starting population", {
+  start <- pop |> dplyr::filter(Year == max(Year))
+  mort_young <- pop |>
+    dplyr::filter(Age < 100) |>
+    model(m = FMEAN(Mortality))
+  expect_error(
+    generate_population(start, mortality_model = mort_young, h = 1, n_reps = 2),
+    "same values of `Age`.*Missing: 100, 101"
+  )
+  mort_female <- pop |>
+    dplyr::filter(Sex == "Female") |>
+    model(m = FMEAN(Mortality))
+  expect_error(
+    generate_population(start, mortality_model = mort_female, h = 1, n_reps = 2),
+    "same values of `Sex`.*Missing: Male"
+  )
+  expect_error(
+    generate_population(
+      start |> dplyr::filter(Age < 50),
+      migration_model = mig,
+      h = 1,
+      n_reps = 2
+    ),
+    "migration model .* `Age`.*Extra: 50, 51"
+  )
+})
+
+test_that("generate_population rejects missing simulated rates", {
+  local_mocked_bindings(generate = function(...) {
+    out <- fabletools::generate(...)
+    out$.sim[out$Age == 30] <- NA
+    out
+  })
+  expect_error(
+    generate_population(
+      pop |> dplyr::filter(Year == max(Year)),
+      mortality_model = mort,
+      h = 1,
+      n_reps = 2
+    ),
+    "mortality model have missing values at ages 30"
   )
 })

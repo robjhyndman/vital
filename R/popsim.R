@@ -146,6 +146,7 @@ generate_population <- function(
         key = all_of(vvars$sex)
       )
     }
+    check_simulations(future_mortality, "mx", pop, vvars, "mortality")
   } else {
     # 0 deaths
     future_mortality <- tidyr::expand_grid(
@@ -206,6 +207,7 @@ generate_population <- function(
         key = all_of(vvars$sex)
       )
     }
+    check_simulations(future_migration, "Nx", pop, vvars, "migration")
   } else {
     # 0 net migrants
     future_migration <- tidyr::expand_grid(
@@ -427,4 +429,40 @@ model_horizon <- function(model, start_year, last_year) {
     )
   }
   last_year - data_end
+}
+
+# Simulations from a mortality or migration model must have the same ages and
+# sexes as the starting population (pop), with no missing values of var
+check_simulations <- function(sims, var, pop, vvars, what) {
+  for (v in c(vvars$age, vvars$sex)) {
+    if (!(v %in% names(sims))) {
+      stop("The ", what, " model must have the variable `", v, "` of starting_population", call. = FALSE)
+    }
+    model_values <- unique(sims[[v]])
+    pop_values <- unique(pop[[v]])
+    if (!setequal(model_values, pop_values)) {
+      stop(
+        "The ", what, " model must have the same values of `", v,
+        "` as starting_population.",
+        format_difference("Missing", setdiff(pop_values, model_values)),
+        format_difference("Extra", setdiff(model_values, pop_values)),
+        call. = FALSE
+      )
+    }
+  }
+  na <- is.na(sims[[var]])
+  if (any(na)) {
+    stop(
+      "Simulations from the ", what, " model have missing values at ages ",
+      paste(sort(unique(sims[[vvars$age]][na])), collapse = ", "),
+      call. = FALSE
+    )
+  }
+}
+
+format_difference <- function(label, values) {
+  if (length(values) == 0L) {
+    return("")
+  }
+  paste0(" ", label, ": ", paste(sort(values), collapse = ", "), ".")
 }
