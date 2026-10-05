@@ -13,14 +13,15 @@
 
 \item{age}{The name of the age variable. If not supplied, the function will attempt to find it.}
 
-\item{...}{Further arguments passed to \code{\link[fabletools:autoplot.tbl_ts]{fabletools::autoplot.tbl_ts()}} when
-\code{object} has no age variable, and otherwise not used.}
+\item{...}{Not used.}
 }
 \value{
 A ggplot2 object.
 }
 \description{
 Produce rainbow plot (coloured by time index) of demographic variable against age.
+If \code{object} has no age variable, the variable is plotted against time instead,
+with a line for each combination of keys.
 }
 \examples{
 autoplot(norway_fertility, Fertility)

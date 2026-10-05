@@ -1,12 +1,13 @@
 #' Rainbow plot of demographic data against age
 #'
 #' Produce rainbow plot (coloured by time index) of demographic variable against age.
+#' If `object` has no age variable, the variable is plotted against time instead,
+#' with a line for each combination of keys.
 #'
 #' @param object A vital including an age variable and the variable you wish to plot.
 #' @param .vars The name of the variable you wish to plot.
 #' @param age The name of the age variable. If not supplied, the function will attempt to find it.
-#' @param ... Further arguments passed to [fabletools::autoplot.tbl_ts()] when
-#' `object` has no age variable, and otherwise not used.
+#' @param ... Not used.
 #'
 #' @author Rob J Hyndman
 #' @references Hyndman, Rob J & Shang, Han Lin (2010) Rainbow plots, bagplots,
@@ -26,15 +27,11 @@ autoplot.vital <- function(object, .vars = NULL, age = NULL, ...) {
 
   # Index variable
   index <- tsibble::index_var(object)
+  interval <- format(tsibble::interval(object))
 
-  # A vital without age, so try a tsibble autoplot
-  if (is.null(age)) {
-    object <- as_tsibble(object)
-    return(autoplot(object, .vars = {{ .vars }}, ...))
-  }
-
-  # Drop Age as a key and nest results
-  kv <- non_age_keys(object)
+  # Keys identifying each series (all keys when there is no age variable,
+  # e.g. age group labels in STMF data)
+  kv <- if (is.null(age)) key_vars(object) else non_age_keys(object)
   nk <- length(kv)
 
   # Variable to plot
@@ -70,6 +67,45 @@ autoplot.vital <- function(object, .vars = NULL, age = NULL, ...) {
 
   # With several variables, each is plotted in its own row of panels
   multiple <- ".response" %in% names(object)
+
+  # Without an age variable, plot each series against time
+  if (is.null(age)) {
+    aes_spec <- list(x = rlang::sym(index), y = y)
+    if (nk > 0) {
+      aes_spec$colour <- if (nk == 1) {
+        rlang::sym(kv)
+      } else {
+        rlang::expr(interaction(!!!rlang::syms(kv), sep = "/"))
+      }
+    }
+    p <- ggplot2::ggplot(
+      as_tibble(object),
+      rlang::eval_tidy(rlang::expr(ggplot2::aes(!!!aes_spec)))
+    ) +
+      ggplot2::geom_line() +
+      ggplot2::xlab(paste0(index, " [", interval, "]"))
+    # Scales for tsibble time classes, which ggplot2 only finds when tsibble
+    # is attached
+    time_scale <- switch(
+      class(object[[index]])[1],
+      yearweek = tsibble::scale_x_yearweek,
+      yearmonth = tsibble::scale_x_yearmonth,
+      yearquarter = tsibble::scale_x_yearquarter,
+      NULL
+    )
+    if (!is.null(time_scale)) {
+      p <- p + time_scale()
+    }
+    if (nk > 1) {
+      p <- p + ggplot2::labs(colour = paste(kv, collapse = "/"))
+    }
+    if (multiple) {
+      p <- p +
+        ggplot2::facet_grid(rows = ggplot2::vars(.response), scales = "free_y") +
+        ggplot2::ylab(NULL)
+    }
+    return(p)
+  }
   nyears <- length(unique(object[[index]]))
   aes_spec <- list(x = rlang::sym(age), y = y)
   if (nyears > 1) {
