@@ -6,6 +6,7 @@
 - `interpolate()` now works for `FNAIVE()`, `LC()`, `FDM()` and GAPC models (`APC()`, `CBD()`, etc.), as well as `FMEAN()`
 - `autoplot()` now plots the age, period and cohort components of GAPC models (`GAPC()`, `LC2()`, `CBD()`, `APC()`, `RH()`, `M7()` and `PLAT()`)
 - `tidy()` now returns the coefficients of `LC()`, `FDM()`, `FNAIVE()` and GAPC models in long form (`term` and `estimate`, with the age, time or birth year to which each refers)
+- `LC()`, `FDM()`, `FMEAN()` and `FNAIVE()` now give an error for unused arguments, so misspelled arguments are no longer silently ignored
 - Many bug fixes, documentation improvements, more informative errors, and speed ups.
 
 # vital 2.0.3
