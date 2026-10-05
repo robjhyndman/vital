@@ -413,6 +413,18 @@ train_stmomo <- function(
   zeroCohorts = NULL,
   ...
 ) {
+  # StMoMo models need consecutive years, e.g. to compute cohorts as year - age
+  itv <- unclass(tsibble::interval(.data))
+  steps <- unlist(itv[setdiff(names(itv), c("year", "unit"))])
+  if (any(steps != 0) || itv$year + itv$unit != 1) {
+    stop(
+      "GAPC models require annual data (consecutive years), but the data have an interval of ",
+      format(tsibble::interval(.data)),
+      ".",
+      call. = FALSE
+    )
+  }
+
   # Variable names
   vvar <- vital_var_list(.data)
   measures <- measured_vars(.data)

@@ -198,3 +198,21 @@ test_that("GAPC models zero-weight deaths with no exposure without a warning", {
   expect_no_warning(fit <- model(x, m = LC2(Mortality)))
   expect_s3_class(fit, "mdl_vtl_df")
 })
+
+test_that("GAPC models require annual data", {
+  nor5 <- norway_mortality |>
+    tibble::as_tibble() |>
+    dplyr::filter(Year %% 5 == 0, Year > 1950, Sex == "Female", Age >= 50, Age < 90) |>
+    as_vital(
+      index = Year, key = c(Age, Sex),
+      .age = "Age", .sex = "Sex", .deaths = "Deaths", .population = "Population"
+    )
+  expect_error(
+    model(nor5, lc2 = LC2(Mortality), .safely = FALSE),
+    "require annual data .* interval of 5Y"
+  )
+  expect_error(
+    model(nor5, apc = APC(Mortality), .safely = FALSE),
+    "require annual data"
+  )
+})
