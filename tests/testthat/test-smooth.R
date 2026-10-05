@@ -73,3 +73,19 @@ test_that("smooth_loess weights rates by population over rate", {
   )
   expect_equal(unname(sm$.smooth), unname(predict(fit, newdata = nor)))
 })
+
+test_that("smooth_spline weights rates by population", {
+  nf <- norway_mortality |> dplyr::filter(Sex == "Female", Year == 2000, Age >= 30, Age <= 90)
+  sm <- smooth_spline(nf, Mortality)
+  w <- nf$Population / max(nf$Population) * nf$Mortality^(-1)
+  fit <- mgcv::gam(Mortality ~ s(Age, k = -1), weights = w / sum(w), data = nf)
+  expect_equal(sm$.smooth, as.vector(stats::predict(fit, newdata = nf)))
+})
+
+test_that("smoothed values are plain numeric vectors", {
+  nf <- norway_mortality |> dplyr::filter(Sex == "Female", Year == 2000, Age >= 30)
+  for (sm in list(smooth_spline(nf, Mortality), smooth_loess(nf, Mortality))) {
+    expect_null(attributes(sm$.smooth))
+    expect_null(attributes(sm$.smooth_se))
+  }
+})

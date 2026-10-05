@@ -54,11 +54,13 @@ smooth_spline_x <- function(data, var, age_spacing, age, popvar, k = -1) {
     age = seq(min(data[[age]]), max(data[[age]]), by = age_spacing)
   )
   colnames(new_data) <- age
-  out <- dplyr::bind_cols(
+  pred <- mgcv::predict.gam(fit, se.fit = TRUE, newdata = new_data)
+  out <- tibble(
     age = new_data[[age]],
-    as_tibble(mgcv::predict.gam(fit, se.fit = TRUE, newdata = new_data))
+    .smooth = as.vector(pred$fit),
+    .smooth_se = as.vector(pred$se.fit)
   )
-  colnames(out) <- c(age, ".smooth", ".smooth_se")
+  colnames(out)[1] <- age
   return(out)
 }
 
@@ -199,8 +201,8 @@ smooth_loess_x <- function(data, var, age_spacing, age, popvar, span = 0.2) {
   smooth_y <- predict(fit, se = TRUE, newdata = data.frame(x = age_grid))
   out <- tibble(
     age = age_grid,
-    .smooth = smooth_y$fit,
-    .smooth_se = smooth_y$se.fit
+    .smooth = as.vector(smooth_y$fit),
+    .smooth_se = as.vector(smooth_y$se.fit)
   )
   colnames(out)[1] <- age
   return(out[c(age, ".smooth", ".smooth_se")])
