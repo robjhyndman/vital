@@ -201,5 +201,3 @@ age_components.FNAIVE <- age_components.FMEAN
 time_components.FNAIVE <- function(object, ...) {
   stop("FNAIVE objects have no time components")
 }
-
-globalVariables("horizon")

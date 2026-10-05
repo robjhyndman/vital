@@ -212,5 +212,3 @@ hmd_to_vital <- function(object) {
     return(data2)
   }
 }
-
-globalVariables(c("Female", "Total", "Sex", "Mx"))

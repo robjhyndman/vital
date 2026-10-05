@@ -330,8 +330,6 @@ new_model <- function(fit = NULL, model, data, response, transformation) {
   )
 }
 
-globalVariables(c(".rows", "data"))
-
 # Models that reshape the data into an age x time matrix need every combination
 check_complete_grid <- function(data, age, index) {
   n_ages <- length(unique(data[[age]]))

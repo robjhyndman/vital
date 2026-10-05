@@ -387,5 +387,3 @@ smooth_weights <- function(rate, pop, lambda) {
   weight[weight < 0 | is.na(weight) | abs(weight) > 1e50] <- 0
   return(weight / sum(weight, na.rm = TRUE))
 }
-
-utils::globalVariables(c("sm", ".smooth"))

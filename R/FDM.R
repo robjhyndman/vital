@@ -458,7 +458,3 @@ fdpca <- function(X, x = seq(NCOL(X)), order = 2, ngrid = 500) {
     varprop = varprop[seq(order)]
   ))
 }
-
-
-utils::globalVariables(c(".model", "out", ".fitted", ".rep"))
-utils::globalVariables(c("p", "P", "d", "D", "q", "Q"))

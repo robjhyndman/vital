@@ -222,4 +222,3 @@ age_components.FMEAN <- function(object, ...) {
 time_components.FMEAN <- function(object, ...) {
   stop("FMEAN objects have no time components")
 }
-globalVariables(c(".resid", "sigma", "std.error", "stat", ".innov", ".n"))

@@ -158,5 +158,3 @@ stmf_to_vital <- function(stmf_data) {
 
   return(vital_data)
 }
-
-globalVariables(c("Week", "Age_group"))

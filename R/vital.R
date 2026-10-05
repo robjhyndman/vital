@@ -320,9 +320,6 @@ as_vital.data.frame <- function(
     )
 }
 
-
-utils::globalVariables(c("Deaths", "Births"))
-
 # Functions need for printing vital objects
 
 #' @export

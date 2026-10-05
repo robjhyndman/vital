@@ -728,8 +728,3 @@ gapc_index_label <- function(obj_x, k, b) {
     paste0(k, " (", b, " = ", format(signif(value, 4)), ")")
   }
 }
-
-utils::globalVariables(c(
-  "age",
-  "year"
-))

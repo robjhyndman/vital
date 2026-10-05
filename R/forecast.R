@@ -325,5 +325,3 @@ compute_point_forecasts <- function(distribution, measures) {
 calc <- function(f, ...) {
   f(...)
 }
-
-globalVariables(c(".mean", "Year", "Mortality", "fc"))

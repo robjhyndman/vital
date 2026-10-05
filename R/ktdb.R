@@ -121,5 +121,3 @@ ktdb_to_vital <- function(ktdb_data) {
   )
   return(vital_data)
 }
-
-globalVariables(c("Triangle"))

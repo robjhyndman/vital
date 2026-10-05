@@ -593,10 +593,3 @@ autoplot.LC <- function(object, ...) {
   patchwork::wrap_plots(p) +
     patchwork::plot_layout(ncol = 2, nrow = 2, guides = "collect")
 }
-
-utils::globalVariables(c(
-  "kt",
-  "ax",
-  "bx",
-  ".jump"
-))

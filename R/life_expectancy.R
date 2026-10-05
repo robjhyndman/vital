@@ -42,5 +42,3 @@ life_expectancy <- function(.data, from_age = 0, mortality) {
     # Keep only ex column plus index and keys
     dplyr::select(all_of(c(tsibble::index_var(lt_out), tsibble::key_vars(lt_out), "ex")))
 }
-
-utils::globalVariables(c("Lx", "Tx", "Age"))

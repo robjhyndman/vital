@@ -129,5 +129,3 @@ Does your model require extra variables to produce simulations?",
   new_data[[".sim"]] <- bt[[1]](.sim)
   new_data[filled$rows, ]
 }
-
-globalVariables(".sim")
