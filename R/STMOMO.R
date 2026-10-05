@@ -644,7 +644,7 @@ gapc_by_t <- function(x, index) {
 # Age functions of a fitted StMoMo model, by age
 gapc_by_x <- function(x, agevar) {
   bx <- x$bx
-  if (NCOL(bx) > 1 | !is.null(x$b0x)) {
+  if (NCOL(bx) > 1 || !is.null(x$b0x)) {
     colnames(bx) <- paste0("b", seq(NCOL(bx)), "x")
   } else {
     colnames(bx) <- "bx"

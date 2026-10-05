@@ -172,13 +172,13 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
       pop <- rbind(pop, tmp)
     }
   }
-  if (rates_included & pop_included) {
+  if (rates_included && pop_included) {
     output <- dplyr::full_join(
       rates,
       pop,
       by = c("Group", "Year", "AgeGroup", "Age")
     )
-    if ("Mortality" %in% colnames(output) & "Exposure" %in% colnames(output)) {
+    if ("Mortality" %in% colnames(output) && "Exposure" %in% colnames(output)) {
       output <- output |>
         mutate(
           Deaths = if_else(is.na(Mortality), 0, Exposure * Mortality),
@@ -189,7 +189,7 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
           )
         )
     } else if (
-      "Fertility" %in% colnames(output) & "Exposure" %in% colnames(output)
+      "Fertility" %in% colnames(output) && "Exposure" %in% colnames(output)
     ) {
       output <- output |>
         mutate(

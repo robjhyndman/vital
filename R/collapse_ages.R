@@ -87,7 +87,7 @@ collapse_ages <- function(.data, max_age = 100) {
     } else {
       counts <- NULL
     }
-    if (!is.null(pop) & !is.null(counts)) {
+    if (!is.null(pop) && !is.null(counts)) {
       collapsed[[i]][upper_ages] <- collapsed[[counts]][upper_ages] /
         collapsed[[pop]][upper_ages]
     } else {

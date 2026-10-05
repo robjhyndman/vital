@@ -288,7 +288,7 @@ lca <- function(
 
   # Do SVD
   ax <- colMeans(logrates, na.rm = TRUE) # ax is mean of logrates by column
-  if (any(ax < -1e9) | anyNA(ax)) {
+  if (any(ax < -1e9) || anyNA(ax)) {
     # Estimate troublesome values with interpolation
     ax[ax < -1e9] <- NA
     ax <- stats::approx(seq_along(ax), ax, xout = seq_along(ax), rule = 2)$y
@@ -532,7 +532,7 @@ quadroot <- function(FUN, guess, margin, ...) {
   y1 <- FUN(x1, ...)
   y2 <- FUN(x2, ...)
   y0 <- FUN(guess, ...)
-  if (is.na(y1) | is.na(y2) | is.na(y0)) {
+  if (is.na(y1) || is.na(y2) || is.na(y0)) {
     stop("Function not defined on interval")
   }
   b <- 0.5 * (y2 - y1) / margin

@@ -36,9 +36,9 @@ life_table <- function(.data, mortality) {
   } else {
     mortality <- find_measure(.data, c("mx", "mortality", "rate"))
   }
-  if (is.na(mortality) | !(mortality %in% colnames(.data))) {
+  if (is.na(mortality) || !(mortality %in% colnames(.data))) {
     vvar <- vital_var_list(.data)
-    if (!is.null(vvar$deaths) & !is.null(vvar$population)) {
+    if (!is.null(vvar$deaths) && !is.null(vvar$population)) {
       # Compute Mx from deaths and population
       .data$Mx <- .data[[vvar$deaths]] / .data[[vvar$population]]
       mortality <- "Mx"

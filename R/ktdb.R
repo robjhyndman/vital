@@ -91,7 +91,7 @@ read_ktdb_files <- function(male = NULL, female = NULL, triangle = 1) {
       dplyr::mutate(Sex = "Female")
   }
   # Combine data
-  if (!is.null(male) & !is.null(female)) {
+  if (!is.null(male) && !is.null(female)) {
     data <- dplyr::bind_rows(data_male, data_female)
   } else if (!is.null(female)) {
     data <- data_female

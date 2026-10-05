@@ -80,7 +80,7 @@ undo_sd <- function(.data, .var, key = Sex, times = 2000) {
 
 # Combine the deviations with the centre (labelled in the key)
 undo_centred <- function(.data, .var, key, times, combine, label) {
-  if (!inherits(.data, "vital") & !inherits(.data, "fbl_vtl_ts")) {
+  if (!inherits(.data, "vital") && !inherits(.data, "fbl_vtl_ts")) {
     stop(".data needs to be a vital or fbl_vtl_ts object")
   }
   # Are we working with a vital fable or regular fable?

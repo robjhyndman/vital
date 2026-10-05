@@ -243,7 +243,7 @@ fert.curve <- function(x, y, w, lambda = 1, newx = x) {
 
 smooth.monotonic <- function(x, y, b, k = -1, w = NULL, newx = x) {
   weight <- !is.null(w)
-  if (k < 3 & k != -1) {
+  if (k < 3 && k != -1) {
     stop("Inappropriate value of k")
   }
 
