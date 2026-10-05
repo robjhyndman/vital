@@ -216,3 +216,15 @@ test_that("GAPC models require annual data", {
     "require annual data"
   )
 })
+
+test_that("GAPC point forecasts give a message rather than warnings", {
+  # Show the once-per-session message every time
+  rlang::local_options(rlib_message_verbosity = "verbose")
+  fit <- norway_mortality |>
+    dplyr::filter(Sex != "Total", Year > 1990, Age >= 55, Age < 90) |>
+    model(cbd = CBD(Mortality))
+  expect_no_warning(
+    expect_message(fc <- forecast(fit, h = 2), "point forecasts only")
+  )
+  expect_true(all(fc$.mean > 0))
+})

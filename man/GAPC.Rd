@@ -133,6 +133,10 @@ variable as a function of age. Use \code{autoplot()} on the fitted models to plo
 their age, period and cohort components.
 The model will optionally call \code{\link[StMoMo]{genWeightMat}} with arguments \code{clip} and \code{zeroCohorts}.
 All other arguments are passed to \code{\link[StMoMo]{StMoMo}}.
+
+\code{\link[=forecast]{forecast()}} gives point forecasts only for these models. Use
+\code{forecast(..., simulate = TRUE)} to obtain forecast distributions and
+prediction intervals.
 }
 \examples{
 # Fit the same CBD model using GAPC() and CBD()

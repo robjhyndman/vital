@@ -35,6 +35,10 @@
 #' The model will optionally call \code{\link[StMoMo]{genWeightMat}} with arguments `clip` and `zeroCohorts`.
 #' All other arguments are passed to \code{\link[StMoMo]{StMoMo}}.
 #'
+#' [forecast()] gives point forecasts only for these models. Use
+#' `forecast(..., simulate = TRUE)` to obtain forecast distributions and
+#' prediction intervals.
+#'
 #' @aliases report.GAPC
 #' @seealso [LC()]
 #' @param formula Model specification
@@ -503,8 +507,12 @@ forecast.GAPC <- function(
   times = 5000,
   ...
 ) {
-  # Uncertainty does not work here. Users should call with simulate = TRUE for PI
-  warning("Use simulate = TRUE to get distributional forecasts")
+  # StMoMo gives point forecasts only. Distributions need simulate = TRUE
+  rlang::inform(
+    "GAPC forecasts are point forecasts only. Use `simulate = TRUE` for forecast distributions.",
+    .frequency = "once",
+    .frequency_id = "vital_gapc_point_forecasts"
+  )
   indexvar <- index_var(new_data)
   agevar <- age_var(new_data)
   h <- length(unique(new_data[[indexvar]]))
