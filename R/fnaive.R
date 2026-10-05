@@ -3,6 +3,10 @@
 #' `FNAIVE()` returns a random walk functional model applied to the formula's response variable as a function of age.
 #' Standard deviations that cannot be estimated, such as at ages with fewer
 #' than two finite residuals, are interpolated from neighbouring ages.
+#' Simulations from [generate()] with `bootstrap = TRUE` resample whole years
+#' of residuals, so they keep the correlation between ages. Otherwise, ages are
+#' simulated independently from normal distributions, which understates the
+#' uncertainty of quantities computed across ages, such as life expectancy.
 #'
 #' @aliases report.FNAIVE
 #'
@@ -143,22 +147,21 @@ generate.FNAIVE <- function(
     stop("`times` must equal the number of replicates (`.rep`) in `new_data`")
   }
   measure <- x$response
-  fitted <- as_tibble(x$fitted)
   last <- x$last
   ages <- last[[agevar]]
   sigma <- x$model$sigma[match(ages, x$model[[agevar]])]
-  # Innovations for each age, ordered by horizon within replicate
+  # Innovations for each age (one per column), ordered by horizon within
+  # replicate. Bootstrapped innovations take all ages from one residual year.
   n <- h * times
-  innov <- vapply(
-    seq_along(ages),
-    function(i) {
-      if (!bootstrap) {
-        return(stats::rnorm(n, sd = sigma[i]))
-      }
-      resample_innov(fitted$.innov[fitted[[agevar]] == ages[i]], n, sigma[i])
-    },
-    numeric(n)
-  )
+  if (bootstrap) {
+    innov <- resample_years(x$fitted, agevar, ages, n, sigma)
+  } else {
+    innov <- vapply(
+      seq_along(ages),
+      function(i) stats::rnorm(n, sd = sigma[i]),
+      numeric(n)
+    )
+  }
   # Cumulate innovations over the horizon for each path (one per column)
   paths <- apply(matrix(innov, nrow = h), 2, cumsum)
   out <- tibble(

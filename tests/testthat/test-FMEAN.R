@@ -193,9 +193,10 @@ test_that("FMEAN bootstrap innovations differ between future times", {
   sim <- generate(fit, h = 4, times = 2, bootstrap = TRUE) |>
     as_tibble() |>
     filter(Age == 50)
-  # Each replicate has a different value in each year
+  # Values change over time within each replicate (the same residual year
+  # may occasionally be drawn twice)
   n_distinct_by_rep <- tapply(sim$.sim, sim$.rep, function(x) length(unique(x)))
-  expect_true(all(n_distinct_by_rep == 4L))
+  expect_true(all(n_distinct_by_rep > 1L))
 })
 
 test_that("model functions reject unused arguments", {
@@ -203,4 +204,24 @@ test_that("model functions reject unused arguments", {
   expect_error(FNAIVE(Mortality, typo = 1), "must be empty")
   expect_error(LC(log(Mortality), adjsut = "e0"), "must be empty")
   expect_error(FDM(log(Mortality), typo = 1), "must be empty")
+})
+
+test_that("FMEAN bootstrap takes all ages of each draw from one residual year", {
+  set.seed(1)
+  # Ages with positive rates in every year, so all residuals are finite
+  d <- norway_mortality |> filter(Sex == "Female", Year > 2000, Age >= 40, Age < 80)
+  fit <- d |> model(fm = FMEAN(log(Mortality)))
+  f <- fit$fm[[1]]$fit
+  resid <- as_tibble(f$fitted) |>
+    select(Year, Age, .innov) |>
+    tidyr::pivot_wider(names_from = Year, values_from = .innov)
+  sim <- generate(fit, h = 2, times = 3, bootstrap = TRUE) |>
+    as_tibble() |>
+    left_join(f$model, by = "Age") |>
+    mutate(innov = log(.sim) - mean) |>
+    arrange(Age)
+  for (draw in split(sim, list(sim$Year, sim$.rep))) {
+    matches <- vapply(resid[-1], function(r) isTRUE(all.equal(r, draw$innov)), logical(1))
+    expect_true(any(matches))
+  }
 })

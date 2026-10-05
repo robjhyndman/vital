@@ -20,6 +20,10 @@ A model specification.
 \code{FNAIVE()} returns a random walk functional model applied to the formula's response variable as a function of age.
 Standard deviations that cannot be estimated, such as at ages with fewer
 than two finite residuals, are interpolated from neighbouring ages.
+Simulations from \code{\link[=generate]{generate()}} with \code{bootstrap = TRUE} resample whole years
+of residuals, so they keep the correlation between ages. Otherwise, ages are
+simulated independently from normal distributions, which understates the
+uncertainty of quantities computed across ages, such as life expectancy.
 }
 \examples{
 fnaive <- norway_mortality |>

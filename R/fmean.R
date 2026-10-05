@@ -3,6 +3,10 @@
 #' `FMEAN()` returns an iid functional model applied to the formula's response variable as a function of age.
 #' Standard deviations that cannot be estimated, such as at ages with fewer
 #' than two finite residuals, are interpolated from neighbouring ages.
+#' Simulations from [generate()] with `bootstrap = TRUE` resample whole years
+#' of residuals, so they keep the correlation between ages. Otherwise, ages are
+#' simulated independently from normal distributions, which understates the
+#' uncertainty of quantities computed across ages, such as life expectancy.
 #'
 #' @aliases report.FMEAN
 #'
@@ -105,6 +109,35 @@ resample_innov <- function(pool, n, sigma) {
   pool[sample.int(length(pool), size = n, replace = TRUE)]
 }
 
+# Resample n years of the residuals (.innov) in the fitted tsibble at the given
+# ages, returning an n x ages matrix. Each row takes its residuals from one
+# year, keeping the correlation between ages. Residuals missing in the year
+# drawn are resampled from other years at that age, or simulated from a normal
+# distribution with standard deviation sigma if there are none.
+resample_years <- function(fitted, agevar, ages, n, sigma) {
+  indexvar <- index_var(fitted)
+  fitted <- as_tibble(fitted)
+  fitted <- fitted[fitted[[agevar]] %in% ages, ]
+  years <- sort(unique(fitted[[indexvar]]))
+  resid <- matrix(NA_real_, length(years), length(ages))
+  resid[cbind(
+    match(fitted[[indexvar]], years),
+    match(fitted[[agevar]], ages)
+  )] <- fitted$.innov
+  resid[!is.finite(resid)] <- NA
+  # Only draw years with some residuals (e.g. not the first year of FNAIVE)
+  resid <- resid[rowSums(!is.na(resid)) > 0, , drop = FALSE]
+  out <- matrix(NA_real_, n, length(ages))
+  if (NROW(resid) > 0L) {
+    out[] <- resid[sample.int(NROW(resid), n, replace = TRUE), , drop = FALSE]
+  }
+  for (j in which(colSums(is.na(out)) > 0)) {
+    miss <- is.na(out[, j])
+    out[miss, j] <- resample_innov(resid[, j], sum(miss), sigma[j])
+  }
+  out
+}
+
 #' @rdname forecast
 #' @export
 forecast.FMEAN <- function(
@@ -144,18 +177,23 @@ generate.FMEAN <- function(
 
   if (!(".innov" %in% names(new_data))) {
     if (bootstrap) {
-      # Resample an innovation for every row (time, age and replicate) from
-      # the residuals at that age
-      fitted <- as_tibble(x$fitted)
-      new_data$.innov <- NA_real_
-      for (i in seq_len(NROW(x$model))) {
-        rows <- which(new_data[[agevar]] == x$model[[agevar]][i])
-        new_data$.innov[rows] <- resample_innov(
-          fitted$.innov[fitted[[agevar]] == x$model[[agevar]][i]],
-          length(rows),
-          x$model$sigma[i]
-        )
-      }
+      # One residual year for each future time and replicate, applied to all
+      # ages, to keep the correlation between ages
+      indexvar <- index_var(new_data)
+      draw <- paste(new_data[[indexvar]], new_data$.rep)
+      draws <- unique(draw)
+      ages <- x$model[[agevar]]
+      innov <- resample_years(
+        x$fitted,
+        agevar,
+        ages,
+        length(draws),
+        x$model$sigma
+      )
+      new_data$.innov <- innov[cbind(
+        match(draw, draws),
+        match(new_data[[agevar]], ages)
+      )]
     } else {
       new_data$.innov <- stats::rnorm(NROW(new_data), sd = new_data$sigma)
     }

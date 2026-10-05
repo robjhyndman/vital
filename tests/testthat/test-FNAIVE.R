@@ -173,3 +173,25 @@ test_that("FNAIVE interpolates starting values at ages with no finite values", {
   set.seed(1)
   expect_true(all(is.finite(generate(fit, h = 2, times = 2, bootstrap = TRUE)$.sim)))
 })
+
+test_that("FNAIVE bootstrap takes all ages of each step from one residual year", {
+  set.seed(1)
+  # Ages with positive rates in every year, so all residuals are finite
+  d <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 2000, Age >= 40, Age < 80)
+  fit <- d |> model(fn = FNAIVE(log(Mortality)))
+  f <- fit$fn[[1]]$fit
+  resid <- tibble::as_tibble(f$fitted) |>
+    dplyr::filter(Year > min(Year)) |>
+    dplyr::select(Year, Age, .innov) |>
+    tidyr::pivot_wider(names_from = Year, values_from = .innov)
+  last <- d |> dplyr::filter(Year == max(Year))
+  sim <- generate(fit, h = 1, times = 3, bootstrap = TRUE) |>
+    tibble::as_tibble() |>
+    dplyr::arrange(Age)
+  for (draw in split(sim, sim$.rep)) {
+    innov <- log(draw$.sim) - log(last$Mortality[match(draw$Age, last$Age)])
+    matches <- vapply(resid[-1], function(r) isTRUE(all.equal(r, innov)), logical(1))
+    expect_true(any(matches))
+  }
+})
