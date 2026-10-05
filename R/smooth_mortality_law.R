@@ -27,6 +27,7 @@ smooth_mortality_law <- function(.data, .var, law = "gompertz", ...) {
   smooth_vital(
     .data,
     {{ .var }},
+    age_spacing = 1,
     smooth_fn = smooth_mortality_law_x,
     deaths = vital_var_list(.data)$deaths,
     law = law,
@@ -34,9 +35,11 @@ smooth_mortality_law <- function(.data, .var, law = "gompertz", ...) {
   )
 }
 
+# The law is fitted at the observed ages, so age_spacing is not used
 smooth_mortality_law_x <- function(
   data,
   var,
+  age_spacing,
   age,
   popvar = NULL,
   deaths = NULL,

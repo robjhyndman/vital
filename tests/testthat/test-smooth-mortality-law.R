@@ -27,3 +27,20 @@ test_that("smooth_mortality_law gives finite standard errors", {
   # Standard errors are proportional to the smoothed rates
   expect_equal(sd(sm$.smooth_se / sm$.smooth), 0, tolerance = 1e-10)
 })
+
+test_that("smooth_mortality_law only passes law arguments to MortalityLaw", {
+  # A MortalityLaw that evaluates all its arguments, as a stray missing
+  # argument would then give an error
+  local_mocked_bindings(
+    MortalityLaw = function(x, ...) {
+      args <- list(...)
+      expect_false("age_spacing" %in% names(args))
+      list(fitted.values = rep(0.01, length(x)), coefficients = c(A = 1, B = 1))
+    },
+    .package = "MortalityLaws"
+  )
+  sm <- norway_mortality |>
+    dplyr::filter(Year == 2000, Sex == "Female", Age > 30) |>
+    smooth_mortality_law(Mortality)
+  expect_true(all(sm$.smooth == 0.01))
+})
