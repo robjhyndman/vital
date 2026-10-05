@@ -103,7 +103,7 @@ nor |>
 
 ## Smoothing
 
-Several smoothing functions are provided: `smooth_spline()`, `smooth_mortality()`, `smooth_fertility()`, and `smooth_loess()`, each smoothing across the age variable for each year. The methods used in `smooth_mortality()` and `smooth_fertility()` are described in @hu.
+Several smoothing functions are provided: `smooth_spline()`, `smooth_mortality()`, `smooth_fertility()`, and `smooth_loess()`, each smoothing across the age variable for each year. The methods used in `smooth_mortality()` and `smooth_fertility()` are described in @hu. The `smooth_mortality_law()` function instead fits a parametric mortality law (Gompertz by default) using the MortalityLaws package.
 
 ```{r smoothing, fig.cap="", fig.alt="Smoothed mortality rates in Norway for 1967."}
 # Smoothed data
@@ -208,6 +208,36 @@ fc_coherent
 
 Here, `make_pr()` makes the product-ratios, while `undo_pr()` undoes them.
 
-The argument `coherent = TRUE` in `FDM()` ensures that the ARIMA models fitted to the coefficients are stationary when applied to the sex-ratios.
+The argument `coherent = TRUE` in `FDM()` ensures that the time series models fitted to the coefficients of the sex-ratios are stationary (ARFIMA models by default), so the forecast ratios do not diverge. The coefficients of the geometric mean are modelled with ARIMA models by default.
+
+## Other models
+
+The `FMEAN()` and `FNAIVE()` functions provide simple benchmark models. `FMEAN()` forecasts each age using the mean of the observed values at that age, while `FNAIVE()` uses a random walk from the last observation at each age. Here, `FNAIVE()` warns that some young ages have zero mortality in the final year, so the last positive rate at those ages is used instead.
+
+```{r benchmarks}
+benchmarks <- nor |>
+  filter(Year > 1990) |>
+  model(mean = FMEAN(log(Mortality)), naive = FNAIVE(log(Mortality)))
+benchmarks |>
+  forecast(h = 10)
+```
+
+Generalized age-period-cohort (GAPC) models [@stmomo] are fitted using the StMoMo package. These include `LC2()` (an alternative Lee-Carter model that allows zero rates), `CBD()`, `APC()`, `RH()`, `M7()`, `PLAT()`, and the general `GAPC()` function. They are fitted to the deaths and population variables, and require annual data. For example, the Cairns-Blake-Dowd model is designed for older ages.
+
+```{r cbd, fig.cap="", fig.alt="Components of the Cairns-Blake-Dowd model for mortality in Norway."}
+cbd <- nor |>
+  filter(Age >= 55, Age < 90, Year > 1970) |>
+  model(cbd = CBD(Mortality))
+autoplot(cbd)
+```
+
+The `forecast()` function gives only point forecasts for GAPC models, unless `simulate = TRUE` is used to obtain forecast distributions from simulated future paths.
+
+```{r cbdforecast}
+cbd |>
+  forecast(h = 10, simulate = TRUE, times = 500) |>
+  filter(Sex == "Female", Age == 80) |>
+  mutate(pi = distributional::hilo(Mortality, 95))
+```
 
 ## References
