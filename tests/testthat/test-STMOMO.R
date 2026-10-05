@@ -226,3 +226,37 @@ test_that("GAPC point forecasts give a message rather than warnings", {
   )
   expect_true(all(fc$.mean > 0))
 })
+
+test_that("RH models allow a non-parametric cohort age function", {
+  fit <- nor |>
+    model(rh = RH(Mortality, cohortAgeFun = "NP"), .safely = FALSE) |>
+    suppressWarnings()
+  b0x <- fit$rh[[1]]$fit$model$b0x
+  # The cohort age function is estimated, and normalised to sum to 1
+  expect_gt(stats::sd(b0x), 0)
+  expect_equal(sum(b0x), 1)
+})
+
+test_that("GAPC models can be fitted without weights", {
+  fit <- nor |> model(lc2 = LC2(Mortality, use_weights = FALSE), .safely = FALSE)
+  # StMoMo then gives every cell a weight of 1
+  expect_true(all(fit$lc2[[1]]$fit$model$wxt == 1))
+  expect_true(all(is.finite(fitted(fit)$.fitted)))
+})
+
+test_that("GAPC models check their data", {
+  # Deaths exceeding the population give rates above 1
+  too_high <- dplyr::mutate(nor, Deaths = Population * 2)
+  expect_error(
+    model(too_high, cbd = CBD(Mortality, link = "logit"), .safely = FALSE),
+    "Mortality rates must be less than 1 for logit link"
+  )
+  expect_error(
+    model(as_vital(nor, .deaths = NULL), lc2 = LC2(Mortality), .safely = FALSE),
+    "Deaths variable is required"
+  )
+  expect_error(
+    model(as_vital(nor, .population = NULL), lc2 = LC2(Mortality), .safely = FALSE),
+    "Population variable is required"
+  )
+})

@@ -45,3 +45,33 @@ test_that("read_hmd_files orders combined age and non-age data by year", {
   expect_false(is.unsorted(z$Year))
   expect_true(all(c("Deaths", "Births") %in% colnames(z)))
 })
+
+test_that("read_hmd looks up the country and reads single-year data", {
+  requested <- list()
+  local_mocked_bindings(
+    readHMDweb = function(CNTRY, item, username, password, fixup) {
+      requested[[length(requested) + 1]] <<- c(CNTRY, item)
+      HMDHFDplus::readHMD(test_path(paste0(item, ".txt")), fixup = fixup)
+    },
+    .package = "HMDHFDplus"
+  )
+  z <- read_hmd("Australia", "user", "pass")
+  expect_identical(
+    requested,
+    list(
+      c("AUS", "Deaths_1x1"),
+      c("AUS", "Exposures_1x1"),
+      c("AUS", "Population"),
+      c("AUS", "Mx_1x1")
+    )
+  )
+  expect_identical(
+    z,
+    read_hmd_files(c("Deaths_1x1.txt", "Exposures_1x1.txt", "Population.txt", "Mx_1x1.txt"))
+  )
+  # Country codes are used as given
+  requested <- list()
+  read_hmd("NOR", "user", "pass", variables = "Mx")
+  expect_identical(requested, list(c("NOR", "Mx_1x1")))
+  expect_error(read_hmd("Narnia", "user", "pass"), "Unknown country")
+})

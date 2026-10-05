@@ -225,3 +225,23 @@ test_that("FMEAN bootstrap takes all ages of each draw from one residual year", 
     expect_true(any(matches))
   }
 })
+
+test_that("report() prints the FMEAN means and standard deviations", {
+  fit <- norway_mortality |>
+    filter(Sex == "Female", Year > 2000, Age < 90) |>
+    model(m = FMEAN(Mortality))
+  out <- capture.output(report(fit))
+  expect_match(out, "Age +mean +sigma", all = FALSE)
+  expect_match(out, "Model: FMEAN", all = FALSE)
+})
+
+test_that("forecast() warns that h is ignored when new_data is given", {
+  x <- norway_mortality |> filter(Sex == "Female", Year > 2015, Age < 90)
+  fit <- model(x, FMEAN(Mortality))
+  nd <- tsibble::new_data(x, 1)
+  expect_warning(
+    fc <- forecast(fit, new_data = nd, h = 5),
+    "`h` will be ignored"
+  )
+  expect_equal(unique(fc$Year), 2024)
+})

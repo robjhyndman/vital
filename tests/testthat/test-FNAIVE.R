@@ -195,3 +195,12 @@ test_that("FNAIVE bootstrap takes all ages of each step from one residual year",
     expect_true(any(matches))
   }
 })
+
+test_that("report() prints the FNAIVE standard deviations", {
+  fit <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 2000, Age < 90) |>
+    model(n = FNAIVE(Mortality))
+  out <- capture.output(report(fit))
+  expect_match(out, "Age +sigma", all = FALSE)
+  expect_match(out, "Model: FNAIVE", all = FALSE)
+})

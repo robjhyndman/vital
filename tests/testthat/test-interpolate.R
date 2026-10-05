@@ -41,3 +41,9 @@ test_that("interpolate keeps other columns and works for GAPC models", {
     expect_equal(out$Mortality[!is.na(x$Mortality)], x$Mortality[!is.na(x$Mortality)])
   }
 })
+
+test_that("interpolate requires a single model", {
+  x <- norway_mortality |> dplyr::filter(Sex == "Female", Year > 2015, Age < 90)
+  fit <- model(x, mean = FMEAN(Mortality), naive = FNAIVE(Mortality))
+  expect_error(interpolate(fit, x), "Interpolation can only be done using one model")
+})

@@ -42,3 +42,12 @@ test_that("read_ktdb finds the files for each country", {
   expect_error(read_ktdb("Belarus"), "No K-T data available")
   expect_error(read_ktdb("Narnia"), "Unknown country")
 })
+
+test_that("read_ktdb_files reads a female file alone", {
+  z <- read_ktdb_files(female = "faustl.txt")
+  expect_identical(unique(z$Sex), "Female")
+  expect_identical(
+    NROW(z),
+    NROW(read_ktdb_files("maustl.txt", "faustl.txt")) - NROW(read_ktdb_files("maustl.txt"))
+  )
+})

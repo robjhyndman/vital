@@ -28,3 +28,10 @@ test_that("total_fertility_rate weights rates by the width of age groups", {
     total_fertility_rate(f)$tfr
   )
 })
+
+test_that("total_fertility_rate() requires an age variable", {
+  expect_error(
+    total_fertility_rate(as_vital(norway_fertility, .age = NULL)),
+    "No age variable identified"
+  )
+})

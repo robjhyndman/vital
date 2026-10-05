@@ -110,3 +110,33 @@ test_that("collapse_ages works when a group is missing an age", {
     full |> dplyr::filter(Age == 100)
   )
 })
+
+test_that("collapse_ages recomputes rates from population when counts are missing", {
+  x <- norway_mortality |>
+    filter(Sex == "Female", Year > 2015) |>
+    select(-Deaths) |>
+    as_vital(.deaths = NULL)
+  out <- collapse_ages(x, max_age = 90)
+  top <- x |> filter(Age >= 90, Year == 2016)
+  expect_equal(
+    out$Mortality[out$Age == 90 & out$Year == 2016],
+    sum(top$Mortality * top$Population) / sum(top$Population)
+  )
+  # The temporary counts are not returned
+  expect_identical(colnames(out), colnames(x))
+  # Fertility rates use births computed in the same way
+  f <- norway_fertility |>
+    filter(Year == 2000) |>
+    mutate(Population = 1000 + Age) |>
+    as_vital(.population = "Population")
+  out_f <- collapse_ages(f, max_age = 45)
+  top_f <- f |> filter(Age >= 45)
+  expect_equal(
+    out_f$Fertility[out_f$Age == 45],
+    sum(top_f$Fertility * top_f$Population) / sum(top_f$Population)
+  )
+})
+
+test_that("collapse_ages requires a vital", {
+  expect_error(collapse_ages(tibble::tibble(Age = 1:3)), "needs to be a vital object")
+})

@@ -154,3 +154,47 @@ test_that("life_expectancy warns about ages not in the data", {
   )
   expect_identical(NROW(e), 1L)
 })
+
+test_that("life_table computes rates from deaths and population when needed", {
+  nor <- norway_mortality |>
+    dplyr::filter(Year == 2000, Sex == "Female", Age < 100)
+  from_counts <- life_table(dplyr::select(nor, -Mortality))
+  expect_equal(from_counts$mx, nor$Deaths / nor$Population)
+  expect_equal(
+    from_counts$ex,
+    life_table(dplyr::mutate(nor, Mortality = Deaths / Population))$ex
+  )
+  expect_error(
+    life_table(dplyr::select(nor, -Mortality) |> as_vital(.deaths = NULL)),
+    "Mortality variable not found"
+  )
+})
+
+test_that("life_table works with one or two ages", {
+  one <- vital(
+    tibble::tibble(Year = 2000L, Age = 90L, Mortality = 0.2),
+    index = Year, key = Age, .age = "Age"
+  )
+  lt1 <- life_table(one)
+  expect_equal(lt1$ex, 1 / 0.2)
+  expect_equal(lt1$qx, 1)
+  two <- vital(
+    tibble::tibble(Year = 2000L, Age = 90:91, Mortality = c(0.2, 0.3)),
+    index = Year, key = Age, .age = "Age"
+  )
+  lt2 <- life_table(two)
+  expect_equal(lt2$lx, c(1, 1 - lt2$qx[1]))
+  expect_equal(lt2$rx[2], lt2$Tx[2] / lt2$Tx[1])
+})
+
+test_that("life_table rejects unsupported age groups", {
+  x <- vital(
+    tibble::tibble(Year = 2000L, Age = c(0L, 2L, 7L), Mortality = 0.01),
+    index = Year, key = Age, .age = "Age"
+  )
+  expect_error(life_table(x), "Only 1-year and 5-year agegroups handled")
+  no_age <- norway_mortality |>
+    dplyr::filter(Year == 2000, Sex == "Female") |>
+    as_vital(.age = NULL)
+  expect_error(life_table(no_age), "No age variable found")
+})

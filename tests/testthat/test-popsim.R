@@ -285,6 +285,46 @@ test_that("generate_population rejects missing simulated rates", {
   )
 })
 
+test_that("generate_population undoes product-ratio mortality models", {
+  set.seed(1)
+  mort_pr <- pop |>
+    make_pr(Mortality) |>
+    model(m = FMEAN(log(Mortality)))
+  start <- pop |> dplyr::filter(Year == max(Year))
+  out <- generate_population(start, mortality_model = mort_pr, h = 2, n_reps = 3)
+  expect_false(anyNA(out$Population))
+  expect_setequal(unique(out$Sex), c("Female", "Male"))
+  # With no births or migration, the population only declines
+  later <- out |>
+    tibble::as_tibble() |>
+    dplyr::summarise(total = sum(Population), .by = c(Year, .rep))
+  expect_true(all(later$total[later$Year == 2025] <= later$total[later$Year == 2024]))
+})
+
+test_that("generate_population checks its arguments", {
+  start <- pop |> dplyr::filter(Year == max(Year))
+  expect_error(
+    generate_population(tibble::as_tibble(start)),
+    "starting_population must be a vital object"
+  )
+  for (arg in c("mortality_model", "fertility_model", "migration_model")) {
+    args <- list(start, "not a mable")
+    names(args) <- c("starting_population", arg)
+    expect_error(do.call(generate_population, args), paste(arg, "must be a mable object"))
+  }
+  mort2 <- mort |> dplyr::mutate(n = m)
+  expect_error(
+    generate_population(start, mortality_model = mort2),
+    "mortality_model must contain only one model"
+  )
+  expect_error(generate_population(start, h = 0), "h must be a positive")
+  expect_error(generate_population(start, n_reps = "10"), "n_reps must be a positive")
+  expect_error(
+    generate_population(dplyr::filter(start, Sex == "Female")),
+    "exactly 2 sexes"
+  )
+})
+
 test_that("generate_population identifies the female sex", {
   start <- pop |>
     dplyr::filter(Year == max(Year)) |>

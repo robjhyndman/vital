@@ -228,3 +228,19 @@ test_that("summarise on a vital fable gives a vital", {
   expect_s3_class(s, "vital")
   expect_identical(vital_vars(s), c(sex = "Sex"))
 })
+
+test_that("transmute, relocate and summarise keep mable and fable classes", {
+  fit <- norway_mortality |>
+    dplyr::filter(Year > 2015, Sex != "Total") |>
+    model(m = FMEAN(Mortality), n = FNAIVE(Mortality))
+  expect_s3_class(transmute(fit, Sex, m), "mdl_vtl_df")
+  expect_identical(colnames(relocate(fit, n)), c("n", "Sex", "m"))
+  expect_s3_class(relocate(fit, n), "mdl_vtl_df")
+  # Without model columns, the result is no longer a mable
+  expect_false(inherits(summarise(fit, k = dplyr::n()), "mdl_df"))
+  fc <- forecast(select(fit, Sex, m), h = 2)
+  for (res in list(transmute(fc, Mortality, z = .mean), relocate(fc, .mean))) {
+    expect_s3_class(res, "fbl_vtl_ts")
+    expect_identical(vital_vars(res), vital_vars(fc))
+  }
+})

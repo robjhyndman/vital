@@ -37,3 +37,29 @@ test_that("net_migration indexes cohorts by age at the end of the year", {
   # Open age group combines the two oldest ages
   expect_equal(nm(95), P(95, 2017) - (P(94, 2016) + P(95, 2016)) * rx[3])
 })
+
+test_that("net_migration checks that deaths and births match", {
+  pop <- norway_mortality |> dplyr::filter(Sex != "Total", Year > 2015)
+  births <- norway_births |> dplyr::filter(Year > 2015)
+  births_t <- births |>
+    tibble::as_tibble() |>
+    dplyr::rename(Time = Year) |>
+    as_vital(index = Time, key = Sex, .sex = "Sex", .births = "Births")
+  expect_error(net_migration(pop, births_t), "Index variables are different")
+  births_k <- births |>
+    dplyr::mutate(Region = "A") |>
+    as_vital(key = c(Sex, Region))
+  expect_error(net_migration(pop, births_k), "Keys are different")
+  expect_error(net_migration(tibble::as_tibble(pop), births), "is not TRUE")
+})
+
+test_that("net_migration names estimated deaths Deaths when there is no deaths variable", {
+  pop <- norway_mortality |>
+    dplyr::filter(Sex != "Total", Year > 2015) |>
+    dplyr::select(-Deaths) |>
+    as_vital(.deaths = NULL)
+  births <- norway_births |> dplyr::filter(Year > 2015)
+  mig <- net_migration(pop, births)
+  expect_identical(vital_vars(mig)[["deaths"]], "Deaths")
+  expect_true(all(mig$Deaths >= 0))
+})

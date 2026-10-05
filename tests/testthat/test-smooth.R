@@ -71,6 +71,30 @@ test_that("smooth_loess weights rates by population over rate", {
   expect_equal(unname(sm$.smooth), unname(predict(fit, newdata = nor)))
 })
 
+test_that("smoothing checks its inputs", {
+  nf <- norway_mortality |> dplyr::filter(Sex == "Female", Year == 2000)
+  expect_error(smooth_loess(nf), ".var is missing")
+  expect_error(
+    smooth_loess(dplyr::mutate(nf, .smooth = 1), Mortality),
+    "already contains a variable named '.smooth'"
+  )
+  expect_error(
+    smooth_loess(dplyr::mutate(nf, .smooth_se = 1), Mortality),
+    "already contains a variable named '.smooth_se'"
+  )
+  expect_error(smooth_loess(as_vital(nf, .age = NULL), Mortality), "No age variable found")
+  expect_error(smooth.monotonic(1:10, 1:10, b = 5, k = 2), "Inappropriate value of k")
+})
+
+test_that("smooth_mortality works without population and below the monotonic age", {
+  nf <- norway_mortality |> dplyr::filter(Sex == "Female", Year == 2000)
+  no_pop <- smooth_mortality(as_vital(nf, .population = NULL), Mortality)
+  expect_true(all(is.finite(no_pop$.smooth)))
+  young <- smooth_mortality(dplyr::filter(nf, Age < 60), Mortality, b = 65)
+  expect_true(all(is.finite(young$.smooth)))
+  expect_identical(max(young$Age), 59L)
+})
+
 test_that("smooth_spline weights rates by population", {
   nf <- norway_mortality |> dplyr::filter(Sex == "Female", Year == 2000, Age >= 30, Age <= 90)
   sm <- smooth_spline(nf, Mortality)

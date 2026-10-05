@@ -100,3 +100,12 @@ test_that("model() reports the underlying cause of chained errors", {
     "the underlying cause"
   )
 })
+
+test_that("model() checks its model definitions and keys", {
+  dat <- norway_mortality |> dplyr::filter(Year > 2015, Sex == "Female")
+  expect_error(model(dat), "At least one model must be specified")
+  expect_error(model(dat, m = "FMEAN"), "Model definition\\(s\\) incorrectly created: \"FMEAN\"")
+  no_sex_key <- dat |> as_vital(key = Age, .sex = "Sex")
+  expect_error(model(no_sex_key, FMEAN(Mortality)), "Sex should be one of the keys")
+  expect_error(estimate(dat, "FMEAN"), "Model definition incorrectly created")
+})

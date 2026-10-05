@@ -85,3 +85,12 @@ test_that("make_pr() sets zero values to 1e-5 so ratios are positive", {
   zero <- which(orig$Mortality == 0)
   expect_equal(undone$Mortality[zero], rep(1e-5, length(zero)))
 })
+
+test_that("make_pr() and undo_pr() check their inputs", {
+  x <- norway_mortality |> dplyr::filter(Year > 2015, Sex != "Total")
+  expect_error(make_pr(x), "Missing .var")
+  expect_error(make_pr(x, Mortality, key = Age), "key cannot be an age variable")
+  expect_error(make_pr(x, Mortality, key = Deaths), "key not found")
+  expect_error(make_pr(tibble::as_tibble(x), Mortality), "needs to be a vital object")
+  expect_error(undo_pr(tibble::as_tibble(x), Mortality), "needs to be a vital or fbl_vtl_ts object")
+})

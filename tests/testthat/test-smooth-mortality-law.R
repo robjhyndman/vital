@@ -44,3 +44,12 @@ test_that("smooth_mortality_law only passes law arguments to MortalityLaw", {
     smooth_mortality_law(Mortality)
   expect_true(all(sm$.smooth == 0.01))
 })
+
+test_that("smooth_mortality_law fits the rates when there are no deaths", {
+  nor <- norway_mortality |>
+    dplyr::filter(Year == 2000, Sex == "Female", Age >= 40, Age <= 95) |>
+    as_vital(.deaths = NULL)
+  sm <- smooth_mortality_law(nor, Mortality)
+  fit <- MortalityLaws::MortalityLaw(x = nor$Age, mx = nor$Mortality, law = "gompertz")
+  expect_equal(unname(sm$.smooth), unname(fit$fitted.values))
+})

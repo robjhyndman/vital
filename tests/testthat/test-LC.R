@@ -384,3 +384,15 @@ test_that("LC estimates do not depend on the order of the rows", {
     sorted
   )
 })
+
+test_that("report() describes an LC model", {
+  fit <- norway_mortality |>
+    dplyr::filter(Sex == "Female", Year > 2000, Age >= 30, Age < 90) |>
+    model(lc = LC(log(Mortality), jump_choice = "actual"))
+  out <- capture.output(report(fit))
+  expect_match(out, "Adjust method: dt", all = FALSE)
+  expect_match(out, "Jump choice: actual", all = FALSE)
+  expect_match(out, "Time series model: RW w/ drift", all = FALSE)
+  varprop <- round(fit$lc[[1]]$fit$model$varprop * 100, 2)
+  expect_match(out, paste0("Variance explained: ", varprop, "%"), all = FALSE, fixed = TRUE)
+})

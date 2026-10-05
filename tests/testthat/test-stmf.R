@@ -44,3 +44,37 @@ test_that("read_stmf gives a clear error when the HMD login fails", {
     "Check your username and password"
   )
 })
+
+test_that("hmd_download logs in and saves the file, or reports a failed login", {
+  submitted <- NULL
+  mock_rvest <- function(content_type, content) {
+    local_mocked_bindings(
+      session = function(url) list(url = url),
+      html_form = function(x) {
+        list(list(fields = list(`__RequestVerificationToken` = list(value = "token"))))
+      },
+      html_form_set = function(form, ...) {
+        submitted <<- list(...)
+        form
+      },
+      session_submit = function(x, form) x,
+      session_jump_to = function(x, url) {
+        list(response = list(headers = list(`content-type` = content_type), content = content))
+      },
+      .package = "rvest",
+      .env = parent.frame()
+    )
+  }
+  mock_rvest("text/csv", charToRaw("a,b\n1,2\n"))
+  file <- hmd_download("https://example.com/x.csv", "user@example.com", "secret")
+  expect_identical(readLines(file), c("a,b", "1,2"))
+  expect_identical(submitted$Email, "user@example.com")
+  expect_identical(submitted$Password, "secret")
+  expect_identical(submitted$`__RequestVerificationToken`, "token")
+  # A failed login returns the HTML login page
+  mock_rvest("text/html; charset=utf-8", charToRaw("<html></html>"))
+  expect_error(
+    hmd_download("https://example.com/x.csv", "user@example.com", "wrong"),
+    "Check your username and password"
+  )
+})

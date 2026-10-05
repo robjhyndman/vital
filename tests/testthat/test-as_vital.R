@@ -61,3 +61,53 @@ test_that("vital() creates a vital object", {
   expect_identical(vital_vars(v), c(age = "Age"))
   expect_identical(tsibble::key_vars(v), "Age")
 })
+
+test_that("print headers describe vital fables, groups and several keys", {
+  x <- norway_mortality |> dplyr::filter(Year > 2015, Sex != "Total")
+  fc <- x |> model(FMEAN(Mortality)) |> forecast(h = 2)
+  expect_identical(names(tibble::tbl_sum(fc))[1], "A vital fable")
+  grouped <- dplyr::group_by(x, Sex)
+  expect_identical(unname(tibble::tbl_sum(grouped)["Groups"]), "Sex [2]")
+  two_keys <- x |>
+    dplyr::mutate(Region = "A") |>
+    as_vital(index = Year, key = c(Age, Sex, Region), .age = "Age", .sex = "Sex")
+  expect_identical(
+    unname(tibble::tbl_sum(two_keys)["Key"]),
+    "Age x (Sex, Region) [111 x 2]"
+  )
+  expect_identical(
+    unname(tibble::tbl_sum(dplyr::filter(x, Sex == "Female", Age == 0) |>
+      as_vital(key = Age))["Key"]),
+    "Age [1 x 1]"
+  )
+})
+
+test_that("as_vital converts fertility demogdata objects", {
+  skip_if_not_installed("demography")
+  fert <- demography::aus.fert
+  v <- as_vital(fert)
+  expect_identical(
+    vital_vars(v),
+    c(age = "Age", sex = "Sex", births = "Births", population = "Exposure")
+  )
+  # Fertility rates are per 1000 women
+  ok <- !is.na(v$Fertility)
+  expect_equal(v$Births[ok], v$Exposure[ok] * v$Fertility[ok] / 1000)
+  # Age group labels are kept as a key
+  expect_equal(
+    v$Fertility[v$Year == 1921 & v$AgeGroup == "30-34"],
+    unname(fert$rate$female["30-34", "1921"])
+  )
+})
+
+test_that("as_vital checks the types of vital variables", {
+  x <- norway_mortality |> dplyr::filter(Year == 2000)
+  expect_error(
+    as_vital(dplyr::mutate(x, Deaths = as.character(Deaths))),
+    "Deaths variable must be numeric"
+  )
+  expect_error(
+    as_vital(dplyr::mutate(x, S = 1), .sex = "S"),
+    "Sex variable must be character or factor"
+  )
+})

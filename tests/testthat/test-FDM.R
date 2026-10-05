@@ -185,3 +185,32 @@ test_that("tidy() returns FDM coefficients in long form", {
   )
   expect_equal(td$estimate[td$term == "beta1"], time_components(fit)$beta1)
 })
+
+test_that("report() describes an FDM model", {
+  fit <- norway_mortality |>
+    filter(Sex == "Female", Year > 2000, Age < 90) |>
+    model(fdm = FDM(log(Mortality), order = 2))
+  out <- capture.output(report(fit))
+  expect_match(out, "Basis functions", all = FALSE)
+  expect_match(out, "beta1 :", all = FALSE)
+  expect_match(out, "beta2 :", all = FALSE)
+  total <- round(sum(fit$fdm[[1]]$fit$model$varprop) * 100, 2)
+  expect_match(out, paste0("= ", total, "%"), all = FALSE, fixed = TRUE)
+})
+
+test_that("coherent FDM can use stationary ARIMA models for the ratios", {
+  fit <- norway_mortality |>
+    filter(Sex != "Total", Year > 1990, Age < 90) |>
+    make_pr(Mortality) |>
+    model(
+      fdm = FDM(log(Mortality), coherent = TRUE, coherent_ts_model_fn = fable::ARIMA)
+    )
+  for (i in seq_len(NROW(fit))) {
+    ts_models <- fit$fdm[[i]]$fit$ts_models
+    specs <- lapply(ts_models, function(m) m$fit[[1]]$fit$spec)
+    d <- vapply(specs, function(s) s$d + s$D, numeric(1))
+    if (fit$Sex[i] == "geometric_mean") next
+    expect_true(all(grepl("^ARIMA", vapply(ts_models, function(m) model_sum(m$fit[[1]]), ""))))
+    expect_true(all(d == 0))
+  }
+})
