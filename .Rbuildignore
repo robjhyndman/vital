@@ -12,3 +12,4 @@ _pkgdown.yml
 ^CRAN-SUBMISSION$
 ^README\.qmd$
 ^tasks$
+Makefile
