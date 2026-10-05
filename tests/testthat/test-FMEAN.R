@@ -184,3 +184,16 @@ test_that("forecast() gives a clear error when new_data is not a data frame", {
   expect_error(forecast(fit, new_data = list(a = nd, b = nd)), "requires a data frame\\.$")
   expect_error(forecast(fit, new_data = 3), "use `h = 3`")
 })
+
+test_that("FMEAN bootstrap innovations differ between future times", {
+  set.seed(1)
+  fit <- norway_mortality |>
+    filter(Sex == "Female", Year > 1990) |>
+    model(fm = FMEAN(log(Mortality)))
+  sim <- generate(fit, h = 4, times = 2, bootstrap = TRUE) |>
+    as_tibble() |>
+    filter(Age == 50)
+  # Each replicate has a different value in each year
+  n_distinct_by_rep <- tapply(sim$.sim, sim$.rep, function(x) length(unique(x)))
+  expect_true(all(n_distinct_by_rep == 4L))
+})

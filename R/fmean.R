@@ -142,18 +142,18 @@ generate.FMEAN <- function(
 
   if (!(".innov" %in% names(new_data))) {
     if (bootstrap) {
+      # Resample an innovation for every row (time, age and replicate) from
+      # the residuals at that age
       fitted <- as_tibble(x$fitted)
-      ages <- x$model[[agevar]]
-      innov <- purrr::map2(ages, x$model$sigma, function(age, sigma) {
-        resample_innov(fitted$.innov[fitted[[agevar]] == age], times, sigma)
-      })
-      innov <- tibble(
-        !!agevar := rep(ages, each = times),
-        .rep = rep(unique(new_data$.rep), length(ages)),
-        .innov = unlist(innov)
-      )
-      new_data <- new_data |>
-        left_join(innov, by = c(agevar, ".rep"))
+      new_data$.innov <- NA_real_
+      for (i in seq_len(NROW(x$model))) {
+        rows <- which(new_data[[agevar]] == x$model[[agevar]][i])
+        new_data$.innov[rows] <- resample_innov(
+          fitted$.innov[fitted[[agevar]] == x$model[[agevar]][i]],
+          length(rows),
+          x$model$sigma[i]
+        )
+      }
     } else {
       new_data$.innov <- stats::rnorm(NROW(new_data), sd = new_data$sigma)
     }
