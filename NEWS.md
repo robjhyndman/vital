@@ -1,3 +1,5 @@
+# vital (development version)
+
 # vital 2.1.0
 
 - Updated to work with fabletools v0.7.0+
