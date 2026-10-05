@@ -7,7 +7,8 @@
 #' @aliases report.FMEAN
 #'
 #' @param formula Model specification.
-#' @param ... Not used.
+#' @param ... Not used. An error is given if any arguments are supplied here,
+#' so that misspelled arguments are not silently ignored.
 #'
 #' @return A model specification.
 #'
@@ -21,8 +22,9 @@
 #' autoplot(fmean) + ggplot2::scale_y_log10()
 #' @export
 FMEAN <- function(formula, ...) {
+  rlang::check_dots_empty()
   fmean_model <- new_model_class("fmean", train = train_fmean)
-  new_model_definition(fmean_model, !!enquo(formula), ...)
+  new_model_definition(fmean_model, !!enquo(formula))
 }
 
 train_fmean <- function(.data, ...) {

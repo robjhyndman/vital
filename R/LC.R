@@ -25,7 +25,8 @@
 #' and most other authors prefer `"actual"`. With `"actual"`, fitted rates are
 #' used (with a warning) for ages whose rate is zero or missing in the final year.
 #' @param scale If TRUE, `bx` and `kt` are rescaled so that `kt` has drift parameter = -1 (i.e., `kt` decreases by 1 per year on average).
-#' @param ... Not used.
+#' @param ... Not used. An error is given if any arguments are supplied here,
+#' so that misspelled arguments are not silently ignored.
 #'
 #' @references Basellini, U, Camarda, C G, and Booth, H (2022) Thirty years on:
 #' A review of the Lee-Carter method for forecasting mortality.
@@ -55,6 +56,7 @@ LC <- function(
   scale = FALSE,
   ...
 ) {
+  rlang::check_dots_empty()
   # NULL means choose "dt" or "none" depending on the data
   adjust <- if (missing(adjust)) NULL else match.arg(adjust)
   jump_choice <- match.arg(jump_choice)
@@ -64,8 +66,7 @@ LC <- function(
     !!enquo(formula),
     adjust = adjust,
     jump_choice = jump_choice,
-    scale = scale,
-    ...
+    scale = scale
   )
 }
 

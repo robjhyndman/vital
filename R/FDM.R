@@ -17,7 +17,8 @@
 #' @param coherent_ts_model_fn Time series modelling function to be used for coherent fitting.
 #' `ts_model_fn` will be used for the `geometric_mean` or `mean` variables, with the
 #' other variables being modelled using `coherent_ts_model_fn`. Default is [fable::ARFIMA()].
-#' @param ... Not used.
+#' @param ... Not used. An error is given if any arguments are supplied here,
+#' so that misspelled arguments are not silently ignored.
 #'
 #' @references Hyndman, R. J., and Ullah, S. (2007) Robust forecasting of
 #' mortality and fertility rates: a functional data approach.
@@ -46,6 +47,7 @@ FDM <- function(
   coherent_ts_model_fn = fable::ARFIMA,
   ...
 ) {
+  rlang::check_dots_empty()
   if (
     !is.numeric(order) || length(order) != 1L || order < 1 || order %% 1 != 0
   ) {
@@ -70,8 +72,7 @@ FDM <- function(
     order = order,
     ts_model_fn = ts_model_fn,
     coherent = coherent,
-    coherent_ts_model = coherent_ts_model,
-    ...
+    coherent_ts_model = coherent_ts_model
   )
 }
 

@@ -7,7 +7,8 @@
 #' @aliases report.FNAIVE
 #'
 #' @param formula Model specification.
-#' @param ... Not used.
+#' @param ... Not used. An error is given if any arguments are supplied here,
+#' so that misspelled arguments are not silently ignored.
 #'
 #' @return A model specification.
 #'
@@ -21,8 +22,9 @@
 #' autoplot(fnaive) + ggplot2::scale_y_log10()
 #' @export
 FNAIVE <- function(formula, ...) {
+  rlang::check_dots_empty()
   fnaive_model <- new_model_class("fnaive", train = train_fnaive)
-  new_model_definition(fnaive_model, !!enquo(formula), ...)
+  new_model_definition(fnaive_model, !!enquo(formula))
 }
 
 train_fnaive <- function(.data, ...) {

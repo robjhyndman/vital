@@ -197,3 +197,10 @@ test_that("FMEAN bootstrap innovations differ between future times", {
   n_distinct_by_rep <- tapply(sim$.sim, sim$.rep, function(x) length(unique(x)))
   expect_true(all(n_distinct_by_rep == 4L))
 })
+
+test_that("model functions reject unused arguments", {
+  expect_error(FMEAN(Mortality, typo = 1), "must be empty")
+  expect_error(FNAIVE(Mortality, typo = 1), "must be empty")
+  expect_error(LC(log(Mortality), adjsut = "e0"), "must be empty")
+  expect_error(FDM(log(Mortality), typo = 1), "must be empty")
+})

@@ -36,7 +36,8 @@ used (with a warning) for ages whose rate is zero or missing in the final year.}
 
 \item{scale}{If TRUE, \code{bx} and \code{kt} are rescaled so that \code{kt} has drift parameter = -1 (i.e., \code{kt} decreases by 1 per year on average).}
 
-\item{...}{Not used.}
+\item{...}{Not used. An error is given if any arguments are supplied here,
+so that misspelled arguments are not silently ignored.}
 }
 \value{
 A model specification.

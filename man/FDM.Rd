@@ -31,7 +31,8 @@ Default is FALSE.}
 \code{ts_model_fn} will be used for the \code{geometric_mean} or \code{mean} variables, with the
 other variables being modelled using \code{coherent_ts_model_fn}. Default is \code{\link[fable:ARFIMA]{fable::ARFIMA()}}.}
 
-\item{...}{Not used.}
+\item{...}{Not used. An error is given if any arguments are supplied here,
+so that misspelled arguments are not silently ignored.}
 }
 \value{
 A model specification.

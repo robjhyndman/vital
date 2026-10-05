@@ -10,7 +10,8 @@ FMEAN(formula, ...)
 \arguments{
 \item{formula}{Model specification.}
 
-\item{...}{Not used.}
+\item{...}{Not used. An error is given if any arguments are supplied here,
+so that misspelled arguments are not silently ignored.}
 }
 \value{
 A model specification.
