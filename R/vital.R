@@ -118,26 +118,22 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
   pop_included <- ("pop" %in% names(x))
   # Avoid CRAN error check by declaring variables
   Year <- Age <- AgeGroup <- Exposure <- Group <- Rates <- Mortality <- Fertility <- NULL
-  if (rates_included) {
-    rates <- NULL
-    for (i in seq_along(x$rate)) {
-      tmp <- x$rate[[i]] |>
-        tsibble::as_tibble() |>
-        mutate(
-          AgeGroup = rownames(x$rate[[i]]),
-          Age = x$age
-        ) |>
+  # Turn a list of age x year matrices (one per group) into a long tibble
+  long_groups <- function(mats, values_to) {
+    purrr::imap(mats, function(m, group) {
+      tibble::as_tibble(m) |>
+        mutate(AgeGroup = rownames(m), Age = x$age) |>
         tidyr::pivot_longer(
           -c(AgeGroup, Age),
           names_to = "Year",
-          values_to = "Rates"
+          values_to = values_to
         ) |>
-        mutate(
-          Year = as.numeric(Year),
-          Group = names(x$rate)[i]
-        )
-      rates <- rbind(rates, tmp)
-    }
+        mutate(Year = as.numeric(Year), Group = group)
+    }) |>
+      dplyr::bind_rows()
+  }
+  if (rates_included) {
+    rates <- long_groups(x$rate, "Rates")
     # Assume Inf rates are due to 0/0
     rates <- rates |>
       mutate(Rates = if_else(Rates == Inf, NA_real_, Rates))
@@ -152,25 +148,7 @@ as_vital.demogdata <- function(x, sex_groups = TRUE, ...) {
     }
   }
   if (pop_included) {
-    pop <- NULL
-    for (i in seq_along(x$pop)) {
-      tmp <- x$pop[[i]] |>
-        as_tibble() |>
-        mutate(
-          AgeGroup = rownames(x$pop[[i]]),
-          Age = x$age
-        ) |>
-        tidyr::pivot_longer(
-          -c(AgeGroup, Age),
-          names_to = "Year",
-          values_to = "Exposure"
-        ) |>
-        mutate(
-          Year = as.numeric(Year),
-          Group = names(x$pop)[i]
-        )
-      pop <- rbind(pop, tmp)
-    }
+    pop <- long_groups(x$pop, "Exposure")
   }
   if (rates_included && pop_included) {
     output <- dplyr::full_join(

@@ -112,47 +112,33 @@ read_stmf_files <- function(file) {
 }
 
 stmf_to_vital <- function(stmf_data) {
-  # Rename the second set of age columns by adding ".1" suffix
+  # Death counts are followed by death rates for the same age groups
   age_groups <- c("0-14", "15-64", "65-74", "75-84", "85+", "Total")
-  age_rate_groups <- paste0(age_groups, ".1") # Create names for death rates
-
-  # Rename columns for the data frame
   colnames(stmf_data) <- c(
     "CountryCode",
     "Year",
     "Week",
     "Sex",
-    age_groups,
-    age_rate_groups,
+    paste0("Deaths_", age_groups),
+    paste0("Mortality_", age_groups),
     "Split",
     "SplitSex",
     "Forecast"
   )
 
-  # Initialize an empty data frame to store results
-  formatted_data <- data.frame()
-
-  # Loop through each age group to create a structured data frame
-  for (i in seq_along(age_groups)) {
-    # Combine death counts and rates into a single data frame
-    combined_data <- stmf_data |>
-      dplyr::select(
-        Year,
-        Week,
-        Sex,
-        all_of(age_groups[i]),
-        all_of(age_rate_groups[i])
-      ) |>
-      dplyr::rename(
-        Deaths = all_of(age_groups[i]),
-        Mortality = all_of(age_rate_groups[i])
-      ) |>
-      dplyr::mutate(Age_group = age_groups[i]) |>
-      dplyr::select(Year, Week, Sex, Age_group, Deaths, Mortality)
-
-    # Bind the combined data to the main data frame
-    formatted_data <- dplyr::bind_rows(formatted_data, combined_data)
-  }
+  # One row for each age group, with its death count and rate
+  formatted_data <- stmf_data[c(
+    "Year",
+    "Week",
+    "Sex",
+    paste0("Deaths_", age_groups),
+    paste0("Mortality_", age_groups)
+  )] |>
+    tidyr::pivot_longer(
+      -c(Year, Week, Sex),
+      names_to = c(".value", "Age_group"),
+      names_sep = "_"
+    )
 
   # Create YearWeek column
   formatted_data <- formatted_data |>
