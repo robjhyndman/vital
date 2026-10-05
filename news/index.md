@@ -1,6 +1,6 @@
 # Changelog
 
-## vital (development version)
+## vital 2.1.0
 
 - Updated to work with fabletools v0.7.0+
 - [`read_stmf()`](https://pkg.robjhyndman.com/vital/reference/read_stmf.md)
@@ -67,11 +67,22 @@ CRAN release: 2025-10-05
 
 CRAN release: 2025-08-20
 
-- New data functions: read_ktdb(), read_ktdb_files(), read_stmf(),
-  read_stmf_files()
-- New model functions: GAPC(), PLAT(), M7(), RH(), CBD(), LC2()
-- New smoothing function: smooth_mortality_law()
-- New stochastic simulation function: generate_population()
+- New data functions:
+  [`read_ktdb()`](https://pkg.robjhyndman.com/vital/reference/read_ktdb.md),
+  [`read_ktdb_files()`](https://pkg.robjhyndman.com/vital/reference/read_ktdb_files.md),
+  [`read_stmf()`](https://pkg.robjhyndman.com/vital/reference/read_stmf.md),
+  [`read_stmf_files()`](https://pkg.robjhyndman.com/vital/reference/read_stmf_files.md)
+- New model functions:
+  [`GAPC()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+  [`PLAT()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+  [`M7()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+  [`RH()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+  [`CBD()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md),
+  [`LC2()`](https://pkg.robjhyndman.com/vital/reference/GAPC.md)
+- New smoothing function:
+  [`smooth_mortality_law()`](https://pkg.robjhyndman.com/vital/reference/smooth_mortality_law.md)
+- New stochastic simulation function:
+  [`generate_population()`](https://pkg.robjhyndman.com/vital/reference/generate_population.md)
 - Added vignette introducing the package
 - Added vignette on stochastic population forecasting
 - Removed Australian data sets to reduce package size
@@ -83,9 +94,16 @@ CRAN release: 2025-08-20
 CRAN release: 2024-06-21
 
 - Improved formatting of vital objects when printed
-- Added vital_vars function
-- Added age_components methods for FNAIVE and FMEAN models
-- Data before 1900 removed from norway_xxx data sets
+- Added
+  [`vital_vars()`](https://pkg.robjhyndman.com/vital/reference/vital_vars.md)
+  function
+- Added
+  [`age_components()`](https://pkg.robjhyndman.com/vital/reference/age_components.md)
+  methods for
+  [`FNAIVE()`](https://pkg.robjhyndman.com/vital/reference/FNAIVE.md)
+  and [`FMEAN()`](https://pkg.robjhyndman.com/vital/reference/FMEAN.md)
+  models
+- Data before 1900 removed from `norway_xxx` data sets
 
 ## vital 1.0.0
 
