@@ -1,7 +1,8 @@
 # Rainbow plot of demographic data against age
 
 Produce rainbow plot (coloured by time index) of demographic variable
-against age.
+against age. If `object` has no age variable, the variable is plotted
+against time instead, with a line for each combination of keys.
 
 ## Usage
 
@@ -27,9 +28,7 @@ autoplot(object, .vars = NULL, age = NULL, ...)
 
 - ...:
 
-  Further arguments passed to
-  [`fabletools::autoplot.tbl_ts()`](https://fabletools.tidyverts.org/reference/autoplot.tbl_ts.html)
-  when `object` has no age variable, and otherwise not used.
+  Not used.
 
 ## Value
 
