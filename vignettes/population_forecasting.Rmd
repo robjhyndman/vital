@@ -62,7 +62,7 @@ In the simulation of future populations, half of each cohort's net migrants are 
 
 To simulate future births, deaths and net migrants, we develop three functional data models for fertility, mortality and migration. The models for mortality and migration use coherent components, so that the rates for males and females do not diverge over time.
 
-The following example uses Norwegian data up to 2022, and produces simulated populations for the ten future years. Different models are used for each component to demonstrate the flexibility of the package, but other models can be used as well.
+The following example uses Norwegian mortality data up to 2023 and fertility data up to 2022, and produces simulated populations for the ten future years. Different models are used for each component to demonstrate the flexibility of the package, but other models can be used as well.
 
 ## Mortality model
 
@@ -79,7 +79,7 @@ autoplot(fit_mortality, 2)
 
 ## Fertility model
 
-For fertility, we use a functional mean model with a square root transformation, applied to the last 13 years of data. The plotted model shows the fitted values on the square root scale.
+For fertility, we use a functional mean model with a square root transformation, applied to the last 12 years of data. The plotted model shows the fitted values on the square root scale.
 
 ```{r fertility, fig.cap="", fig.alt = "Fitted values of the functional mean model for fertility rates."}
 fit_fertility <- norway_fertility |>
@@ -106,7 +106,7 @@ autoplot(fit_migration)
 
 ## Population simulation
 
-The `generate_population()` function takes a starting population, and the three component models, and simulates future age-sex-specific population values. Here we produce ten replicates of the future population.
+The `generate_population()` function takes a starting population, and the three component models, and simulates future age-sex-specific population values. Here we produce 500 replicates of the future population.
 
 ```{r simulation}
 pop <- norway_mortality |>
@@ -121,7 +121,7 @@ future <- generate_population(
 )
 ```
 
-The first replicate is plotted below, along with the last few years of historical data.
+One replicate is plotted below, along with the last few years of historical data.
 
 ```{r population_plot, fig.cap="", fig.alt="Simulated population for the first replicate."}
 future |>
