@@ -4,6 +4,8 @@
 
 ## vital 2.1.0
 
+CRAN release: 2026-10-05
+
 - Updated to work with fabletools v0.7.0+
 - [`read_stmf()`](https://pkg.robjhyndman.com/vital/reference/read_stmf.md)
   now takes `username` and `password` arguments, as the HMD now requires
