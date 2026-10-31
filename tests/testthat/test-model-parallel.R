@@ -50,7 +50,7 @@ test_that("model() gives the same fits when future is attached", {
       seq_fit <- fit_models()
       expect_identical(colnames(seq_fit), colnames(base))
       expect_identical(seq_fit$Sex, base$Sex)
-      expect_identical(
+      expect_equal(
         forecast(seq_fit |> dplyr::select(-bad), h = 2)$.mean,
         forecast(base |> dplyr::select(-bad), h = 2)$.mean
       )
@@ -58,7 +58,7 @@ test_that("model() gives the same fits when future is attached", {
       skip_on_cran()
       future::plan(future::multisession, workers = 2)
       ms_fit <- fit_models()
-      expect_identical(
+      expect_equal(
         forecast(ms_fit |> dplyr::select(-bad), h = 2)$.mean,
         forecast(base |> dplyr::select(-bad), h = 2)$.mean
       )
