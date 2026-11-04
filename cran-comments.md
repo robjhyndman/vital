@@ -1,12 +1,12 @@
-Updated in preparation for next fabletools release
+Updated in response to CRAN request
 
 ## Test environments
 
-- Kubuntu 26.04 (local): R 4.6.1
+- Kubuntu 26.04 (local): R 4.6.2
 - macOS (on GitHub Actions): release
 - windows (on GitHub Actions): release
 - ubuntu 24.04.5 (on GitHub Actions): devel, release, oldrel
-- win-builder: devel, release, oldrelease
+- win-builder: devel
 
 ## R CMD check results
 
