@@ -1,4 +1,4 @@
-# vital (development version)
+# vital 2.1.1
 
 - Bug fix in tests that fail on MKL
 
