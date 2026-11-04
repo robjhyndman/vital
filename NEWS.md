@@ -1,5 +1,7 @@
 # vital (development version)
 
+- Bug fix in tests that fail on MKL
+
 # vital 2.1.0
 
 - Updated to work with fabletools v0.7.0+
