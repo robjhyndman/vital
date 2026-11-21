@@ -85,5 +85,4 @@ norway_fertility
 #> # ℹ 2,454 more rows
 norway_fertility |>
   autoplot(Fertility)
-
 ```

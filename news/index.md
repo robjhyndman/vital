@@ -1,6 +1,8 @@
 # Changelog
 
-## vital (development version)
+## vital 2.1.1
+
+CRAN release: 2026-11-04
 
 - Bug fix in tests that fail on MKL
 

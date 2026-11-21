@@ -37,5 +37,4 @@ library(ggplot2)
 norway_mortality |>
   model(ave = FMEAN(Mortality)) |>
   autoplot() + scale_y_log10()
-
 ```
