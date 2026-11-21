@@ -23,7 +23,6 @@ norway_mortality |>
   model(ave = FMEAN(Mortality)) |>
   forecast(h = 10) |>
   autoplot() + scale_y_log10()
-
 }
 \author{
 Rob J Hyndman

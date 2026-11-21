@@ -29,7 +29,6 @@ assume that it represents data for a single gender.
 # File downloaded from the K-T database
 australia_male <- read_ktdb_files("maustl.txt")
 }
-
 }
 \author{
 Sixian Tang

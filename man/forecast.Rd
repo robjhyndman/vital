@@ -118,7 +118,6 @@ norway_mortality |>
   dplyr::filter(Sex == "Female") |>
   model(naive = FNAIVE(Mortality)) |>
   forecast(h = 10)
-
 }
 \author{
 Rob J Hyndman and Mitchell O'Hara-Wild

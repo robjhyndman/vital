@@ -24,7 +24,6 @@
 #' norway_fertility
 #' norway_fertility |>
 #'   autoplot(Fertility)
-#'
 NULL
 
 #' Norwegian fertility data

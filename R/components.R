@@ -13,7 +13,6 @@
 #'   dplyr::filter(Sex == "Female") |>
 #'   model(lee_carter = LC(log(Mortality))) |>
 #'   age_components()
-#'
 #' @export
 age_components <- function(object, ...) {
   UseMethod("age_components")

@@ -14,7 +14,6 @@
 #' \donttest{
 #' australia <- read_ktdb(country = "Australia")
 #' }
-#'
 #' @export
 read_ktdb <- function(country, triangle = 1) {
   # Find the country, by K-T number or name
@@ -65,7 +64,6 @@ read_ktdb <- function(country, triangle = 1) {
 #' # File downloaded from the K-T database
 #' australia_male <- read_ktdb_files("maustl.txt")
 #' }
-#'
 #' @export
 read_ktdb_files <- function(male = NULL, female = NULL, triangle = 1) {
   if (is.null(male) && is.null(female)) {

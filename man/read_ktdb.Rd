@@ -24,7 +24,6 @@ and constructs a \code{vital} object suitable for use in other functions.
 \donttest{
 australia <- read_ktdb(country = "Australia")
 }
-
 }
 \author{
 Sixian Tang

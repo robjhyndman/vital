@@ -34,7 +34,6 @@ If \code{bootstrap} is \code{TRUE}, innovations will be sampled from the model's
 norway_mortality |>
   model(lc = LC(log(Mortality))) |>
   generate(times = 3, bootstrap = TRUE)
-
 }
 \author{
 Rob J Hyndman and Mitchell O'Hara-Wild

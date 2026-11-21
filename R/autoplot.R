@@ -154,7 +154,6 @@ autoplot.vital <- function(object, .vars = NULL, age = NULL, ...) {
 #'   model(ave = FMEAN(Mortality)) |>
 #'   forecast(h = 10) |>
 #'   autoplot() + scale_y_log10()
-#'
 #' @author Rob J Hyndman
 #' @export
 autoplot.fbl_vtl_ts <- function(object, ...) {
@@ -186,7 +185,6 @@ autoplot.fbl_vtl_ts <- function(object, ...) {
 #' norway_mortality |>
 #'   model(ave = FMEAN(Mortality)) |>
 #'   autoplot() + scale_y_log10()
-#'
 #' @export
 autoplot.mdl_vtl_df <- function(object, ...) {
   autoplot(as_model_class(object, "Model plotting"), ...)

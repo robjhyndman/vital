@@ -21,7 +21,6 @@
 #'   password = "FF!5xeEFa6"
 #' )
 #' }
-#'
 #' @export
 read_stmf <- function(country, username, password) {
   # Get country code

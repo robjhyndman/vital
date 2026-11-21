@@ -19,7 +19,6 @@
 #' norway_mortality |>
 #'   model(lc = LC(log(Mortality))) |>
 #'   generate(times = 3, bootstrap = TRUE)
-#'
 #' @export
 generate.mdl_vtl_df <- function(
   x,

@@ -19,5 +19,4 @@ identifying the age, sex, deaths, births and population variables.
 }
 \examples{
 vital_vars(norway_mortality)
-
 }

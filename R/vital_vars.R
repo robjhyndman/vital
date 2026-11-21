@@ -8,7 +8,6 @@
 #' @return A character vector of the names of the vital variables.
 #' @examples
 #' vital_vars(norway_mortality)
-#'
 #' @export
 vital_vars <- function(x) {
   attributes(x)$vital

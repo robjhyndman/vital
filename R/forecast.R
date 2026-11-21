@@ -31,7 +31,6 @@
 #'   dplyr::filter(Sex == "Female") |>
 #'   model(naive = FNAIVE(Mortality)) |>
 #'   forecast(h = 10)
-#'
 #' @rdname forecast
 #' @export
 forecast.mdl_vtl_df <- function(

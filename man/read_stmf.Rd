@@ -31,7 +31,6 @@ norway <- read_stmf(
   password = "FF!5xeEFa6"
 )
 }
-
 }
 \seealso{
 \code{\link[=read_stmf_files]{read_stmf_files()}} for reading STMF files that have already been downloaded.
